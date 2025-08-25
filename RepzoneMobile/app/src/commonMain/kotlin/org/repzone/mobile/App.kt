@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
-import repzonemobile.composeapp.generated.resources.Res
-import repzonemobile.composeapp.generated.resources.compose_multiplatform
+import repzonemobile.app.generated.resources.Res
+import repzonemobile.app.generated.resources.compose_multiplatform
 
 @Composable
 @Preview
