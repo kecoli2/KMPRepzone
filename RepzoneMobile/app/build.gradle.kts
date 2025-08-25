@@ -23,7 +23,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "ComposeApp"
+            baseName = "Mobile"
             isStatic = true
         }
     }
@@ -42,6 +42,9 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
+
+            /// Shared Project Implementation
+            implementation(project(":core"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
@@ -50,15 +53,15 @@ kotlin {
 }
 
 android {
-    namespace = "org.repzone.mobile"
+    namespace = providers.gradleProperty("APP_NAMESPACE_APPLICATION_ID").get()
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
     defaultConfig {
-        applicationId = "org.repzone.mobile"
+        applicationId = providers.gradleProperty("APP_NAMESPACE_APPLICATION_ID").get()
         minSdk = libs.versions.android.minSdk.get().toInt()
         targetSdk = libs.versions.android.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
+        versionCode =  libs.versions.application.version.get().toInt()
+        versionName = libs.versions.application.versionname.get()
     }
     packaging {
         resources {
@@ -77,6 +80,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core"))
     debugImplementation(compose.uiTooling)
 }
 
