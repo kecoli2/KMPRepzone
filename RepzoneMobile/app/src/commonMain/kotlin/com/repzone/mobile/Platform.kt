@@ -1,4 +1,4 @@
-package org.repzone.mobile
+package com.repzone.mobile
 
 interface Platform {
     val name: String

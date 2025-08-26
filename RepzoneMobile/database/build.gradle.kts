@@ -52,6 +52,8 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
                 // Add KMP dependencies here
+                implementation(libs.sqldelight.runtime)
+                implementation(libs.kotlinx.coroutines.core)
             }
         }
 
@@ -66,6 +68,7 @@ kotlin {
                 // Add Android-specific dependencies here. Note that this source set depends on
                 // commonMain by default and will correctly pull the Android artifacts of any KMP
                 // dependencies declared in commonMain.
+                dependencies { implementation(libs.sqldelight.androidDriver) }
             }
         }
 
@@ -84,6 +87,7 @@ kotlin {
                 // part of KMP’s default source set hierarchy. Note that this source set depends
                 // on common by default and will correctly pull the iOS artifacts of any
                 // KMP dependencies declared in commonMain.
+                dependencies { implementation(libs.sqldelight.nativeDriver) }
             }
         }
     }
@@ -92,9 +96,9 @@ kotlin {
 sqldelight {
     databases {
         create("AppDatabase") {
-            packageName.set("com.repzone.db")
-            schemaOutputDirectory.set(file("src/commonMain/sqldelight/schema"))
-            migrationOutputDirectory.set(file("src/commonMain/sqldelight/migrations"))
+            packageName.set("com.repzone.database")
+            //schemaOutputDirectory.set(file("src/commonMain/sqldelight/schema"))
+            //migrationOutputDirectory.set(file("src/commonMain/sqldelight/migrations"))
         }
     }
 }

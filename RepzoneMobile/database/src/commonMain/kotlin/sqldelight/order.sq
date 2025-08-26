@@ -1,0 +1,14 @@
+CREATE TABLE orders(
+  id TEXT NOT NULL PRIMARY KEY,
+  customerId TEXT NOT NULL,
+  total INTEGER NOT NULL,
+  currency TEXT NOT NULL,
+  status TEXT NOT NULL,
+  updatedAt TEXT NOT NULL
+);
+
+selectById:
+SELECT * FROM orders WHERE id = ?;
+
+selectPending:
+SELECT * FROM orders WHERE status = 'PENDING';

@@ -1,4 +1,4 @@
-package org.repzone.mobile
+package com.repzone.mobile
 
 class Greeting {
     private val platform = getPlatform()

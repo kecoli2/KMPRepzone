@@ -1,4 +1,4 @@
-package org.repzone.mobile
+package com.repzone.mobile
 
 import android.os.Build
 
