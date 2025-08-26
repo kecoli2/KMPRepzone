@@ -21,6 +21,9 @@ kotlinx-coroutines = "1.10.2"
 kotlinx-datetime  = "0.7.1"
 ktor = "3.2.3"
 serialization = "1.7.3"
+sqldelight = "2.1.0"
+koin = "4.1.0"
+
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -46,6 +49,11 @@ ktor-serialization-json     = { module = "io.ktor:ktor-serialization-kotlinx-jso
 ktor-client-logging         = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
 ktor-client-auth            = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
 
+sqldelight-runtime      = { module = "com.squareup.sqldelight:runtime", version.ref = "sqldelight" }
+sqldelight-androidDriver= { module = "com.squareup.sqldelight:android-driver", version.ref = "sqldelight" }
+sqldelight-nativeDriver = { module = "com.squareup.sqldelight:native-driver",  version.ref = "sqldelight" }
+
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 
 
 [plugins]
@@ -56,3 +64,4 @@ composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "k
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 androidLint = { id = "com.android.lint", version.ref = "agp" }
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
