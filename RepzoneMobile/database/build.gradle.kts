@@ -93,9 +93,8 @@ sqldelight {
     databases {
         create("AppDatabase") {
             packageName.set("com.repzone.db")
-            // Bu iki satır opsiyonel; önce sorunsuz derlesin diye yorumda bırak:
-            schemaOutputDirectory.set(file("src/commonMain/schema"))
-            migrationOutputDirectory.set(file("src/commonMain/migrations"))
+            schemaOutputDirectory.set(file("src/commonMain/sqldelight/schema"))
+            migrationOutputDirectory.set(file("src/commonMain/sqldelight/migrations"))
         }
     }
 }
