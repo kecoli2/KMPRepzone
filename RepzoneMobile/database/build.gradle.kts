@@ -97,6 +97,7 @@ sqldelight {
     databases {
         create("AppDatabase") {
             packageName.set("com.repzone.database")
+            verifyMigrations.set(false)
             //schemaOutputDirectory.set(file("src/commonMain/sqldelight/schema"))
             //migrationOutputDirectory.set(file("src/commonMain/sqldelight/migrations"))
         }
