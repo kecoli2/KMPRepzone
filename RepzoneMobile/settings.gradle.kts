@@ -31,3 +31,4 @@ dependencyResolutionManagement {
 include(":app")
 include(":core")
 include(":domain")
+include(":network")

@@ -10,9 +10,13 @@ kotlin {
     // which platforms this KMP module supports.
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
     androidLibrary {
-        namespace = "${providers.gradleProperty("APP_NAMESPACE_BASE").get()}." + providers.gradleProperty("APP_NAMESPACE_DOMAIN").get()
+        namespace = "${providers.gradleProperty("APP_NAMESPACE_BASE").get()}." + providers.gradleProperty("APP_NAMESPACE_NETWORK").get()
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
+
+
+        withHostTestBuilder {
+        }
 
         withDeviceTestBuilder {
             sourceSetTreeName = "test"
@@ -34,7 +38,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = providers.gradleProperty("APP_NAMESPACE_IOS_DOMAIN").getOrElse("DomainKit")
+            baseName = providers.gradleProperty("APP_NAMESPACE_IOS_NETWORK").getOrElse("NetworkKit")
         }
     }
 
@@ -46,10 +50,14 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(project(":core"))
                 implementation(libs.kotlin.stdlib)
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.kotlinx.datetime)
-                // Add KMP dependencies here
+                implementation(libs.ktor.client.core)
+                implementation(libs.ktor.client.contentNeg)
+                implementation(libs.ktor.serialization.json)
+                implementation(libs.ktor.client.logging)
+                implementation(libs.ktor.client.auth)
             }
         }
 
@@ -67,4 +75,5 @@ kotlin {
             }
         }
     }
+
 }
