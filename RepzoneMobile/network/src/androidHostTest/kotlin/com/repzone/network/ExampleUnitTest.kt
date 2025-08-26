@@ -1,4 +1,4 @@
-package com.example.database
+package com.repzone.network
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
