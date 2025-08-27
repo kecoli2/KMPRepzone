@@ -84,6 +84,8 @@ dependencies {
     implementation(project(":database"))
     implementation(project(":network"))
     implementation(project(":domain"))
+    implementation(project(":data"))
+    implementation(project(":sync"))
     debugImplementation(compose.uiTooling)
 }
 

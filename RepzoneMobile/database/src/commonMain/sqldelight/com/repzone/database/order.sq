@@ -12,3 +12,7 @@ SELECT * FROM orders WHERE id = ?;
 
 selectPending:
 SELECT * FROM orders WHERE status = 'PENDING';
+
+insertOrReplace:
+INSERT INTO orders
+VALUES ?;
