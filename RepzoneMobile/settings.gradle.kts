@@ -25,6 +25,7 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
     }
 }
 
@@ -35,3 +36,4 @@ include(":network")
 include(":database")
 include(":data")
 include(":sync")
+include(":presentation")
