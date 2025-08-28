@@ -14,8 +14,6 @@ class OrderDbMapper: Mapper<Orders, OrderEntity> {
         currency = from.currency,
         updatedAt = from.updatedAt
     )
-
-
     override fun fromDomain(domain: OrderEntity) = Orders(
         id = domain.id,
         customerId = domain.customerId,

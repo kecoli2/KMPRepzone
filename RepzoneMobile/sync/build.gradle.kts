@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -50,10 +51,15 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
+                implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.koin.core)
+                implementation(libs.ktor.client.core)
+                implementation(libs.kotlinx.serialization.json)
                 // Add KMP dependencies here
+                implementation(project(":core"))
                 implementation(project(":data"))
                 implementation(project(":domain"))
-                implementation(libs.kotlinx.coroutines.core)
+                implementation(project(":network"))
             }
         }
 

@@ -50,10 +50,15 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
+                implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.koin.core)
+                implementation(libs.ktor.serialization.json)
+
+                //ADD PROJECT
                 implementation(project(":domain"))   // Domain arayüzleri + entity'ler
                 implementation(project(":database"))
+                implementation(project(":core"))
 
-                implementation(libs.kotlinx.coroutines.core)
             }
         }
 

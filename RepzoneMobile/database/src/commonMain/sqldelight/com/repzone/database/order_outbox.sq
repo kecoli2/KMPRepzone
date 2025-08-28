@@ -1,0 +1,32 @@
+CREATE TABLE order_outbox(
+  id TEXT NOT NULL PRIMARY KEY,           -- orderId ile aynı
+  payload TEXT NOT NULL,                  -- JSON (Order DTO vb.)
+  attemptCount INTEGER NOT NULL DEFAULT 0,
+  lastError TEXT,
+  nextAttemptAt INTEGER NOT NULL DEFAULT 0, -- epoch millis
+  createdAt INTEGER NOT NULL              -- epoch millis
+);
+
+-- sıradaki iş (şimdi çalışabilir durum)
+selectReady:
+SELECT * FROM order_outbox
+WHERE nextAttemptAt <= ?                -- nowMillis
+ORDER BY createdAt ASC
+LIMIT ?;
+
+-- başarılı push sonrası sil
+deleteById:
+DELETE FROM order_outbox WHERE id = ?;
+
+-- hata sonrası attempt/backoff güncelle
+updateAttempt:
+UPDATE order_outbox
+SET attemptCount = attemptCount + 1,
+    lastError = ?,
+    nextAttemptAt = ?
+WHERE id = ?;
+
+-- elle ekleme (order’u outbox’a koyma)
+insertOrReplace:
+INSERT OR REPLACE INTO order_outbox(id, payload, attemptCount, lastError, nextAttemptAt, createdAt)
+VALUES (?, ?, ?, ?, ?, ?);

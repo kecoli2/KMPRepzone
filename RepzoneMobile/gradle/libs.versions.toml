@@ -20,7 +20,7 @@ application-versionname = "1.0"
 kotlinx-coroutines = "1.10.2"
 kotlinx-datetime  = "0.7.1"
 ktor = "3.2.3"
-serialization = "1.7.3"
+serialization = "1.9.0"
 sqldelight = "2.1.0"
 koin = "4.1.0"
 
@@ -59,7 +59,7 @@ koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
 compose-runtime     = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeMultiplatform" }
 compose-foundation  = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "composeMultiplatform" }
 compose-material3   = { module = "org.jetbrains.compose.material3:material3", version.ref = "composeMultiplatform" }
-
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -70,3 +70,4 @@ kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref =
 androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 androidLint = { id = "com.android.lint", version.ref = "agp" }
 sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
