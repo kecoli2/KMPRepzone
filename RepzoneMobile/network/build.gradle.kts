@@ -57,6 +57,9 @@ kotlin {
                 implementation(libs.ktor.serialization.json)
                 implementation(libs.ktor.client.logging)
                 implementation(libs.ktor.client.auth)
+
+                // DI
+                implementation(libs.koin.core)
             }
         }
 
