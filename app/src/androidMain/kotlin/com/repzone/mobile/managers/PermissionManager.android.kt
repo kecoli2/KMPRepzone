@@ -2,116 +2,115 @@ package com.repzone.mobile.managers
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.repzone.core.util.PermissionStatus
+import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.Continuation
 import kotlin.coroutines.resume
 
-actual class PermissionManager(
-    private val activity: Activity,
-    caller: ActivityResultCaller
-) {
-    private var continuation: Continuation<Boolean>? = null
 
-    private val multiLauncher: ActivityResultLauncher<Array<String>> =
-        caller.registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
-            continuation?.resume(result.values.all { it } )
-            continuation = null
-        }
+actual class PermissionManager  constructor() {
 
-    private val singleLauncher: ActivityResultLauncher<String> =
-        caller.registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
-            continuation?.resume(granted)
-            continuation = null
-        }
+    private lateinit var appContext: Context
+    private lateinit var launcherMultiple: ActivityResultLauncher<Array<String>>
+    private lateinit var launcherSingle: ActivityResultLauncher<String>
 
-    // --- helpers ---
-    private fun hasAll(perms: Array<String>): Boolean =
-        perms.all { ActivityCompat.checkSelfPermission(activity, it) == PackageManager.PERMISSION_GRANTED }
+    private var pending: CancellableContinuation<Boolean>? = null
+
+    // Compose tarafı burayı çağıracak
+    fun attachLaunchers(
+        context: Context,
+        multiple: ActivityResultLauncher<Array<String>>,
+        single: ActivityResultLauncher<String>
+    ) {
+        appContext = context.applicationContext
+        launcherMultiple = multiple
+        launcherSingle = single
+    }
+
+    fun onMultipleResult(grants: Map<String, Boolean>) {
+        pending?.resume(grants.values.all { it })
+        pending = null
+    }
+
+    fun onSingleResult(granted: Boolean) {
+        pending?.resume(granted)
+        pending = null
+    }
+
+    private fun hasPermission(perm: String): Boolean =
+        ContextCompat.checkSelfPermission(appContext, perm) == PackageManager.PERMISSION_GRANTED
 
     private suspend fun requestMultiple(perms: Array<String>): Boolean =
         suspendCancellableCoroutine { cont ->
-            // Aynı anda ikinci bir istek gelmesini engelle
-            require(continuation == null) { "Permission request already in progress" }
-            continuation = cont
-            multiLauncher.launch(perms)
-            cont.invokeOnCancellation { continuation = null }
+            check(::launcherMultiple.isInitialized) { "Permission launchers not attached" }
+            check(pending == null) { "Another permission request is in progress" }
+            pending = cont
+            launcherMultiple.launch(perms)
+            cont.invokeOnCancellation { pending = null }
         }
 
     private suspend fun requestOne(perm: String): Boolean =
         suspendCancellableCoroutine { cont ->
-            require(continuation == null) { "Permission request already in progress" }
-            continuation = cont
-            singleLauncher.launch(perm)
-            cont.invokeOnCancellation { continuation = null }
+            check(::launcherSingle.isInitialized) { "Permission launchers not attached" }
+            check(pending == null) { "Another permission request is in progress" }
+            pending = cont
+            launcherSingle.launch(perm)
+            cont.invokeOnCancellation { pending = null }
         }
 
-    // ---- Bluetooth ----
+    // ---- public API ----
     actual suspend fun ensureBluetooth(): PermissionStatus {
         val needed = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            arrayOf(
-                Manifest.permission.BLUETOOTH_SCAN,
-                Manifest.permission.BLUETOOTH_CONNECT
-            )
+            arrayOf(Manifest.permission.BLUETOOTH_SCAN, Manifest.permission.BLUETOOTH_CONNECT)
         } else {
-            // Eski cihazlarda BLE taraması için konum izni gerekir
             arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
         }
-
-        if (hasAll(needed)) return PermissionStatus.Granted
+        if (needed.all { hasPermission(it) }) return PermissionStatus.Granted
         val ok = requestMultiple(needed)
         return if (ok) PermissionStatus.Granted else PermissionStatus.Denied(canAskAgain = true)
     }
 
     actual suspend fun checkBluetooth(): PermissionStatus {
-        val granted =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                hasAll(arrayOf(
-                    Manifest.permission.BLUETOOTH_SCAN,
-                    Manifest.permission.BLUETOOTH_CONNECT
-                ))
-            } else {
-                ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) ==
-                        PackageManager.PERMISSION_GRANTED
-            }
-        return if (granted) PermissionStatus.Granted else PermissionStatus.Denied(canAskAgain = true)
+        val granted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            hasPermission(Manifest.permission.BLUETOOTH_SCAN) &&
+                    hasPermission(Manifest.permission.BLUETOOTH_CONNECT)
+        } else {
+            hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+        }
+        return if (granted) PermissionStatus.Granted else PermissionStatus.Denied(true)
     }
 
-    // ---- Notifications (API 33+) ----
     actual suspend fun ensureNotifications(): PermissionStatus {
         if (Build.VERSION.SDK_INT < 33) return PermissionStatus.Granted
-        val p = Manifest.permission.POST_NOTIFICATIONS
-        val granted = ActivityCompat.checkSelfPermission(activity, p) == PackageManager.PERMISSION_GRANTED
-        if (granted) return PermissionStatus.Granted
-
-        val ok = requestOne(p)
+        if (hasPermission(Manifest.permission.POST_NOTIFICATIONS)) return PermissionStatus.Granted
+        val ok = requestOne(Manifest.permission.POST_NOTIFICATIONS)
         return if (ok) PermissionStatus.Granted else PermissionStatus.Denied(canAskAgain = true)
     }
 
     actual suspend fun checkNotifications(): PermissionStatus {
         if (Build.VERSION.SDK_INT < 33) return PermissionStatus.Granted
-        val p = Manifest.permission.POST_NOTIFICATIONS
-        val granted = ActivityCompat.checkSelfPermission(activity, p) == PackageManager.PERMISSION_GRANTED
-        return if (granted) PermissionStatus.Granted else PermissionStatus.Denied(canAskAgain = true)
+        return if (hasPermission(Manifest.permission.POST_NOTIFICATIONS))
+            PermissionStatus.Granted else PermissionStatus.Denied(true)
     }
 
-    // ---- Location (opsiyonel) ----
     actual suspend fun ensureLocation(): PermissionStatus {
-        val perms = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION)
-        if (hasAll(perms)) return PermissionStatus.Granted
-        val ok = requestMultiple(perms)
+        val perm = Manifest.permission.ACCESS_FINE_LOCATION
+        if (hasPermission(perm)) return PermissionStatus.Granted
+        val ok = requestMultiple(arrayOf(perm))
         return if (ok) PermissionStatus.Granted else PermissionStatus.Denied(canAskAgain = true)
     }
 
     actual suspend fun checkLocation(): PermissionStatus {
-        val granted = ActivityCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION) ==
-                PackageManager.PERMISSION_GRANTED
-        return if (granted) PermissionStatus.Granted else PermissionStatus.Denied(canAskAgain = true)
+        val granted = hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)
+        return if (granted) PermissionStatus.Granted else PermissionStatus.Denied(true)
     }
 }

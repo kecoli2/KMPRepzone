@@ -32,6 +32,9 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+
+            //LIBS IMPORT
+            implementation(files("libs/ZSDK_ANDROID_API.jar"))
         }
         commonMain.dependencies {
             implementation(compose.runtime)
