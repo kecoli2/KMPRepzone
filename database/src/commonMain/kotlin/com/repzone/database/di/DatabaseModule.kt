@@ -10,5 +10,5 @@ val DatabaseModule = module {
 
     //DAO lar
     single { com.repzone.database.dao.OrderDao(get()) }
-
+    single { com.repzone.database.dao.OrderOutboxDao(get()) }
 }

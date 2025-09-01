@@ -32,7 +32,8 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
-
+            implementation(libs.ktor.client.okhttp)
+            implementation(libs.koin.android)
             //LIBS IMPORT
             implementation(files("libs/ZSDK_ANDROID_API.jar"))
         }
@@ -45,7 +46,9 @@ kotlin {
             implementation(compose.components.uiToolingPreview)
             implementation(libs.androidx.lifecycle.viewmodelCompose)
             implementation(libs.androidx.lifecycle.runtimeCompose)
-
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.koin.core)
+            implementation(libs.ktor.client.core)
             /// Shared Project Implementation
             implementation(project(":core"))
         }

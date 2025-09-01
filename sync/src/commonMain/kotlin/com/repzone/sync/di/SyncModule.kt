@@ -9,6 +9,7 @@ import org.koin.core.parameter.parametersOf
 import org.koin.dsl.module
 
 val SyncModule = module {
+
     // OrderSyncJob: HttpClient ve CoroutineScope parametre ile gelecek
     factory { (client: HttpClient, scope: CoroutineScope) ->
         val api = get<IOrderApi> { parametersOf(client) } // NetworkModule, client parametresi ister
