@@ -25,6 +25,7 @@ fun PermissionsSection() {
 
     var btStatus by remember { mutableStateOf<PermissionStatus?>(null) }
     var notifStatus by remember { mutableStateOf<PermissionStatus?>(null) }
+    var gpsStatus by remember { mutableStateOf<PermissionStatus?>(null) }
 
     // Buraya kendi buton/Metin tasarımını koy
     Button(onClick = {
@@ -35,11 +36,20 @@ fun PermissionsSection() {
         scope.launch { notifStatus = pm.ensureNotifications() }
     }) { Text("Bildirim izni iste") }
 
+    Button(onClick = {
+        scope.launch {
+            gpsStatus = pm.ensureLocation()
+        }
+    }) { Text("GPS izni iste") }
+
     // Basit durum çıktıları
     if (btStatus != null) {
         Text("Bluetooth: $btStatus")
     }
     if (notifStatus != null) {
         Text("Notifications: $notifStatus")
+    }
+    if(gpsStatus != null){
+        Text("GPS: $gpsStatus")
     }
 }

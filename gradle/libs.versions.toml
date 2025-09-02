@@ -45,6 +45,8 @@ firebase-bom      = "34.2.0"
 google-services   = "4.4.3"
 firebase-crash    = "3.0.6"
 
+# Google Play Services
+playServicesLocation = "21.3.0"
 
 
 [plugins]
@@ -73,7 +75,6 @@ kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-cor
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
-#koin-androidx-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = "koin" }
 
 # Ktor (common)
 ktor-client-core            = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -123,5 +124,8 @@ firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics" }
 firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging" }
 firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-database-ktx = { module = "com.google.firebase:firebase-database" }
+
+# Google Play Services
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 
 

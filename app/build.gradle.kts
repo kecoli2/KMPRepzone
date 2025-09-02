@@ -37,6 +37,10 @@ kotlin {
             implementation(libs.koin.android)
             //LIBS IMPORT
             implementation(files("libs/ZSDK_ANDROID_API.jar"))
+
+            //Google Play Service
+            implementation(libs.play.services.location)
+            implementation(libs.kotlinx.coroutines.play.services)
         }
         commonMain.dependencies {
             implementation(project.dependencies.platform(libs.compose.bom))

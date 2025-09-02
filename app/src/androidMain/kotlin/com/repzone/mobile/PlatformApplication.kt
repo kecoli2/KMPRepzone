@@ -5,6 +5,7 @@ import com.repzone.data.repository.di.RepositoryModule
 import com.repzone.database.di.DatabaseAndroidModule
 import com.repzone.database.di.DatabaseModule
 import com.repzone.firebase.di.FirebaseAndroidModule
+import com.repzone.mobile.di.AndroidLocationModule
 import com.repzone.network.di.NetworkModule
 import com.repzone.sync.di.SyncModule
 import io.ktor.client.HttpClient
@@ -36,7 +37,8 @@ class PlatformApplication: Application() {
                 DatabaseAndroidModule,
                 NetworkModule,
                 RepositoryModule,
-                SyncModule
+                SyncModule,
+                AndroidLocationModule
                 //PresentationModule
             )
         }

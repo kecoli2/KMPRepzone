@@ -27,6 +27,8 @@ import androidx.compose.ui.unit.dp
 import com.repzone.core.generated.resources.*
 import com.repzone.core.interfaces.IFireBaseRealtimeDatabase
 import com.repzone.core.interfaces.IFirebaseCrashService
+import com.repzone.core.interfaces.ILocationService
+import com.repzone.core.model.GeoPoint
 import com.repzone.core.util.PermissionStatus
 import com.repzone.mobile.compose.permissions.PermissionsSection
 import com.repzone.mobile.compose.permissions.rememberPermissionManager
@@ -49,13 +51,15 @@ fun App() {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         val iFirebaseCrashlytics = koinInject<IFirebaseCrashService>()
+        var showGpsContent by remember { mutableStateOf(false) }
+        var gpsData by remember { mutableStateOf<GeoPoint?>(null) }
+        val gpsService = koinInject<ILocationService>()
         val iFireBaseRealtimeDatabase = koinInject<IFireBaseRealtimeDatabase>()
         val scope = rememberCoroutineScope()
         val latest by remember(iFireBaseRealtimeDatabase) { iFireBaseRealtimeDatabase.observe("Test") }
             .collectAsState(initial = "Henüz yok")
 
-        Column(
-            modifier = Modifier
+        Column(modifier = Modifier
                 .background(MaterialTheme.colorScheme.primaryContainer)
                 .safeContentPadding()
                 .fillMaxSize(),
@@ -80,6 +84,19 @@ fun App() {
                     Image(painterResource(Res.drawable.compose_multiplatform), null)
                     Text("Compose: $greeting")
                 }
+            }
+            Button(onClick = {
+                scope.launch {
+                    gpsData = gpsService.getCurrentLocation()
+                    gpsData?.let {
+                        showGpsContent = true
+                    }
+                }
+            }){
+                Text("GPS Al")
+            }
+            AnimatedVisibility(visible = showGpsContent) {
+                Text("${gpsData?.latitude}, ${gpsData?.longitude}")
             }
             PermissionsSection()
             PrinterSection()
