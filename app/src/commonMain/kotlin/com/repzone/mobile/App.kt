@@ -24,6 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.repzone.core.util.IFireBaseRealtimeDatabase
+import com.repzone.core.util.IFirebaseCrashService
 import com.repzone.core.util.PermissionStatus
 import com.repzone.mobile.compose.permissions.PermissionsSection
 import com.repzone.mobile.compose.permissions.rememberPermissionManager
@@ -34,6 +36,7 @@ import com.repzone.mobile.printers.ZebraResult
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 
 import repzonemobile.app.generated.resources.Res
 import repzonemobile.app.generated.resources.compose_multiplatform
@@ -43,6 +46,12 @@ import repzonemobile.app.generated.resources.compose_multiplatform
 fun App() {
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
+        val iFirebaseCrashlytics = koinInject<IFirebaseCrashService>()
+        val iFireBaseRealtimeDatabase = koinInject<IFireBaseRealtimeDatabase>()
+        val scope = rememberCoroutineScope()
+        val latest by remember(iFireBaseRealtimeDatabase) { iFireBaseRealtimeDatabase.observe("Test") }
+            .collectAsState(initial = "Henüz yok")
+
         Column(
             modifier = Modifier
                 .background(MaterialTheme.colorScheme.primaryContainer)
@@ -50,7 +59,13 @@ fun App() {
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Button(onClick = { showContent = !showContent }) {
+            Text("Son değer: $latest")
+            Button(onClick = {
+                showContent = !showContent
+                scope.launch {
+                    iFireBaseRealtimeDatabase.set(path = "Test", value = "dsadsda")
+                }
+            }) {
                 Text("Click me! deneme22")
             }
             AnimatedVisibility(showContent) {

@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -10,7 +11,7 @@ kotlin {
     // which platforms this KMP module supports.
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
     androidLibrary {
-        namespace = "${providers.gradleProperty("APP_NAMESPACE_BASE").get()}." + providers.gradleProperty("APP_NAMESPACE_NETWORK").get()
+        namespace = "${providers.gradleProperty("APP_NAMESPACE_BASE").get()}." + providers.gradleProperty("APP_NAMESPACE_FIREBASE").get()
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
 
@@ -37,7 +38,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = providers.gradleProperty("APP_NAMESPACE_IOS_NETWORK").getOrElse("NetworkKit")
+            baseName = providers.gradleProperty("APP_NAMESPACE_IOS_FIREBASE").getOrElse("FirebaseKit")
         }
     }
 
@@ -49,17 +50,12 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
-                implementation(project(":core"))
                 implementation(libs.kotlin.stdlib)
+                // Add KMP dependencies here
                 implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.ktor.client.core)
-                implementation(libs.ktor.client.contentNeg)
-                implementation(libs.ktor.serialization.json)
-                implementation(libs.ktor.client.logging)
-                implementation(libs.ktor.client.auth)
-                                // DI
                 implementation(libs.koin.core)
-
+                implementation(libs.kotlinx.serialization.json)
+                implementation(project(":core"))
             }
         }
 
@@ -69,9 +65,20 @@ kotlin {
             }
         }
 
-        iosMain{
+        androidMain {
             dependencies {
-                implementation(libs.ktor.client.darwin)
+                // Add Android-specific dependencies here. Note that this source set depends on
+                // commonMain by default and will correctly pull the Android artifacts of any KMP
+                // dependencies declared in commonMain.
+
+                // Firebase Android SDK’ları app tarafında BOM ile de eklenebilir,
+                implementation(project.dependencies.platform(libs.firebase.bom))
+                implementation(libs.firebase.crashlytics.ktx)
+                implementation(libs.firebase.messaging.ktx)
+                implementation(libs.firebase.database.ktx)
+
+                // await() extension için:
+                implementation(libs.kotlinx.coroutines.play.services)
             }
         }
 
@@ -80,6 +87,16 @@ kotlin {
                 implementation(libs.androidx.runner)
                 implementation(libs.androidx.core)
                 implementation(libs.androidx.testExt.junit)
+            }
+        }
+
+        iosMain {
+            dependencies {
+                // Add iOS-specific dependencies here. This a source set created by Kotlin Gradle
+                // Plugin (KGP) that each specific iOS target (e.g., iosX64) depends on as
+                // part of KMP’s default source set hierarchy. Note that this source set depends
+                // on common by default and will correctly pull the iOS artifacts of any
+                // KMP dependencies declared in commonMain.
             }
         }
     }

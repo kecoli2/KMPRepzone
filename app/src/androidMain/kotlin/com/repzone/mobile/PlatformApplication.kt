@@ -4,16 +4,14 @@ import android.app.Application
 import com.repzone.data.repository.di.RepositoryModule
 import com.repzone.database.di.DatabaseAndroidModule
 import com.repzone.database.di.DatabaseModule
+import com.repzone.firebase.di.FirebaseAndroidModule
 import com.repzone.network.di.NetworkModule
 import com.repzone.sync.di.SyncModule
-import com.repzone.sync.job.OrderSyncJob
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
+import org.koin.core.context.loadKoinModules
 import org.koin.core.parameter.parametersOf
 import org.koin.java.KoinJavaComponent.getKoin
 
@@ -48,6 +46,7 @@ class PlatformApplication: Application() {
     /*    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
         val job: OrderSyncJob = getKoin().get { parametersOf(client, scope) }
         job.start()*/
+        loadKoinModules(FirebaseAndroidModule)
     }
     //endregion
 

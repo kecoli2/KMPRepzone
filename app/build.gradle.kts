@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -7,6 +6,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.googleServices)      // google-services.json için
+    alias(libs.plugins.firebaseCrashlytics) // Crashlytics Gradle plugin
 }
 
 kotlin {
@@ -38,6 +39,7 @@ kotlin {
             implementation(files("libs/ZSDK_ANDROID_API.jar"))
         }
         commonMain.dependencies {
+            implementation(project.dependencies.platform(libs.compose.bom))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -48,12 +50,16 @@ kotlin {
             implementation(libs.androidx.lifecycle.runtimeCompose)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.koin.core)
+            implementation(libs.koin.compose)
             implementation(libs.ktor.client.core)
             /// Shared Project Implementation
             implementation(project(":core"))
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
     }
 }
@@ -92,6 +98,7 @@ dependencies {
     implementation(project(":domain"))
     implementation(project(":data"))
     implementation(project(":sync"))
+    implementation(project(":firebase"))
     debugImplementation(compose.uiTooling)
 }
 
