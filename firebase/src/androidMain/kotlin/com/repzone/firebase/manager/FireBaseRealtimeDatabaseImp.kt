@@ -1,7 +1,7 @@
 package com.repzone.firebase.manager
 
 import com.google.firebase.database.FirebaseDatabase
-import com.repzone.core.util.IFireBaseRealtimeDatabase
+import com.repzone.core.interfaces.IFireBaseRealtimeDatabase
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.callbackFlow
 

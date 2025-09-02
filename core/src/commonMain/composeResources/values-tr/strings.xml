@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<resources>
+    <string name="app_name">Demo App Türkçe</string>
+    <string name="hello">Merhaba</string>
+    <string name="greet_name">Merhaba, %1$s!</string>
+    <string name="logout">Çıkış Yap</string>
+</resources>

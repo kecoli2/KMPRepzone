@@ -1,6 +1,6 @@
 package com.repzone.firebase.manager
 
-import com.repzone.core.util.IFirebaseCrashService
+import com.repzone.core.interfaces.IFirebaseCrashService
 import platform.Foundation.NSLog
 
 class FirebaseCrashServiceImp: IFirebaseCrashService {

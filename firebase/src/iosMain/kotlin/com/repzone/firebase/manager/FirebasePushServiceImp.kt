@@ -1,6 +1,6 @@
 package com.repzone.firebase.manager
 
-import com.repzone.core.util.IFirebasePushService
+import com.repzone.core.interfaces.IFirebasePushService
 
 class FirebasePushServiceImp: IFirebasePushService {
     //region Field

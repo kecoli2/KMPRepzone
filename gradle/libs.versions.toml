@@ -39,10 +39,13 @@ androidx-activity = "1.10.1"
 androidx-appcompat = "1.7.1"
 compose = "2025.08.01"
 
+
 # Firebase
 firebase-bom      = "34.2.0"
 google-services   = "4.4.3"
 firebase-crash    = "3.0.6"
+
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -105,6 +108,8 @@ compose-runtime     = { module = "org.jetbrains.compose.runtime:runtime", versio
 compose-foundation  = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "composeMultiplatform" }
 compose-material3   = { module = "org.jetbrains.compose.material3:material3", version.ref = "composeMultiplatform" }
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose" }
+compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
+
 
 # Kotlin
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -118,6 +123,5 @@ firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics" }
 firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging" }
 firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-database-ktx = { module = "com.google.firebase:firebase-database" }
-
 
 

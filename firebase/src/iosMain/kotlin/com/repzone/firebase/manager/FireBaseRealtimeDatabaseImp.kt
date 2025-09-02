@@ -1,6 +1,6 @@
 package com.repzone.firebase.manager
 
-import com.repzone.core.util.IFireBaseRealtimeDatabase
+import com.repzone.core.interfaces.IFireBaseRealtimeDatabase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.suspendCancellableCoroutine
 

@@ -1,4 +1,4 @@
-package com.repzone.core.util
+package com.repzone.core.interfaces
 
 import kotlinx.coroutines.flow.Flow
 

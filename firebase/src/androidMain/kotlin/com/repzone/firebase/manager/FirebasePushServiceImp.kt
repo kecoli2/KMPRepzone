@@ -1,6 +1,6 @@
 package com.repzone.firebase.manager
 
-import com.repzone.core.util.IFirebasePushService
+import com.repzone.core.interfaces.IFirebasePushService
 import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.tasks.await
 

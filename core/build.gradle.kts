@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
+    alias(libs.plugins.composeMultiplatform)
+    alias(libs.plugins.composeCompiler)
 }
 
 kotlin {
@@ -19,6 +21,10 @@ kotlin {
         }.configure {
             instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         }
+    }
+
+    androidLibrary {
+        androidResources.enable = true
     }
 
     // For iOS targets, this is also where you should
@@ -45,12 +51,20 @@ kotlin {
     sourceSets {
         commonMain {
             dependencies {
+                implementation(libs.compose.runtime)
                 implementation(libs.kotlin.stdlib)
                 implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotlinx.coroutines.core)
                 // Add KMP dependencies here
+
+                //Compose Resources
+                implementation(libs.compose.components.resources)
             }
         }
     }
+}
 
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "com.repzone.core.generated.resources"
 }

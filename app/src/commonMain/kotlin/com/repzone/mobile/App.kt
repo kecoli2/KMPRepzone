@@ -24,8 +24,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.repzone.core.util.IFireBaseRealtimeDatabase
-import com.repzone.core.util.IFirebaseCrashService
+import com.repzone.core.generated.resources.*
+import com.repzone.core.interfaces.IFireBaseRealtimeDatabase
+import com.repzone.core.interfaces.IFirebaseCrashService
 import com.repzone.core.util.PermissionStatus
 import com.repzone.mobile.compose.permissions.PermissionsSection
 import com.repzone.mobile.compose.permissions.rememberPermissionManager
@@ -35,6 +36,7 @@ import com.repzone.mobile.printers.ZebraPrinterManager
 import com.repzone.mobile.printers.ZebraResult
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 
@@ -60,6 +62,7 @@ fun App() {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text("Son değer: $latest")
+            Text(stringResource(com.repzone.core.generated.resources.Res.string.hello))
             Button(onClick = {
                 showContent = !showContent
                 scope.launch {

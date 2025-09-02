@@ -1,7 +1,7 @@
 package com.repzone.firebase.manager
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.repzone.core.util.IFirebaseCrashService
+import com.repzone.core.interfaces.IFirebaseCrashService
 
 class FirebaseCrashServiceImp: IFirebaseCrashService {
     //region Field

@@ -1,8 +1,8 @@
 package com.repzone.firebase.di
 
-import com.repzone.core.util.IFireBaseRealtimeDatabase
-import com.repzone.core.util.IFirebaseCrashService
-import com.repzone.core.util.IFirebasePushService
+import com.repzone.core.interfaces.IFireBaseRealtimeDatabase
+import com.repzone.core.interfaces.IFirebaseCrashService
+import com.repzone.core.interfaces.IFirebasePushService
 import com.repzone.firebase.manager.FireBaseRealtimeDatabaseImp
 import com.repzone.firebase.manager.FirebaseCrashServiceImp
 import com.repzone.firebase.manager.FirebasePushServiceImp
