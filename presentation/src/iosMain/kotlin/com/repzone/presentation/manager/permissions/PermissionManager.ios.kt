@@ -1,11 +1,10 @@
-package com.repzone.mobile.managers
+package com.repzone.presentation.manager
 
 import com.repzone.core.util.PermissionStatus
 import kotlinx.cinterop.*
 import platform.CoreBluetooth.*
 import platform.UserNotifications.*
 import platform.CoreLocation.*
-import platform.Foundation.*
 import platform.darwin.*
 import kotlin.coroutines.resume
 import kotlinx.coroutines.suspendCancellableCoroutine

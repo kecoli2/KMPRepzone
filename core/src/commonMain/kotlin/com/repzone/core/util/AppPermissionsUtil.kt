@@ -2,6 +2,7 @@ package com.repzone.core.util
 
 enum class AppPermission { Bluetooth, Notifications, Location }
 
+
 sealed class PermissionStatus {
     data object Granted : PermissionStatus()
     data class Denied(val canAskAgain: Boolean) : PermissionStatus()

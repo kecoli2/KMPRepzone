@@ -7,6 +7,7 @@ import com.repzone.database.di.DatabaseModule
 import com.repzone.firebase.di.FirebaseAndroidModule
 import com.repzone.mobile.di.AndroidLocationModule
 import com.repzone.network.di.NetworkModule
+import com.repzone.presentation.di.PresentationModule
 import com.repzone.sync.di.SyncModule
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
@@ -38,8 +39,8 @@ class PlatformApplication: Application() {
                 NetworkModule,
                 RepositoryModule,
                 SyncModule,
-                AndroidLocationModule
-                //PresentationModule
+                AndroidLocationModule,
+                PresentationModule
             )
         }
         val engine = OkHttp.create()

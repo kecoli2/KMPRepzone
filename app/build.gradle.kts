@@ -35,8 +35,6 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.ktor.client.okhttp)
             implementation(libs.koin.android)
-            //LIBS IMPORT
-            implementation(files("libs/ZSDK_ANDROID_API.jar"))
 
             //Google Play Service
             implementation(libs.play.services.location)
@@ -103,6 +101,7 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":sync"))
     implementation(project(":firebase"))
+    implementation(project(":presentation"))
     debugImplementation(compose.uiTooling)
 }
 

@@ -1,4 +1,4 @@
-package com.repzone.mobile.managers
+package com.repzone.presentation.manager
 
 import com.repzone.core.util.PermissionStatus
 
@@ -12,3 +12,4 @@ expect class PermissionManager {
     suspend fun checkNotifications(): PermissionStatus
     suspend fun checkLocation(): PermissionStatus
 }
+

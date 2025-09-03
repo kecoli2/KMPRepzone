@@ -1,4 +1,4 @@
-package com.repzone.mobile.printers
+package com.repzone.presentation.printers
 
 enum class Transport { TCP, Bluetooth }
 

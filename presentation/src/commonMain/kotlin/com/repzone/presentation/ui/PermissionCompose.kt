@@ -1,4 +1,4 @@
-package com.repzone.mobile.compose.permissions
+package com.repzone.presentation.ui
 
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -9,11 +9,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import com.repzone.core.util.PermissionStatus
-import com.repzone.mobile.managers.PermissionManager
+import com.repzone.presentation.manager.PermissionManager
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.ui.tooling.preview.Preview
 
-// ✨ Platforma göre oluşturulan manager’ı Compose içinde elde etmek için:
 @Composable
 expect fun rememberPermissionManager(): PermissionManager
 

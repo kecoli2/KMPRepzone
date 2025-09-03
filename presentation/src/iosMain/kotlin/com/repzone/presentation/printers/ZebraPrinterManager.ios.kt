@@ -1,11 +1,7 @@
-package com.repzone.mobile.printers
+package com.repzone.presentation.printers
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import platform.Foundation.NSError
-import platform.Foundation.NSString
-import platform.Foundation.dataUsingEncoding
-import platform.Foundation.NSUTF8StringEncoding
 
 
 actual class ZebraPrinterManager actual constructor() {

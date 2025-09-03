@@ -1,16 +1,14 @@
-package com.repzone.mobile.compose.permissions
+package com.repzone.presentation.ui
 
-import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.ActivityResultCaller
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
-import com.repzone.mobile.managers.PermissionManager
+
+import com.repzone.presentation.manager.PermissionManager
 
 @Composable
 actual fun rememberPermissionManager(): PermissionManager {

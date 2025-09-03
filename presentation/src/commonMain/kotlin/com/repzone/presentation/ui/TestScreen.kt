@@ -1,14 +1,23 @@
-package com.repzone.mobile
+package com.repzone.presentation.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeContentPadding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -19,79 +28,72 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import com.repzone.core.generated.resources.hello
 import com.repzone.core.interfaces.IFireBaseRealtimeDatabase
 import com.repzone.core.interfaces.IFirebaseCrashService
 import com.repzone.core.interfaces.ILocationService
 import com.repzone.core.model.GeoPoint
+import com.repzone.core.util.PermissionStatus
+import com.repzone.presentation.base.ViewModelHost
+import com.repzone.presentation.printers.PrintOptions
+import com.repzone.presentation.printers.Transport
+import com.repzone.presentation.printers.ZebraPrinterManager
+import com.repzone.presentation.printers.ZebraResult
+import com.repzone.presentation.viewmodel.TestScreenViewModel
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
-import repzonemobile.app.generated.resources.Res
-import repzonemobile.app.generated.resources.compose_multiplatform
+
 
 @Composable
-@Preview
-fun App() {
-    MaterialTheme {
-        var showContent by remember { mutableStateOf(false) }
-        val iFirebaseCrashlytics = koinInject<IFirebaseCrashService>()
-        var showGpsContent by remember { mutableStateOf(false) }
-        var gpsData by remember { mutableStateOf<GeoPoint?>(null) }
-        val gpsService = koinInject<ILocationService>()
-        val iFireBaseRealtimeDatabase = koinInject<IFireBaseRealtimeDatabase>()
-        val scope = rememberCoroutineScope()
-        val latest by remember(iFireBaseRealtimeDatabase) { iFireBaseRealtimeDatabase.observe("Test") }
-            .collectAsState(initial = "Henüz yok")
+fun TestScreen() = ViewModelHost<TestScreenViewModel> { vm ->
+    val state by vm.state.collectAsState()
+    var showContent by remember { mutableStateOf(false) }
+    val iFirebaseCrashlytics = koinInject<IFirebaseCrashService>()
+    var showGpsContent by remember { mutableStateOf(false) }
+    var gpsData by remember { mutableStateOf<GeoPoint?>(null) }
+    val gpsService = koinInject<ILocationService>()
+    val iFireBaseRealtimeDatabase = koinInject<IFireBaseRealtimeDatabase>()
+    val scope = rememberCoroutineScope()
+    val latest by remember(iFireBaseRealtimeDatabase) { iFireBaseRealtimeDatabase.observe("Test") }
+        .collectAsState(initial = "Henüz yok")
 
-        Column(modifier = Modifier
-                .background(MaterialTheme.colorScheme.primaryContainer)
-                .safeContentPadding()
-                .fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Text("Son değer: $latest")
-            Text(stringResource(com.repzone.core.generated.resources.Res.string.hello))
-            Button(onClick = {
-                showContent = !showContent
-                scope.launch {
-                    iFireBaseRealtimeDatabase.set(path = "Test", value = "dsadsda")
-                }
-            }) {
-                Text("Click me! deneme22")
+    Column(modifier = Modifier
+        .background(MaterialTheme.colorScheme.primaryContainer)
+        .safeContentPadding()
+        .fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Text("Son değer: $latest")
+        Text(stringResource(com.repzone.core.generated.resources.Res.string.hello))
+        Button(onClick = {
+            showContent = !showContent
+            scope.launch {
+                iFireBaseRealtimeDatabase.set(path = "Test", value = "dsadsda")
             }
-            AnimatedVisibility(showContent) {
-                val greeting = remember { Greeting().greet() }
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                ) {
-                    Image(painterResource(Res.drawable.compose_multiplatform), null)
-                    Text("Compose: $greeting")
-                }
-            }
-            Button(onClick = {
-                scope.launch {
-                    gpsData = gpsService.getCurrentLocation()
-                    gpsData?.let {
-                        showGpsContent = true
-                    }
-                }
-            }){
-                Text("GPS Al")
-            }
-            AnimatedVisibility(visible = showGpsContent) {
-                Text("${gpsData?.latitude}, ${gpsData?.longitude}")
-            }
-/*            PermissionsSection()
-            PrinterSection()*/
+        }) {
+            Text("Click me! deneme22")
         }
+        Button(onClick = {
+            scope.launch {
+                gpsData = gpsService.getCurrentLocation()
+                gpsData?.let {
+                    showGpsContent = true
+                }
+            }
+        }){
+            Text("GPS Al")
+        }
+        AnimatedVisibility(visible = showGpsContent) {
+            Text("${gpsData?.latitude}, ${gpsData?.longitude}")
+        }
+        PermissionsSection()
+        PrinterSection()
     }
 }
 
-/*
 @Composable
 fun PrinterSection(modifier: Modifier = Modifier) {
     val scope = rememberCoroutineScope()
@@ -209,4 +211,6 @@ fun PrinterSection(modifier: Modifier = Modifier) {
             Text(resultText!!, style = MaterialTheme.typography.bodyMedium)
         }
     }
-}*/
+}
+
+

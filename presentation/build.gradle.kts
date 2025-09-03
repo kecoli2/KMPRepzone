@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
+    alias(libs.plugins.composeCompiler)
 }
 
 kotlin {
@@ -51,7 +52,6 @@ kotlin {
             dependencies {
                 implementation(libs.kotlin.stdlib)
                 // Add KMP dependencies here
-                implementation(project(":domain"))
 
                 // Compose
                 implementation(libs.compose.runtime)
@@ -60,6 +60,10 @@ kotlin {
 
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
+                implementation(libs.compose.components.resources)
+
+                implementation(project(":core"))
+                implementation(project(":domain"))
             }
         }
 
@@ -71,9 +75,10 @@ kotlin {
 
         androidMain {
             dependencies {
-                // Add Android-specific dependencies here. Note that this source set depends on
-                // commonMain by default and will correctly pull the Android artifacts of any KMP
-                // dependencies declared in commonMain.
+                //LIBS IMPORT
+                implementation(files("libs/ZSDK_ANDROID_API.jar"))
+                implementation(libs.androidx.activity.compose)
+
             }
         }
 

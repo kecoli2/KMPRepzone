@@ -1,8 +1,8 @@
-package com.repzone.mobile.compose.permissions
+package com.repzone.presentation.ui
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import com.repzone.mobile.managers.PermissionManager
+import com.repzone.presentation.manager.PermissionManager
 
 @Composable
 actual fun rememberPermissionManager(): PermissionManager {

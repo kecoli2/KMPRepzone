@@ -1,4 +1,4 @@
-package com.repzone.mobile.printers
+package com.repzone.presentation.printers
 
 import com.zebra.sdk.comm.BluetoothConnection
 import com.zebra.sdk.comm.Connection
