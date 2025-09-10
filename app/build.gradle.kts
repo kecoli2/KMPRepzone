@@ -1,3 +1,4 @@
+import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -17,7 +18,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -39,6 +40,11 @@ kotlin {
             //Google Play Service
             implementation(libs.play.services.location)
             implementation(libs.kotlinx.coroutines.play.services)
+            implementation(libs.compose.ui.tooling.preview)
+          /*  androidLibrary {
+                experimentalProperties["android.experimental.kmp.enableAndroidResources"] = true
+            }*/
+
         }
         commonMain.dependencies {
             implementation(project.dependencies.platform(libs.compose.bom))
@@ -103,5 +109,6 @@ dependencies {
     implementation(project(":firebase"))
     implementation(project(":presentation"))
     debugImplementation(compose.uiTooling)
+    implementation(compose.preview)
 }
 

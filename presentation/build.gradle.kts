@@ -64,6 +64,7 @@ kotlin {
 
                 implementation(project(":core"))
                 implementation(project(":domain"))
+                implementation(project(":firebase"))
             }
         }
 

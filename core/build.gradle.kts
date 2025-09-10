@@ -25,6 +25,7 @@ kotlin {
 
     androidLibrary {
         androidResources.enable = true
+        experimentalProperties["android.experimental.kmp.enableAndroidResources"] = true
     }
 
     // For iOS targets, this is also where you should
@@ -67,4 +68,5 @@ kotlin {
 compose.resources {
     publicResClass = true
     packageOfResClass = "com.repzone.core.generated.resources"
+    generateResClass = always
 }

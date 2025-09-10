@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 
 class TestScreenViewModel(
     private val iLocationService: ILocationService,
-    private val iFireBaseRealtimeDatabase: IFireBaseRealtimeDatabase
+    val iFireBaseRealtimeDatabase: IFireBaseRealtimeDatabase
     ): BaseViewModel<TestScreenUiState, Nothing>(TestScreenUiState()) {
     //region Field
     //endregion

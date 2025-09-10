@@ -43,27 +43,26 @@ import com.repzone.presentation.printers.ZebraPrinterManager
 import com.repzone.presentation.printers.ZebraResult
 import com.repzone.presentation.viewmodel.TestScreenViewModel
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
-
+@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun TestScreen() = ViewModelHost<TestScreenViewModel> { vm ->
-    val state by vm.state.collectAsState()
     var showContent by remember { mutableStateOf(false) }
-    val iFirebaseCrashlytics = koinInject<IFirebaseCrashService>()
     var showGpsContent by remember { mutableStateOf(false) }
     var gpsData by remember { mutableStateOf<GeoPoint?>(null) }
     val gpsService = koinInject<ILocationService>()
-    val iFireBaseRealtimeDatabase = koinInject<IFireBaseRealtimeDatabase>()
     val scope = rememberCoroutineScope()
-    val latest by remember(iFireBaseRealtimeDatabase) { iFireBaseRealtimeDatabase.observe("Test") }
+    val latest by remember(vm.iFireBaseRealtimeDatabase) { vm.iFireBaseRealtimeDatabase.observe("Test") }
         .collectAsState(initial = "Henüz yok")
 
-    Column(modifier = Modifier
-        .background(MaterialTheme.colorScheme.primaryContainer)
-        .safeContentPadding()
-        .fillMaxSize(),
+    Column(
+        modifier = Modifier
+            .background(MaterialTheme.colorScheme.primaryContainer)
+            .safeContentPadding()
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Text("Son değer: $latest")
@@ -71,7 +70,7 @@ fun TestScreen() = ViewModelHost<TestScreenViewModel> { vm ->
         Button(onClick = {
             showContent = !showContent
             scope.launch {
-                iFireBaseRealtimeDatabase.set(path = "Test", value = "dsadsda")
+                vm.iFireBaseRealtimeDatabase.set(path = "Test", value = "dsadsda")
             }
         }) {
             Text("Click me! deneme22")
@@ -212,5 +211,3 @@ fun PrinterSection(modifier: Modifier = Modifier) {
         }
     }
 }
-
-

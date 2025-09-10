@@ -3,6 +3,7 @@ package com.repzone.firebase.manager
 import com.google.firebase.database.FirebaseDatabase
 import com.repzone.core.interfaces.IFireBaseRealtimeDatabase
 import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
 class FireBaseRealtimeDatabaseImp(private val db: FirebaseDatabase = FirebaseDatabase.getInstance()): IFireBaseRealtimeDatabase {
@@ -40,5 +41,19 @@ class FireBaseRealtimeDatabaseImp(private val db: FirebaseDatabase = FirebaseDat
 
     //region Private Method
     //endregion
+
+}
+
+class FireBaseRealtimeDatabaseImpFake(): IFireBaseRealtimeDatabase{
+    override suspend fun set(path: String, value: String?) {
+
+    }
+
+    override fun observe(path: String): Flow<String> {
+        return callbackFlow {
+            trySend("Fake")
+            awaitClose {  }
+        }
+    }
 
 }
