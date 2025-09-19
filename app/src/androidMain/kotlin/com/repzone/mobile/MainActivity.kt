@@ -50,6 +50,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/*
 @Composable
 @Preview
 fun AppAndroidPreview() {
@@ -72,4 +73,5 @@ fun AppAndroidPreview() {
     AppTheme { TestScreen() }
 }
 
+*/
 
