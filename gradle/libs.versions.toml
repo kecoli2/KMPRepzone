@@ -131,4 +131,3 @@ firebase-database-ktx = { module = "com.google.firebase:firebase-database" }
 # Google Play Services
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
 
-

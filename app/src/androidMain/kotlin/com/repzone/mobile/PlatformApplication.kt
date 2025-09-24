@@ -5,7 +5,9 @@ import com.repzone.data.repository.di.RepositoryModule
 import com.repzone.database.di.DatabaseAndroidModule
 import com.repzone.database.di.DatabaseModule
 import com.repzone.firebase.di.FirebaseAndroidModule
-import com.repzone.mobile.di.AndroidLocationModule
+import com.repzone.mobile.di.AndroidDIModule
+import com.repzone.network.api.IOrderApi
+import com.repzone.network.api.ITokenApiController
 import com.repzone.network.di.NetworkModule
 import com.repzone.presentation.di.PresentationModule
 import com.repzone.sync.di.SyncModule
@@ -31,6 +33,7 @@ class PlatformApplication: Application() {
     //region Public Method
     override fun onCreate() {
         super.onCreate()
+
         startKoin {
             androidContext(this@PlatformApplication)
             modules(
@@ -39,16 +42,21 @@ class PlatformApplication: Application() {
                 NetworkModule,
                 RepositoryModule,
                 SyncModule,
-                AndroidLocationModule,
-                PresentationModule
+                AndroidDIModule,
+                PresentationModule,
+                FirebaseAndroidModule
             )
         }
-        val engine = OkHttp.create()
-        val client: HttpClient = getKoin().get { parametersOf(engine, null) }
 
-    /*    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-        val job: OrderSyncJob = getKoin().get { parametersOf(client, scope) }
-        job.start()*/
+        val client: HttpClient = getKoin().get {
+            parametersOf(
+                { OkHttp.create { /* OkHttpConfig opsiyonel ayarlar */ } }, // 👈 engine **instance** üretir
+                null // veya getOrNull<TokenProvider>()
+            )
+        }
+
+        val orderApi: IOrderApi = getKoin().get { parametersOf(client) }
+        val tokenApi: ITokenApiController = getKoin().get { parametersOf(client) }
         loadKoinModules(FirebaseAndroidModule)
     }
     //endregion

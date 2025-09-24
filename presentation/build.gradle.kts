@@ -57,6 +57,7 @@ kotlin {
                 implementation(project(":core"))
                 implementation(project(":domain"))
                 implementation(project(":firebase"))
+                implementation(project(":network"))
             }
         }
 
@@ -68,7 +69,7 @@ kotlin {
 
             }
         }
-        
+
         iosMain {
             dependencies {
                 // Add iOS-specific dependencies here. This a source set created by Kotlin Gradle
