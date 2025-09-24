@@ -1,6 +1,6 @@
 ﻿-- SyncVisitActivityDefinitionEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncVisitActivityDefinitionModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncVisitActivityDefinitionEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -19,21 +19,28 @@ selectAllSyncVisitActivityDefinitionEntity:
 SELECT * FROM SyncVisitActivityDefinitionEntity;
 
 selectBySyncVisitActivityDefinitionEntityId:
-SELECT * FROM SyncVisitActivityDefinitionEntity WHERE Id = :Id;
+SELECT * FROM SyncVisitActivityDefinitionEntity WHERE Id = ?;
 
 insertSyncVisitActivityDefinitionEntity:
-INSERT INTO SyncVisitActivityDefinitionEntity (CustomerTags, RepresentativeTags, FormTags, Name, Descriptions, `Order`, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:CustomerTags, :RepresentativeTags, :FormTags, :Name, :Descriptions, :Order, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncVisitActivityDefinitionEntity
+VALUES ?;
 
 insertOrReplaceSyncVisitActivityDefinitionEntity:
-INSERT OR REPLACE INTO SyncVisitActivityDefinitionEntity (CustomerTags, RepresentativeTags, FormTags, Name, Descriptions, `Order`, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:CustomerTags, :RepresentativeTags, :FormTags, :Name, :Descriptions, :Order, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncVisitActivityDefinitionEntity
+VALUES ?;
 
 updateSyncVisitActivityDefinitionEntity:
-UPDATE SyncVisitActivityDefinitionEntity SET CustomerTags = :CustomerTags, RepresentativeTags = :RepresentativeTags, FormTags = :FormTags, Name = :Name, Descriptions = :Descriptions, `Order` = :Order, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE Id = :Id;
+UPDATE SyncVisitActivityDefinitionEntity SET
+    CustomerTags = ?,
+    RepresentativeTags = ?,
+    FormTags = ?,
+    Name = ?,
+    Descriptions = ?,
+    `Order` = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncVisitActivityDefinitionEntity:
-DELETE FROM SyncVisitActivityDefinitionEntity WHERE Id = :Id;
-
-deleteAllSyncVisitActivityDefinitionEntity:
-DELETE FROM SyncVisitActivityDefinitionEntity;
+DELETE FROM SyncVisitActivityDefinitionEntity WHERE Id = ?;

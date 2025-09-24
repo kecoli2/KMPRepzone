@@ -1,6 +1,6 @@
 ﻿-- SyncFeedbackListEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncFeedbackListModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncFeedbackListEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -23,21 +23,32 @@ selectAllSyncFeedbackListEntity:
 SELECT * FROM SyncFeedbackListEntity;
 
 selectBySyncFeedbackListEntityId:
-SELECT * FROM SyncFeedbackListEntity WHERE OrganizationId = :OrganizationId;
+SELECT * FROM SyncFeedbackListEntity WHERE Id = ?;
 
 insertSyncFeedbackListEntity:
-INSERT INTO SyncFeedbackListEntity (OrganizationId, OrganizationName, Message, UserId, UserName, CategoryId, CategoryName, LastFeedbackDate, ParentId, RootId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:OrganizationId, :OrganizationName, :Message, :UserId, :UserName, :CategoryId, :CategoryName, :LastFeedbackDate, :ParentId, :RootId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncFeedbackListEntity
+VALUES ?;
 
 insertOrReplaceSyncFeedbackListEntity:
-INSERT OR REPLACE INTO SyncFeedbackListEntity (OrganizationId, OrganizationName, Message, UserId, UserName, CategoryId, CategoryName, LastFeedbackDate, ParentId, RootId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:OrganizationId, :OrganizationName, :Message, :UserId, :UserName, :CategoryId, :CategoryName, :LastFeedbackDate, :ParentId, :RootId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncFeedbackListEntity
+VALUES ?;
 
 updateSyncFeedbackListEntity:
-UPDATE SyncFeedbackListEntity SET OrganizationId = :OrganizationId, OrganizationName = :OrganizationName, Message = :Message, UserId = :UserId, UserName = :UserName, CategoryId = :CategoryId, CategoryName = :CategoryName, LastFeedbackDate = :LastFeedbackDate, ParentId = :ParentId, RootId = :RootId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE OrganizationId = :OrganizationId;
+UPDATE SyncFeedbackListEntity SET
+    OrganizationId = ?,
+    OrganizationName = ?,
+    Message = ?,
+    UserId = ?,
+    UserName = ?,
+    CategoryId = ?,
+    CategoryName = ?,
+    LastFeedbackDate = ?,
+    ParentId = ?,
+    RootId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncFeedbackListEntity:
-DELETE FROM SyncFeedbackListEntity WHERE OrganizationId = :OrganizationId;
-
-deleteAllSyncFeedbackListEntity:
-DELETE FROM SyncFeedbackListEntity;
+DELETE FROM SyncFeedbackListEntity WHERE Id = ?;

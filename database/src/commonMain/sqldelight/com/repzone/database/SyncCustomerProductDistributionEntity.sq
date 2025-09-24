@@ -1,6 +1,6 @@
 ﻿-- SyncCustomerProductDistributionEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncCustomerProductDistributionModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncCustomerProductDistributionEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -20,21 +20,29 @@ selectAllSyncCustomerProductDistributionEntity:
 SELECT * FROM SyncCustomerProductDistributionEntity;
 
 selectBySyncCustomerProductDistributionEntityId:
-SELECT * FROM SyncCustomerProductDistributionEntity WHERE OrganizationId = :OrganizationId;
+SELECT * FROM SyncCustomerProductDistributionEntity WHERE Id = ?;
 
 insertSyncCustomerProductDistributionEntity:
-INSERT INTO SyncCustomerProductDistributionEntity (OrganizationId, ProductSalesDistributionListId, ProductSalesReturnDistributionListId, PriceSalesDistributionListId, PriceSalesReturnDistributionListId, PriceSalesDamagedListId, PricePurchaseReturnDamagedListId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:OrganizationId, :ProductSalesDistributionListId, :ProductSalesReturnDistributionListId, :PriceSalesDistributionListId, :PriceSalesReturnDistributionListId, :PriceSalesDamagedListId, :PricePurchaseReturnDamagedListId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncCustomerProductDistributionEntity
+VALUES ?;
 
 insertOrReplaceSyncCustomerProductDistributionEntity:
-INSERT OR REPLACE INTO SyncCustomerProductDistributionEntity (OrganizationId, ProductSalesDistributionListId, ProductSalesReturnDistributionListId, PriceSalesDistributionListId, PriceSalesReturnDistributionListId, PriceSalesDamagedListId, PricePurchaseReturnDamagedListId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:OrganizationId, :ProductSalesDistributionListId, :ProductSalesReturnDistributionListId, :PriceSalesDistributionListId, :PriceSalesReturnDistributionListId, :PriceSalesDamagedListId, :PricePurchaseReturnDamagedListId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncCustomerProductDistributionEntity
+VALUES ?;
 
 updateSyncCustomerProductDistributionEntity:
-UPDATE SyncCustomerProductDistributionEntity SET OrganizationId = :OrganizationId, ProductSalesDistributionListId = :ProductSalesDistributionListId, ProductSalesReturnDistributionListId = :ProductSalesReturnDistributionListId, PriceSalesDistributionListId = :PriceSalesDistributionListId, PriceSalesReturnDistributionListId = :PriceSalesReturnDistributionListId, PriceSalesDamagedListId = :PriceSalesDamagedListId, PricePurchaseReturnDamagedListId = :PricePurchaseReturnDamagedListId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE OrganizationId = :OrganizationId;
+UPDATE SyncCustomerProductDistributionEntity SET
+    OrganizationId = ?,
+    ProductSalesDistributionListId = ?,
+    ProductSalesReturnDistributionListId = ?,
+    PriceSalesDistributionListId = ?,
+    PriceSalesReturnDistributionListId = ?,
+    PriceSalesDamagedListId = ?,
+    PricePurchaseReturnDamagedListId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncCustomerProductDistributionEntity:
-DELETE FROM SyncCustomerProductDistributionEntity WHERE OrganizationId = :OrganizationId;
-
-deleteAllSyncCustomerProductDistributionEntity:
-DELETE FROM SyncCustomerProductDistributionEntity;
+DELETE FROM SyncCustomerProductDistributionEntity WHERE Id = ?;

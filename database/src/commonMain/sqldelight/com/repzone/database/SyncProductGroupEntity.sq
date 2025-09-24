@@ -1,6 +1,6 @@
 ﻿-- SyncProductGroupEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncProductGroupModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncProductGroupEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -19,21 +19,28 @@ selectAllSyncProductGroupEntity:
 SELECT * FROM SyncProductGroupEntity;
 
 selectBySyncProductGroupEntityId:
-SELECT * FROM SyncProductGroupEntity WHERE ParentId = :ParentId;
+SELECT * FROM SyncProductGroupEntity WHERE Id = ?;
 
 insertSyncProductGroupEntity:
-INSERT INTO SyncProductGroupEntity (ParentId, OrganizationId, Name, Shared, IconIndex, PhotoPath, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:ParentId, :OrganizationId, :Name, :Shared, :IconIndex, :PhotoPath, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncProductGroupEntity
+VALUES ?;
 
 insertOrReplaceSyncProductGroupEntity:
-INSERT OR REPLACE INTO SyncProductGroupEntity (ParentId, OrganizationId, Name, Shared, IconIndex, PhotoPath, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:ParentId, :OrganizationId, :Name, :Shared, :IconIndex, :PhotoPath, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncProductGroupEntity
+VALUES ?;
 
 updateSyncProductGroupEntity:
-UPDATE SyncProductGroupEntity SET ParentId = :ParentId, OrganizationId = :OrganizationId, Name = :Name, Shared = :Shared, IconIndex = :IconIndex, PhotoPath = :PhotoPath, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE ParentId = :ParentId;
+UPDATE SyncProductGroupEntity SET
+    ParentId = ?,
+    OrganizationId = ?,
+    Name = ?,
+    Shared = ?,
+    IconIndex = ?,
+    PhotoPath = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncProductGroupEntity:
-DELETE FROM SyncProductGroupEntity WHERE ParentId = :ParentId;
-
-deleteAllSyncProductGroupEntity:
-DELETE FROM SyncProductGroupEntity;
+DELETE FROM SyncProductGroupEntity WHERE Id = ?;

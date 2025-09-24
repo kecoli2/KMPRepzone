@@ -1,6 +1,6 @@
 ﻿-- SyncCampaignMasterRuleEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncCampaignMasterRule
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncCampaignMasterRuleEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -18,21 +18,27 @@ selectAllSyncCampaignMasterRuleEntity:
 SELECT * FROM SyncCampaignMasterRuleEntity;
 
 selectBySyncCampaignMasterRuleEntityId:
-SELECT * FROM SyncCampaignMasterRuleEntity WHERE CampaignMasterId = :CampaignMasterId;
+SELECT * FROM SyncCampaignMasterRuleEntity WHERE Id = ?;
 
 insertSyncCampaignMasterRuleEntity:
-INSERT INTO SyncCampaignMasterRuleEntity (CampaignMasterId, IsOr, Property, Operator, Discover, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:CampaignMasterId, :IsOr, :Property, :Operator, :Discover, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncCampaignMasterRuleEntity
+VALUES ?;
 
 insertOrReplaceSyncCampaignMasterRuleEntity:
-INSERT OR REPLACE INTO SyncCampaignMasterRuleEntity (CampaignMasterId, IsOr, Property, Operator, Discover, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:CampaignMasterId, :IsOr, :Property, :Operator, :Discover, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncCampaignMasterRuleEntity
+VALUES ?;
 
 updateSyncCampaignMasterRuleEntity:
-UPDATE SyncCampaignMasterRuleEntity SET CampaignMasterId = :CampaignMasterId, IsOr = :IsOr, Property = :Property, Operator = :Operator, Discover = :Discover, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE CampaignMasterId = :CampaignMasterId;
+UPDATE SyncCampaignMasterRuleEntity SET
+    CampaignMasterId = ?,
+    IsOr = ?,
+    Property = ?,
+    Operator = ?,
+    Discover = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncCampaignMasterRuleEntity:
-DELETE FROM SyncCampaignMasterRuleEntity WHERE CampaignMasterId = :CampaignMasterId;
-
-deleteAllSyncCampaignMasterRuleEntity:
-DELETE FROM SyncCampaignMasterRuleEntity;
+DELETE FROM SyncCampaignMasterRuleEntity WHERE Id = ?;

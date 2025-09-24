@@ -1,6 +1,6 @@
 ﻿-- SyncStockEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncStockModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncStockEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -18,21 +18,27 @@ selectAllSyncStockEntity:
 SELECT * FROM SyncStockEntity;
 
 selectBySyncStockEntityId:
-SELECT * FROM SyncStockEntity WHERE OrganizationId = :OrganizationId;
+SELECT * FROM SyncStockEntity WHERE Id = ?;
 
 insertSyncStockEntity:
-INSERT INTO SyncStockEntity (OrganizationId, ProductId, UnitId, Stock, OrderStock, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:OrganizationId, :ProductId, :UnitId, :Stock, :OrderStock, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncStockEntity
+VALUES ?;
 
 insertOrReplaceSyncStockEntity:
-INSERT OR REPLACE INTO SyncStockEntity (OrganizationId, ProductId, UnitId, Stock, OrderStock, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:OrganizationId, :ProductId, :UnitId, :Stock, :OrderStock, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncStockEntity
+VALUES ?;
 
 updateSyncStockEntity:
-UPDATE SyncStockEntity SET OrganizationId = :OrganizationId, ProductId = :ProductId, UnitId = :UnitId, Stock = :Stock, OrderStock = :OrderStock, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE OrganizationId = :OrganizationId;
+UPDATE SyncStockEntity SET
+    OrganizationId = ?,
+    ProductId = ?,
+    UnitId = ?,
+    Stock = ?,
+    OrderStock = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncStockEntity:
-DELETE FROM SyncStockEntity WHERE OrganizationId = :OrganizationId;
-
-deleteAllSyncStockEntity:
-DELETE FROM SyncStockEntity;
+DELETE FROM SyncStockEntity WHERE Id = ?;

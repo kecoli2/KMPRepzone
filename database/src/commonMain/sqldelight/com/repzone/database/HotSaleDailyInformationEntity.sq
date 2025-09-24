@@ -1,6 +1,6 @@
 ﻿-- HotSaleDailyInformationEntity SQLDelight dosyası
 -- Orijinal tablo: HotSaleDailyInformation
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS HotSaleDailyInformationEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -13,21 +13,22 @@ selectAllHotSaleDailyInformationEntity:
 SELECT * FROM HotSaleDailyInformationEntity;
 
 selectByHotSaleDailyInformationEntityId:
-SELECT * FROM HotSaleDailyInformationEntity WHERE Id = :Id;
+SELECT * FROM HotSaleDailyInformationEntity WHERE Id = ?;
 
 insertHotSaleDailyInformationEntity:
-INSERT INTO HotSaleDailyInformationEntity (OperationDay, OperationTimeStamp, OperationType)
-VALUES (:OperationDay, :OperationTimeStamp, :OperationType);
+INSERT INTO HotSaleDailyInformationEntity
+VALUES ?;
 
 insertOrReplaceHotSaleDailyInformationEntity:
-INSERT OR REPLACE INTO HotSaleDailyInformationEntity (OperationDay, OperationTimeStamp, OperationType)
-VALUES (:OperationDay, :OperationTimeStamp, :OperationType);
+INSERT OR REPLACE INTO HotSaleDailyInformationEntity
+VALUES ?;
 
 updateHotSaleDailyInformationEntity:
-UPDATE HotSaleDailyInformationEntity SET OperationDay = :OperationDay, OperationTimeStamp = :OperationTimeStamp, OperationType = :OperationType WHERE Id = :Id;
+UPDATE HotSaleDailyInformationEntity SET
+    OperationDay = ?,
+    OperationTimeStamp = ?,
+    OperationType = ?
+WHERE Id = ?;
 
 deleteHotSaleDailyInformationEntity:
-DELETE FROM HotSaleDailyInformationEntity WHERE Id = :Id;
-
-deleteAllHotSaleDailyInformationEntity:
-DELETE FROM HotSaleDailyInformationEntity;
+DELETE FROM HotSaleDailyInformationEntity WHERE Id = ?;

@@ -1,6 +1,6 @@
 ﻿-- SyncTaskEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncTaskModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncTaskEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -25,21 +25,34 @@ selectAllSyncTaskEntity:
 SELECT * FROM SyncTaskEntity;
 
 selectBySyncTaskEntityId:
-SELECT * FROM SyncTaskEntity WHERE OrganizationId = :OrganizationId;
+SELECT * FROM SyncTaskEntity WHERE Id = ?;
 
 insertSyncTaskEntity:
-INSERT INTO SyncTaskEntity (OrganizationId, Title, BeginDate, EndDate, Note, Status, TargetType, TargetTags, TargetGroupId, Target, Customers, TaskSource, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:OrganizationId, :Title, :BeginDate, :EndDate, :Note, :Status, :TargetType, :TargetTags, :TargetGroupId, :Target, :Customers, :TaskSource, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncTaskEntity
+VALUES ?;
 
 insertOrReplaceSyncTaskEntity:
-INSERT OR REPLACE INTO SyncTaskEntity (OrganizationId, Title, BeginDate, EndDate, Note, Status, TargetType, TargetTags, TargetGroupId, Target, Customers, TaskSource, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:OrganizationId, :Title, :BeginDate, :EndDate, :Note, :Status, :TargetType, :TargetTags, :TargetGroupId, :Target, :Customers, :TaskSource, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncTaskEntity
+VALUES ?;
 
 updateSyncTaskEntity:
-UPDATE SyncTaskEntity SET OrganizationId = :OrganizationId, Title = :Title, BeginDate = :BeginDate, EndDate = :EndDate, Note = :Note, Status = :Status, TargetType = :TargetType, TargetTags = :TargetTags, TargetGroupId = :TargetGroupId, Target = :Target, Customers = :Customers, TaskSource = :TaskSource, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE OrganizationId = :OrganizationId;
+UPDATE SyncTaskEntity SET
+    OrganizationId = ?,
+    Title = ?,
+    BeginDate = ?,
+    EndDate = ?,
+    Note = ?,
+    Status = ?,
+    TargetType = ?,
+    TargetTags = ?,
+    TargetGroupId = ?,
+    Target = ?,
+    Customers = ?,
+    TaskSource = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncTaskEntity:
-DELETE FROM SyncTaskEntity WHERE OrganizationId = :OrganizationId;
-
-deleteAllSyncTaskEntity:
-DELETE FROM SyncTaskEntity;
+DELETE FROM SyncTaskEntity WHERE Id = ?;

@@ -1,6 +1,6 @@
 ﻿-- SyncProductPriceLinesEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncProductPriceLines
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncProductPriceLinesEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -18,21 +18,27 @@ selectAllSyncProductPriceLinesEntity:
 SELECT * FROM SyncProductPriceLinesEntity;
 
 selectBySyncProductPriceLinesEntityId:
-SELECT * FROM SyncProductPriceLinesEntity WHERE PriceListId = :PriceListId;
+SELECT * FROM SyncProductPriceLinesEntity WHERE Id = ?;
 
 insertSyncProductPriceLinesEntity:
-INSERT INTO SyncProductPriceLinesEntity (PriceListId, ProductId, ProductUnitId, Price, Vat, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:PriceListId, :ProductId, :ProductUnitId, :Price, :Vat, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncProductPriceLinesEntity
+VALUES ?;
 
 insertOrReplaceSyncProductPriceLinesEntity:
-INSERT OR REPLACE INTO SyncProductPriceLinesEntity (PriceListId, ProductId, ProductUnitId, Price, Vat, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:PriceListId, :ProductId, :ProductUnitId, :Price, :Vat, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncProductPriceLinesEntity
+VALUES ?;
 
 updateSyncProductPriceLinesEntity:
-UPDATE SyncProductPriceLinesEntity SET PriceListId = :PriceListId, ProductId = :ProductId, ProductUnitId = :ProductUnitId, Price = :Price, Vat = :Vat, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE PriceListId = :PriceListId;
+UPDATE SyncProductPriceLinesEntity SET
+    PriceListId = ?,
+    ProductId = ?,
+    ProductUnitId = ?,
+    Price = ?,
+    Vat = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncProductPriceLinesEntity:
-DELETE FROM SyncProductPriceLinesEntity WHERE PriceListId = :PriceListId;
-
-deleteAllSyncProductPriceLinesEntity:
-DELETE FROM SyncProductPriceLinesEntity;
+DELETE FROM SyncProductPriceLinesEntity WHERE Id = ?;

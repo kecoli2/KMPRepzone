@@ -1,6 +1,6 @@
 ﻿-- SyncCustomerCategoryClassificationEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncCustomerCategoryClassificationModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncCustomerCategoryClassificationEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -18,21 +18,27 @@ selectAllSyncCustomerCategoryClassificationEntity:
 SELECT * FROM SyncCustomerCategoryClassificationEntity;
 
 selectBySyncCustomerCategoryClassificationEntityId:
-SELECT * FROM SyncCustomerCategoryClassificationEntity WHERE ClassificationId = :ClassificationId;
+SELECT * FROM SyncCustomerCategoryClassificationEntity WHERE Id = ?;
 
 insertSyncCustomerCategoryClassificationEntity:
-INSERT INTO SyncCustomerCategoryClassificationEntity (ClassificationId, ClassificationName, CustomerId, OrganizationId, ShareStatus, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:ClassificationId, :ClassificationName, :CustomerId, :OrganizationId, :ShareStatus, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncCustomerCategoryClassificationEntity
+VALUES ?;
 
 insertOrReplaceSyncCustomerCategoryClassificationEntity:
-INSERT OR REPLACE INTO SyncCustomerCategoryClassificationEntity (ClassificationId, ClassificationName, CustomerId, OrganizationId, ShareStatus, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:ClassificationId, :ClassificationName, :CustomerId, :OrganizationId, :ShareStatus, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncCustomerCategoryClassificationEntity
+VALUES ?;
 
 updateSyncCustomerCategoryClassificationEntity:
-UPDATE SyncCustomerCategoryClassificationEntity SET ClassificationId = :ClassificationId, ClassificationName = :ClassificationName, CustomerId = :CustomerId, OrganizationId = :OrganizationId, ShareStatus = :ShareStatus, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE ClassificationId = :ClassificationId;
+UPDATE SyncCustomerCategoryClassificationEntity SET
+    ClassificationId = ?,
+    ClassificationName = ?,
+    CustomerId = ?,
+    OrganizationId = ?,
+    ShareStatus = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncCustomerCategoryClassificationEntity:
-DELETE FROM SyncCustomerCategoryClassificationEntity WHERE ClassificationId = :ClassificationId;
-
-deleteAllSyncCustomerCategoryClassificationEntity:
-DELETE FROM SyncCustomerCategoryClassificationEntity;
+DELETE FROM SyncCustomerCategoryClassificationEntity WHERE Id = ?;

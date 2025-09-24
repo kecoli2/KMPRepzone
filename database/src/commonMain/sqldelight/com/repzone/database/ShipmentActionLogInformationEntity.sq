@@ -1,6 +1,6 @@
 ﻿-- ShipmentActionLogInformationEntity SQLDelight dosyası
 -- Orijinal tablo: ShipmentActionLogInformation
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS ShipmentActionLogInformationEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -16,21 +16,25 @@ selectAllShipmentActionLogInformationEntity:
 SELECT * FROM ShipmentActionLogInformationEntity;
 
 selectByShipmentActionLogInformationEntityId:
-SELECT * FROM ShipmentActionLogInformationEntity WHERE Id = :Id;
+SELECT * FROM ShipmentActionLogInformationEntity WHERE Id = ?;
 
 insertShipmentActionLogInformationEntity:
-INSERT INTO ShipmentActionLogInformationEntity (ShippingPlanId, ShippingDocumentId, ReasonId, ActionType, ActionDate, Description)
-VALUES (:ShippingPlanId, :ShippingDocumentId, :ReasonId, :ActionType, :ActionDate, :Description);
+INSERT INTO ShipmentActionLogInformationEntity
+VALUES ?;
 
 insertOrReplaceShipmentActionLogInformationEntity:
-INSERT OR REPLACE INTO ShipmentActionLogInformationEntity (ShippingPlanId, ShippingDocumentId, ReasonId, ActionType, ActionDate, Description)
-VALUES (:ShippingPlanId, :ShippingDocumentId, :ReasonId, :ActionType, :ActionDate, :Description);
+INSERT OR REPLACE INTO ShipmentActionLogInformationEntity
+VALUES ?;
 
 updateShipmentActionLogInformationEntity:
-UPDATE ShipmentActionLogInformationEntity SET ShippingPlanId = :ShippingPlanId, ShippingDocumentId = :ShippingDocumentId, ReasonId = :ReasonId, ActionType = :ActionType, ActionDate = :ActionDate, Description = :Description WHERE Id = :Id;
+UPDATE ShipmentActionLogInformationEntity SET
+    ShippingPlanId = ?,
+    ShippingDocumentId = ?,
+    ReasonId = ?,
+    ActionType = ?,
+    ActionDate = ?,
+    Description = ?
+WHERE Id = ?;
 
 deleteShipmentActionLogInformationEntity:
-DELETE FROM ShipmentActionLogInformationEntity WHERE Id = :Id;
-
-deleteAllShipmentActionLogInformationEntity:
-DELETE FROM ShipmentActionLogInformationEntity;
+DELETE FROM ShipmentActionLogInformationEntity WHERE Id = ?;

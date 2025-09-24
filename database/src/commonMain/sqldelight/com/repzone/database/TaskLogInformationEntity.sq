@@ -1,6 +1,6 @@
 ﻿-- TaskLogInformationEntity SQLDelight dosyası
 -- Orijinal tablo: TaskLogInformation
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS TaskLogInformationEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -24,21 +24,33 @@ selectAllTaskLogInformationEntity:
 SELECT * FROM TaskLogInformationEntity;
 
 selectByTaskLogInformationEntityId:
-SELECT * FROM TaskLogInformationEntity WHERE Id = :Id;
+SELECT * FROM TaskLogInformationEntity WHERE Id = ?;
 
 insertTaskLogInformationEntity:
-INSERT INTO TaskLogInformationEntity (TaskId, StepId, Latitude, Longitude, FormId, FileUrl, Date, Status, Note, CustomerId, VisitId, VisitUniqueId, UniqueId, FormDataUniqueId)
-VALUES (:TaskId, :StepId, :Latitude, :Longitude, :FormId, :FileUrl, :Date, :Status, :Note, :CustomerId, :VisitId, :VisitUniqueId, :UniqueId, :FormDataUniqueId);
+INSERT INTO TaskLogInformationEntity
+VALUES ?;
 
 insertOrReplaceTaskLogInformationEntity:
-INSERT OR REPLACE INTO TaskLogInformationEntity (TaskId, StepId, Latitude, Longitude, FormId, FileUrl, Date, Status, Note, CustomerId, VisitId, VisitUniqueId, UniqueId, FormDataUniqueId)
-VALUES (:TaskId, :StepId, :Latitude, :Longitude, :FormId, :FileUrl, :Date, :Status, :Note, :CustomerId, :VisitId, :VisitUniqueId, :UniqueId, :FormDataUniqueId);
+INSERT OR REPLACE INTO TaskLogInformationEntity
+VALUES ?;
 
 updateTaskLogInformationEntity:
-UPDATE TaskLogInformationEntity SET TaskId = :TaskId, StepId = :StepId, Latitude = :Latitude, Longitude = :Longitude, FormId = :FormId, FileUrl = :FileUrl, Date = :Date, Status = :Status, Note = :Note, CustomerId = :CustomerId, VisitId = :VisitId, VisitUniqueId = :VisitUniqueId, UniqueId = :UniqueId, FormDataUniqueId = :FormDataUniqueId WHERE Id = :Id;
+UPDATE TaskLogInformationEntity SET
+    TaskId = ?,
+    StepId = ?,
+    Latitude = ?,
+    Longitude = ?,
+    FormId = ?,
+    FileUrl = ?,
+    Date = ?,
+    Status = ?,
+    Note = ?,
+    CustomerId = ?,
+    VisitId = ?,
+    VisitUniqueId = ?,
+    UniqueId = ?,
+    FormDataUniqueId = ?
+WHERE Id = ?;
 
 deleteTaskLogInformationEntity:
-DELETE FROM TaskLogInformationEntity WHERE Id = :Id;
-
-deleteAllTaskLogInformationEntity:
-DELETE FROM TaskLogInformationEntity;
+DELETE FROM TaskLogInformationEntity WHERE Id = ?;

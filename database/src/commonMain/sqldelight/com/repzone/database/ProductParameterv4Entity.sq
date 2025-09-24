@@ -1,6 +1,6 @@
 ﻿-- ProductParameterv4Entity SQLDelight dosyası
 -- Orijinal tablo: MobileProductParameterv4
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:18
 
 CREATE TABLE IF NOT EXISTS ProductParameterv4Entity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -19,21 +19,28 @@ selectAllProductParameterv4Entity:
 SELECT * FROM ProductParameterv4Entity;
 
 selectByProductParameterv4EntityId:
-SELECT * FROM ProductParameterv4Entity WHERE ProductId = :ProductId;
+SELECT * FROM ProductParameterv4Entity WHERE Id = ?;
 
 insertProductParameterv4Entity:
-INSERT INTO ProductParameterv4Entity (ProductId, OrganizationId, `Order`, EdiCode, IsVisible, Color, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:ProductId, :OrganizationId, :Order, :EdiCode, :IsVisible, :Color, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO ProductParameterv4Entity
+VALUES ?;
 
 insertOrReplaceProductParameterv4Entity:
-INSERT OR REPLACE INTO ProductParameterv4Entity (ProductId, OrganizationId, `Order`, EdiCode, IsVisible, Color, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:ProductId, :OrganizationId, :Order, :EdiCode, :IsVisible, :Color, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO ProductParameterv4Entity
+VALUES ?;
 
 updateProductParameterv4Entity:
-UPDATE ProductParameterv4Entity SET ProductId = :ProductId, OrganizationId = :OrganizationId, `Order` = :Order, EdiCode = :EdiCode, IsVisible = :IsVisible, Color = :Color, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE ProductId = :ProductId;
+UPDATE ProductParameterv4Entity SET
+    ProductId = ?,
+    OrganizationId = ?,
+    `Order` = ?,
+    EdiCode = ?,
+    IsVisible = ?,
+    Color = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteProductParameterv4Entity:
-DELETE FROM ProductParameterv4Entity WHERE ProductId = :ProductId;
-
-deleteAllProductParameterv4Entity:
-DELETE FROM ProductParameterv4Entity;
+DELETE FROM ProductParameterv4Entity WHERE Id = ?;

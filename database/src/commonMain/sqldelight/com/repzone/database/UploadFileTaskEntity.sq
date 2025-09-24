@@ -1,6 +1,6 @@
 ﻿-- UploadFileTaskEntity SQLDelight dosyası
 -- Orijinal tablo: UploadFileTask
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS UploadFileTaskEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -14,21 +14,23 @@ selectAllUploadFileTaskEntity:
 SELECT * FROM UploadFileTaskEntity;
 
 selectByUploadFileTaskEntityId:
-SELECT * FROM UploadFileTaskEntity WHERE Id = :Id;
+SELECT * FROM UploadFileTaskEntity WHERE Id = ?;
 
 insertUploadFileTaskEntity:
-INSERT INTO UploadFileTaskEntity (FilePath, AzurePath, Status, StoreFileName)
-VALUES (:FilePath, :AzurePath, :Status, :StoreFileName);
+INSERT INTO UploadFileTaskEntity
+VALUES ?;
 
 insertOrReplaceUploadFileTaskEntity:
-INSERT OR REPLACE INTO UploadFileTaskEntity (FilePath, AzurePath, Status, StoreFileName)
-VALUES (:FilePath, :AzurePath, :Status, :StoreFileName);
+INSERT OR REPLACE INTO UploadFileTaskEntity
+VALUES ?;
 
 updateUploadFileTaskEntity:
-UPDATE UploadFileTaskEntity SET FilePath = :FilePath, AzurePath = :AzurePath, Status = :Status, StoreFileName = :StoreFileName WHERE Id = :Id;
+UPDATE UploadFileTaskEntity SET
+    FilePath = ?,
+    AzurePath = ?,
+    Status = ?,
+    StoreFileName = ?
+WHERE Id = ?;
 
 deleteUploadFileTaskEntity:
-DELETE FROM UploadFileTaskEntity WHERE Id = :Id;
-
-deleteAllUploadFileTaskEntity:
-DELETE FROM UploadFileTaskEntity;
+DELETE FROM UploadFileTaskEntity WHERE Id = ?;

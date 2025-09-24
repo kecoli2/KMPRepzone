@@ -1,6 +1,6 @@
 ﻿-- SyncDocumentMapProcessStepEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncDocumentMapProcessStepModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncDocumentMapProcessStepEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -15,21 +15,24 @@ selectAllSyncDocumentMapProcessStepEntity:
 SELECT * FROM SyncDocumentMapProcessStepEntity;
 
 selectBySyncDocumentMapProcessStepEntityId:
-SELECT * FROM SyncDocumentMapProcessStepEntity WHERE Id = :Id;
+SELECT * FROM SyncDocumentMapProcessStepEntity WHERE Id = ?;
 
 insertSyncDocumentMapProcessStepEntity:
-INSERT INTO SyncDocumentMapProcessStepEntity (ProcessId, Name, ObjectName, StepOrder, State)
-VALUES (:ProcessId, :Name, :ObjectName, :StepOrder, :State);
+INSERT INTO SyncDocumentMapProcessStepEntity
+VALUES ?;
 
 insertOrReplaceSyncDocumentMapProcessStepEntity:
-INSERT OR REPLACE INTO SyncDocumentMapProcessStepEntity (ProcessId, Name, ObjectName, StepOrder, State)
-VALUES (:ProcessId, :Name, :ObjectName, :StepOrder, :State);
+INSERT OR REPLACE INTO SyncDocumentMapProcessStepEntity
+VALUES ?;
 
 updateSyncDocumentMapProcessStepEntity:
-UPDATE SyncDocumentMapProcessStepEntity SET ProcessId = :ProcessId, Name = :Name, ObjectName = :ObjectName, StepOrder = :StepOrder, State = :State WHERE Id = :Id;
+UPDATE SyncDocumentMapProcessStepEntity SET
+    ProcessId = ?,
+    Name = ?,
+    ObjectName = ?,
+    StepOrder = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncDocumentMapProcessStepEntity:
-DELETE FROM SyncDocumentMapProcessStepEntity WHERE Id = :Id;
-
-deleteAllSyncDocumentMapProcessStepEntity:
-DELETE FROM SyncDocumentMapProcessStepEntity;
+DELETE FROM SyncDocumentMapProcessStepEntity WHERE Id = ?;

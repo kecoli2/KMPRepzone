@@ -1,6 +1,6 @@
 ﻿-- FormHotSaleDailyOperationInformationEntity SQLDelight dosyası
 -- Orijinal tablo: FormHotSaleDailyOperationInformation
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS FormHotSaleDailyOperationInformationEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -14,21 +14,23 @@ selectAllFormHotSaleDailyOperationInformationEntity:
 SELECT * FROM FormHotSaleDailyOperationInformationEntity;
 
 selectByFormHotSaleDailyOperationInformationEntityId:
-SELECT * FROM FormHotSaleDailyOperationInformationEntity WHERE Id = :Id;
+SELECT * FROM FormHotSaleDailyOperationInformationEntity WHERE Id = ?;
 
 insertFormHotSaleDailyOperationInformationEntity:
-INSERT INTO FormHotSaleDailyOperationInformationEntity (OperationDay, HotSaleDailyInformationId, FormId, LogTimeStamp)
-VALUES (:OperationDay, :HotSaleDailyInformationId, :FormId, :LogTimeStamp);
+INSERT INTO FormHotSaleDailyOperationInformationEntity
+VALUES ?;
 
 insertOrReplaceFormHotSaleDailyOperationInformationEntity:
-INSERT OR REPLACE INTO FormHotSaleDailyOperationInformationEntity (OperationDay, HotSaleDailyInformationId, FormId, LogTimeStamp)
-VALUES (:OperationDay, :HotSaleDailyInformationId, :FormId, :LogTimeStamp);
+INSERT OR REPLACE INTO FormHotSaleDailyOperationInformationEntity
+VALUES ?;
 
 updateFormHotSaleDailyOperationInformationEntity:
-UPDATE FormHotSaleDailyOperationInformationEntity SET OperationDay = :OperationDay, HotSaleDailyInformationId = :HotSaleDailyInformationId, FormId = :FormId, LogTimeStamp = :LogTimeStamp WHERE Id = :Id;
+UPDATE FormHotSaleDailyOperationInformationEntity SET
+    OperationDay = ?,
+    HotSaleDailyInformationId = ?,
+    FormId = ?,
+    LogTimeStamp = ?
+WHERE Id = ?;
 
 deleteFormHotSaleDailyOperationInformationEntity:
-DELETE FROM FormHotSaleDailyOperationInformationEntity WHERE Id = :Id;
-
-deleteAllFormHotSaleDailyOperationInformationEntity:
-DELETE FROM FormHotSaleDailyOperationInformationEntity;
+DELETE FROM FormHotSaleDailyOperationInformationEntity WHERE Id = ?;

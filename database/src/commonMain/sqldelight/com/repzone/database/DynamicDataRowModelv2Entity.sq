@@ -1,6 +1,6 @@
 ﻿-- DynamicDataRowModelv2Entity SQLDelight dosyası
 -- Orijinal tablo: DynamicDataRowModelv2
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS DynamicDataRowModelv2Entity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -13,21 +13,22 @@ selectAllDynamicDataRowModelv2Entity:
 SELECT * FROM DynamicDataRowModelv2Entity;
 
 selectByDynamicDataRowModelv2EntityId:
-SELECT * FROM DynamicDataRowModelv2Entity WHERE Id = :Id;
+SELECT * FROM DynamicDataRowModelv2Entity WHERE Id = ?;
 
 insertDynamicDataRowModelv2Entity:
-INSERT INTO DynamicDataRowModelv2Entity (RowId, RowValue, UtcLogDate)
-VALUES (:RowId, :RowValue, :UtcLogDate);
+INSERT INTO DynamicDataRowModelv2Entity
+VALUES ?;
 
 insertOrReplaceDynamicDataRowModelv2Entity:
-INSERT OR REPLACE INTO DynamicDataRowModelv2Entity (RowId, RowValue, UtcLogDate)
-VALUES (:RowId, :RowValue, :UtcLogDate);
+INSERT OR REPLACE INTO DynamicDataRowModelv2Entity
+VALUES ?;
 
 updateDynamicDataRowModelv2Entity:
-UPDATE DynamicDataRowModelv2Entity SET RowId = :RowId, RowValue = :RowValue, UtcLogDate = :UtcLogDate WHERE Id = :Id;
+UPDATE DynamicDataRowModelv2Entity SET
+    RowId = ?,
+    RowValue = ?,
+    UtcLogDate = ?
+WHERE Id = ?;
 
 deleteDynamicDataRowModelv2Entity:
-DELETE FROM DynamicDataRowModelv2Entity WHERE Id = :Id;
-
-deleteAllDynamicDataRowModelv2Entity:
-DELETE FROM DynamicDataRowModelv2Entity;
+DELETE FROM DynamicDataRowModelv2Entity WHERE Id = ?;

@@ -1,6 +1,6 @@
 ﻿-- SyncTransitStockEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncTransitStockModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncTransitStockEntity (
     UniqueId TEXT NOT NULL PRIMARY KEY,
@@ -14,21 +14,23 @@ selectAllSyncTransitStockEntity:
 SELECT * FROM SyncTransitStockEntity;
 
 selectBySyncTransitStockEntityId:
-SELECT * FROM SyncTransitStockEntity WHERE UniqueId = :UniqueId;
+SELECT * FROM SyncTransitStockEntity WHERE UniqueId = ?;
 
 insertSyncTransitStockEntity:
-INSERT INTO SyncTransitStockEntity (UniqueId, OrganizationId, ProductId, UnitId, Stock)
-VALUES (:UniqueId, :OrganizationId, :ProductId, :UnitId, :Stock);
+INSERT INTO SyncTransitStockEntity
+VALUES ?;
 
 insertOrReplaceSyncTransitStockEntity:
-INSERT OR REPLACE INTO SyncTransitStockEntity (UniqueId, OrganizationId, ProductId, UnitId, Stock)
-VALUES (:UniqueId, :OrganizationId, :ProductId, :UnitId, :Stock);
+INSERT OR REPLACE INTO SyncTransitStockEntity
+VALUES ?;
 
 updateSyncTransitStockEntity:
-UPDATE SyncTransitStockEntity SET OrganizationId = :OrganizationId, ProductId = :ProductId, UnitId = :UnitId, Stock = :Stock WHERE UniqueId = :UniqueId;
+UPDATE SyncTransitStockEntity SET
+    OrganizationId = ?,
+    ProductId = ?,
+    UnitId = ?,
+    Stock = ?
+WHERE UniqueId = ?;
 
 deleteSyncTransitStockEntity:
-DELETE FROM SyncTransitStockEntity WHERE UniqueId = :UniqueId;
-
-deleteAllSyncTransitStockEntity:
-DELETE FROM SyncTransitStockEntity;
+DELETE FROM SyncTransitStockEntity WHERE UniqueId = ?;

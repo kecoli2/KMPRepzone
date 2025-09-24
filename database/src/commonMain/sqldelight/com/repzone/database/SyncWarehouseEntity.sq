@@ -1,6 +1,6 @@
 ﻿-- SyncWarehouseEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncWarehouseModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncWarehouseEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -19,21 +19,28 @@ selectAllSyncWarehouseEntity:
 SELECT * FROM SyncWarehouseEntity;
 
 selectBySyncWarehouseEntityId:
-SELECT * FROM SyncWarehouseEntity WHERE OrganizationId = :OrganizationId;
+SELECT * FROM SyncWarehouseEntity WHERE Id = ?;
 
 insertSyncWarehouseEntity:
-INSERT INTO SyncWarehouseEntity (Name, OrganizationId, OrganizationName, MobileCloseToSales, MobileCloseToReturns, MobileCloseToDamagedReturns, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:Name, :OrganizationId, :OrganizationName, :MobileCloseToSales, :MobileCloseToReturns, :MobileCloseToDamagedReturns, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncWarehouseEntity
+VALUES ?;
 
 insertOrReplaceSyncWarehouseEntity:
-INSERT OR REPLACE INTO SyncWarehouseEntity (Name, OrganizationId, OrganizationName, MobileCloseToSales, MobileCloseToReturns, MobileCloseToDamagedReturns, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:Name, :OrganizationId, :OrganizationName, :MobileCloseToSales, :MobileCloseToReturns, :MobileCloseToDamagedReturns, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncWarehouseEntity
+VALUES ?;
 
 updateSyncWarehouseEntity:
-UPDATE SyncWarehouseEntity SET Name = :Name, OrganizationId = :OrganizationId, OrganizationName = :OrganizationName, MobileCloseToSales = :MobileCloseToSales, MobileCloseToReturns = :MobileCloseToReturns, MobileCloseToDamagedReturns = :MobileCloseToDamagedReturns, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE OrganizationId = :OrganizationId;
+UPDATE SyncWarehouseEntity SET
+    Name = ?,
+    OrganizationId = ?,
+    OrganizationName = ?,
+    MobileCloseToSales = ?,
+    MobileCloseToReturns = ?,
+    MobileCloseToDamagedReturns = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncWarehouseEntity:
-DELETE FROM SyncWarehouseEntity WHERE OrganizationId = :OrganizationId;
-
-deleteAllSyncWarehouseEntity:
-DELETE FROM SyncWarehouseEntity;
+DELETE FROM SyncWarehouseEntity WHERE Id = ?;

@@ -1,6 +1,6 @@
 ﻿-- StockLoadingDemandLogInformationEntity SQLDelight dosyası
 -- Orijinal tablo: StockLoadingDemandLogInformation
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS StockLoadingDemandLogInformationEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -14,21 +14,23 @@ selectAllStockLoadingDemandLogInformationEntity:
 SELECT * FROM StockLoadingDemandLogInformationEntity;
 
 selectByStockLoadingDemandLogInformationEntityId:
-SELECT * FROM StockLoadingDemandLogInformationEntity WHERE Id = :Id;
+SELECT * FROM StockLoadingDemandLogInformationEntity WHERE Id = ?;
 
 insertStockLoadingDemandLogInformationEntity:
-INSERT INTO StockLoadingDemandLogInformationEntity (RestServiceTaskId, RecordDate, TotalProductKind, TotalProductQuantity)
-VALUES (:RestServiceTaskId, :RecordDate, :TotalProductKind, :TotalProductQuantity);
+INSERT INTO StockLoadingDemandLogInformationEntity
+VALUES ?;
 
 insertOrReplaceStockLoadingDemandLogInformationEntity:
-INSERT OR REPLACE INTO StockLoadingDemandLogInformationEntity (RestServiceTaskId, RecordDate, TotalProductKind, TotalProductQuantity)
-VALUES (:RestServiceTaskId, :RecordDate, :TotalProductKind, :TotalProductQuantity);
+INSERT OR REPLACE INTO StockLoadingDemandLogInformationEntity
+VALUES ?;
 
 updateStockLoadingDemandLogInformationEntity:
-UPDATE StockLoadingDemandLogInformationEntity SET RestServiceTaskId = :RestServiceTaskId, RecordDate = :RecordDate, TotalProductKind = :TotalProductKind, TotalProductQuantity = :TotalProductQuantity WHERE Id = :Id;
+UPDATE StockLoadingDemandLogInformationEntity SET
+    RestServiceTaskId = ?,
+    RecordDate = ?,
+    TotalProductKind = ?,
+    TotalProductQuantity = ?
+WHERE Id = ?;
 
 deleteStockLoadingDemandLogInformationEntity:
-DELETE FROM StockLoadingDemandLogInformationEntity WHERE Id = :Id;
-
-deleteAllStockLoadingDemandLogInformationEntity:
-DELETE FROM StockLoadingDemandLogInformationEntity;
+DELETE FROM StockLoadingDemandLogInformationEntity WHERE Id = ?;

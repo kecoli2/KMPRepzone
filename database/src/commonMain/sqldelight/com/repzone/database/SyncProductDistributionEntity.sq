@@ -1,6 +1,6 @@
 ﻿-- SyncProductDistributionEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncProductDistributionModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncProductDistributionEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -18,21 +18,27 @@ selectAllSyncProductDistributionEntity:
 SELECT * FROM SyncProductDistributionEntity;
 
 selectBySyncProductDistributionEntityId:
-SELECT * FROM SyncProductDistributionEntity WHERE TenantId = :TenantId;
+SELECT * FROM SyncProductDistributionEntity WHERE Id = ?;
 
 insertSyncProductDistributionEntity:
-INSERT INTO SyncProductDistributionEntity (TenantId, OrganizationId, Name, Description, ParentId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:TenantId, :OrganizationId, :Name, :Description, :ParentId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncProductDistributionEntity
+VALUES ?;
 
 insertOrReplaceSyncProductDistributionEntity:
-INSERT OR REPLACE INTO SyncProductDistributionEntity (TenantId, OrganizationId, Name, Description, ParentId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:TenantId, :OrganizationId, :Name, :Description, :ParentId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncProductDistributionEntity
+VALUES ?;
 
 updateSyncProductDistributionEntity:
-UPDATE SyncProductDistributionEntity SET TenantId = :TenantId, OrganizationId = :OrganizationId, Name = :Name, Description = :Description, ParentId = :ParentId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE TenantId = :TenantId;
+UPDATE SyncProductDistributionEntity SET
+    TenantId = ?,
+    OrganizationId = ?,
+    Name = ?,
+    Description = ?,
+    ParentId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncProductDistributionEntity:
-DELETE FROM SyncProductDistributionEntity WHERE TenantId = :TenantId;
-
-deleteAllSyncProductDistributionEntity:
-DELETE FROM SyncProductDistributionEntity;
+DELETE FROM SyncProductDistributionEntity WHERE Id = ?;

@@ -1,6 +1,6 @@
 ﻿-- SyncCustomerGroupEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncCustomerGroupModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncCustomerGroupEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -19,21 +19,28 @@ selectAllSyncCustomerGroupEntity:
 SELECT * FROM SyncCustomerGroupEntity;
 
 selectBySyncCustomerGroupEntityId:
-SELECT * FROM SyncCustomerGroupEntity WHERE ParentId = :ParentId;
+SELECT * FROM SyncCustomerGroupEntity WHERE Id = ?;
 
 insertSyncCustomerGroupEntity:
-INSERT INTO SyncCustomerGroupEntity (Name, ParentId, OrganizationId, Shared, IsDefault, IconIndex, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:Name, :ParentId, :OrganizationId, :Shared, :IsDefault, :IconIndex, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncCustomerGroupEntity
+VALUES ?;
 
 insertOrReplaceSyncCustomerGroupEntity:
-INSERT OR REPLACE INTO SyncCustomerGroupEntity (Name, ParentId, OrganizationId, Shared, IsDefault, IconIndex, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:Name, :ParentId, :OrganizationId, :Shared, :IsDefault, :IconIndex, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncCustomerGroupEntity
+VALUES ?;
 
 updateSyncCustomerGroupEntity:
-UPDATE SyncCustomerGroupEntity SET Name = :Name, ParentId = :ParentId, OrganizationId = :OrganizationId, Shared = :Shared, IsDefault = :IsDefault, IconIndex = :IconIndex, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE ParentId = :ParentId;
+UPDATE SyncCustomerGroupEntity SET
+    Name = ?,
+    ParentId = ?,
+    OrganizationId = ?,
+    Shared = ?,
+    IsDefault = ?,
+    IconIndex = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncCustomerGroupEntity:
-DELETE FROM SyncCustomerGroupEntity WHERE ParentId = :ParentId;
-
-deleteAllSyncCustomerGroupEntity:
-DELETE FROM SyncCustomerGroupEntity;
+DELETE FROM SyncCustomerGroupEntity WHERE Id = ?;

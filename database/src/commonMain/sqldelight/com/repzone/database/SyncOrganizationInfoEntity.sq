@@ -1,6 +1,6 @@
 ﻿-- SyncOrganizationInfoEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncOrganizationInfoModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncOrganizationInfoEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -22,21 +22,31 @@ selectAllSyncOrganizationInfoEntity:
 SELECT * FROM SyncOrganizationInfoEntity;
 
 selectBySyncOrganizationInfoEntityId:
-SELECT * FROM SyncOrganizationInfoEntity WHERE Id = :Id;
+SELECT * FROM SyncOrganizationInfoEntity WHERE Id = ?;
 
 insertSyncOrganizationInfoEntity:
-INSERT INTO SyncOrganizationInfoEntity (Name, City, Country, Street1, Street2, PostalCode, District, PhoneNumber, FaxNumber, LogoPath, Title, IsEOrganization)
-VALUES (:Name, :City, :Country, :Street1, :Street2, :PostalCode, :District, :PhoneNumber, :FaxNumber, :LogoPath, :Title, :IsEOrganization);
+INSERT INTO SyncOrganizationInfoEntity
+VALUES ?;
 
 insertOrReplaceSyncOrganizationInfoEntity:
-INSERT OR REPLACE INTO SyncOrganizationInfoEntity (Name, City, Country, Street1, Street2, PostalCode, District, PhoneNumber, FaxNumber, LogoPath, Title, IsEOrganization)
-VALUES (:Name, :City, :Country, :Street1, :Street2, :PostalCode, :District, :PhoneNumber, :FaxNumber, :LogoPath, :Title, :IsEOrganization);
+INSERT OR REPLACE INTO SyncOrganizationInfoEntity
+VALUES ?;
 
 updateSyncOrganizationInfoEntity:
-UPDATE SyncOrganizationInfoEntity SET Name = :Name, City = :City, Country = :Country, Street1 = :Street1, Street2 = :Street2, PostalCode = :PostalCode, District = :District, PhoneNumber = :PhoneNumber, FaxNumber = :FaxNumber, LogoPath = :LogoPath, Title = :Title, IsEOrganization = :IsEOrganization WHERE Id = :Id;
+UPDATE SyncOrganizationInfoEntity SET
+    Name = ?,
+    City = ?,
+    Country = ?,
+    Street1 = ?,
+    Street2 = ?,
+    PostalCode = ?,
+    District = ?,
+    PhoneNumber = ?,
+    FaxNumber = ?,
+    LogoPath = ?,
+    Title = ?,
+    IsEOrganization = ?
+WHERE Id = ?;
 
 deleteSyncOrganizationInfoEntity:
-DELETE FROM SyncOrganizationInfoEntity WHERE Id = :Id;
-
-deleteAllSyncOrganizationInfoEntity:
-DELETE FROM SyncOrganizationInfoEntity;
+DELETE FROM SyncOrganizationInfoEntity WHERE Id = ?;

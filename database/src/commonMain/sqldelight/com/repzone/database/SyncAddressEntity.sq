@@ -1,6 +1,6 @@
 ﻿-- SyncAddressEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncAddressModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncAddressEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -24,21 +24,33 @@ selectAllSyncAddressEntity:
 SELECT * FROM SyncAddressEntity;
 
 selectBySyncAddressEntityId:
-SELECT * FROM SyncAddressEntity WHERE CustomerId = :CustomerId;
+SELECT * FROM SyncAddressEntity WHERE Id = ?;
 
 insertSyncAddressEntity:
-INSERT INTO SyncAddressEntity (CustomerId, Street, City, District, Latitude, Longitude, AddressType, AddressName, Contact, PhoneNumber, FaxNumber, Street2, Country, State)
-VALUES (:CustomerId, :Street, :City, :District, :Latitude, :Longitude, :AddressType, :AddressName, :Contact, :PhoneNumber, :FaxNumber, :Street2, :Country, :State);
+INSERT INTO SyncAddressEntity
+VALUES ?;
 
 insertOrReplaceSyncAddressEntity:
-INSERT OR REPLACE INTO SyncAddressEntity (CustomerId, Street, City, District, Latitude, Longitude, AddressType, AddressName, Contact, PhoneNumber, FaxNumber, Street2, Country, State)
-VALUES (:CustomerId, :Street, :City, :District, :Latitude, :Longitude, :AddressType, :AddressName, :Contact, :PhoneNumber, :FaxNumber, :Street2, :Country, :State);
+INSERT OR REPLACE INTO SyncAddressEntity
+VALUES ?;
 
 updateSyncAddressEntity:
-UPDATE SyncAddressEntity SET CustomerId = :CustomerId, Street = :Street, City = :City, District = :District, Latitude = :Latitude, Longitude = :Longitude, AddressType = :AddressType, AddressName = :AddressName, Contact = :Contact, PhoneNumber = :PhoneNumber, FaxNumber = :FaxNumber, Street2 = :Street2, Country = :Country, State = :State WHERE CustomerId = :CustomerId;
+UPDATE SyncAddressEntity SET
+    CustomerId = ?,
+    Street = ?,
+    City = ?,
+    District = ?,
+    Latitude = ?,
+    Longitude = ?,
+    AddressType = ?,
+    AddressName = ?,
+    Contact = ?,
+    PhoneNumber = ?,
+    FaxNumber = ?,
+    Street2 = ?,
+    Country = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncAddressEntity:
-DELETE FROM SyncAddressEntity WHERE CustomerId = :CustomerId;
-
-deleteAllSyncAddressEntity:
-DELETE FROM SyncAddressEntity;
+DELETE FROM SyncAddressEntity WHERE Id = ?;

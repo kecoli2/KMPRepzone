@@ -1,6 +1,6 @@
 ﻿-- SyncCustomerCustomFieldEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncCustomerCustomField
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:18
 
 CREATE TABLE IF NOT EXISTS SyncCustomerCustomFieldEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -18,21 +18,27 @@ selectAllSyncCustomerCustomFieldEntity:
 SELECT * FROM SyncCustomerCustomFieldEntity;
 
 selectBySyncCustomerCustomFieldEntityId:
-SELECT * FROM SyncCustomerCustomFieldEntity WHERE ProductId = :ProductId;
+SELECT * FROM SyncCustomerCustomFieldEntity WHERE Id = ?;
 
 insertSyncCustomerCustomFieldEntity:
-INSERT INTO SyncCustomerCustomFieldEntity (ProductId, OrganizationId, FieldId, Value, EntityId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:ProductId, :OrganizationId, :FieldId, :Value, :EntityId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncCustomerCustomFieldEntity
+VALUES ?;
 
 insertOrReplaceSyncCustomerCustomFieldEntity:
-INSERT OR REPLACE INTO SyncCustomerCustomFieldEntity (ProductId, OrganizationId, FieldId, Value, EntityId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:ProductId, :OrganizationId, :FieldId, :Value, :EntityId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncCustomerCustomFieldEntity
+VALUES ?;
 
 updateSyncCustomerCustomFieldEntity:
-UPDATE SyncCustomerCustomFieldEntity SET ProductId = :ProductId, OrganizationId = :OrganizationId, FieldId = :FieldId, Value = :Value, EntityId = :EntityId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE ProductId = :ProductId;
+UPDATE SyncCustomerCustomFieldEntity SET
+    ProductId = ?,
+    OrganizationId = ?,
+    FieldId = ?,
+    Value = ?,
+    EntityId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncCustomerCustomFieldEntity:
-DELETE FROM SyncCustomerCustomFieldEntity WHERE ProductId = :ProductId;
-
-deleteAllSyncCustomerCustomFieldEntity:
-DELETE FROM SyncCustomerCustomFieldEntity;
+DELETE FROM SyncCustomerCustomFieldEntity WHERE Id = ?;

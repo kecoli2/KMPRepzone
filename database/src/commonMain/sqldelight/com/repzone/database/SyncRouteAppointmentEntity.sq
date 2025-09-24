@@ -1,6 +1,6 @@
 ﻿-- SyncRouteAppointmentEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncRouteAppointmentModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncRouteAppointmentEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -16,21 +16,25 @@ selectAllSyncRouteAppointmentEntity:
 SELECT * FROM SyncRouteAppointmentEntity;
 
 selectBySyncRouteAppointmentEntityId:
-SELECT * FROM SyncRouteAppointmentEntity WHERE Id = :Id;
+SELECT * FROM SyncRouteAppointmentEntity WHERE Id = ?;
 
 insertSyncRouteAppointmentEntity:
-INSERT INTO SyncRouteAppointmentEntity (State, StartDate, EndDate, CustomerId, SprintId, Description)
-VALUES (:State, :StartDate, :EndDate, :CustomerId, :SprintId, :Description);
+INSERT INTO SyncRouteAppointmentEntity
+VALUES ?;
 
 insertOrReplaceSyncRouteAppointmentEntity:
-INSERT OR REPLACE INTO SyncRouteAppointmentEntity (State, StartDate, EndDate, CustomerId, SprintId, Description)
-VALUES (:State, :StartDate, :EndDate, :CustomerId, :SprintId, :Description);
+INSERT OR REPLACE INTO SyncRouteAppointmentEntity
+VALUES ?;
 
 updateSyncRouteAppointmentEntity:
-UPDATE SyncRouteAppointmentEntity SET State = :State, StartDate = :StartDate, EndDate = :EndDate, CustomerId = :CustomerId, SprintId = :SprintId, Description = :Description WHERE Id = :Id;
+UPDATE SyncRouteAppointmentEntity SET
+    State = ?,
+    StartDate = ?,
+    EndDate = ?,
+    CustomerId = ?,
+    SprintId = ?,
+    Description = ?
+WHERE Id = ?;
 
 deleteSyncRouteAppointmentEntity:
-DELETE FROM SyncRouteAppointmentEntity WHERE Id = :Id;
-
-deleteAllSyncRouteAppointmentEntity:
-DELETE FROM SyncRouteAppointmentEntity;
+DELETE FROM SyncRouteAppointmentEntity WHERE Id = ?;

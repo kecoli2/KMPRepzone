@@ -1,6 +1,6 @@
 ﻿-- SyncWarehouseTotalEntity SQLDelight dosyası
 -- Orijinal tablo: SyncMobileWarehouseTotalModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncWarehouseTotalEntity (
     OrderStock REAL,
@@ -11,22 +11,11 @@ CREATE TABLE IF NOT EXISTS SyncWarehouseTotalEntity (
 selectAllSyncWarehouseTotalEntity:
 SELECT * FROM SyncWarehouseTotalEntity;
 
-selectBySyncWarehouseTotalEntityId:
-SELECT * FROM SyncWarehouseTotalEntity WHERE ProductId = :ProductId;
-
 insertSyncWarehouseTotalEntity:
-INSERT INTO SyncWarehouseTotalEntity (ProductId, Stock, OrderStock)
-VALUES (:ProductId, :Stock, :OrderStock);
+INSERT INTO SyncWarehouseTotalEntity
+VALUES ?;
 
 insertOrReplaceSyncWarehouseTotalEntity:
-INSERT OR REPLACE INTO SyncWarehouseTotalEntity (ProductId, Stock, OrderStock)
-VALUES (:ProductId, :Stock, :OrderStock);
+INSERT OR REPLACE INTO SyncWarehouseTotalEntity
+VALUES ?;
 
-updateSyncWarehouseTotalEntity:
-UPDATE SyncWarehouseTotalEntity SET ProductId = :ProductId, Stock = :Stock, OrderStock = :OrderStock WHERE ProductId = :ProductId;
-
-deleteSyncWarehouseTotalEntity:
-DELETE FROM SyncWarehouseTotalEntity WHERE ProductId = :ProductId;
-
-deleteAllSyncWarehouseTotalEntity:
-DELETE FROM SyncWarehouseTotalEntity;

@@ -1,6 +1,6 @@
 ﻿-- SyncFeedbackCategoryEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncFeedbackCategoryModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncFeedbackCategoryEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -18,21 +18,27 @@ selectAllSyncFeedbackCategoryEntity:
 SELECT * FROM SyncFeedbackCategoryEntity;
 
 selectBySyncFeedbackCategoryEntityId:
-SELECT * FROM SyncFeedbackCategoryEntity WHERE TenantId = :TenantId;
+SELECT * FROM SyncFeedbackCategoryEntity WHERE Id = ?;
 
 insertSyncFeedbackCategoryEntity:
-INSERT INTO SyncFeedbackCategoryEntity (TenantId, OrganizationId, Name, Description, ParentId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:TenantId, :OrganizationId, :Name, :Description, :ParentId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncFeedbackCategoryEntity
+VALUES ?;
 
 insertOrReplaceSyncFeedbackCategoryEntity:
-INSERT OR REPLACE INTO SyncFeedbackCategoryEntity (TenantId, OrganizationId, Name, Description, ParentId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:TenantId, :OrganizationId, :Name, :Description, :ParentId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncFeedbackCategoryEntity
+VALUES ?;
 
 updateSyncFeedbackCategoryEntity:
-UPDATE SyncFeedbackCategoryEntity SET TenantId = :TenantId, OrganizationId = :OrganizationId, Name = :Name, Description = :Description, ParentId = :ParentId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE TenantId = :TenantId;
+UPDATE SyncFeedbackCategoryEntity SET
+    TenantId = ?,
+    OrganizationId = ?,
+    Name = ?,
+    Description = ?,
+    ParentId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncFeedbackCategoryEntity:
-DELETE FROM SyncFeedbackCategoryEntity WHERE TenantId = :TenantId;
-
-deleteAllSyncFeedbackCategoryEntity:
-DELETE FROM SyncFeedbackCategoryEntity;
+DELETE FROM SyncFeedbackCategoryEntity WHERE Id = ?;

@@ -1,6 +1,6 @@
 ﻿-- SyncProductImagesEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncProductImages
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncProductImagesEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -16,21 +16,25 @@ selectAllSyncProductImagesEntity:
 SELECT * FROM SyncProductImagesEntity;
 
 selectBySyncProductImagesEntityId:
-SELECT * FROM SyncProductImagesEntity WHERE FileId = :FileId;
+SELECT * FROM SyncProductImagesEntity WHERE Id = ?;
 
 insertSyncProductImagesEntity:
-INSERT INTO SyncProductImagesEntity (FileId, ProductId, ImageUrl, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:FileId, :ProductId, :ImageUrl, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncProductImagesEntity
+VALUES ?;
 
 insertOrReplaceSyncProductImagesEntity:
-INSERT OR REPLACE INTO SyncProductImagesEntity (FileId, ProductId, ImageUrl, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:FileId, :ProductId, :ImageUrl, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncProductImagesEntity
+VALUES ?;
 
 updateSyncProductImagesEntity:
-UPDATE SyncProductImagesEntity SET FileId = :FileId, ProductId = :ProductId, ImageUrl = :ImageUrl, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE FileId = :FileId;
+UPDATE SyncProductImagesEntity SET
+    FileId = ?,
+    ProductId = ?,
+    ImageUrl = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncProductImagesEntity:
-DELETE FROM SyncProductImagesEntity WHERE FileId = :FileId;
-
-deleteAllSyncProductImagesEntity:
-DELETE FROM SyncProductImagesEntity;
+DELETE FROM SyncProductImagesEntity WHERE Id = ?;

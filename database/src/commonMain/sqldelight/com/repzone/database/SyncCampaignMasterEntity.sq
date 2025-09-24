@@ -1,6 +1,6 @@
 ﻿-- SyncCampaignMasterEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncCampaignMaster
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncCampaignMasterEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -25,21 +25,34 @@ selectAllSyncCampaignMasterEntity:
 SELECT * FROM SyncCampaignMasterEntity;
 
 selectBySyncCampaignMasterEntityId:
-SELECT * FROM SyncCampaignMasterEntity WHERE OrganizationId = :OrganizationId;
+SELECT * FROM SyncCampaignMasterEntity WHERE Id = ?;
 
 insertSyncCampaignMasterEntity:
-INSERT INTO SyncCampaignMasterEntity (Title, Start, `End`, DocumentTypes, GroupKey, GroupPriority, IsOptional, OrganizationId, MaxImplementationCount, ModificationDateUtc, RecordDateUtc, State, ImplementationType, MaxImplementationAmount, ImplementationCalcType)
-VALUES (:Title, :Start, :End, :DocumentTypes, :GroupKey, :GroupPriority, :IsOptional, :OrganizationId, :MaxImplementationCount, :ModificationDateUtc, :RecordDateUtc, :State, :ImplementationType, :MaxImplementationAmount, :ImplementationCalcType);
+INSERT INTO SyncCampaignMasterEntity
+VALUES ?;
 
 insertOrReplaceSyncCampaignMasterEntity:
-INSERT OR REPLACE INTO SyncCampaignMasterEntity (Title, Start, `End`, DocumentTypes, GroupKey, GroupPriority, IsOptional, OrganizationId, MaxImplementationCount, ModificationDateUtc, RecordDateUtc, State, ImplementationType, MaxImplementationAmount, ImplementationCalcType)
-VALUES (:Title, :Start, :End, :DocumentTypes, :GroupKey, :GroupPriority, :IsOptional, :OrganizationId, :MaxImplementationCount, :ModificationDateUtc, :RecordDateUtc, :State, :ImplementationType, :MaxImplementationAmount, :ImplementationCalcType);
+INSERT OR REPLACE INTO SyncCampaignMasterEntity
+VALUES ?;
 
 updateSyncCampaignMasterEntity:
-UPDATE SyncCampaignMasterEntity SET Title = :Title, Start = :Start, `End` = :End, DocumentTypes = :DocumentTypes, GroupKey = :GroupKey, GroupPriority = :GroupPriority, IsOptional = :IsOptional, OrganizationId = :OrganizationId, MaxImplementationCount = :MaxImplementationCount, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State, ImplementationType = :ImplementationType, MaxImplementationAmount = :MaxImplementationAmount, ImplementationCalcType = :ImplementationCalcType WHERE OrganizationId = :OrganizationId;
+UPDATE SyncCampaignMasterEntity SET
+    Title = ?,
+    Start = ?,
+    `End` = ?,
+    DocumentTypes = ?,
+    GroupKey = ?,
+    GroupPriority = ?,
+    IsOptional = ?,
+    OrganizationId = ?,
+    MaxImplementationCount = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?,
+    ImplementationType = ?,
+    MaxImplementationAmount = ?,
+    ImplementationCalcType = ?
+WHERE Id = ?;
 
 deleteSyncCampaignMasterEntity:
-DELETE FROM SyncCampaignMasterEntity WHERE OrganizationId = :OrganizationId;
-
-deleteAllSyncCampaignMasterEntity:
-DELETE FROM SyncCampaignMasterEntity;
+DELETE FROM SyncCampaignMasterEntity WHERE Id = ?;

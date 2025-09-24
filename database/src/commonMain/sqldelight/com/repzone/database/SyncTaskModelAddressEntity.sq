@@ -1,6 +1,6 @@
 ﻿-- SyncTaskModelAddressEntity SQLDelight dosyası
 -- Orijinal tablo: SyncTaskModelAddress
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncTaskModelAddressEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -22,21 +22,31 @@ selectAllSyncTaskModelAddressEntity:
 SELECT * FROM SyncTaskModelAddressEntity;
 
 selectBySyncTaskModelAddressEntityId:
-SELECT * FROM SyncTaskModelAddressEntity WHERE TaskStepId = :TaskStepId;
+SELECT * FROM SyncTaskModelAddressEntity WHERE Id = ?;
 
 insertSyncTaskModelAddressEntity:
-INSERT INTO SyncTaskModelAddressEntity (TaskStepId, Street1, Street2, City, District, Country, PostalCode, Latitude, Longitude, PhoneNumber, RelatedPerson, State)
-VALUES (:TaskStepId, :Street1, :Street2, :City, :District, :Country, :PostalCode, :Latitude, :Longitude, :PhoneNumber, :RelatedPerson, :State);
+INSERT INTO SyncTaskModelAddressEntity
+VALUES ?;
 
 insertOrReplaceSyncTaskModelAddressEntity:
-INSERT OR REPLACE INTO SyncTaskModelAddressEntity (TaskStepId, Street1, Street2, City, District, Country, PostalCode, Latitude, Longitude, PhoneNumber, RelatedPerson, State)
-VALUES (:TaskStepId, :Street1, :Street2, :City, :District, :Country, :PostalCode, :Latitude, :Longitude, :PhoneNumber, :RelatedPerson, :State);
+INSERT OR REPLACE INTO SyncTaskModelAddressEntity
+VALUES ?;
 
 updateSyncTaskModelAddressEntity:
-UPDATE SyncTaskModelAddressEntity SET TaskStepId = :TaskStepId, Street1 = :Street1, Street2 = :Street2, City = :City, District = :District, Country = :Country, PostalCode = :PostalCode, Latitude = :Latitude, Longitude = :Longitude, PhoneNumber = :PhoneNumber, RelatedPerson = :RelatedPerson, State = :State WHERE TaskStepId = :TaskStepId;
+UPDATE SyncTaskModelAddressEntity SET
+    TaskStepId = ?,
+    Street1 = ?,
+    Street2 = ?,
+    City = ?,
+    District = ?,
+    Country = ?,
+    PostalCode = ?,
+    Latitude = ?,
+    Longitude = ?,
+    PhoneNumber = ?,
+    RelatedPerson = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncTaskModelAddressEntity:
-DELETE FROM SyncTaskModelAddressEntity WHERE TaskStepId = :TaskStepId;
-
-deleteAllSyncTaskModelAddressEntity:
-DELETE FROM SyncTaskModelAddressEntity;
+DELETE FROM SyncTaskModelAddressEntity WHERE Id = ?;

@@ -1,6 +1,6 @@
 ﻿-- SyncProductUnitEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncProductUnitModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncProductUnitEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -32,21 +32,41 @@ selectAllSyncProductUnitEntity:
 SELECT * FROM SyncProductUnitEntity;
 
 selectBySyncProductUnitEntityId:
-SELECT * FROM SyncProductUnitEntity WHERE ProductId = :ProductId;
+SELECT * FROM SyncProductUnitEntity WHERE Id = ?;
 
 insertSyncProductUnitEntity:
-INSERT INTO SyncProductUnitEntity (ProductId, UnitId, Multiplier, Barcode, Weight, PriceId, DisplayOrder, TenantId, IsVisible, Selected, Price, MinimumOrderQuantity, MaxOrderQuantity, OrderQuantityFactor, SalesReturnPrice, SalesDamagedReturnPrice, PurchasePrice, PurchaseReturnPrice, PurchaseDamagedReturnPrice, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:ProductId, :UnitId, :Multiplier, :Barcode, :Weight, :PriceId, :DisplayOrder, :TenantId, :IsVisible, :Selected, :Price, :MinimumOrderQuantity, :MaxOrderQuantity, :OrderQuantityFactor, :SalesReturnPrice, :SalesDamagedReturnPrice, :PurchasePrice, :PurchaseReturnPrice, :PurchaseDamagedReturnPrice, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncProductUnitEntity
+VALUES ?;
 
 insertOrReplaceSyncProductUnitEntity:
-INSERT OR REPLACE INTO SyncProductUnitEntity (ProductId, UnitId, Multiplier, Barcode, Weight, PriceId, DisplayOrder, TenantId, IsVisible, Selected, Price, MinimumOrderQuantity, MaxOrderQuantity, OrderQuantityFactor, SalesReturnPrice, SalesDamagedReturnPrice, PurchasePrice, PurchaseReturnPrice, PurchaseDamagedReturnPrice, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:ProductId, :UnitId, :Multiplier, :Barcode, :Weight, :PriceId, :DisplayOrder, :TenantId, :IsVisible, :Selected, :Price, :MinimumOrderQuantity, :MaxOrderQuantity, :OrderQuantityFactor, :SalesReturnPrice, :SalesDamagedReturnPrice, :PurchasePrice, :PurchaseReturnPrice, :PurchaseDamagedReturnPrice, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncProductUnitEntity
+VALUES ?;
 
 updateSyncProductUnitEntity:
-UPDATE SyncProductUnitEntity SET ProductId = :ProductId, UnitId = :UnitId, Multiplier = :Multiplier, Barcode = :Barcode, Weight = :Weight, PriceId = :PriceId, DisplayOrder = :DisplayOrder, TenantId = :TenantId, IsVisible = :IsVisible, Selected = :Selected, Price = :Price, MinimumOrderQuantity = :MinimumOrderQuantity, MaxOrderQuantity = :MaxOrderQuantity, OrderQuantityFactor = :OrderQuantityFactor, SalesReturnPrice = :SalesReturnPrice, SalesDamagedReturnPrice = :SalesDamagedReturnPrice, PurchasePrice = :PurchasePrice, PurchaseReturnPrice = :PurchaseReturnPrice, PurchaseDamagedReturnPrice = :PurchaseDamagedReturnPrice, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE ProductId = :ProductId;
+UPDATE SyncProductUnitEntity SET
+    ProductId = ?,
+    UnitId = ?,
+    Multiplier = ?,
+    Barcode = ?,
+    Weight = ?,
+    PriceId = ?,
+    DisplayOrder = ?,
+    TenantId = ?,
+    IsVisible = ?,
+    Selected = ?,
+    Price = ?,
+    MinimumOrderQuantity = ?,
+    MaxOrderQuantity = ?,
+    OrderQuantityFactor = ?,
+    SalesReturnPrice = ?,
+    SalesDamagedReturnPrice = ?,
+    PurchasePrice = ?,
+    PurchaseReturnPrice = ?,
+    PurchaseDamagedReturnPrice = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncProductUnitEntity:
-DELETE FROM SyncProductUnitEntity WHERE ProductId = :ProductId;
-
-deleteAllSyncProductUnitEntity:
-DELETE FROM SyncProductUnitEntity;
+DELETE FROM SyncProductUnitEntity WHERE Id = ?;

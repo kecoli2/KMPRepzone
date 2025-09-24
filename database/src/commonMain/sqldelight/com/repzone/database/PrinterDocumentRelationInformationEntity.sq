@@ -1,6 +1,6 @@
 ﻿-- PrinterDocumentRelationInformationEntity SQLDelight dosyası
 -- Orijinal tablo: PrinterDocumentRelationInformation
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS PrinterDocumentRelationInformationEntity (
     DocumentMapId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -15,21 +15,24 @@ selectAllPrinterDocumentRelationInformationEntity:
 SELECT * FROM PrinterDocumentRelationInformationEntity;
 
 selectByPrinterDocumentRelationInformationEntityId:
-SELECT * FROM PrinterDocumentRelationInformationEntity WHERE DocumentMapId = :DocumentMapId;
+SELECT * FROM PrinterDocumentRelationInformationEntity WHERE DocumentMapId = ?;
 
 insertPrinterDocumentRelationInformationEntity:
-INSERT INTO PrinterDocumentRelationInformationEntity (PrinterName, PrinterAddress, State, PrinterType, PaperWidth)
-VALUES (:PrinterName, :PrinterAddress, :State, :PrinterType, :PaperWidth);
+INSERT INTO PrinterDocumentRelationInformationEntity
+VALUES ?;
 
 insertOrReplacePrinterDocumentRelationInformationEntity:
-INSERT OR REPLACE INTO PrinterDocumentRelationInformationEntity (PrinterName, PrinterAddress, State, PrinterType, PaperWidth)
-VALUES (:PrinterName, :PrinterAddress, :State, :PrinterType, :PaperWidth);
+INSERT OR REPLACE INTO PrinterDocumentRelationInformationEntity
+VALUES ?;
 
 updatePrinterDocumentRelationInformationEntity:
-UPDATE PrinterDocumentRelationInformationEntity SET PrinterName = :PrinterName, PrinterAddress = :PrinterAddress, State = :State, PrinterType = :PrinterType, PaperWidth = :PaperWidth WHERE DocumentMapId = :DocumentMapId;
+UPDATE PrinterDocumentRelationInformationEntity SET
+    PrinterName = ?,
+    PrinterAddress = ?,
+    State = ?,
+    PrinterType = ?,
+    PaperWidth = ?
+WHERE DocumentMapId = ?;
 
 deletePrinterDocumentRelationInformationEntity:
-DELETE FROM PrinterDocumentRelationInformationEntity WHERE DocumentMapId = :DocumentMapId;
-
-deleteAllPrinterDocumentRelationInformationEntity:
-DELETE FROM PrinterDocumentRelationInformationEntity;
+DELETE FROM PrinterDocumentRelationInformationEntity WHERE DocumentMapId = ?;

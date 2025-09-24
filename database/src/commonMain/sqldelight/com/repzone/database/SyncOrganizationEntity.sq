@@ -1,6 +1,6 @@
 ﻿-- SyncOrganizationEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncOrganizationModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncOrganizationEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -17,21 +17,26 @@ selectAllSyncOrganizationEntity:
 SELECT * FROM SyncOrganizationEntity;
 
 selectBySyncOrganizationEntityId:
-SELECT * FROM SyncOrganizationEntity WHERE RelationId = :RelationId;
+SELECT * FROM SyncOrganizationEntity WHERE Id = ?;
 
 insertSyncOrganizationEntity:
-INSERT INTO SyncOrganizationEntity (RelationId, IsParent, Name, ParentId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:RelationId, :IsParent, :Name, :ParentId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncOrganizationEntity
+VALUES ?;
 
 insertOrReplaceSyncOrganizationEntity:
-INSERT OR REPLACE INTO SyncOrganizationEntity (RelationId, IsParent, Name, ParentId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:RelationId, :IsParent, :Name, :ParentId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncOrganizationEntity
+VALUES ?;
 
 updateSyncOrganizationEntity:
-UPDATE SyncOrganizationEntity SET RelationId = :RelationId, IsParent = :IsParent, Name = :Name, ParentId = :ParentId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE RelationId = :RelationId;
+UPDATE SyncOrganizationEntity SET
+    RelationId = ?,
+    IsParent = ?,
+    Name = ?,
+    ParentId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncOrganizationEntity:
-DELETE FROM SyncOrganizationEntity WHERE RelationId = :RelationId;
-
-deleteAllSyncOrganizationEntity:
-DELETE FROM SyncOrganizationEntity;
+DELETE FROM SyncOrganizationEntity WHERE Id = ?;

@@ -1,6 +1,6 @@
 ﻿-- SyncManufacturerParameterEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncManufacturerParameterModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:18
 
 CREATE TABLE IF NOT EXISTS SyncManufacturerParameterEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -17,21 +17,26 @@ selectAllSyncManufacturerParameterEntity:
 SELECT * FROM SyncManufacturerParameterEntity;
 
 selectBySyncManufacturerParameterEntityId:
-SELECT * FROM SyncManufacturerParameterEntity WHERE TenantId = :TenantId;
+SELECT * FROM SyncManufacturerParameterEntity WHERE Id = ?;
 
 insertSyncManufacturerParameterEntity:
-INSERT INTO SyncManufacturerParameterEntity (TenantId, OrganizationId, ManufacturerId, AllowedUnitIds, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:TenantId, :OrganizationId, :ManufacturerId, :AllowedUnitIds, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncManufacturerParameterEntity
+VALUES ?;
 
 insertOrReplaceSyncManufacturerParameterEntity:
-INSERT OR REPLACE INTO SyncManufacturerParameterEntity (TenantId, OrganizationId, ManufacturerId, AllowedUnitIds, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:TenantId, :OrganizationId, :ManufacturerId, :AllowedUnitIds, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncManufacturerParameterEntity
+VALUES ?;
 
 updateSyncManufacturerParameterEntity:
-UPDATE SyncManufacturerParameterEntity SET TenantId = :TenantId, OrganizationId = :OrganizationId, ManufacturerId = :ManufacturerId, AllowedUnitIds = :AllowedUnitIds, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE TenantId = :TenantId;
+UPDATE SyncManufacturerParameterEntity SET
+    TenantId = ?,
+    OrganizationId = ?,
+    ManufacturerId = ?,
+    AllowedUnitIds = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncManufacturerParameterEntity:
-DELETE FROM SyncManufacturerParameterEntity WHERE TenantId = :TenantId;
-
-deleteAllSyncManufacturerParameterEntity:
-DELETE FROM SyncManufacturerParameterEntity;
+DELETE FROM SyncManufacturerParameterEntity WHERE Id = ?;

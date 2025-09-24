@@ -1,6 +1,6 @@
 ﻿-- CampaignMasterResultRequiredProductEntity SQLDelight dosyası
 -- Orijinal tablo: CampaignMasterResultRequiredProduct
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS CampaignMasterResultRequiredProductEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -16,21 +16,25 @@ selectAllCampaignMasterResultRequiredProductEntity:
 SELECT * FROM CampaignMasterResultRequiredProductEntity;
 
 selectByCampaignMasterResultRequiredProductEntityId:
-SELECT * FROM CampaignMasterResultRequiredProductEntity WHERE ProductId = :ProductId;
+SELECT * FROM CampaignMasterResultRequiredProductEntity WHERE Id = ?;
 
 insertCampaignMasterResultRequiredProductEntity:
-INSERT INTO CampaignMasterResultRequiredProductEntity (ProductId, Quantity, CampaignMasterResultId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:ProductId, :Quantity, :CampaignMasterResultId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO CampaignMasterResultRequiredProductEntity
+VALUES ?;
 
 insertOrReplaceCampaignMasterResultRequiredProductEntity:
-INSERT OR REPLACE INTO CampaignMasterResultRequiredProductEntity (ProductId, Quantity, CampaignMasterResultId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:ProductId, :Quantity, :CampaignMasterResultId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO CampaignMasterResultRequiredProductEntity
+VALUES ?;
 
 updateCampaignMasterResultRequiredProductEntity:
-UPDATE CampaignMasterResultRequiredProductEntity SET ProductId = :ProductId, Quantity = :Quantity, CampaignMasterResultId = :CampaignMasterResultId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE ProductId = :ProductId;
+UPDATE CampaignMasterResultRequiredProductEntity SET
+    ProductId = ?,
+    Quantity = ?,
+    CampaignMasterResultId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteCampaignMasterResultRequiredProductEntity:
-DELETE FROM CampaignMasterResultRequiredProductEntity WHERE ProductId = :ProductId;
-
-deleteAllCampaignMasterResultRequiredProductEntity:
-DELETE FROM CampaignMasterResultRequiredProductEntity;
+DELETE FROM CampaignMasterResultRequiredProductEntity WHERE Id = ?;

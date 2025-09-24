@@ -1,6 +1,6 @@
 ﻿-- OrderLogInformationEntity SQLDelight dosyası
 -- Orijinal tablo: OrderLogInformation
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS OrderLogInformationEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -32,21 +32,41 @@ selectAllOrderLogInformationEntity:
 SELECT * FROM OrderLogInformationEntity;
 
 selectByOrderLogInformationEntityId:
-SELECT * FROM OrderLogInformationEntity WHERE Id = :Id;
+SELECT * FROM OrderLogInformationEntity WHERE Id = ?;
 
 insertOrderLogInformationEntity:
-INSERT INTO OrderLogInformationEntity (RestServiceTaskId, CustomerName, TotalCost, OrderDate, Status, RouteAppointmentId, CustomerOrganizationId, CustomerId, DocumentTypeId, ClosedStatus, DocumentUniqueId, State, RestServiceTaskDoneDate, DocumentMapName, WaitingOnRepzone, TransferStatus, RepzoneCurrentState, IsApproved, RepzoneOrderStatus, RepzoneOrderId, RepzoneDocNumber, SessionId)
-VALUES (:RestServiceTaskId, :CustomerName, :TotalCost, :OrderDate, :Status, :RouteAppointmentId, :CustomerOrganizationId, :CustomerId, :DocumentTypeId, :ClosedStatus, :DocumentUniqueId, :State, :RestServiceTaskDoneDate, :DocumentMapName, :WaitingOnRepzone, :TransferStatus, :RepzoneCurrentState, :IsApproved, :RepzoneOrderStatus, :RepzoneOrderId, :RepzoneDocNumber, :SessionId);
+INSERT INTO OrderLogInformationEntity
+VALUES ?;
 
 insertOrReplaceOrderLogInformationEntity:
-INSERT OR REPLACE INTO OrderLogInformationEntity (RestServiceTaskId, CustomerName, TotalCost, OrderDate, Status, RouteAppointmentId, CustomerOrganizationId, CustomerId, DocumentTypeId, ClosedStatus, DocumentUniqueId, State, RestServiceTaskDoneDate, DocumentMapName, WaitingOnRepzone, TransferStatus, RepzoneCurrentState, IsApproved, RepzoneOrderStatus, RepzoneOrderId, RepzoneDocNumber, SessionId)
-VALUES (:RestServiceTaskId, :CustomerName, :TotalCost, :OrderDate, :Status, :RouteAppointmentId, :CustomerOrganizationId, :CustomerId, :DocumentTypeId, :ClosedStatus, :DocumentUniqueId, :State, :RestServiceTaskDoneDate, :DocumentMapName, :WaitingOnRepzone, :TransferStatus, :RepzoneCurrentState, :IsApproved, :RepzoneOrderStatus, :RepzoneOrderId, :RepzoneDocNumber, :SessionId);
+INSERT OR REPLACE INTO OrderLogInformationEntity
+VALUES ?;
 
 updateOrderLogInformationEntity:
-UPDATE OrderLogInformationEntity SET RestServiceTaskId = :RestServiceTaskId, CustomerName = :CustomerName, TotalCost = :TotalCost, OrderDate = :OrderDate, Status = :Status, RouteAppointmentId = :RouteAppointmentId, CustomerOrganizationId = :CustomerOrganizationId, CustomerId = :CustomerId, DocumentTypeId = :DocumentTypeId, ClosedStatus = :ClosedStatus, DocumentUniqueId = :DocumentUniqueId, State = :State, RestServiceTaskDoneDate = :RestServiceTaskDoneDate, DocumentMapName = :DocumentMapName, WaitingOnRepzone = :WaitingOnRepzone, TransferStatus = :TransferStatus, RepzoneCurrentState = :RepzoneCurrentState, IsApproved = :IsApproved, RepzoneOrderStatus = :RepzoneOrderStatus, RepzoneOrderId = :RepzoneOrderId, RepzoneDocNumber = :RepzoneDocNumber, SessionId = :SessionId WHERE Id = :Id;
+UPDATE OrderLogInformationEntity SET
+    RestServiceTaskId = ?,
+    CustomerName = ?,
+    TotalCost = ?,
+    OrderDate = ?,
+    Status = ?,
+    RouteAppointmentId = ?,
+    CustomerOrganizationId = ?,
+    CustomerId = ?,
+    DocumentTypeId = ?,
+    ClosedStatus = ?,
+    DocumentUniqueId = ?,
+    State = ?,
+    RestServiceTaskDoneDate = ?,
+    DocumentMapName = ?,
+    WaitingOnRepzone = ?,
+    TransferStatus = ?,
+    RepzoneCurrentState = ?,
+    IsApproved = ?,
+    RepzoneOrderStatus = ?,
+    RepzoneOrderId = ?,
+    RepzoneDocNumber = ?,
+    SessionId = ?
+WHERE Id = ?;
 
 deleteOrderLogInformationEntity:
-DELETE FROM OrderLogInformationEntity WHERE Id = :Id;
-
-deleteAllOrderLogInformationEntity:
-DELETE FROM OrderLogInformationEntity;
+DELETE FROM OrderLogInformationEntity WHERE Id = ?;

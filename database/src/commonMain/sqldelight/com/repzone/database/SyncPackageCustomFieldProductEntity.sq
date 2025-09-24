@@ -1,6 +1,6 @@
 ﻿-- SyncPackageCustomFieldProductEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncPackageCustomFieldProductModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncPackageCustomFieldProductEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -28,21 +28,37 @@ selectAllSyncPackageCustomFieldProductEntity:
 SELECT * FROM SyncPackageCustomFieldProductEntity;
 
 selectBySyncPackageCustomFieldProductEntityId:
-SELECT * FROM SyncPackageCustomFieldProductEntity WHERE Id = :Id;
+SELECT * FROM SyncPackageCustomFieldProductEntity WHERE Id = ?;
 
 insertSyncPackageCustomFieldProductEntity:
-INSERT INTO SyncPackageCustomFieldProductEntity (ProductId, FieldName, DataType, ItemList, StringMax, IntegerMax, IntegerMin, DateMin, DateMax, DecimalMin, DecimalMax, Mandatory, `Order`, DefaultValue, Description, Value, PackageId, PackageName)
-VALUES (:ProductId, :FieldName, :DataType, :ItemList, :StringMax, :IntegerMax, :IntegerMin, :DateMin, :DateMax, :DecimalMin, :DecimalMax, :Mandatory, :Order, :DefaultValue, :Description, :Value, :PackageId, :PackageName);
+INSERT INTO SyncPackageCustomFieldProductEntity
+VALUES ?;
 
 insertOrReplaceSyncPackageCustomFieldProductEntity:
-INSERT OR REPLACE INTO SyncPackageCustomFieldProductEntity (ProductId, FieldName, DataType, ItemList, StringMax, IntegerMax, IntegerMin, DateMin, DateMax, DecimalMin, DecimalMax, Mandatory, `Order`, DefaultValue, Description, Value, PackageId, PackageName)
-VALUES (:ProductId, :FieldName, :DataType, :ItemList, :StringMax, :IntegerMax, :IntegerMin, :DateMin, :DateMax, :DecimalMin, :DecimalMax, :Mandatory, :Order, :DefaultValue, :Description, :Value, :PackageId, :PackageName);
+INSERT OR REPLACE INTO SyncPackageCustomFieldProductEntity
+VALUES ?;
 
 updateSyncPackageCustomFieldProductEntity:
-UPDATE SyncPackageCustomFieldProductEntity SET ProductId = :ProductId, FieldName = :FieldName, DataType = :DataType, ItemList = :ItemList, StringMax = :StringMax, IntegerMax = :IntegerMax, IntegerMin = :IntegerMin, DateMin = :DateMin, DateMax = :DateMax, DecimalMin = :DecimalMin, DecimalMax = :DecimalMax, Mandatory = :Mandatory, `Order` = :Order, DefaultValue = :DefaultValue, Description = :Description, Value = :Value, PackageId = :PackageId, PackageName = :PackageName WHERE Id = :Id;
+UPDATE SyncPackageCustomFieldProductEntity SET
+    ProductId = ?,
+    FieldName = ?,
+    DataType = ?,
+    ItemList = ?,
+    StringMax = ?,
+    IntegerMax = ?,
+    IntegerMin = ?,
+    DateMin = ?,
+    DateMax = ?,
+    DecimalMin = ?,
+    DecimalMax = ?,
+    Mandatory = ?,
+    `Order` = ?,
+    DefaultValue = ?,
+    Description = ?,
+    Value = ?,
+    PackageId = ?,
+    PackageName = ?
+WHERE Id = ?;
 
 deleteSyncPackageCustomFieldProductEntity:
-DELETE FROM SyncPackageCustomFieldProductEntity WHERE Id = :Id;
-
-deleteAllSyncPackageCustomFieldProductEntity:
-DELETE FROM SyncPackageCustomFieldProductEntity;
+DELETE FROM SyncPackageCustomFieldProductEntity WHERE Id = ?;

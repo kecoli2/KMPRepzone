@@ -1,6 +1,6 @@
 ﻿-- VisitEntity SQLDelight dosyası
 -- Orijinal tablo: Visit
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS VisitEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -26,21 +26,35 @@ selectAllVisitEntity:
 SELECT * FROM VisitEntity;
 
 selectByVisitEntityId:
-SELECT * FROM VisitEntity WHERE Id = :Id;
+SELECT * FROM VisitEntity WHERE Id = ?;
 
 insertVisitEntity:
-INSERT INTO VisitEntity (AppointmentId, Guid, Start, Finish, AppointmentExceptionId, Latitude, Longitude, OrderIdsRaw, FormIdsRaw, VisitNote, IsItOnRoute, IsItOnTime, IsItOnLocation, DistanceFromCustomerLocation, VisitType, SelectedCustomerOrganizationId)
-VALUES (:AppointmentId, :Guid, :Start, :Finish, :AppointmentExceptionId, :Latitude, :Longitude, :OrderIdsRaw, :FormIdsRaw, :VisitNote, :IsItOnRoute, :IsItOnTime, :IsItOnLocation, :DistanceFromCustomerLocation, :VisitType, :SelectedCustomerOrganizationId);
+INSERT INTO VisitEntity
+VALUES ?;
 
 insertOrReplaceVisitEntity:
-INSERT OR REPLACE INTO VisitEntity (AppointmentId, Guid, Start, Finish, AppointmentExceptionId, Latitude, Longitude, OrderIdsRaw, FormIdsRaw, VisitNote, IsItOnRoute, IsItOnTime, IsItOnLocation, DistanceFromCustomerLocation, VisitType, SelectedCustomerOrganizationId)
-VALUES (:AppointmentId, :Guid, :Start, :Finish, :AppointmentExceptionId, :Latitude, :Longitude, :OrderIdsRaw, :FormIdsRaw, :VisitNote, :IsItOnRoute, :IsItOnTime, :IsItOnLocation, :DistanceFromCustomerLocation, :VisitType, :SelectedCustomerOrganizationId);
+INSERT OR REPLACE INTO VisitEntity
+VALUES ?;
 
 updateVisitEntity:
-UPDATE VisitEntity SET AppointmentId = :AppointmentId, Guid = :Guid, Start = :Start, Finish = :Finish, AppointmentExceptionId = :AppointmentExceptionId, Latitude = :Latitude, Longitude = :Longitude, OrderIdsRaw = :OrderIdsRaw, FormIdsRaw = :FormIdsRaw, VisitNote = :VisitNote, IsItOnRoute = :IsItOnRoute, IsItOnTime = :IsItOnTime, IsItOnLocation = :IsItOnLocation, DistanceFromCustomerLocation = :DistanceFromCustomerLocation, VisitType = :VisitType, SelectedCustomerOrganizationId = :SelectedCustomerOrganizationId WHERE Id = :Id;
+UPDATE VisitEntity SET
+    AppointmentId = ?,
+    Guid = ?,
+    Start = ?,
+    Finish = ?,
+    AppointmentExceptionId = ?,
+    Latitude = ?,
+    Longitude = ?,
+    OrderIdsRaw = ?,
+    FormIdsRaw = ?,
+    VisitNote = ?,
+    IsItOnRoute = ?,
+    IsItOnTime = ?,
+    IsItOnLocation = ?,
+    DistanceFromCustomerLocation = ?,
+    VisitType = ?,
+    SelectedCustomerOrganizationId = ?
+WHERE Id = ?;
 
 deleteVisitEntity:
-DELETE FROM VisitEntity WHERE Id = :Id;
-
-deleteAllVisitEntity:
-DELETE FROM VisitEntity;
+DELETE FROM VisitEntity WHERE Id = ?;

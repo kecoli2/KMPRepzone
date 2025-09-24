@@ -1,6 +1,6 @@
 ﻿-- DownedDriveItemEntity SQLDelight dosyası
 -- Orijinal tablo: MobileDownedDriveItem
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS DownedDriveItemEntity (
     UniqueId TEXT NOT NULL PRIMARY KEY,
@@ -12,21 +12,21 @@ selectAllDownedDriveItemEntity:
 SELECT * FROM DownedDriveItemEntity;
 
 selectByDownedDriveItemEntityId:
-SELECT * FROM DownedDriveItemEntity WHERE UniqueId = :UniqueId;
+SELECT * FROM DownedDriveItemEntity WHERE UniqueId = ?;
 
 insertDownedDriveItemEntity:
-INSERT INTO DownedDriveItemEntity (UniqueId, DriveItemJson, DownloadedPath)
-VALUES (:UniqueId, :DriveItemJson, :DownloadedPath);
+INSERT INTO DownedDriveItemEntity
+VALUES ?;
 
 insertOrReplaceDownedDriveItemEntity:
-INSERT OR REPLACE INTO DownedDriveItemEntity (UniqueId, DriveItemJson, DownloadedPath)
-VALUES (:UniqueId, :DriveItemJson, :DownloadedPath);
+INSERT OR REPLACE INTO DownedDriveItemEntity
+VALUES ?;
 
 updateDownedDriveItemEntity:
-UPDATE DownedDriveItemEntity SET DriveItemJson = :DriveItemJson, DownloadedPath = :DownloadedPath WHERE UniqueId = :UniqueId;
+UPDATE DownedDriveItemEntity SET
+    DriveItemJson = ?,
+    DownloadedPath = ?
+WHERE UniqueId = ?;
 
 deleteDownedDriveItemEntity:
-DELETE FROM DownedDriveItemEntity WHERE UniqueId = :UniqueId;
-
-deleteAllDownedDriveItemEntity:
-DELETE FROM DownedDriveItemEntity;
+DELETE FROM DownedDriveItemEntity WHERE UniqueId = ?;

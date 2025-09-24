@@ -34,8 +34,8 @@ class PlatformApplication: Application() {
         startKoin {
             androidContext(this@PlatformApplication)
             modules(
-                DatabaseModule,
                 DatabaseAndroidModule,
+                DatabaseModule,
                 NetworkModule,
                 RepositoryModule,
                 SyncModule,

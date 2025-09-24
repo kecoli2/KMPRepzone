@@ -1,6 +1,6 @@
 ﻿-- SyncPaymentPlanEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncPaymentPlanModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncPaymentPlanEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -19,21 +19,28 @@ selectAllSyncPaymentPlanEntity:
 SELECT * FROM SyncPaymentPlanEntity;
 
 selectBySyncPaymentPlanEntityId:
-SELECT * FROM SyncPaymentPlanEntity WHERE TenantId = :TenantId;
+SELECT * FROM SyncPaymentPlanEntity WHERE Id = ?;
 
 insertSyncPaymentPlanEntity:
-INSERT INTO SyncPaymentPlanEntity (TenantId, Name, EdiCode, IsDefault, Ids, Code, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:TenantId, :Name, :EdiCode, :IsDefault, :Ids, :Code, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncPaymentPlanEntity
+VALUES ?;
 
 insertOrReplaceSyncPaymentPlanEntity:
-INSERT OR REPLACE INTO SyncPaymentPlanEntity (TenantId, Name, EdiCode, IsDefault, Ids, Code, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:TenantId, :Name, :EdiCode, :IsDefault, :Ids, :Code, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncPaymentPlanEntity
+VALUES ?;
 
 updateSyncPaymentPlanEntity:
-UPDATE SyncPaymentPlanEntity SET TenantId = :TenantId, Name = :Name, EdiCode = :EdiCode, IsDefault = :IsDefault, Ids = :Ids, Code = :Code, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE TenantId = :TenantId;
+UPDATE SyncPaymentPlanEntity SET
+    TenantId = ?,
+    Name = ?,
+    EdiCode = ?,
+    IsDefault = ?,
+    Ids = ?,
+    Code = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncPaymentPlanEntity:
-DELETE FROM SyncPaymentPlanEntity WHERE TenantId = :TenantId;
-
-deleteAllSyncPaymentPlanEntity:
-DELETE FROM SyncPaymentPlanEntity;
+DELETE FROM SyncPaymentPlanEntity WHERE Id = ?;

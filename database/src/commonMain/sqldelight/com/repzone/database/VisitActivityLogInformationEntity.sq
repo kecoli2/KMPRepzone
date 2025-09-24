@@ -1,6 +1,6 @@
 ﻿-- VisitActivityLogInformationEntity SQLDelight dosyası
 -- Orijinal tablo: VisitActivityLogInformation
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS VisitActivityLogInformationEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -14,21 +14,23 @@ selectAllVisitActivityLogInformationEntity:
 SELECT * FROM VisitActivityLogInformationEntity;
 
 selectByVisitActivityLogInformationEntityId:
-SELECT * FROM VisitActivityLogInformationEntity WHERE Id = :Id;
+SELECT * FROM VisitActivityLogInformationEntity WHERE Id = ?;
 
 insertVisitActivityLogInformationEntity:
-INSERT INTO VisitActivityLogInformationEntity (VisitActivityId, VisitId, ActionDate, ActionType)
-VALUES (:VisitActivityId, :VisitId, :ActionDate, :ActionType);
+INSERT INTO VisitActivityLogInformationEntity
+VALUES ?;
 
 insertOrReplaceVisitActivityLogInformationEntity:
-INSERT OR REPLACE INTO VisitActivityLogInformationEntity (VisitActivityId, VisitId, ActionDate, ActionType)
-VALUES (:VisitActivityId, :VisitId, :ActionDate, :ActionType);
+INSERT OR REPLACE INTO VisitActivityLogInformationEntity
+VALUES ?;
 
 updateVisitActivityLogInformationEntity:
-UPDATE VisitActivityLogInformationEntity SET VisitActivityId = :VisitActivityId, VisitId = :VisitId, ActionDate = :ActionDate, ActionType = :ActionType WHERE Id = :Id;
+UPDATE VisitActivityLogInformationEntity SET
+    VisitActivityId = ?,
+    VisitId = ?,
+    ActionDate = ?,
+    ActionType = ?
+WHERE Id = ?;
 
 deleteVisitActivityLogInformationEntity:
-DELETE FROM VisitActivityLogInformationEntity WHERE Id = :Id;
-
-deleteAllVisitActivityLogInformationEntity:
-DELETE FROM VisitActivityLogInformationEntity;
+DELETE FROM VisitActivityLogInformationEntity WHERE Id = ?;

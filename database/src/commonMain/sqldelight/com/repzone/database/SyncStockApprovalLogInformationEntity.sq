@@ -1,6 +1,6 @@
 ﻿-- SyncStockApprovalLogInformationEntity SQLDelight dosyası
 -- Orijinal tablo: SyncStockApprovalLogInformation
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncStockApprovalLogInformationEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -15,21 +15,24 @@ selectAllSyncStockApprovalLogInformationEntity:
 SELECT * FROM SyncStockApprovalLogInformationEntity;
 
 selectBySyncStockApprovalLogInformationEntityId:
-SELECT * FROM SyncStockApprovalLogInformationEntity WHERE Id = :Id;
+SELECT * FROM SyncStockApprovalLogInformationEntity WHERE Id = ?;
 
 insertSyncStockApprovalLogInformationEntity:
-INSERT INTO SyncStockApprovalLogInformationEntity (Data, ApprovalDate, TotalProductKind, TotalProductQuantity, ReferenceDocUniqueId)
-VALUES (:Data, :ApprovalDate, :TotalProductKind, :TotalProductQuantity, :ReferenceDocUniqueId);
+INSERT INTO SyncStockApprovalLogInformationEntity
+VALUES ?;
 
 insertOrReplaceSyncStockApprovalLogInformationEntity:
-INSERT OR REPLACE INTO SyncStockApprovalLogInformationEntity (Data, ApprovalDate, TotalProductKind, TotalProductQuantity, ReferenceDocUniqueId)
-VALUES (:Data, :ApprovalDate, :TotalProductKind, :TotalProductQuantity, :ReferenceDocUniqueId);
+INSERT OR REPLACE INTO SyncStockApprovalLogInformationEntity
+VALUES ?;
 
 updateSyncStockApprovalLogInformationEntity:
-UPDATE SyncStockApprovalLogInformationEntity SET Data = :Data, ApprovalDate = :ApprovalDate, TotalProductKind = :TotalProductKind, TotalProductQuantity = :TotalProductQuantity, ReferenceDocUniqueId = :ReferenceDocUniqueId WHERE Id = :Id;
+UPDATE SyncStockApprovalLogInformationEntity SET
+    Data = ?,
+    ApprovalDate = ?,
+    TotalProductKind = ?,
+    TotalProductQuantity = ?,
+    ReferenceDocUniqueId = ?
+WHERE Id = ?;
 
 deleteSyncStockApprovalLogInformationEntity:
-DELETE FROM SyncStockApprovalLogInformationEntity WHERE Id = :Id;
-
-deleteAllSyncStockApprovalLogInformationEntity:
-DELETE FROM SyncStockApprovalLogInformationEntity;
+DELETE FROM SyncStockApprovalLogInformationEntity WHERE Id = ?;

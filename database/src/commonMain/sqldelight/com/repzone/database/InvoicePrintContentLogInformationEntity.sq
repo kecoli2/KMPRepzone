@@ -1,6 +1,6 @@
 ﻿-- InvoicePrintContentLogInformationEntity SQLDelight dosyası
 -- Orijinal tablo: InvoicePrintContentLogInformation
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS InvoicePrintContentLogInformationEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -12,21 +12,21 @@ selectAllInvoicePrintContentLogInformationEntity:
 SELECT * FROM InvoicePrintContentLogInformationEntity;
 
 selectByInvoicePrintContentLogInformationEntityId:
-SELECT * FROM InvoicePrintContentLogInformationEntity WHERE Id = :Id;
+SELECT * FROM InvoicePrintContentLogInformationEntity WHERE Id = ?;
 
 insertInvoicePrintContentLogInformationEntity:
-INSERT INTO InvoicePrintContentLogInformationEntity (SessionId, PrintContent)
-VALUES (:SessionId, :PrintContent);
+INSERT INTO InvoicePrintContentLogInformationEntity
+VALUES ?;
 
 insertOrReplaceInvoicePrintContentLogInformationEntity:
-INSERT OR REPLACE INTO InvoicePrintContentLogInformationEntity (SessionId, PrintContent)
-VALUES (:SessionId, :PrintContent);
+INSERT OR REPLACE INTO InvoicePrintContentLogInformationEntity
+VALUES ?;
 
 updateInvoicePrintContentLogInformationEntity:
-UPDATE InvoicePrintContentLogInformationEntity SET SessionId = :SessionId, PrintContent = :PrintContent WHERE Id = :Id;
+UPDATE InvoicePrintContentLogInformationEntity SET
+    SessionId = ?,
+    PrintContent = ?
+WHERE Id = ?;
 
 deleteInvoicePrintContentLogInformationEntity:
-DELETE FROM InvoicePrintContentLogInformationEntity WHERE Id = :Id;
-
-deleteAllInvoicePrintContentLogInformationEntity:
-DELETE FROM InvoicePrintContentLogInformationEntity;
+DELETE FROM InvoicePrintContentLogInformationEntity WHERE Id = ?;

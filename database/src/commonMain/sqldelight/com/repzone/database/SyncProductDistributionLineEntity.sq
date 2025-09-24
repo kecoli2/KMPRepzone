@@ -1,6 +1,6 @@
 ﻿-- SyncProductDistributionLineEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncProductDistributionLineModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncProductDistributionLineEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -18,21 +18,27 @@ selectAllSyncProductDistributionLineEntity:
 SELECT * FROM SyncProductDistributionLineEntity;
 
 selectBySyncProductDistributionLineEntityId:
-SELECT * FROM SyncProductDistributionLineEntity WHERE DistributionId = :DistributionId;
+SELECT * FROM SyncProductDistributionLineEntity WHERE Id = ?;
 
 insertSyncProductDistributionLineEntity:
-INSERT INTO SyncProductDistributionLineEntity (DistributionId, ProductId, DisplayOrder, Color, MustHave, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:DistributionId, :ProductId, :DisplayOrder, :Color, :MustHave, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncProductDistributionLineEntity
+VALUES ?;
 
 insertOrReplaceSyncProductDistributionLineEntity:
-INSERT OR REPLACE INTO SyncProductDistributionLineEntity (DistributionId, ProductId, DisplayOrder, Color, MustHave, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:DistributionId, :ProductId, :DisplayOrder, :Color, :MustHave, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncProductDistributionLineEntity
+VALUES ?;
 
 updateSyncProductDistributionLineEntity:
-UPDATE SyncProductDistributionLineEntity SET DistributionId = :DistributionId, ProductId = :ProductId, DisplayOrder = :DisplayOrder, Color = :Color, MustHave = :MustHave, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE DistributionId = :DistributionId;
+UPDATE SyncProductDistributionLineEntity SET
+    DistributionId = ?,
+    ProductId = ?,
+    DisplayOrder = ?,
+    Color = ?,
+    MustHave = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncProductDistributionLineEntity:
-DELETE FROM SyncProductDistributionLineEntity WHERE DistributionId = :DistributionId;
-
-deleteAllSyncProductDistributionLineEntity:
-DELETE FROM SyncProductDistributionLineEntity;
+DELETE FROM SyncProductDistributionLineEntity WHERE Id = ?;

@@ -1,6 +1,6 @@
 ﻿-- SyncCustomerOrganizationScopeEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncCustomerOrganizationScopeModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:18
 
 CREATE TABLE IF NOT EXISTS SyncCustomerOrganizationScopeEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -19,21 +19,28 @@ selectAllSyncCustomerOrganizationScopeEntity:
 SELECT * FROM SyncCustomerOrganizationScopeEntity;
 
 selectBySyncCustomerOrganizationScopeEntityId:
-SELECT * FROM SyncCustomerOrganizationScopeEntity WHERE Id = :Id;
+SELECT * FROM SyncCustomerOrganizationScopeEntity WHERE Id = ?;
 
 insertSyncCustomerOrganizationScopeEntity:
-INSERT INTO SyncCustomerOrganizationScopeEntity (State, RecordDateUtc, ModificationDateUtc, CustomerId, OrganizationId, OrganizationName, ManufacturerId, Fulfillment, SalesNotAllowed)
-VALUES (:State, :RecordDateUtc, :ModificationDateUtc, :CustomerId, :OrganizationId, :OrganizationName, :ManufacturerId, :Fulfillment, :SalesNotAllowed);
+INSERT INTO SyncCustomerOrganizationScopeEntity
+VALUES ?;
 
 insertOrReplaceSyncCustomerOrganizationScopeEntity:
-INSERT OR REPLACE INTO SyncCustomerOrganizationScopeEntity (State, RecordDateUtc, ModificationDateUtc, CustomerId, OrganizationId, OrganizationName, ManufacturerId, Fulfillment, SalesNotAllowed)
-VALUES (:State, :RecordDateUtc, :ModificationDateUtc, :CustomerId, :OrganizationId, :OrganizationName, :ManufacturerId, :Fulfillment, :SalesNotAllowed);
+INSERT OR REPLACE INTO SyncCustomerOrganizationScopeEntity
+VALUES ?;
 
 updateSyncCustomerOrganizationScopeEntity:
-UPDATE SyncCustomerOrganizationScopeEntity SET State = :State, RecordDateUtc = :RecordDateUtc, ModificationDateUtc = :ModificationDateUtc, CustomerId = :CustomerId, OrganizationId = :OrganizationId, OrganizationName = :OrganizationName, ManufacturerId = :ManufacturerId, Fulfillment = :Fulfillment, SalesNotAllowed = :SalesNotAllowed WHERE Id = :Id;
+UPDATE SyncCustomerOrganizationScopeEntity SET
+    State = ?,
+    RecordDateUtc = ?,
+    ModificationDateUtc = ?,
+    CustomerId = ?,
+    OrganizationId = ?,
+    OrganizationName = ?,
+    ManufacturerId = ?,
+    Fulfillment = ?,
+    SalesNotAllowed = ?
+WHERE Id = ?;
 
 deleteSyncCustomerOrganizationScopeEntity:
-DELETE FROM SyncCustomerOrganizationScopeEntity WHERE Id = :Id;
-
-deleteAllSyncCustomerOrganizationScopeEntity:
-DELETE FROM SyncCustomerOrganizationScopeEntity;
+DELETE FROM SyncCustomerOrganizationScopeEntity WHERE Id = ?;

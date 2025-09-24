@@ -1,6 +1,6 @@
 ﻿-- CustomerCampaignImplementationLogInformationEntity SQLDelight dosyası
 -- Orijinal tablo: CustomerCampaignImplementationLogInformation
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS CustomerCampaignImplementationLogInformationEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -13,21 +13,22 @@ selectAllCustomerCampaignImplementationLogInformationEntity:
 SELECT * FROM CustomerCampaignImplementationLogInformationEntity;
 
 selectByCustomerCampaignImplementationLogInformationEntityId:
-SELECT * FROM CustomerCampaignImplementationLogInformationEntity WHERE Id = :Id;
+SELECT * FROM CustomerCampaignImplementationLogInformationEntity WHERE Id = ?;
 
 insertCustomerCampaignImplementationLogInformationEntity:
-INSERT INTO CustomerCampaignImplementationLogInformationEntity (CampaignMasterId, CustomerId, Count)
-VALUES (:CampaignMasterId, :CustomerId, :Count);
+INSERT INTO CustomerCampaignImplementationLogInformationEntity
+VALUES ?;
 
 insertOrReplaceCustomerCampaignImplementationLogInformationEntity:
-INSERT OR REPLACE INTO CustomerCampaignImplementationLogInformationEntity (CampaignMasterId, CustomerId, Count)
-VALUES (:CampaignMasterId, :CustomerId, :Count);
+INSERT OR REPLACE INTO CustomerCampaignImplementationLogInformationEntity
+VALUES ?;
 
 updateCustomerCampaignImplementationLogInformationEntity:
-UPDATE CustomerCampaignImplementationLogInformationEntity SET CampaignMasterId = :CampaignMasterId, CustomerId = :CustomerId, Count = :Count WHERE Id = :Id;
+UPDATE CustomerCampaignImplementationLogInformationEntity SET
+    CampaignMasterId = ?,
+    CustomerId = ?,
+    Count = ?
+WHERE Id = ?;
 
 deleteCustomerCampaignImplementationLogInformationEntity:
-DELETE FROM CustomerCampaignImplementationLogInformationEntity WHERE Id = :Id;
-
-deleteAllCustomerCampaignImplementationLogInformationEntity:
-DELETE FROM CustomerCampaignImplementationLogInformationEntity;
+DELETE FROM CustomerCampaignImplementationLogInformationEntity WHERE Id = ?;

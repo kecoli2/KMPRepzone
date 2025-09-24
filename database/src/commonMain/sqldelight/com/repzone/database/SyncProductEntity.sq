@@ -1,6 +1,6 @@
 ﻿-- SyncProductEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncProductModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncProductEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -38,21 +38,47 @@ selectAllSyncProductEntity:
 SELECT * FROM SyncProductEntity;
 
 selectBySyncProductEntityId:
-SELECT * FROM SyncProductEntity WHERE TenantId = :TenantId;
+SELECT * FROM SyncProductEntity WHERE Id = ?;
 
 insertSyncProductEntity:
-INSERT INTO SyncProductEntity (TenantId, Sku, Name, Description, Tags, BrandId, DisplayOrder, OrderQuantityFactor, MinimumOrderQuantity, MaximumOrderQuantity, GroupId, PhotoPath, Vat, IsVisible, OrganizationId, OrganizationIds, BrandName, GroupName, Color, BrandPhotoPath, GroupPhotoPath, CloseToSales, CloseToReturns, ModificationDateUtc, RecordDateUtc, State, ManufacturerId, Shared)
-VALUES (:TenantId, :Sku, :Name, :Description, :Tags, :BrandId, :DisplayOrder, :OrderQuantityFactor, :MinimumOrderQuantity, :MaximumOrderQuantity, :GroupId, :PhotoPath, :Vat, :IsVisible, :OrganizationId, :OrganizationIds, :BrandName, :GroupName, :Color, :BrandPhotoPath, :GroupPhotoPath, :CloseToSales, :CloseToReturns, :ModificationDateUtc, :RecordDateUtc, :State, :ManufacturerId, :Shared);
+INSERT INTO SyncProductEntity
+VALUES ?;
 
 insertOrReplaceSyncProductEntity:
-INSERT OR REPLACE INTO SyncProductEntity (TenantId, Sku, Name, Description, Tags, BrandId, DisplayOrder, OrderQuantityFactor, MinimumOrderQuantity, MaximumOrderQuantity, GroupId, PhotoPath, Vat, IsVisible, OrganizationId, OrganizationIds, BrandName, GroupName, Color, BrandPhotoPath, GroupPhotoPath, CloseToSales, CloseToReturns, ModificationDateUtc, RecordDateUtc, State, ManufacturerId, Shared)
-VALUES (:TenantId, :Sku, :Name, :Description, :Tags, :BrandId, :DisplayOrder, :OrderQuantityFactor, :MinimumOrderQuantity, :MaximumOrderQuantity, :GroupId, :PhotoPath, :Vat, :IsVisible, :OrganizationId, :OrganizationIds, :BrandName, :GroupName, :Color, :BrandPhotoPath, :GroupPhotoPath, :CloseToSales, :CloseToReturns, :ModificationDateUtc, :RecordDateUtc, :State, :ManufacturerId, :Shared);
+INSERT OR REPLACE INTO SyncProductEntity
+VALUES ?;
 
 updateSyncProductEntity:
-UPDATE SyncProductEntity SET TenantId = :TenantId, Sku = :Sku, Name = :Name, Description = :Description, Tags = :Tags, BrandId = :BrandId, DisplayOrder = :DisplayOrder, OrderQuantityFactor = :OrderQuantityFactor, MinimumOrderQuantity = :MinimumOrderQuantity, MaximumOrderQuantity = :MaximumOrderQuantity, GroupId = :GroupId, PhotoPath = :PhotoPath, Vat = :Vat, IsVisible = :IsVisible, OrganizationId = :OrganizationId, OrganizationIds = :OrganizationIds, BrandName = :BrandName, GroupName = :GroupName, Color = :Color, BrandPhotoPath = :BrandPhotoPath, GroupPhotoPath = :GroupPhotoPath, CloseToSales = :CloseToSales, CloseToReturns = :CloseToReturns, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State, ManufacturerId = :ManufacturerId, Shared = :Shared WHERE TenantId = :TenantId;
+UPDATE SyncProductEntity SET
+    TenantId = ?,
+    Sku = ?,
+    Name = ?,
+    Description = ?,
+    Tags = ?,
+    BrandId = ?,
+    DisplayOrder = ?,
+    OrderQuantityFactor = ?,
+    MinimumOrderQuantity = ?,
+    MaximumOrderQuantity = ?,
+    GroupId = ?,
+    PhotoPath = ?,
+    Vat = ?,
+    IsVisible = ?,
+    OrganizationId = ?,
+    OrganizationIds = ?,
+    BrandName = ?,
+    GroupName = ?,
+    Color = ?,
+    BrandPhotoPath = ?,
+    GroupPhotoPath = ?,
+    CloseToSales = ?,
+    CloseToReturns = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?,
+    ManufacturerId = ?,
+    Shared = ?
+WHERE Id = ?;
 
 deleteSyncProductEntity:
-DELETE FROM SyncProductEntity WHERE TenantId = :TenantId;
-
-deleteAllSyncProductEntity:
-DELETE FROM SyncProductEntity;
+DELETE FROM SyncProductEntity WHERE Id = ?;

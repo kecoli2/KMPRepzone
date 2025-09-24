@@ -1,6 +1,6 @@
 ﻿-- SyncManufacturerRepresentativesEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncManufacturerRepresentatives
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncManufacturerRepresentativesEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -17,21 +17,26 @@ selectAllSyncManufacturerRepresentativesEntity:
 SELECT * FROM SyncManufacturerRepresentativesEntity;
 
 selectBySyncManufacturerRepresentativesEntityId:
-SELECT * FROM SyncManufacturerRepresentativesEntity WHERE RepresentativeId = :RepresentativeId;
+SELECT * FROM SyncManufacturerRepresentativesEntity WHERE Id = ?;
 
 insertSyncManufacturerRepresentativesEntity:
-INSERT INTO SyncManufacturerRepresentativesEntity (RepresentativeId, ManufacturerId, Fulfillment, SalesNotAllowed, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:RepresentativeId, :ManufacturerId, :Fulfillment, :SalesNotAllowed, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncManufacturerRepresentativesEntity
+VALUES ?;
 
 insertOrReplaceSyncManufacturerRepresentativesEntity:
-INSERT OR REPLACE INTO SyncManufacturerRepresentativesEntity (RepresentativeId, ManufacturerId, Fulfillment, SalesNotAllowed, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:RepresentativeId, :ManufacturerId, :Fulfillment, :SalesNotAllowed, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncManufacturerRepresentativesEntity
+VALUES ?;
 
 updateSyncManufacturerRepresentativesEntity:
-UPDATE SyncManufacturerRepresentativesEntity SET RepresentativeId = :RepresentativeId, ManufacturerId = :ManufacturerId, Fulfillment = :Fulfillment, SalesNotAllowed = :SalesNotAllowed, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE RepresentativeId = :RepresentativeId;
+UPDATE SyncManufacturerRepresentativesEntity SET
+    RepresentativeId = ?,
+    ManufacturerId = ?,
+    Fulfillment = ?,
+    SalesNotAllowed = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncManufacturerRepresentativesEntity:
-DELETE FROM SyncManufacturerRepresentativesEntity WHERE RepresentativeId = :RepresentativeId;
-
-deleteAllSyncManufacturerRepresentativesEntity:
-DELETE FROM SyncManufacturerRepresentativesEntity;
+DELETE FROM SyncManufacturerRepresentativesEntity WHERE Id = ?;

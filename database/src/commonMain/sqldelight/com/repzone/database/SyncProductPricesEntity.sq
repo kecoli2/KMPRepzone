@@ -1,6 +1,6 @@
 ﻿-- SyncProductPricesEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncProductPrices
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncProductPricesEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -20,21 +20,29 @@ selectAllSyncProductPricesEntity:
 SELECT * FROM SyncProductPricesEntity;
 
 selectBySyncProductPricesEntityId:
-SELECT * FROM SyncProductPricesEntity WHERE TenantId = :TenantId;
+SELECT * FROM SyncProductPricesEntity WHERE Id = ?;
 
 insertSyncProductPricesEntity:
-INSERT INTO SyncProductPricesEntity (TenantId, OrganizationId, Name, Description, Begin, `End`, ParentId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:TenantId, :OrganizationId, :Name, :Description, :Begin, :End, :ParentId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncProductPricesEntity
+VALUES ?;
 
 insertOrReplaceSyncProductPricesEntity:
-INSERT OR REPLACE INTO SyncProductPricesEntity (TenantId, OrganizationId, Name, Description, Begin, `End`, ParentId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:TenantId, :OrganizationId, :Name, :Description, :Begin, :End, :ParentId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncProductPricesEntity
+VALUES ?;
 
 updateSyncProductPricesEntity:
-UPDATE SyncProductPricesEntity SET TenantId = :TenantId, OrganizationId = :OrganizationId, Name = :Name, Description = :Description, Begin = :Begin, `End` = :End, ParentId = :ParentId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE TenantId = :TenantId;
+UPDATE SyncProductPricesEntity SET
+    TenantId = ?,
+    OrganizationId = ?,
+    Name = ?,
+    Description = ?,
+    Begin = ?,
+    `End` = ?,
+    ParentId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncProductPricesEntity:
-DELETE FROM SyncProductPricesEntity WHERE TenantId = :TenantId;
-
-deleteAllSyncProductPricesEntity:
-DELETE FROM SyncProductPricesEntity;
+DELETE FROM SyncProductPricesEntity WHERE Id = ?;

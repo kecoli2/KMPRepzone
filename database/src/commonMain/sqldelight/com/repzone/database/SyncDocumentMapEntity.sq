@@ -1,6 +1,6 @@
 ﻿-- SyncDocumentMapEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncDocumentMapModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncDocumentMapEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -31,21 +31,40 @@ selectAllSyncDocumentMapEntity:
 SELECT * FROM SyncDocumentMapEntity;
 
 selectBySyncDocumentMapEntityId:
-SELECT * FROM SyncDocumentMapEntity WHERE UniqueIdCaption = :UniqueIdCaption;
+SELECT * FROM SyncDocumentMapEntity WHERE Id = ?;
 
 insertSyncDocumentMapEntity:
-INSERT INTO SyncDocumentMapEntity (Name, Description, IoType, IsElectronicDocument, DocumentTypeGroup, WarehouseType, MinMaxControl, Lang, LogoSelection, LogoPathUrl, PrintQrCode, UseFinancialLogo, DocumentHeader, UniqueIdCaption, Note, PrinterTemplatePath, OperationType, ModificationDateUtc, RecordDateUtc, State, IsFulfillment)
-VALUES (:Name, :Description, :IoType, :IsElectronicDocument, :DocumentTypeGroup, :WarehouseType, :MinMaxControl, :Lang, :LogoSelection, :LogoPathUrl, :PrintQrCode, :UseFinancialLogo, :DocumentHeader, :UniqueIdCaption, :Note, :PrinterTemplatePath, :OperationType, :ModificationDateUtc, :RecordDateUtc, :State, :IsFulfillment);
+INSERT INTO SyncDocumentMapEntity
+VALUES ?;
 
 insertOrReplaceSyncDocumentMapEntity:
-INSERT OR REPLACE INTO SyncDocumentMapEntity (Name, Description, IoType, IsElectronicDocument, DocumentTypeGroup, WarehouseType, MinMaxControl, Lang, LogoSelection, LogoPathUrl, PrintQrCode, UseFinancialLogo, DocumentHeader, UniqueIdCaption, Note, PrinterTemplatePath, OperationType, ModificationDateUtc, RecordDateUtc, State, IsFulfillment)
-VALUES (:Name, :Description, :IoType, :IsElectronicDocument, :DocumentTypeGroup, :WarehouseType, :MinMaxControl, :Lang, :LogoSelection, :LogoPathUrl, :PrintQrCode, :UseFinancialLogo, :DocumentHeader, :UniqueIdCaption, :Note, :PrinterTemplatePath, :OperationType, :ModificationDateUtc, :RecordDateUtc, :State, :IsFulfillment);
+INSERT OR REPLACE INTO SyncDocumentMapEntity
+VALUES ?;
 
 updateSyncDocumentMapEntity:
-UPDATE SyncDocumentMapEntity SET Name = :Name, Description = :Description, IoType = :IoType, IsElectronicDocument = :IsElectronicDocument, DocumentTypeGroup = :DocumentTypeGroup, WarehouseType = :WarehouseType, MinMaxControl = :MinMaxControl, Lang = :Lang, LogoSelection = :LogoSelection, LogoPathUrl = :LogoPathUrl, PrintQrCode = :PrintQrCode, UseFinancialLogo = :UseFinancialLogo, DocumentHeader = :DocumentHeader, UniqueIdCaption = :UniqueIdCaption, Note = :Note, PrinterTemplatePath = :PrinterTemplatePath, OperationType = :OperationType, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State, IsFulfillment = :IsFulfillment WHERE UniqueIdCaption = :UniqueIdCaption;
+UPDATE SyncDocumentMapEntity SET
+    Name = ?,
+    Description = ?,
+    IoType = ?,
+    IsElectronicDocument = ?,
+    DocumentTypeGroup = ?,
+    WarehouseType = ?,
+    MinMaxControl = ?,
+    Lang = ?,
+    LogoSelection = ?,
+    LogoPathUrl = ?,
+    PrintQrCode = ?,
+    UseFinancialLogo = ?,
+    DocumentHeader = ?,
+    UniqueIdCaption = ?,
+    Note = ?,
+    PrinterTemplatePath = ?,
+    OperationType = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?,
+    IsFulfillment = ?
+WHERE Id = ?;
 
 deleteSyncDocumentMapEntity:
-DELETE FROM SyncDocumentMapEntity WHERE UniqueIdCaption = :UniqueIdCaption;
-
-deleteAllSyncDocumentMapEntity:
-DELETE FROM SyncDocumentMapEntity;
+DELETE FROM SyncDocumentMapEntity WHERE Id = ?;

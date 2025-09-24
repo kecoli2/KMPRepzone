@@ -1,6 +1,6 @@
 ﻿-- DocumentMapDocNumberInformationEntity SQLDelight dosyası
 -- Orijinal tablo: DocumentMapDocNumberInformation
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS DocumentMapDocNumberInformationEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -16,21 +16,25 @@ selectAllDocumentMapDocNumberInformationEntity:
 SELECT * FROM DocumentMapDocNumberInformationEntity;
 
 selectByDocumentMapDocNumberInformationEntityId:
-SELECT * FROM DocumentMapDocNumberInformationEntity WHERE Id = :Id;
+SELECT * FROM DocumentMapDocNumberInformationEntity WHERE Id = ?;
 
 insertDocumentMapDocNumberInformationEntity:
-INSERT INTO DocumentMapDocNumberInformationEntity (DocumentType, DocumentMapId, DocumentNumberPrefix, DocumentNumberBody, DocumentNumberPostfix, State)
-VALUES (:DocumentType, :DocumentMapId, :DocumentNumberPrefix, :DocumentNumberBody, :DocumentNumberPostfix, :State);
+INSERT INTO DocumentMapDocNumberInformationEntity
+VALUES ?;
 
 insertOrReplaceDocumentMapDocNumberInformationEntity:
-INSERT OR REPLACE INTO DocumentMapDocNumberInformationEntity (DocumentType, DocumentMapId, DocumentNumberPrefix, DocumentNumberBody, DocumentNumberPostfix, State)
-VALUES (:DocumentType, :DocumentMapId, :DocumentNumberPrefix, :DocumentNumberBody, :DocumentNumberPostfix, :State);
+INSERT OR REPLACE INTO DocumentMapDocNumberInformationEntity
+VALUES ?;
 
 updateDocumentMapDocNumberInformationEntity:
-UPDATE DocumentMapDocNumberInformationEntity SET DocumentType = :DocumentType, DocumentMapId = :DocumentMapId, DocumentNumberPrefix = :DocumentNumberPrefix, DocumentNumberBody = :DocumentNumberBody, DocumentNumberPostfix = :DocumentNumberPostfix, State = :State WHERE Id = :Id;
+UPDATE DocumentMapDocNumberInformationEntity SET
+    DocumentType = ?,
+    DocumentMapId = ?,
+    DocumentNumberPrefix = ?,
+    DocumentNumberBody = ?,
+    DocumentNumberPostfix = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteDocumentMapDocNumberInformationEntity:
-DELETE FROM DocumentMapDocNumberInformationEntity WHERE Id = :Id;
-
-deleteAllDocumentMapDocNumberInformationEntity:
-DELETE FROM DocumentMapDocNumberInformationEntity;
+DELETE FROM DocumentMapDocNumberInformationEntity WHERE Id = ?;

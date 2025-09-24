@@ -1,6 +1,6 @@
 ﻿-- ProductParameterEntity SQLDelight dosyası
 -- Orijinal tablo: MobileProductParameter
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS ProductParameterEntity (
     Color TEXT,
@@ -14,22 +14,11 @@ CREATE TABLE IF NOT EXISTS ProductParameterEntity (
 selectAllProductParameterEntity:
 SELECT * FROM ProductParameterEntity;
 
-selectByProductParameterEntityId:
-SELECT * FROM ProductParameterEntity WHERE Id = :Id;
-
 insertProductParameterEntity:
-INSERT INTO ProductParameterEntity (Id, ProductId, `Order`, Color, OrganizationId, IsVisible)
-VALUES (:Id, :ProductId, :Order, :Color, :OrganizationId, :IsVisible);
+INSERT INTO ProductParameterEntity
+VALUES ?;
 
 insertOrReplaceProductParameterEntity:
-INSERT OR REPLACE INTO ProductParameterEntity (Id, ProductId, `Order`, Color, OrganizationId, IsVisible)
-VALUES (:Id, :ProductId, :Order, :Color, :OrganizationId, :IsVisible);
+INSERT OR REPLACE INTO ProductParameterEntity
+VALUES ?;
 
-updateProductParameterEntity:
-UPDATE ProductParameterEntity SET Id = :Id, ProductId = :ProductId, `Order` = :Order, Color = :Color, OrganizationId = :OrganizationId, IsVisible = :IsVisible WHERE Id = :Id;
-
-deleteProductParameterEntity:
-DELETE FROM ProductParameterEntity WHERE Id = :Id;
-
-deleteAllProductParameterEntity:
-DELETE FROM ProductParameterEntity;

@@ -1,6 +1,6 @@
 ﻿-- SystemLogInformationEntity SQLDelight dosyası
 -- Orijinal tablo: SystemLogInformation
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SystemLogInformationEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -13,21 +13,22 @@ selectAllSystemLogInformationEntity:
 SELECT * FROM SystemLogInformationEntity;
 
 selectBySystemLogInformationEntityId:
-SELECT * FROM SystemLogInformationEntity WHERE Id = :Id;
+SELECT * FROM SystemLogInformationEntity WHERE Id = ?;
 
 insertSystemLogInformationEntity:
-INSERT INTO SystemLogInformationEntity (Region, Message, RecordDate)
-VALUES (:Region, :Message, :RecordDate);
+INSERT INTO SystemLogInformationEntity
+VALUES ?;
 
 insertOrReplaceSystemLogInformationEntity:
-INSERT OR REPLACE INTO SystemLogInformationEntity (Region, Message, RecordDate)
-VALUES (:Region, :Message, :RecordDate);
+INSERT OR REPLACE INTO SystemLogInformationEntity
+VALUES ?;
 
 updateSystemLogInformationEntity:
-UPDATE SystemLogInformationEntity SET Region = :Region, Message = :Message, RecordDate = :RecordDate WHERE Id = :Id;
+UPDATE SystemLogInformationEntity SET
+    Region = ?,
+    Message = ?,
+    RecordDate = ?
+WHERE Id = ?;
 
 deleteSystemLogInformationEntity:
-DELETE FROM SystemLogInformationEntity WHERE Id = :Id;
-
-deleteAllSystemLogInformationEntity:
-DELETE FROM SystemLogInformationEntity;
+DELETE FROM SystemLogInformationEntity WHERE Id = ?;

@@ -1,6 +1,6 @@
 ﻿-- SyncCustomerEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncCustomerModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncCustomerEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -43,21 +43,52 @@ selectAllSyncCustomerEntity:
 SELECT * FROM SyncCustomerEntity;
 
 selectBySyncCustomerEntityId:
-SELECT * FROM SyncCustomerEntity WHERE GroupId = :GroupId;
+SELECT * FROM SyncCustomerEntity WHERE Id = ?;
 
 insertSyncCustomerEntity:
-INSERT INTO SyncCustomerEntity (Code, Name, TaxOffice, TaxNumber, Tags, GroupId, GroupName, PhotoPath, IsECustomer, OrganizationId, OrganizationName, OrganizationCode, Risk, Balance, RiskDueDay, GroupPhotoPath, ParentId, PaymentPlanId, CheckRiskOnBalance, CheckRiskDispatch, CheckRiskOrder, CheckRiskOrderProposal, InvoiceMonitoringAction, DispatchMonitoringAction, OrderMonitoringAction, OrderProposalMonitoringAction, Blocked, IsVatExempt, ReturnPriceType, DamagedReturnPriceType, IconIndex, IsVisible, State)
-VALUES (:Code, :Name, :TaxOffice, :TaxNumber, :Tags, :GroupId, :GroupName, :PhotoPath, :IsECustomer, :OrganizationId, :OrganizationName, :OrganizationCode, :Risk, :Balance, :RiskDueDay, :GroupPhotoPath, :ParentId, :PaymentPlanId, :CheckRiskOnBalance, :CheckRiskDispatch, :CheckRiskOrder, :CheckRiskOrderProposal, :InvoiceMonitoringAction, :DispatchMonitoringAction, :OrderMonitoringAction, :OrderProposalMonitoringAction, :Blocked, :IsVatExempt, :ReturnPriceType, :DamagedReturnPriceType, :IconIndex, :IsVisible, :State);
+INSERT INTO SyncCustomerEntity
+VALUES ?;
 
 insertOrReplaceSyncCustomerEntity:
-INSERT OR REPLACE INTO SyncCustomerEntity (Code, Name, TaxOffice, TaxNumber, Tags, GroupId, GroupName, PhotoPath, IsECustomer, OrganizationId, OrganizationName, OrganizationCode, Risk, Balance, RiskDueDay, GroupPhotoPath, ParentId, PaymentPlanId, CheckRiskOnBalance, CheckRiskDispatch, CheckRiskOrder, CheckRiskOrderProposal, InvoiceMonitoringAction, DispatchMonitoringAction, OrderMonitoringAction, OrderProposalMonitoringAction, Blocked, IsVatExempt, ReturnPriceType, DamagedReturnPriceType, IconIndex, IsVisible, State)
-VALUES (:Code, :Name, :TaxOffice, :TaxNumber, :Tags, :GroupId, :GroupName, :PhotoPath, :IsECustomer, :OrganizationId, :OrganizationName, :OrganizationCode, :Risk, :Balance, :RiskDueDay, :GroupPhotoPath, :ParentId, :PaymentPlanId, :CheckRiskOnBalance, :CheckRiskDispatch, :CheckRiskOrder, :CheckRiskOrderProposal, :InvoiceMonitoringAction, :DispatchMonitoringAction, :OrderMonitoringAction, :OrderProposalMonitoringAction, :Blocked, :IsVatExempt, :ReturnPriceType, :DamagedReturnPriceType, :IconIndex, :IsVisible, :State);
+INSERT OR REPLACE INTO SyncCustomerEntity
+VALUES ?;
 
 updateSyncCustomerEntity:
-UPDATE SyncCustomerEntity SET Code = :Code, Name = :Name, TaxOffice = :TaxOffice, TaxNumber = :TaxNumber, Tags = :Tags, GroupId = :GroupId, GroupName = :GroupName, PhotoPath = :PhotoPath, IsECustomer = :IsECustomer, OrganizationId = :OrganizationId, OrganizationName = :OrganizationName, OrganizationCode = :OrganizationCode, Risk = :Risk, Balance = :Balance, RiskDueDay = :RiskDueDay, GroupPhotoPath = :GroupPhotoPath, ParentId = :ParentId, PaymentPlanId = :PaymentPlanId, CheckRiskOnBalance = :CheckRiskOnBalance, CheckRiskDispatch = :CheckRiskDispatch, CheckRiskOrder = :CheckRiskOrder, CheckRiskOrderProposal = :CheckRiskOrderProposal, InvoiceMonitoringAction = :InvoiceMonitoringAction, DispatchMonitoringAction = :DispatchMonitoringAction, OrderMonitoringAction = :OrderMonitoringAction, OrderProposalMonitoringAction = :OrderProposalMonitoringAction, Blocked = :Blocked, IsVatExempt = :IsVatExempt, ReturnPriceType = :ReturnPriceType, DamagedReturnPriceType = :DamagedReturnPriceType, IconIndex = :IconIndex, IsVisible = :IsVisible, State = :State WHERE GroupId = :GroupId;
+UPDATE SyncCustomerEntity SET
+    Code = ?,
+    Name = ?,
+    TaxOffice = ?,
+    TaxNumber = ?,
+    Tags = ?,
+    GroupId = ?,
+    GroupName = ?,
+    PhotoPath = ?,
+    IsECustomer = ?,
+    OrganizationId = ?,
+    OrganizationName = ?,
+    OrganizationCode = ?,
+    Risk = ?,
+    Balance = ?,
+    RiskDueDay = ?,
+    GroupPhotoPath = ?,
+    ParentId = ?,
+    PaymentPlanId = ?,
+    CheckRiskOnBalance = ?,
+    CheckRiskDispatch = ?,
+    CheckRiskOrder = ?,
+    CheckRiskOrderProposal = ?,
+    InvoiceMonitoringAction = ?,
+    DispatchMonitoringAction = ?,
+    OrderMonitoringAction = ?,
+    OrderProposalMonitoringAction = ?,
+    Blocked = ?,
+    IsVatExempt = ?,
+    ReturnPriceType = ?,
+    DamagedReturnPriceType = ?,
+    IconIndex = ?,
+    IsVisible = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncCustomerEntity:
-DELETE FROM SyncCustomerEntity WHERE GroupId = :GroupId;
-
-deleteAllSyncCustomerEntity:
-DELETE FROM SyncCustomerEntity;
+DELETE FROM SyncCustomerEntity WHERE Id = ?;

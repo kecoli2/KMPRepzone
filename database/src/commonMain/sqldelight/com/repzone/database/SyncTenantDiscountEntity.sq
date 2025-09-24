@@ -1,6 +1,6 @@
 ﻿-- SyncTenantDiscountEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncTenantDiscountModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncTenantDiscountEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -22,21 +22,31 @@ selectAllSyncTenantDiscountEntity:
 SELECT * FROM SyncTenantDiscountEntity;
 
 selectBySyncTenantDiscountEntityId:
-SELECT * FROM SyncTenantDiscountEntity WHERE TenantId = :TenantId;
+SELECT * FROM SyncTenantDiscountEntity WHERE Id = ?;
 
 insertSyncTenantDiscountEntity:
-INSERT INTO SyncTenantDiscountEntity (TenantId, `Order`, DiscountType, LineEffectScopeType, IsDeletable, Name, Scope, MaxPercent, ModificationDateUtc, RecordDateUtc, State, Reserved)
-VALUES (:TenantId, :Order, :DiscountType, :LineEffectScopeType, :IsDeletable, :Name, :Scope, :MaxPercent, :ModificationDateUtc, :RecordDateUtc, :State, :Reserved);
+INSERT INTO SyncTenantDiscountEntity
+VALUES ?;
 
 insertOrReplaceSyncTenantDiscountEntity:
-INSERT OR REPLACE INTO SyncTenantDiscountEntity (TenantId, `Order`, DiscountType, LineEffectScopeType, IsDeletable, Name, Scope, MaxPercent, ModificationDateUtc, RecordDateUtc, State, Reserved)
-VALUES (:TenantId, :Order, :DiscountType, :LineEffectScopeType, :IsDeletable, :Name, :Scope, :MaxPercent, :ModificationDateUtc, :RecordDateUtc, :State, :Reserved);
+INSERT OR REPLACE INTO SyncTenantDiscountEntity
+VALUES ?;
 
 updateSyncTenantDiscountEntity:
-UPDATE SyncTenantDiscountEntity SET TenantId = :TenantId, `Order` = :Order, DiscountType = :DiscountType, LineEffectScopeType = :LineEffectScopeType, IsDeletable = :IsDeletable, Name = :Name, Scope = :Scope, MaxPercent = :MaxPercent, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State, Reserved = :Reserved WHERE TenantId = :TenantId;
+UPDATE SyncTenantDiscountEntity SET
+    TenantId = ?,
+    `Order` = ?,
+    DiscountType = ?,
+    LineEffectScopeType = ?,
+    IsDeletable = ?,
+    Name = ?,
+    Scope = ?,
+    MaxPercent = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?,
+    Reserved = ?
+WHERE Id = ?;
 
 deleteSyncTenantDiscountEntity:
-DELETE FROM SyncTenantDiscountEntity WHERE TenantId = :TenantId;
-
-deleteAllSyncTenantDiscountEntity:
-DELETE FROM SyncTenantDiscountEntity;
+DELETE FROM SyncTenantDiscountEntity WHERE Id = ?;

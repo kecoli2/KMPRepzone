@@ -1,6 +1,6 @@
 ﻿-- SyncMessageUserEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncMessageUser
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncMessageUserEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -22,21 +22,31 @@ selectAllSyncMessageUserEntity:
 SELECT * FROM SyncMessageUserEntity;
 
 selectBySyncMessageUserEntityId:
-SELECT * FROM SyncMessageUserEntity WHERE RoleId = :RoleId;
+SELECT * FROM SyncMessageUserEntity WHERE Id = ?;
 
 insertSyncMessageUserEntity:
-INSERT INTO SyncMessageUserEntity (FirstName, LastName, CellPhone, Email, PhotoPath, RoleId, RoleName, OrganizationId, OrganizationName, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:FirstName, :LastName, :CellPhone, :Email, :PhotoPath, :RoleId, :RoleName, :OrganizationId, :OrganizationName, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncMessageUserEntity
+VALUES ?;
 
 insertOrReplaceSyncMessageUserEntity:
-INSERT OR REPLACE INTO SyncMessageUserEntity (FirstName, LastName, CellPhone, Email, PhotoPath, RoleId, RoleName, OrganizationId, OrganizationName, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:FirstName, :LastName, :CellPhone, :Email, :PhotoPath, :RoleId, :RoleName, :OrganizationId, :OrganizationName, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncMessageUserEntity
+VALUES ?;
 
 updateSyncMessageUserEntity:
-UPDATE SyncMessageUserEntity SET FirstName = :FirstName, LastName = :LastName, CellPhone = :CellPhone, Email = :Email, PhotoPath = :PhotoPath, RoleId = :RoleId, RoleName = :RoleName, OrganizationId = :OrganizationId, OrganizationName = :OrganizationName, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE RoleId = :RoleId;
+UPDATE SyncMessageUserEntity SET
+    FirstName = ?,
+    LastName = ?,
+    CellPhone = ?,
+    Email = ?,
+    PhotoPath = ?,
+    RoleId = ?,
+    RoleName = ?,
+    OrganizationId = ?,
+    OrganizationName = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncMessageUserEntity:
-DELETE FROM SyncMessageUserEntity WHERE RoleId = :RoleId;
-
-deleteAllSyncMessageUserEntity:
-DELETE FROM SyncMessageUserEntity;
+DELETE FROM SyncMessageUserEntity WHERE Id = ?;

@@ -1,6 +1,6 @@
 ﻿-- DynamicDataRowEntity SQLDelight dosyası
 -- Orijinal tablo: DynamicDataRowModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS DynamicDataRowEntity (
     RowId INTEGER,
@@ -11,22 +11,11 @@ CREATE TABLE IF NOT EXISTS DynamicDataRowEntity (
 selectAllDynamicDataRowEntity:
 SELECT * FROM DynamicDataRowEntity;
 
-selectByDynamicDataRowEntityId:
-SELECT * FROM DynamicDataRowEntity WHERE RowId = :RowId;
-
 insertDynamicDataRowEntity:
-INSERT INTO DynamicDataRowEntity (RowId, RowValue, UtcLogDate)
-VALUES (:RowId, :RowValue, :UtcLogDate);
+INSERT INTO DynamicDataRowEntity
+VALUES ?;
 
 insertOrReplaceDynamicDataRowEntity:
-INSERT OR REPLACE INTO DynamicDataRowEntity (RowId, RowValue, UtcLogDate)
-VALUES (:RowId, :RowValue, :UtcLogDate);
+INSERT OR REPLACE INTO DynamicDataRowEntity
+VALUES ?;
 
-updateDynamicDataRowEntity:
-UPDATE DynamicDataRowEntity SET RowId = :RowId, RowValue = :RowValue, UtcLogDate = :UtcLogDate WHERE RowId = :RowId;
-
-deleteDynamicDataRowEntity:
-DELETE FROM DynamicDataRowEntity WHERE RowId = :RowId;
-
-deleteAllDynamicDataRowEntity:
-DELETE FROM DynamicDataRowEntity;

@@ -1,6 +1,6 @@
 ﻿-- SyncCampaignOrganizationEntity SQLDelight dosyası
 -- Orijinal tablo: MobileSyncCampaignOrganizationModel
--- Oluşturma tarihi: 2025-09-24 13:38:04
+-- Oluşturma tarihi: 2025-09-24 14:54:17
 
 CREATE TABLE IF NOT EXISTS SyncCampaignOrganizationEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -16,21 +16,25 @@ selectAllSyncCampaignOrganizationEntity:
 SELECT * FROM SyncCampaignOrganizationEntity;
 
 selectBySyncCampaignOrganizationEntityId:
-SELECT * FROM SyncCampaignOrganizationEntity WHERE TenantId = :TenantId;
+SELECT * FROM SyncCampaignOrganizationEntity WHERE Id = ?;
 
 insertSyncCampaignOrganizationEntity:
-INSERT INTO SyncCampaignOrganizationEntity (TenantId, OrganizationId, CampaignMasterId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:TenantId, :OrganizationId, :CampaignMasterId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT INTO SyncCampaignOrganizationEntity
+VALUES ?;
 
 insertOrReplaceSyncCampaignOrganizationEntity:
-INSERT OR REPLACE INTO SyncCampaignOrganizationEntity (TenantId, OrganizationId, CampaignMasterId, ModificationDateUtc, RecordDateUtc, State)
-VALUES (:TenantId, :OrganizationId, :CampaignMasterId, :ModificationDateUtc, :RecordDateUtc, :State);
+INSERT OR REPLACE INTO SyncCampaignOrganizationEntity
+VALUES ?;
 
 updateSyncCampaignOrganizationEntity:
-UPDATE SyncCampaignOrganizationEntity SET TenantId = :TenantId, OrganizationId = :OrganizationId, CampaignMasterId = :CampaignMasterId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE TenantId = :TenantId;
+UPDATE SyncCampaignOrganizationEntity SET
+    TenantId = ?,
+    OrganizationId = ?,
+    CampaignMasterId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
 
 deleteSyncCampaignOrganizationEntity:
-DELETE FROM SyncCampaignOrganizationEntity WHERE TenantId = :TenantId;
-
-deleteAllSyncCampaignOrganizationEntity:
-DELETE FROM SyncCampaignOrganizationEntity;
+DELETE FROM SyncCampaignOrganizationEntity WHERE Id = ?;
