@@ -1,0 +1,35 @@
+﻿-- SyncDocumentMapProcessStepEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncDocumentMapProcessStepModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncDocumentMapProcessStepEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Name TEXT,
+    ObjectName TEXT,
+    ProcessId INTEGER,
+    State INTEGER,
+    StepOrder INTEGER
+);
+
+selectAllSyncDocumentMapProcessStepEntity:
+SELECT * FROM SyncDocumentMapProcessStepEntity;
+
+selectBySyncDocumentMapProcessStepEntityId:
+SELECT * FROM SyncDocumentMapProcessStepEntity WHERE Id = :Id;
+
+insertSyncDocumentMapProcessStepEntity:
+INSERT INTO SyncDocumentMapProcessStepEntity (ProcessId, Name, ObjectName, StepOrder, State)
+VALUES (:ProcessId, :Name, :ObjectName, :StepOrder, :State);
+
+insertOrReplaceSyncDocumentMapProcessStepEntity:
+INSERT OR REPLACE INTO SyncDocumentMapProcessStepEntity (ProcessId, Name, ObjectName, StepOrder, State)
+VALUES (:ProcessId, :Name, :ObjectName, :StepOrder, :State);
+
+updateSyncDocumentMapProcessStepEntity:
+UPDATE SyncDocumentMapProcessStepEntity SET ProcessId = :ProcessId, Name = :Name, ObjectName = :ObjectName, StepOrder = :StepOrder, State = :State WHERE Id = :Id;
+
+deleteSyncDocumentMapProcessStepEntity:
+DELETE FROM SyncDocumentMapProcessStepEntity WHERE Id = :Id;
+
+deleteAllSyncDocumentMapProcessStepEntity:
+DELETE FROM SyncDocumentMapProcessStepEntity;

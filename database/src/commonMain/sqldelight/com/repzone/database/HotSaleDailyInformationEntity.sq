@@ -1,0 +1,33 @@
+﻿-- HotSaleDailyInformationEntity SQLDelight dosyası
+-- Orijinal tablo: HotSaleDailyInformation
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS HotSaleDailyInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    OperationDay INTEGER,
+    OperationTimeStamp INTEGER,
+    OperationType INTEGER
+);
+
+selectAllHotSaleDailyInformationEntity:
+SELECT * FROM HotSaleDailyInformationEntity;
+
+selectByHotSaleDailyInformationEntityId:
+SELECT * FROM HotSaleDailyInformationEntity WHERE Id = :Id;
+
+insertHotSaleDailyInformationEntity:
+INSERT INTO HotSaleDailyInformationEntity (OperationDay, OperationTimeStamp, OperationType)
+VALUES (:OperationDay, :OperationTimeStamp, :OperationType);
+
+insertOrReplaceHotSaleDailyInformationEntity:
+INSERT OR REPLACE INTO HotSaleDailyInformationEntity (OperationDay, OperationTimeStamp, OperationType)
+VALUES (:OperationDay, :OperationTimeStamp, :OperationType);
+
+updateHotSaleDailyInformationEntity:
+UPDATE HotSaleDailyInformationEntity SET OperationDay = :OperationDay, OperationTimeStamp = :OperationTimeStamp, OperationType = :OperationType WHERE Id = :Id;
+
+deleteHotSaleDailyInformationEntity:
+DELETE FROM HotSaleDailyInformationEntity WHERE Id = :Id;
+
+deleteAllHotSaleDailyInformationEntity:
+DELETE FROM HotSaleDailyInformationEntity;

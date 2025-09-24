@@ -1,0 +1,37 @@
+﻿-- SyncManufacturerRepresentativesEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncManufacturerRepresentatives
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncManufacturerRepresentativesEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Fulfillment INTEGER,
+    ManufacturerId INTEGER,
+    ModificationDateUtc INTEGER,
+    RecordDateUtc INTEGER,
+    RepresentativeId INTEGER,
+    SalesNotAllowed INTEGER,
+    State INTEGER
+);
+
+selectAllSyncManufacturerRepresentativesEntity:
+SELECT * FROM SyncManufacturerRepresentativesEntity;
+
+selectBySyncManufacturerRepresentativesEntityId:
+SELECT * FROM SyncManufacturerRepresentativesEntity WHERE RepresentativeId = :RepresentativeId;
+
+insertSyncManufacturerRepresentativesEntity:
+INSERT INTO SyncManufacturerRepresentativesEntity (RepresentativeId, ManufacturerId, Fulfillment, SalesNotAllowed, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:RepresentativeId, :ManufacturerId, :Fulfillment, :SalesNotAllowed, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncManufacturerRepresentativesEntity:
+INSERT OR REPLACE INTO SyncManufacturerRepresentativesEntity (RepresentativeId, ManufacturerId, Fulfillment, SalesNotAllowed, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:RepresentativeId, :ManufacturerId, :Fulfillment, :SalesNotAllowed, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncManufacturerRepresentativesEntity:
+UPDATE SyncManufacturerRepresentativesEntity SET RepresentativeId = :RepresentativeId, ManufacturerId = :ManufacturerId, Fulfillment = :Fulfillment, SalesNotAllowed = :SalesNotAllowed, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE RepresentativeId = :RepresentativeId;
+
+deleteSyncManufacturerRepresentativesEntity:
+DELETE FROM SyncManufacturerRepresentativesEntity WHERE RepresentativeId = :RepresentativeId;
+
+deleteAllSyncManufacturerRepresentativesEntity:
+DELETE FROM SyncManufacturerRepresentativesEntity;

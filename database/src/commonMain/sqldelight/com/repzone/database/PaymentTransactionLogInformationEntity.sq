@@ -1,0 +1,36 @@
+﻿-- PaymentTransactionLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: PaymentTransactionLogInformation
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS PaymentTransactionLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Amount REAL,
+    CustomerId INTEGER,
+    Direction INTEGER,
+    DocumentGroup INTEGER,
+    ReferenceId INTEGER,
+    TransactionDate INTEGER
+);
+
+selectAllPaymentTransactionLogInformationEntity:
+SELECT * FROM PaymentTransactionLogInformationEntity;
+
+selectByPaymentTransactionLogInformationEntityId:
+SELECT * FROM PaymentTransactionLogInformationEntity WHERE Id = :Id;
+
+insertPaymentTransactionLogInformationEntity:
+INSERT INTO PaymentTransactionLogInformationEntity (TransactionDate, CustomerId, Amount, Direction, DocumentGroup, ReferenceId)
+VALUES (:TransactionDate, :CustomerId, :Amount, :Direction, :DocumentGroup, :ReferenceId);
+
+insertOrReplacePaymentTransactionLogInformationEntity:
+INSERT OR REPLACE INTO PaymentTransactionLogInformationEntity (TransactionDate, CustomerId, Amount, Direction, DocumentGroup, ReferenceId)
+VALUES (:TransactionDate, :CustomerId, :Amount, :Direction, :DocumentGroup, :ReferenceId);
+
+updatePaymentTransactionLogInformationEntity:
+UPDATE PaymentTransactionLogInformationEntity SET TransactionDate = :TransactionDate, CustomerId = :CustomerId, Amount = :Amount, Direction = :Direction, DocumentGroup = :DocumentGroup, ReferenceId = :ReferenceId WHERE Id = :Id;
+
+deletePaymentTransactionLogInformationEntity:
+DELETE FROM PaymentTransactionLogInformationEntity WHERE Id = :Id;
+
+deleteAllPaymentTransactionLogInformationEntity:
+DELETE FROM PaymentTransactionLogInformationEntity;

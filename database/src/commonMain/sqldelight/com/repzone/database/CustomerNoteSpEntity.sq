@@ -1,0 +1,44 @@
+﻿-- CustomerNoteSpEntity SQLDelight dosyası
+-- Orijinal tablo: CustomerNoteSpModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS CustomerNoteSpEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    BeginDate INTEGER,
+    CustomerId INTEGER,
+    EndDate INTEGER,
+    IsPrivate INTEGER,
+    ModificationDateUtc INTEGER,
+    Note TEXT,
+    NoteTypeId INTEGER,
+    OrganizationId INTEGER,
+    PackageId TEXT,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    Status INTEGER,
+    UserId INTEGER,
+    UserName TEXT
+);
+
+selectAllCustomerNoteSpEntity:
+SELECT * FROM CustomerNoteSpEntity;
+
+selectByCustomerNoteSpEntityId:
+SELECT * FROM CustomerNoteSpEntity WHERE Id = :Id;
+
+insertCustomerNoteSpEntity:
+INSERT INTO CustomerNoteSpEntity (CustomerId, OrganizationId, NoteTypeId, BeginDate, EndDate, IsPrivate, Note, UserId, UserName, RecordDateUtc, ModificationDateUtc, State, Status, PackageId)
+VALUES (:CustomerId, :OrganizationId, :NoteTypeId, :BeginDate, :EndDate, :IsPrivate, :Note, :UserId, :UserName, :RecordDateUtc, :ModificationDateUtc, :State, :Status, :PackageId);
+
+insertOrReplaceCustomerNoteSpEntity:
+INSERT OR REPLACE INTO CustomerNoteSpEntity (CustomerId, OrganizationId, NoteTypeId, BeginDate, EndDate, IsPrivate, Note, UserId, UserName, RecordDateUtc, ModificationDateUtc, State, Status, PackageId)
+VALUES (:CustomerId, :OrganizationId, :NoteTypeId, :BeginDate, :EndDate, :IsPrivate, :Note, :UserId, :UserName, :RecordDateUtc, :ModificationDateUtc, :State, :Status, :PackageId);
+
+updateCustomerNoteSpEntity:
+UPDATE CustomerNoteSpEntity SET CustomerId = :CustomerId, OrganizationId = :OrganizationId, NoteTypeId = :NoteTypeId, BeginDate = :BeginDate, EndDate = :EndDate, IsPrivate = :IsPrivate, Note = :Note, UserId = :UserId, UserName = :UserName, RecordDateUtc = :RecordDateUtc, ModificationDateUtc = :ModificationDateUtc, State = :State, Status = :Status, PackageId = :PackageId WHERE Id = :Id;
+
+deleteCustomerNoteSpEntity:
+DELETE FROM CustomerNoteSpEntity WHERE Id = :Id;
+
+deleteAllCustomerNoteSpEntity:
+DELETE FROM CustomerNoteSpEntity;

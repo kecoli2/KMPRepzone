@@ -1,0 +1,43 @@
+﻿-- SyncCrmPriceListParameterEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCrmPriceListParameter
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncCrmPriceListParameterEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    EntityId INTEGER,
+    EntityType INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    PaymentPlanId INTEGER,
+    PricePurchaseReturnDamagedListId INTEGER,
+    PriceSalesDamagedListId INTEGER,
+    PurchasePriceListId INTEGER,
+    PurchaseReturnPriceListId INTEGER,
+    RecordDateUtc INTEGER,
+    SalesPriceListId INTEGER,
+    SalesReturnPriceListId INTEGER,
+    State INTEGER
+);
+
+selectAllSyncCrmPriceListParameterEntity:
+SELECT * FROM SyncCrmPriceListParameterEntity;
+
+selectBySyncCrmPriceListParameterEntityId:
+SELECT * FROM SyncCrmPriceListParameterEntity WHERE EntityId = :EntityId;
+
+insertSyncCrmPriceListParameterEntity:
+INSERT INTO SyncCrmPriceListParameterEntity (EntityType, EntityId, PaymentPlanId, SalesPriceListId, SalesReturnPriceListId, PurchasePriceListId, PurchaseReturnPriceListId, PriceSalesDamagedListId, PricePurchaseReturnDamagedListId, OrganizationId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:EntityType, :EntityId, :PaymentPlanId, :SalesPriceListId, :SalesReturnPriceListId, :PurchasePriceListId, :PurchaseReturnPriceListId, :PriceSalesDamagedListId, :PricePurchaseReturnDamagedListId, :OrganizationId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncCrmPriceListParameterEntity:
+INSERT OR REPLACE INTO SyncCrmPriceListParameterEntity (EntityType, EntityId, PaymentPlanId, SalesPriceListId, SalesReturnPriceListId, PurchasePriceListId, PurchaseReturnPriceListId, PriceSalesDamagedListId, PricePurchaseReturnDamagedListId, OrganizationId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:EntityType, :EntityId, :PaymentPlanId, :SalesPriceListId, :SalesReturnPriceListId, :PurchasePriceListId, :PurchaseReturnPriceListId, :PriceSalesDamagedListId, :PricePurchaseReturnDamagedListId, :OrganizationId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncCrmPriceListParameterEntity:
+UPDATE SyncCrmPriceListParameterEntity SET EntityType = :EntityType, EntityId = :EntityId, PaymentPlanId = :PaymentPlanId, SalesPriceListId = :SalesPriceListId, SalesReturnPriceListId = :SalesReturnPriceListId, PurchasePriceListId = :PurchasePriceListId, PurchaseReturnPriceListId = :PurchaseReturnPriceListId, PriceSalesDamagedListId = :PriceSalesDamagedListId, PricePurchaseReturnDamagedListId = :PricePurchaseReturnDamagedListId, OrganizationId = :OrganizationId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE EntityId = :EntityId;
+
+deleteSyncCrmPriceListParameterEntity:
+DELETE FROM SyncCrmPriceListParameterEntity WHERE EntityId = :EntityId;
+
+deleteAllSyncCrmPriceListParameterEntity:
+DELETE FROM SyncCrmPriceListParameterEntity;

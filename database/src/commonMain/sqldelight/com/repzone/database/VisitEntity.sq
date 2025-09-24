@@ -1,0 +1,46 @@
+﻿-- VisitEntity SQLDelight dosyası
+-- Orijinal tablo: Visit
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS VisitEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    AppointmentExceptionId INTEGER,
+    AppointmentId INTEGER,
+    DistanceFromCustomerLocation INTEGER,
+    Finish INTEGER,
+    FormIdsRaw TEXT,
+    Guid TEXT,
+    IsItOnLocation INTEGER,
+    IsItOnRoute INTEGER,
+    IsItOnTime INTEGER,
+    Latitude REAL,
+    Longitude REAL,
+    OrderIdsRaw TEXT,
+    SelectedCustomerOrganizationId INTEGER,
+    Start INTEGER,
+    VisitNote TEXT,
+    VisitType INTEGER
+);
+
+selectAllVisitEntity:
+SELECT * FROM VisitEntity;
+
+selectByVisitEntityId:
+SELECT * FROM VisitEntity WHERE Id = :Id;
+
+insertVisitEntity:
+INSERT INTO VisitEntity (AppointmentId, Guid, Start, Finish, AppointmentExceptionId, Latitude, Longitude, OrderIdsRaw, FormIdsRaw, VisitNote, IsItOnRoute, IsItOnTime, IsItOnLocation, DistanceFromCustomerLocation, VisitType, SelectedCustomerOrganizationId)
+VALUES (:AppointmentId, :Guid, :Start, :Finish, :AppointmentExceptionId, :Latitude, :Longitude, :OrderIdsRaw, :FormIdsRaw, :VisitNote, :IsItOnRoute, :IsItOnTime, :IsItOnLocation, :DistanceFromCustomerLocation, :VisitType, :SelectedCustomerOrganizationId);
+
+insertOrReplaceVisitEntity:
+INSERT OR REPLACE INTO VisitEntity (AppointmentId, Guid, Start, Finish, AppointmentExceptionId, Latitude, Longitude, OrderIdsRaw, FormIdsRaw, VisitNote, IsItOnRoute, IsItOnTime, IsItOnLocation, DistanceFromCustomerLocation, VisitType, SelectedCustomerOrganizationId)
+VALUES (:AppointmentId, :Guid, :Start, :Finish, :AppointmentExceptionId, :Latitude, :Longitude, :OrderIdsRaw, :FormIdsRaw, :VisitNote, :IsItOnRoute, :IsItOnTime, :IsItOnLocation, :DistanceFromCustomerLocation, :VisitType, :SelectedCustomerOrganizationId);
+
+updateVisitEntity:
+UPDATE VisitEntity SET AppointmentId = :AppointmentId, Guid = :Guid, Start = :Start, Finish = :Finish, AppointmentExceptionId = :AppointmentExceptionId, Latitude = :Latitude, Longitude = :Longitude, OrderIdsRaw = :OrderIdsRaw, FormIdsRaw = :FormIdsRaw, VisitNote = :VisitNote, IsItOnRoute = :IsItOnRoute, IsItOnTime = :IsItOnTime, IsItOnLocation = :IsItOnLocation, DistanceFromCustomerLocation = :DistanceFromCustomerLocation, VisitType = :VisitType, SelectedCustomerOrganizationId = :SelectedCustomerOrganizationId WHERE Id = :Id;
+
+deleteVisitEntity:
+DELETE FROM VisitEntity WHERE Id = :Id;
+
+deleteAllVisitEntity:
+DELETE FROM VisitEntity;

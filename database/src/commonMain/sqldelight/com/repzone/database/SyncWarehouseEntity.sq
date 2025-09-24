@@ -1,0 +1,39 @@
+﻿-- SyncWarehouseEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncWarehouseModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncWarehouseEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    MobileCloseToDamagedReturns INTEGER,
+    MobileCloseToReturns INTEGER,
+    MobileCloseToSales INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    OrganizationId INTEGER,
+    OrganizationName TEXT,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncWarehouseEntity:
+SELECT * FROM SyncWarehouseEntity;
+
+selectBySyncWarehouseEntityId:
+SELECT * FROM SyncWarehouseEntity WHERE OrganizationId = :OrganizationId;
+
+insertSyncWarehouseEntity:
+INSERT INTO SyncWarehouseEntity (Name, OrganizationId, OrganizationName, MobileCloseToSales, MobileCloseToReturns, MobileCloseToDamagedReturns, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:Name, :OrganizationId, :OrganizationName, :MobileCloseToSales, :MobileCloseToReturns, :MobileCloseToDamagedReturns, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncWarehouseEntity:
+INSERT OR REPLACE INTO SyncWarehouseEntity (Name, OrganizationId, OrganizationName, MobileCloseToSales, MobileCloseToReturns, MobileCloseToDamagedReturns, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:Name, :OrganizationId, :OrganizationName, :MobileCloseToSales, :MobileCloseToReturns, :MobileCloseToDamagedReturns, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncWarehouseEntity:
+UPDATE SyncWarehouseEntity SET Name = :Name, OrganizationId = :OrganizationId, OrganizationName = :OrganizationName, MobileCloseToSales = :MobileCloseToSales, MobileCloseToReturns = :MobileCloseToReturns, MobileCloseToDamagedReturns = :MobileCloseToDamagedReturns, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE OrganizationId = :OrganizationId;
+
+deleteSyncWarehouseEntity:
+DELETE FROM SyncWarehouseEntity WHERE OrganizationId = :OrganizationId;
+
+deleteAllSyncWarehouseEntity:
+DELETE FROM SyncWarehouseEntity;

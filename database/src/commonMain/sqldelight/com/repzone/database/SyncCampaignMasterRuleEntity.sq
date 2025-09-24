@@ -1,0 +1,38 @@
+﻿-- SyncCampaignMasterRuleEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCampaignMasterRule
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncCampaignMasterRuleEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CampaignMasterId INTEGER,
+    Discover TEXT,
+    IsOr INTEGER,
+    ModificationDateUtc INTEGER,
+    Operator INTEGER,
+    Property INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncCampaignMasterRuleEntity:
+SELECT * FROM SyncCampaignMasterRuleEntity;
+
+selectBySyncCampaignMasterRuleEntityId:
+SELECT * FROM SyncCampaignMasterRuleEntity WHERE CampaignMasterId = :CampaignMasterId;
+
+insertSyncCampaignMasterRuleEntity:
+INSERT INTO SyncCampaignMasterRuleEntity (CampaignMasterId, IsOr, Property, Operator, Discover, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:CampaignMasterId, :IsOr, :Property, :Operator, :Discover, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncCampaignMasterRuleEntity:
+INSERT OR REPLACE INTO SyncCampaignMasterRuleEntity (CampaignMasterId, IsOr, Property, Operator, Discover, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:CampaignMasterId, :IsOr, :Property, :Operator, :Discover, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncCampaignMasterRuleEntity:
+UPDATE SyncCampaignMasterRuleEntity SET CampaignMasterId = :CampaignMasterId, IsOr = :IsOr, Property = :Property, Operator = :Operator, Discover = :Discover, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE CampaignMasterId = :CampaignMasterId;
+
+deleteSyncCampaignMasterRuleEntity:
+DELETE FROM SyncCampaignMasterRuleEntity WHERE CampaignMasterId = :CampaignMasterId;
+
+deleteAllSyncCampaignMasterRuleEntity:
+DELETE FROM SyncCampaignMasterRuleEntity;

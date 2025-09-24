@@ -1,0 +1,34 @@
+﻿-- StockLoadingDemandLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: StockLoadingDemandLogInformation
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS StockLoadingDemandLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    RecordDate INTEGER,
+    RestServiceTaskId INTEGER,
+    TotalProductKind INTEGER,
+    TotalProductQuantity REAL
+);
+
+selectAllStockLoadingDemandLogInformationEntity:
+SELECT * FROM StockLoadingDemandLogInformationEntity;
+
+selectByStockLoadingDemandLogInformationEntityId:
+SELECT * FROM StockLoadingDemandLogInformationEntity WHERE Id = :Id;
+
+insertStockLoadingDemandLogInformationEntity:
+INSERT INTO StockLoadingDemandLogInformationEntity (RestServiceTaskId, RecordDate, TotalProductKind, TotalProductQuantity)
+VALUES (:RestServiceTaskId, :RecordDate, :TotalProductKind, :TotalProductQuantity);
+
+insertOrReplaceStockLoadingDemandLogInformationEntity:
+INSERT OR REPLACE INTO StockLoadingDemandLogInformationEntity (RestServiceTaskId, RecordDate, TotalProductKind, TotalProductQuantity)
+VALUES (:RestServiceTaskId, :RecordDate, :TotalProductKind, :TotalProductQuantity);
+
+updateStockLoadingDemandLogInformationEntity:
+UPDATE StockLoadingDemandLogInformationEntity SET RestServiceTaskId = :RestServiceTaskId, RecordDate = :RecordDate, TotalProductKind = :TotalProductKind, TotalProductQuantity = :TotalProductQuantity WHERE Id = :Id;
+
+deleteStockLoadingDemandLogInformationEntity:
+DELETE FROM StockLoadingDemandLogInformationEntity WHERE Id = :Id;
+
+deleteAllStockLoadingDemandLogInformationEntity:
+DELETE FROM StockLoadingDemandLogInformationEntity;

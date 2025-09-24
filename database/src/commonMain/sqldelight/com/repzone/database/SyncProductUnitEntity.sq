@@ -1,0 +1,52 @@
+﻿-- SyncProductUnitEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncProductUnitModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncProductUnitEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Barcode TEXT,
+    DisplayOrder INTEGER,
+    IsVisible INTEGER,
+    MaxOrderQuantity INTEGER,
+    MinimumOrderQuantity INTEGER,
+    ModificationDateUtc INTEGER,
+    Multiplier INTEGER,
+    OrderQuantityFactor INTEGER,
+    Price REAL,
+    PriceId INTEGER,
+    ProductId INTEGER,
+    PurchaseDamagedReturnPrice REAL,
+    PurchasePrice REAL,
+    PurchaseReturnPrice REAL,
+    RecordDateUtc INTEGER,
+    SalesDamagedReturnPrice REAL,
+    SalesReturnPrice REAL,
+    Selected INTEGER,
+    State INTEGER,
+    TenantId INTEGER,
+    UnitId INTEGER,
+    Weight REAL
+);
+
+selectAllSyncProductUnitEntity:
+SELECT * FROM SyncProductUnitEntity;
+
+selectBySyncProductUnitEntityId:
+SELECT * FROM SyncProductUnitEntity WHERE ProductId = :ProductId;
+
+insertSyncProductUnitEntity:
+INSERT INTO SyncProductUnitEntity (ProductId, UnitId, Multiplier, Barcode, Weight, PriceId, DisplayOrder, TenantId, IsVisible, Selected, Price, MinimumOrderQuantity, MaxOrderQuantity, OrderQuantityFactor, SalesReturnPrice, SalesDamagedReturnPrice, PurchasePrice, PurchaseReturnPrice, PurchaseDamagedReturnPrice, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:ProductId, :UnitId, :Multiplier, :Barcode, :Weight, :PriceId, :DisplayOrder, :TenantId, :IsVisible, :Selected, :Price, :MinimumOrderQuantity, :MaxOrderQuantity, :OrderQuantityFactor, :SalesReturnPrice, :SalesDamagedReturnPrice, :PurchasePrice, :PurchaseReturnPrice, :PurchaseDamagedReturnPrice, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncProductUnitEntity:
+INSERT OR REPLACE INTO SyncProductUnitEntity (ProductId, UnitId, Multiplier, Barcode, Weight, PriceId, DisplayOrder, TenantId, IsVisible, Selected, Price, MinimumOrderQuantity, MaxOrderQuantity, OrderQuantityFactor, SalesReturnPrice, SalesDamagedReturnPrice, PurchasePrice, PurchaseReturnPrice, PurchaseDamagedReturnPrice, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:ProductId, :UnitId, :Multiplier, :Barcode, :Weight, :PriceId, :DisplayOrder, :TenantId, :IsVisible, :Selected, :Price, :MinimumOrderQuantity, :MaxOrderQuantity, :OrderQuantityFactor, :SalesReturnPrice, :SalesDamagedReturnPrice, :PurchasePrice, :PurchaseReturnPrice, :PurchaseDamagedReturnPrice, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncProductUnitEntity:
+UPDATE SyncProductUnitEntity SET ProductId = :ProductId, UnitId = :UnitId, Multiplier = :Multiplier, Barcode = :Barcode, Weight = :Weight, PriceId = :PriceId, DisplayOrder = :DisplayOrder, TenantId = :TenantId, IsVisible = :IsVisible, Selected = :Selected, Price = :Price, MinimumOrderQuantity = :MinimumOrderQuantity, MaxOrderQuantity = :MaxOrderQuantity, OrderQuantityFactor = :OrderQuantityFactor, SalesReturnPrice = :SalesReturnPrice, SalesDamagedReturnPrice = :SalesDamagedReturnPrice, PurchasePrice = :PurchasePrice, PurchaseReturnPrice = :PurchaseReturnPrice, PurchaseDamagedReturnPrice = :PurchaseDamagedReturnPrice, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE ProductId = :ProductId;
+
+deleteSyncProductUnitEntity:
+DELETE FROM SyncProductUnitEntity WHERE ProductId = :ProductId;
+
+deleteAllSyncProductUnitEntity:
+DELETE FROM SyncProductUnitEntity;

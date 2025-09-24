@@ -1,0 +1,36 @@
+﻿-- SyncStepAttributeEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncStepAttribute
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncStepAttributeEntity (
+    Alias TEXT,
+    Description TEXT,
+    Id INTEGER,
+    `Key` TEXT,
+    TaskStepId INTEGER,
+    Value TEXT,
+    ValueType INTEGER
+);
+
+selectAllSyncStepAttributeEntity:
+SELECT * FROM SyncStepAttributeEntity;
+
+selectBySyncStepAttributeEntityId:
+SELECT * FROM SyncStepAttributeEntity WHERE Id = :Id;
+
+insertSyncStepAttributeEntity:
+INSERT INTO SyncStepAttributeEntity (Id, `Key`, Value, Alias, Description, ValueType, TaskStepId)
+VALUES (:Id, :Key, :Value, :Alias, :Description, :ValueType, :TaskStepId);
+
+insertOrReplaceSyncStepAttributeEntity:
+INSERT OR REPLACE INTO SyncStepAttributeEntity (Id, `Key`, Value, Alias, Description, ValueType, TaskStepId)
+VALUES (:Id, :Key, :Value, :Alias, :Description, :ValueType, :TaskStepId);
+
+updateSyncStepAttributeEntity:
+UPDATE SyncStepAttributeEntity SET Id = :Id, `Key` = :Key, Value = :Value, Alias = :Alias, Description = :Description, ValueType = :ValueType, TaskStepId = :TaskStepId WHERE Id = :Id;
+
+deleteSyncStepAttributeEntity:
+DELETE FROM SyncStepAttributeEntity WHERE Id = :Id;
+
+deleteAllSyncStepAttributeEntity:
+DELETE FROM SyncStepAttributeEntity;

@@ -1,0 +1,35 @@
+﻿-- InventoryCountLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: InventoryCountLogInformation
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS InventoryCountLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ApprovalDate INTEGER,
+    Data TEXT,
+    Direction INTEGER,
+    TotalProductKind INTEGER,
+    TotalProductQuantity REAL
+);
+
+selectAllInventoryCountLogInformationEntity:
+SELECT * FROM InventoryCountLogInformationEntity;
+
+selectByInventoryCountLogInformationEntityId:
+SELECT * FROM InventoryCountLogInformationEntity WHERE Id = :Id;
+
+insertInventoryCountLogInformationEntity:
+INSERT INTO InventoryCountLogInformationEntity (Data, ApprovalDate, TotalProductKind, TotalProductQuantity, Direction)
+VALUES (:Data, :ApprovalDate, :TotalProductKind, :TotalProductQuantity, :Direction);
+
+insertOrReplaceInventoryCountLogInformationEntity:
+INSERT OR REPLACE INTO InventoryCountLogInformationEntity (Data, ApprovalDate, TotalProductKind, TotalProductQuantity, Direction)
+VALUES (:Data, :ApprovalDate, :TotalProductKind, :TotalProductQuantity, :Direction);
+
+updateInventoryCountLogInformationEntity:
+UPDATE InventoryCountLogInformationEntity SET Data = :Data, ApprovalDate = :ApprovalDate, TotalProductKind = :TotalProductKind, TotalProductQuantity = :TotalProductQuantity, Direction = :Direction WHERE Id = :Id;
+
+deleteInventoryCountLogInformationEntity:
+DELETE FROM InventoryCountLogInformationEntity WHERE Id = :Id;
+
+deleteAllInventoryCountLogInformationEntity:
+DELETE FROM InventoryCountLogInformationEntity;

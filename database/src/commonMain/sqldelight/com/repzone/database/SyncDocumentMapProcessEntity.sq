@@ -1,0 +1,33 @@
+﻿-- SyncDocumentMapProcessEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncDocumentMapProcessModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncDocumentMapProcessEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    DocProcessType INTEGER,
+    DocumentMapName TEXT,
+    Name TEXT
+);
+
+selectAllSyncDocumentMapProcessEntity:
+SELECT * FROM SyncDocumentMapProcessEntity;
+
+selectBySyncDocumentMapProcessEntityId:
+SELECT * FROM SyncDocumentMapProcessEntity WHERE Id = :Id;
+
+insertSyncDocumentMapProcessEntity:
+INSERT INTO SyncDocumentMapProcessEntity (DocumentMapName, Name, DocProcessType)
+VALUES (:DocumentMapName, :Name, :DocProcessType);
+
+insertOrReplaceSyncDocumentMapProcessEntity:
+INSERT OR REPLACE INTO SyncDocumentMapProcessEntity (DocumentMapName, Name, DocProcessType)
+VALUES (:DocumentMapName, :Name, :DocProcessType);
+
+updateSyncDocumentMapProcessEntity:
+UPDATE SyncDocumentMapProcessEntity SET DocumentMapName = :DocumentMapName, Name = :Name, DocProcessType = :DocProcessType WHERE Id = :Id;
+
+deleteSyncDocumentMapProcessEntity:
+DELETE FROM SyncDocumentMapProcessEntity WHERE Id = :Id;
+
+deleteAllSyncDocumentMapProcessEntity:
+DELETE FROM SyncDocumentMapProcessEntity;

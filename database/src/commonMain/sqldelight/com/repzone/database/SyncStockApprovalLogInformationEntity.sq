@@ -1,0 +1,35 @@
+﻿-- SyncStockApprovalLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: SyncStockApprovalLogInformation
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncStockApprovalLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ApprovalDate INTEGER,
+    Data TEXT,
+    ReferenceDocUniqueId TEXT,
+    TotalProductKind INTEGER,
+    TotalProductQuantity REAL
+);
+
+selectAllSyncStockApprovalLogInformationEntity:
+SELECT * FROM SyncStockApprovalLogInformationEntity;
+
+selectBySyncStockApprovalLogInformationEntityId:
+SELECT * FROM SyncStockApprovalLogInformationEntity WHERE Id = :Id;
+
+insertSyncStockApprovalLogInformationEntity:
+INSERT INTO SyncStockApprovalLogInformationEntity (Data, ApprovalDate, TotalProductKind, TotalProductQuantity, ReferenceDocUniqueId)
+VALUES (:Data, :ApprovalDate, :TotalProductKind, :TotalProductQuantity, :ReferenceDocUniqueId);
+
+insertOrReplaceSyncStockApprovalLogInformationEntity:
+INSERT OR REPLACE INTO SyncStockApprovalLogInformationEntity (Data, ApprovalDate, TotalProductKind, TotalProductQuantity, ReferenceDocUniqueId)
+VALUES (:Data, :ApprovalDate, :TotalProductKind, :TotalProductQuantity, :ReferenceDocUniqueId);
+
+updateSyncStockApprovalLogInformationEntity:
+UPDATE SyncStockApprovalLogInformationEntity SET Data = :Data, ApprovalDate = :ApprovalDate, TotalProductKind = :TotalProductKind, TotalProductQuantity = :TotalProductQuantity, ReferenceDocUniqueId = :ReferenceDocUniqueId WHERE Id = :Id;
+
+deleteSyncStockApprovalLogInformationEntity:
+DELETE FROM SyncStockApprovalLogInformationEntity WHERE Id = :Id;
+
+deleteAllSyncStockApprovalLogInformationEntity:
+DELETE FROM SyncStockApprovalLogInformationEntity;

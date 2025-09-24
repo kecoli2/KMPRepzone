@@ -1,0 +1,38 @@
+﻿-- SyncManufacturersEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncManufacturers
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncManufacturersEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CustomerId INTEGER,
+    DocNote TEXT,
+    Fulfillment INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncManufacturersEntity:
+SELECT * FROM SyncManufacturersEntity;
+
+selectBySyncManufacturersEntityId:
+SELECT * FROM SyncManufacturersEntity WHERE OrganizationId = :OrganizationId;
+
+insertSyncManufacturersEntity:
+INSERT INTO SyncManufacturersEntity (OrganizationId, Name, DocNote, CustomerId, Fulfillment, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:OrganizationId, :Name, :DocNote, :CustomerId, :Fulfillment, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncManufacturersEntity:
+INSERT OR REPLACE INTO SyncManufacturersEntity (OrganizationId, Name, DocNote, CustomerId, Fulfillment, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:OrganizationId, :Name, :DocNote, :CustomerId, :Fulfillment, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncManufacturersEntity:
+UPDATE SyncManufacturersEntity SET OrganizationId = :OrganizationId, Name = :Name, DocNote = :DocNote, CustomerId = :CustomerId, Fulfillment = :Fulfillment, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE OrganizationId = :OrganizationId;
+
+deleteSyncManufacturersEntity:
+DELETE FROM SyncManufacturersEntity WHERE OrganizationId = :OrganizationId;
+
+deleteAllSyncManufacturersEntity:
+DELETE FROM SyncManufacturersEntity;

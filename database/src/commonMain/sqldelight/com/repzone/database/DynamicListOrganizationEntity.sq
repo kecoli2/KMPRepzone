@@ -1,0 +1,36 @@
+﻿-- DynamicListOrganizationEntity SQLDelight dosyası
+-- Orijinal tablo: MobileDynamicListOrganizationModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS DynamicListOrganizationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CanUse INTEGER,
+    DynamicListId INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllDynamicListOrganizationEntity:
+SELECT * FROM DynamicListOrganizationEntity;
+
+selectByDynamicListOrganizationEntityId:
+SELECT * FROM DynamicListOrganizationEntity WHERE OrganizationId = :OrganizationId;
+
+insertDynamicListOrganizationEntity:
+INSERT INTO DynamicListOrganizationEntity (CanUse, OrganizationId, DynamicListId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:CanUse, :OrganizationId, :DynamicListId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceDynamicListOrganizationEntity:
+INSERT OR REPLACE INTO DynamicListOrganizationEntity (CanUse, OrganizationId, DynamicListId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:CanUse, :OrganizationId, :DynamicListId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateDynamicListOrganizationEntity:
+UPDATE DynamicListOrganizationEntity SET CanUse = :CanUse, OrganizationId = :OrganizationId, DynamicListId = :DynamicListId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE OrganizationId = :OrganizationId;
+
+deleteDynamicListOrganizationEntity:
+DELETE FROM DynamicListOrganizationEntity WHERE OrganizationId = :OrganizationId;
+
+deleteAllDynamicListOrganizationEntity:
+DELETE FROM DynamicListOrganizationEntity;

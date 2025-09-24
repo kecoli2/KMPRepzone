@@ -1,0 +1,35 @@
+﻿-- VisitLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: VisitLogInformation
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS VisitLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CustomerName TEXT,
+    RecordDate INTEGER,
+    RestServiceTaskId INTEGER,
+    RouteAppointmentId INTEGER,
+    VisitUniqueId TEXT
+);
+
+selectAllVisitLogInformationEntity:
+SELECT * FROM VisitLogInformationEntity;
+
+selectByVisitLogInformationEntityId:
+SELECT * FROM VisitLogInformationEntity WHERE Id = :Id;
+
+insertVisitLogInformationEntity:
+INSERT INTO VisitLogInformationEntity (RestServiceTaskId, RouteAppointmentId, VisitUniqueId, CustomerName, RecordDate)
+VALUES (:RestServiceTaskId, :RouteAppointmentId, :VisitUniqueId, :CustomerName, :RecordDate);
+
+insertOrReplaceVisitLogInformationEntity:
+INSERT OR REPLACE INTO VisitLogInformationEntity (RestServiceTaskId, RouteAppointmentId, VisitUniqueId, CustomerName, RecordDate)
+VALUES (:RestServiceTaskId, :RouteAppointmentId, :VisitUniqueId, :CustomerName, :RecordDate);
+
+updateVisitLogInformationEntity:
+UPDATE VisitLogInformationEntity SET RestServiceTaskId = :RestServiceTaskId, RouteAppointmentId = :RouteAppointmentId, VisitUniqueId = :VisitUniqueId, CustomerName = :CustomerName, RecordDate = :RecordDate WHERE Id = :Id;
+
+deleteVisitLogInformationEntity:
+DELETE FROM VisitLogInformationEntity WHERE Id = :Id;
+
+deleteAllVisitLogInformationEntity:
+DELETE FROM VisitLogInformationEntity;

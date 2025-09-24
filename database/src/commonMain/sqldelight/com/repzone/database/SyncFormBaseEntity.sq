@@ -1,0 +1,39 @@
+﻿-- SyncFormBaseEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncFormBase
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncFormBaseEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Data TEXT,
+    Description TEXT,
+    DocumentTypeId INTEGER,
+    FormId INTEGER,
+    FormName TEXT,
+    ModificationDateUtc INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    VisibleOption INTEGER
+);
+
+selectAllSyncFormBaseEntity:
+SELECT * FROM SyncFormBaseEntity;
+
+selectBySyncFormBaseEntityId:
+SELECT * FROM SyncFormBaseEntity WHERE FormId = :FormId;
+
+insertSyncFormBaseEntity:
+INSERT INTO SyncFormBaseEntity (FormName, Description, Data, FormId, DocumentTypeId, VisibleOption, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:FormName, :Description, :Data, :FormId, :DocumentTypeId, :VisibleOption, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncFormBaseEntity:
+INSERT OR REPLACE INTO SyncFormBaseEntity (FormName, Description, Data, FormId, DocumentTypeId, VisibleOption, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:FormName, :Description, :Data, :FormId, :DocumentTypeId, :VisibleOption, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncFormBaseEntity:
+UPDATE SyncFormBaseEntity SET FormName = :FormName, Description = :Description, Data = :Data, FormId = :FormId, DocumentTypeId = :DocumentTypeId, VisibleOption = :VisibleOption, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE FormId = :FormId;
+
+deleteSyncFormBaseEntity:
+DELETE FROM SyncFormBaseEntity WHERE FormId = :FormId;
+
+deleteAllSyncFormBaseEntity:
+DELETE FROM SyncFormBaseEntity;

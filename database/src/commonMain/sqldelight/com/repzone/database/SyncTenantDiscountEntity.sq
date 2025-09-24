@@ -1,0 +1,42 @@
+﻿-- SyncTenantDiscountEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncTenantDiscountModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncTenantDiscountEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    DiscountType INTEGER,
+    IsDeletable INTEGER,
+    LineEffectScopeType INTEGER,
+    MaxPercent REAL,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    `Order` INTEGER,
+    RecordDateUtc INTEGER,
+    Reserved INTEGER,
+    Scope INTEGER,
+    State INTEGER,
+    TenantId INTEGER
+);
+
+selectAllSyncTenantDiscountEntity:
+SELECT * FROM SyncTenantDiscountEntity;
+
+selectBySyncTenantDiscountEntityId:
+SELECT * FROM SyncTenantDiscountEntity WHERE TenantId = :TenantId;
+
+insertSyncTenantDiscountEntity:
+INSERT INTO SyncTenantDiscountEntity (TenantId, `Order`, DiscountType, LineEffectScopeType, IsDeletable, Name, Scope, MaxPercent, ModificationDateUtc, RecordDateUtc, State, Reserved)
+VALUES (:TenantId, :Order, :DiscountType, :LineEffectScopeType, :IsDeletable, :Name, :Scope, :MaxPercent, :ModificationDateUtc, :RecordDateUtc, :State, :Reserved);
+
+insertOrReplaceSyncTenantDiscountEntity:
+INSERT OR REPLACE INTO SyncTenantDiscountEntity (TenantId, `Order`, DiscountType, LineEffectScopeType, IsDeletable, Name, Scope, MaxPercent, ModificationDateUtc, RecordDateUtc, State, Reserved)
+VALUES (:TenantId, :Order, :DiscountType, :LineEffectScopeType, :IsDeletable, :Name, :Scope, :MaxPercent, :ModificationDateUtc, :RecordDateUtc, :State, :Reserved);
+
+updateSyncTenantDiscountEntity:
+UPDATE SyncTenantDiscountEntity SET TenantId = :TenantId, `Order` = :Order, DiscountType = :DiscountType, LineEffectScopeType = :LineEffectScopeType, IsDeletable = :IsDeletable, Name = :Name, Scope = :Scope, MaxPercent = :MaxPercent, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State, Reserved = :Reserved WHERE TenantId = :TenantId;
+
+deleteSyncTenantDiscountEntity:
+DELETE FROM SyncTenantDiscountEntity WHERE TenantId = :TenantId;
+
+deleteAllSyncTenantDiscountEntity:
+DELETE FROM SyncTenantDiscountEntity;

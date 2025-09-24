@@ -1,0 +1,34 @@
+﻿-- SyncReservedStockEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncReservedStockModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncReservedStockEntity (
+    UniqueId TEXT NOT NULL PRIMARY KEY,
+    OrganizationId INTEGER,
+    ProductId INTEGER,
+    Stock REAL,
+    UnitId INTEGER
+);
+
+selectAllSyncReservedStockEntity:
+SELECT * FROM SyncReservedStockEntity;
+
+selectBySyncReservedStockEntityId:
+SELECT * FROM SyncReservedStockEntity WHERE UniqueId = :UniqueId;
+
+insertSyncReservedStockEntity:
+INSERT INTO SyncReservedStockEntity (UniqueId, OrganizationId, ProductId, UnitId, Stock)
+VALUES (:UniqueId, :OrganizationId, :ProductId, :UnitId, :Stock);
+
+insertOrReplaceSyncReservedStockEntity:
+INSERT OR REPLACE INTO SyncReservedStockEntity (UniqueId, OrganizationId, ProductId, UnitId, Stock)
+VALUES (:UniqueId, :OrganizationId, :ProductId, :UnitId, :Stock);
+
+updateSyncReservedStockEntity:
+UPDATE SyncReservedStockEntity SET OrganizationId = :OrganizationId, ProductId = :ProductId, UnitId = :UnitId, Stock = :Stock WHERE UniqueId = :UniqueId;
+
+deleteSyncReservedStockEntity:
+DELETE FROM SyncReservedStockEntity WHERE UniqueId = :UniqueId;
+
+deleteAllSyncReservedStockEntity:
+DELETE FROM SyncReservedStockEntity;

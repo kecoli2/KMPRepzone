@@ -1,0 +1,36 @@
+﻿-- DocumentMapDocNumberInformationEntity SQLDelight dosyası
+-- Orijinal tablo: DocumentMapDocNumberInformation
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS DocumentMapDocNumberInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    DocumentMapId INTEGER,
+    DocumentNumberBody INTEGER,
+    DocumentNumberPostfix TEXT,
+    DocumentNumberPrefix TEXT,
+    DocumentType INTEGER,
+    State INTEGER
+);
+
+selectAllDocumentMapDocNumberInformationEntity:
+SELECT * FROM DocumentMapDocNumberInformationEntity;
+
+selectByDocumentMapDocNumberInformationEntityId:
+SELECT * FROM DocumentMapDocNumberInformationEntity WHERE Id = :Id;
+
+insertDocumentMapDocNumberInformationEntity:
+INSERT INTO DocumentMapDocNumberInformationEntity (DocumentType, DocumentMapId, DocumentNumberPrefix, DocumentNumberBody, DocumentNumberPostfix, State)
+VALUES (:DocumentType, :DocumentMapId, :DocumentNumberPrefix, :DocumentNumberBody, :DocumentNumberPostfix, :State);
+
+insertOrReplaceDocumentMapDocNumberInformationEntity:
+INSERT OR REPLACE INTO DocumentMapDocNumberInformationEntity (DocumentType, DocumentMapId, DocumentNumberPrefix, DocumentNumberBody, DocumentNumberPostfix, State)
+VALUES (:DocumentType, :DocumentMapId, :DocumentNumberPrefix, :DocumentNumberBody, :DocumentNumberPostfix, :State);
+
+updateDocumentMapDocNumberInformationEntity:
+UPDATE DocumentMapDocNumberInformationEntity SET DocumentType = :DocumentType, DocumentMapId = :DocumentMapId, DocumentNumberPrefix = :DocumentNumberPrefix, DocumentNumberBody = :DocumentNumberBody, DocumentNumberPostfix = :DocumentNumberPostfix, State = :State WHERE Id = :Id;
+
+deleteDocumentMapDocNumberInformationEntity:
+DELETE FROM DocumentMapDocNumberInformationEntity WHERE Id = :Id;
+
+deleteAllDocumentMapDocNumberInformationEntity:
+DELETE FROM DocumentMapDocNumberInformationEntity;

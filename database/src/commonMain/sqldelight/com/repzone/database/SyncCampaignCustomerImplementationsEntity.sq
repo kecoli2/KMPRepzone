@@ -1,0 +1,36 @@
+﻿-- SyncCampaignCustomerImplementationsEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCampaignCustomerImplementations
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncCampaignCustomerImplementationsEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CampaignMasterId INTEGER,
+    Count INTEGER,
+    CustomerId INTEGER,
+    ModificationDateUtc INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncCampaignCustomerImplementationsEntity:
+SELECT * FROM SyncCampaignCustomerImplementationsEntity;
+
+selectBySyncCampaignCustomerImplementationsEntityId:
+SELECT * FROM SyncCampaignCustomerImplementationsEntity WHERE CampaignMasterId = :CampaignMasterId;
+
+insertSyncCampaignCustomerImplementationsEntity:
+INSERT INTO SyncCampaignCustomerImplementationsEntity (CampaignMasterId, CustomerId, Count, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:CampaignMasterId, :CustomerId, :Count, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncCampaignCustomerImplementationsEntity:
+INSERT OR REPLACE INTO SyncCampaignCustomerImplementationsEntity (CampaignMasterId, CustomerId, Count, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:CampaignMasterId, :CustomerId, :Count, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncCampaignCustomerImplementationsEntity:
+UPDATE SyncCampaignCustomerImplementationsEntity SET CampaignMasterId = :CampaignMasterId, CustomerId = :CustomerId, Count = :Count, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE CampaignMasterId = :CampaignMasterId;
+
+deleteSyncCampaignCustomerImplementationsEntity:
+DELETE FROM SyncCampaignCustomerImplementationsEntity WHERE CampaignMasterId = :CampaignMasterId;
+
+deleteAllSyncCampaignCustomerImplementationsEntity:
+DELETE FROM SyncCampaignCustomerImplementationsEntity;

@@ -1,0 +1,46 @@
+﻿-- SyncDocumentOrganizationEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncDocumentOrganizationModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncDocumentOrganizationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    DocumentHeader TEXT,
+    DocumentTypeId INTEGER,
+    Lang TEXT,
+    LogoPathUrl TEXT,
+    LogoSelection INTEGER,
+    MinMaxControl INTEGER,
+    ModificationDateUtc INTEGER,
+    Note TEXT,
+    OrganizationId INTEGER,
+    PrinterTemplateAbsoulutePath TEXT,
+    PrinterTemplatePath TEXT,
+    PrintQrCode INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    UniqueIdCaption TEXT UNIQUE,
+    UseFinancialLogo INTEGER
+);
+
+selectAllSyncDocumentOrganizationEntity:
+SELECT * FROM SyncDocumentOrganizationEntity;
+
+selectBySyncDocumentOrganizationEntityId:
+SELECT * FROM SyncDocumentOrganizationEntity WHERE OrganizationId = :OrganizationId;
+
+insertSyncDocumentOrganizationEntity:
+INSERT INTO SyncDocumentOrganizationEntity (OrganizationId, DocumentTypeId, MinMaxControl, Lang, LogoSelection, LogoPathUrl, PrintQrCode, UseFinancialLogo, DocumentHeader, UniqueIdCaption, Note, PrinterTemplatePath, PrinterTemplateAbsoulutePath, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:OrganizationId, :DocumentTypeId, :MinMaxControl, :Lang, :LogoSelection, :LogoPathUrl, :PrintQrCode, :UseFinancialLogo, :DocumentHeader, :UniqueIdCaption, :Note, :PrinterTemplatePath, :PrinterTemplateAbsoulutePath, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncDocumentOrganizationEntity:
+INSERT OR REPLACE INTO SyncDocumentOrganizationEntity (OrganizationId, DocumentTypeId, MinMaxControl, Lang, LogoSelection, LogoPathUrl, PrintQrCode, UseFinancialLogo, DocumentHeader, UniqueIdCaption, Note, PrinterTemplatePath, PrinterTemplateAbsoulutePath, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:OrganizationId, :DocumentTypeId, :MinMaxControl, :Lang, :LogoSelection, :LogoPathUrl, :PrintQrCode, :UseFinancialLogo, :DocumentHeader, :UniqueIdCaption, :Note, :PrinterTemplatePath, :PrinterTemplateAbsoulutePath, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncDocumentOrganizationEntity:
+UPDATE SyncDocumentOrganizationEntity SET OrganizationId = :OrganizationId, DocumentTypeId = :DocumentTypeId, MinMaxControl = :MinMaxControl, Lang = :Lang, LogoSelection = :LogoSelection, LogoPathUrl = :LogoPathUrl, PrintQrCode = :PrintQrCode, UseFinancialLogo = :UseFinancialLogo, DocumentHeader = :DocumentHeader, UniqueIdCaption = :UniqueIdCaption, Note = :Note, PrinterTemplatePath = :PrinterTemplatePath, PrinterTemplateAbsoulutePath = :PrinterTemplateAbsoulutePath, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE OrganizationId = :OrganizationId;
+
+deleteSyncDocumentOrganizationEntity:
+DELETE FROM SyncDocumentOrganizationEntity WHERE OrganizationId = :OrganizationId;
+
+deleteAllSyncDocumentOrganizationEntity:
+DELETE FROM SyncDocumentOrganizationEntity;

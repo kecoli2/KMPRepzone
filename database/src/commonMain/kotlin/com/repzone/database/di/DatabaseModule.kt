@@ -9,6 +9,6 @@ val DatabaseModule = module {
     single { AppDatabase(get<SqlDriver>()) }
 
     //DAO lar
-    single { com.repzone.database.dao.OrderDao(get()) }
-    single { com.repzone.database.dao.OrderOutboxDao(get()) }
+/*    single { com.repzone.database.dao.OrderDao(get()) }
+    single { com.repzone.database.dao.OrderOutboxDao(get()) }*/
 }

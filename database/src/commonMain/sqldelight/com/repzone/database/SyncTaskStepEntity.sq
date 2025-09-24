@@ -1,0 +1,39 @@
+﻿-- SyncTaskStepEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncTaskStepModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncTaskStepEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ControlType INTEGER,
+    ControlTypeDescription TEXT,
+    ModificationDateUtc INTEGER,
+    NeedComplteThisToGoToNextStep INTEGER,
+    `Order` INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    TaskId INTEGER,
+    Title TEXT
+);
+
+selectAllSyncTaskStepEntity:
+SELECT * FROM SyncTaskStepEntity;
+
+selectBySyncTaskStepEntityId:
+SELECT * FROM SyncTaskStepEntity WHERE TaskId = :TaskId;
+
+insertSyncTaskStepEntity:
+INSERT INTO SyncTaskStepEntity (TaskId, Title, ControlType, ControlTypeDescription, `Order`, NeedComplteThisToGoToNextStep, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:TaskId, :Title, :ControlType, :ControlTypeDescription, :Order, :NeedComplteThisToGoToNextStep, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncTaskStepEntity:
+INSERT OR REPLACE INTO SyncTaskStepEntity (TaskId, Title, ControlType, ControlTypeDescription, `Order`, NeedComplteThisToGoToNextStep, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:TaskId, :Title, :ControlType, :ControlTypeDescription, :Order, :NeedComplteThisToGoToNextStep, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncTaskStepEntity:
+UPDATE SyncTaskStepEntity SET TaskId = :TaskId, Title = :Title, ControlType = :ControlType, ControlTypeDescription = :ControlTypeDescription, `Order` = :Order, NeedComplteThisToGoToNextStep = :NeedComplteThisToGoToNextStep, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE TaskId = :TaskId;
+
+deleteSyncTaskStepEntity:
+DELETE FROM SyncTaskStepEntity WHERE TaskId = :TaskId;
+
+deleteAllSyncTaskStepEntity:
+DELETE FROM SyncTaskStepEntity;

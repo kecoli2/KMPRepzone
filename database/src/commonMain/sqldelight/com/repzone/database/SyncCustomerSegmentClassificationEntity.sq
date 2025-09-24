@@ -1,0 +1,38 @@
+﻿-- SyncCustomerSegmentClassificationEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCustomerSegmentClassificationModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncCustomerSegmentClassificationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ClassificationId INTEGER,
+    ClassificationName TEXT,
+    CustomerId INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    ShareStatus INTEGER,
+    State INTEGER
+);
+
+selectAllSyncCustomerSegmentClassificationEntity:
+SELECT * FROM SyncCustomerSegmentClassificationEntity;
+
+selectBySyncCustomerSegmentClassificationEntityId:
+SELECT * FROM SyncCustomerSegmentClassificationEntity WHERE ClassificationId = :ClassificationId;
+
+insertSyncCustomerSegmentClassificationEntity:
+INSERT INTO SyncCustomerSegmentClassificationEntity (ClassificationId, ClassificationName, CustomerId, OrganizationId, ShareStatus, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:ClassificationId, :ClassificationName, :CustomerId, :OrganizationId, :ShareStatus, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncCustomerSegmentClassificationEntity:
+INSERT OR REPLACE INTO SyncCustomerSegmentClassificationEntity (ClassificationId, ClassificationName, CustomerId, OrganizationId, ShareStatus, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:ClassificationId, :ClassificationName, :CustomerId, :OrganizationId, :ShareStatus, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncCustomerSegmentClassificationEntity:
+UPDATE SyncCustomerSegmentClassificationEntity SET ClassificationId = :ClassificationId, ClassificationName = :ClassificationName, CustomerId = :CustomerId, OrganizationId = :OrganizationId, ShareStatus = :ShareStatus, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE ClassificationId = :ClassificationId;
+
+deleteSyncCustomerSegmentClassificationEntity:
+DELETE FROM SyncCustomerSegmentClassificationEntity WHERE ClassificationId = :ClassificationId;
+
+deleteAllSyncCustomerSegmentClassificationEntity:
+DELETE FROM SyncCustomerSegmentClassificationEntity;

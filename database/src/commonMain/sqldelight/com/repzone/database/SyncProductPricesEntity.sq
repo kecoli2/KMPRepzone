@@ -1,0 +1,40 @@
+﻿-- SyncProductPricesEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncProductPrices
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncProductPricesEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Begin INTEGER,
+    Description TEXT,
+    `End` INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    OrganizationId INTEGER,
+    ParentId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    TenantId INTEGER
+);
+
+selectAllSyncProductPricesEntity:
+SELECT * FROM SyncProductPricesEntity;
+
+selectBySyncProductPricesEntityId:
+SELECT * FROM SyncProductPricesEntity WHERE TenantId = :TenantId;
+
+insertSyncProductPricesEntity:
+INSERT INTO SyncProductPricesEntity (TenantId, OrganizationId, Name, Description, Begin, `End`, ParentId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:TenantId, :OrganizationId, :Name, :Description, :Begin, :End, :ParentId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncProductPricesEntity:
+INSERT OR REPLACE INTO SyncProductPricesEntity (TenantId, OrganizationId, Name, Description, Begin, `End`, ParentId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:TenantId, :OrganizationId, :Name, :Description, :Begin, :End, :ParentId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncProductPricesEntity:
+UPDATE SyncProductPricesEntity SET TenantId = :TenantId, OrganizationId = :OrganizationId, Name = :Name, Description = :Description, Begin = :Begin, `End` = :End, ParentId = :ParentId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE TenantId = :TenantId;
+
+deleteSyncProductPricesEntity:
+DELETE FROM SyncProductPricesEntity WHERE TenantId = :TenantId;
+
+deleteAllSyncProductPricesEntity:
+DELETE FROM SyncProductPricesEntity;

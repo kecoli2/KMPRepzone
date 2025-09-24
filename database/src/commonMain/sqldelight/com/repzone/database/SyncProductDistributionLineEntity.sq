@@ -1,0 +1,38 @@
+﻿-- SyncProductDistributionLineEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncProductDistributionLineModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncProductDistributionLineEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Color TEXT,
+    DisplayOrder INTEGER,
+    DistributionId INTEGER,
+    ModificationDateUtc INTEGER,
+    MustHave INTEGER,
+    ProductId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncProductDistributionLineEntity:
+SELECT * FROM SyncProductDistributionLineEntity;
+
+selectBySyncProductDistributionLineEntityId:
+SELECT * FROM SyncProductDistributionLineEntity WHERE DistributionId = :DistributionId;
+
+insertSyncProductDistributionLineEntity:
+INSERT INTO SyncProductDistributionLineEntity (DistributionId, ProductId, DisplayOrder, Color, MustHave, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:DistributionId, :ProductId, :DisplayOrder, :Color, :MustHave, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncProductDistributionLineEntity:
+INSERT OR REPLACE INTO SyncProductDistributionLineEntity (DistributionId, ProductId, DisplayOrder, Color, MustHave, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:DistributionId, :ProductId, :DisplayOrder, :Color, :MustHave, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncProductDistributionLineEntity:
+UPDATE SyncProductDistributionLineEntity SET DistributionId = :DistributionId, ProductId = :ProductId, DisplayOrder = :DisplayOrder, Color = :Color, MustHave = :MustHave, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE DistributionId = :DistributionId;
+
+deleteSyncProductDistributionLineEntity:
+DELETE FROM SyncProductDistributionLineEntity WHERE DistributionId = :DistributionId;
+
+deleteAllSyncProductDistributionLineEntity:
+DELETE FROM SyncProductDistributionLineEntity;

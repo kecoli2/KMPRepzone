@@ -1,0 +1,36 @@
+﻿-- SyncRiskDueDayEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncRiskDueDayModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncRiskDueDayEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CustomerId INTEGER,
+    LastInvoiceDate INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncRiskDueDayEntity:
+SELECT * FROM SyncRiskDueDayEntity;
+
+selectBySyncRiskDueDayEntityId:
+SELECT * FROM SyncRiskDueDayEntity WHERE CustomerId = :CustomerId;
+
+insertSyncRiskDueDayEntity:
+INSERT INTO SyncRiskDueDayEntity (CustomerId, OrganizationId, LastInvoiceDate, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:CustomerId, :OrganizationId, :LastInvoiceDate, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncRiskDueDayEntity:
+INSERT OR REPLACE INTO SyncRiskDueDayEntity (CustomerId, OrganizationId, LastInvoiceDate, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:CustomerId, :OrganizationId, :LastInvoiceDate, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncRiskDueDayEntity:
+UPDATE SyncRiskDueDayEntity SET CustomerId = :CustomerId, OrganizationId = :OrganizationId, LastInvoiceDate = :LastInvoiceDate, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE CustomerId = :CustomerId;
+
+deleteSyncRiskDueDayEntity:
+DELETE FROM SyncRiskDueDayEntity WHERE CustomerId = :CustomerId;
+
+deleteAllSyncRiskDueDayEntity:
+DELETE FROM SyncRiskDueDayEntity;

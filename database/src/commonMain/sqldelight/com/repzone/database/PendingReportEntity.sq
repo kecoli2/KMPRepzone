@@ -1,0 +1,31 @@
+﻿-- PendingReportEntity SQLDelight dosyası
+-- Orijinal tablo: MobilePendingReportModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS PendingReportEntity (
+    ProductId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    PendingAmount REAL
+);
+
+selectAllPendingReportEntity:
+SELECT * FROM PendingReportEntity;
+
+selectByPendingReportEntityId:
+SELECT * FROM PendingReportEntity WHERE ProductId = :ProductId;
+
+insertPendingReportEntity:
+INSERT INTO PendingReportEntity (PendingAmount)
+VALUES (:PendingAmount);
+
+insertOrReplacePendingReportEntity:
+INSERT OR REPLACE INTO PendingReportEntity (PendingAmount)
+VALUES (:PendingAmount);
+
+updatePendingReportEntity:
+UPDATE PendingReportEntity SET PendingAmount = :PendingAmount WHERE ProductId = :ProductId;
+
+deletePendingReportEntity:
+DELETE FROM PendingReportEntity WHERE ProductId = :ProductId;
+
+deleteAllPendingReportEntity:
+DELETE FROM PendingReportEntity;

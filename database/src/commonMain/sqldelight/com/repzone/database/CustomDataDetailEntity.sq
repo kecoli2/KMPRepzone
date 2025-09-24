@@ -1,0 +1,32 @@
+﻿-- CustomDataDetailEntity SQLDelight dosyası
+-- Orijinal tablo: CustomDataDetail
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS CustomDataDetailEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    HeaderId INTEGER,
+    Value TEXT
+);
+
+selectAllCustomDataDetailEntity:
+SELECT * FROM CustomDataDetailEntity;
+
+selectByCustomDataDetailEntityId:
+SELECT * FROM CustomDataDetailEntity WHERE Id = :Id;
+
+insertCustomDataDetailEntity:
+INSERT INTO CustomDataDetailEntity (HeaderId, Value)
+VALUES (:HeaderId, :Value);
+
+insertOrReplaceCustomDataDetailEntity:
+INSERT OR REPLACE INTO CustomDataDetailEntity (HeaderId, Value)
+VALUES (:HeaderId, :Value);
+
+updateCustomDataDetailEntity:
+UPDATE CustomDataDetailEntity SET HeaderId = :HeaderId, Value = :Value WHERE Id = :Id;
+
+deleteCustomDataDetailEntity:
+DELETE FROM CustomDataDetailEntity WHERE Id = :Id;
+
+deleteAllCustomDataDetailEntity:
+DELETE FROM CustomDataDetailEntity;

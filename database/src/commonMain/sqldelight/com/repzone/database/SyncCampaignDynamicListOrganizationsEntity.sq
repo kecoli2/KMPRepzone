@@ -1,0 +1,37 @@
+﻿-- SyncCampaignDynamicListOrganizationsEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCampaignDynamicListOrganizations
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncCampaignDynamicListOrganizationsEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CampaignMasterId INTEGER,
+    DynamicListId INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    TenantId INTEGER
+);
+
+selectAllSyncCampaignDynamicListOrganizationsEntity:
+SELECT * FROM SyncCampaignDynamicListOrganizationsEntity;
+
+selectBySyncCampaignDynamicListOrganizationsEntityId:
+SELECT * FROM SyncCampaignDynamicListOrganizationsEntity WHERE TenantId = :TenantId;
+
+insertSyncCampaignDynamicListOrganizationsEntity:
+INSERT INTO SyncCampaignDynamicListOrganizationsEntity (TenantId, OrganizationId, CampaignMasterId, DynamicListId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:TenantId, :OrganizationId, :CampaignMasterId, :DynamicListId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncCampaignDynamicListOrganizationsEntity:
+INSERT OR REPLACE INTO SyncCampaignDynamicListOrganizationsEntity (TenantId, OrganizationId, CampaignMasterId, DynamicListId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:TenantId, :OrganizationId, :CampaignMasterId, :DynamicListId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncCampaignDynamicListOrganizationsEntity:
+UPDATE SyncCampaignDynamicListOrganizationsEntity SET TenantId = :TenantId, OrganizationId = :OrganizationId, CampaignMasterId = :CampaignMasterId, DynamicListId = :DynamicListId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE TenantId = :TenantId;
+
+deleteSyncCampaignDynamicListOrganizationsEntity:
+DELETE FROM SyncCampaignDynamicListOrganizationsEntity WHERE TenantId = :TenantId;
+
+deleteAllSyncCampaignDynamicListOrganizationsEntity:
+DELETE FROM SyncCampaignDynamicListOrganizationsEntity;

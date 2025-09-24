@@ -1,0 +1,44 @@
+﻿-- SyncAddressEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncAddressModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncAddressEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    AddressName TEXT,
+    AddressType INTEGER,
+    City TEXT,
+    Contact TEXT,
+    Country TEXT,
+    CustomerId INTEGER,
+    District TEXT,
+    FaxNumber TEXT,
+    Latitude REAL,
+    Longitude REAL,
+    PhoneNumber TEXT,
+    State INTEGER,
+    Street TEXT,
+    Street2 TEXT
+);
+
+selectAllSyncAddressEntity:
+SELECT * FROM SyncAddressEntity;
+
+selectBySyncAddressEntityId:
+SELECT * FROM SyncAddressEntity WHERE CustomerId = :CustomerId;
+
+insertSyncAddressEntity:
+INSERT INTO SyncAddressEntity (CustomerId, Street, City, District, Latitude, Longitude, AddressType, AddressName, Contact, PhoneNumber, FaxNumber, Street2, Country, State)
+VALUES (:CustomerId, :Street, :City, :District, :Latitude, :Longitude, :AddressType, :AddressName, :Contact, :PhoneNumber, :FaxNumber, :Street2, :Country, :State);
+
+insertOrReplaceSyncAddressEntity:
+INSERT OR REPLACE INTO SyncAddressEntity (CustomerId, Street, City, District, Latitude, Longitude, AddressType, AddressName, Contact, PhoneNumber, FaxNumber, Street2, Country, State)
+VALUES (:CustomerId, :Street, :City, :District, :Latitude, :Longitude, :AddressType, :AddressName, :Contact, :PhoneNumber, :FaxNumber, :Street2, :Country, :State);
+
+updateSyncAddressEntity:
+UPDATE SyncAddressEntity SET CustomerId = :CustomerId, Street = :Street, City = :City, District = :District, Latitude = :Latitude, Longitude = :Longitude, AddressType = :AddressType, AddressName = :AddressName, Contact = :Contact, PhoneNumber = :PhoneNumber, FaxNumber = :FaxNumber, Street2 = :Street2, Country = :Country, State = :State WHERE CustomerId = :CustomerId;
+
+deleteSyncAddressEntity:
+DELETE FROM SyncAddressEntity WHERE CustomerId = :CustomerId;
+
+deleteAllSyncAddressEntity:
+DELETE FROM SyncAddressEntity;

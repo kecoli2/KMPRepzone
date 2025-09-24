@@ -1,0 +1,42 @@
+﻿-- SyncMessageUserEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncMessageUser
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncMessageUserEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CellPhone TEXT,
+    Email TEXT,
+    FirstName TEXT,
+    LastName TEXT,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    OrganizationName TEXT,
+    PhotoPath TEXT,
+    RecordDateUtc INTEGER,
+    RoleId INTEGER,
+    RoleName TEXT,
+    State INTEGER
+);
+
+selectAllSyncMessageUserEntity:
+SELECT * FROM SyncMessageUserEntity;
+
+selectBySyncMessageUserEntityId:
+SELECT * FROM SyncMessageUserEntity WHERE RoleId = :RoleId;
+
+insertSyncMessageUserEntity:
+INSERT INTO SyncMessageUserEntity (FirstName, LastName, CellPhone, Email, PhotoPath, RoleId, RoleName, OrganizationId, OrganizationName, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:FirstName, :LastName, :CellPhone, :Email, :PhotoPath, :RoleId, :RoleName, :OrganizationId, :OrganizationName, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncMessageUserEntity:
+INSERT OR REPLACE INTO SyncMessageUserEntity (FirstName, LastName, CellPhone, Email, PhotoPath, RoleId, RoleName, OrganizationId, OrganizationName, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:FirstName, :LastName, :CellPhone, :Email, :PhotoPath, :RoleId, :RoleName, :OrganizationId, :OrganizationName, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncMessageUserEntity:
+UPDATE SyncMessageUserEntity SET FirstName = :FirstName, LastName = :LastName, CellPhone = :CellPhone, Email = :Email, PhotoPath = :PhotoPath, RoleId = :RoleId, RoleName = :RoleName, OrganizationId = :OrganizationId, OrganizationName = :OrganizationName, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE RoleId = :RoleId;
+
+deleteSyncMessageUserEntity:
+DELETE FROM SyncMessageUserEntity WHERE RoleId = :RoleId;
+
+deleteAllSyncMessageUserEntity:
+DELETE FROM SyncMessageUserEntity;

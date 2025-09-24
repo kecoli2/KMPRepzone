@@ -1,0 +1,45 @@
+﻿-- SyncCampaignMasterEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCampaignMaster
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncCampaignMasterEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    DocumentTypes TEXT,
+    `End` INTEGER,
+    GroupKey TEXT,
+    GroupPriority INTEGER,
+    ImplementationCalcType INTEGER,
+    ImplementationType INTEGER,
+    IsOptional INTEGER,
+    MaxImplementationAmount REAL,
+    MaxImplementationCount INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    Start INTEGER,
+    State INTEGER,
+    Title TEXT
+);
+
+selectAllSyncCampaignMasterEntity:
+SELECT * FROM SyncCampaignMasterEntity;
+
+selectBySyncCampaignMasterEntityId:
+SELECT * FROM SyncCampaignMasterEntity WHERE OrganizationId = :OrganizationId;
+
+insertSyncCampaignMasterEntity:
+INSERT INTO SyncCampaignMasterEntity (Title, Start, `End`, DocumentTypes, GroupKey, GroupPriority, IsOptional, OrganizationId, MaxImplementationCount, ModificationDateUtc, RecordDateUtc, State, ImplementationType, MaxImplementationAmount, ImplementationCalcType)
+VALUES (:Title, :Start, :End, :DocumentTypes, :GroupKey, :GroupPriority, :IsOptional, :OrganizationId, :MaxImplementationCount, :ModificationDateUtc, :RecordDateUtc, :State, :ImplementationType, :MaxImplementationAmount, :ImplementationCalcType);
+
+insertOrReplaceSyncCampaignMasterEntity:
+INSERT OR REPLACE INTO SyncCampaignMasterEntity (Title, Start, `End`, DocumentTypes, GroupKey, GroupPriority, IsOptional, OrganizationId, MaxImplementationCount, ModificationDateUtc, RecordDateUtc, State, ImplementationType, MaxImplementationAmount, ImplementationCalcType)
+VALUES (:Title, :Start, :End, :DocumentTypes, :GroupKey, :GroupPriority, :IsOptional, :OrganizationId, :MaxImplementationCount, :ModificationDateUtc, :RecordDateUtc, :State, :ImplementationType, :MaxImplementationAmount, :ImplementationCalcType);
+
+updateSyncCampaignMasterEntity:
+UPDATE SyncCampaignMasterEntity SET Title = :Title, Start = :Start, `End` = :End, DocumentTypes = :DocumentTypes, GroupKey = :GroupKey, GroupPriority = :GroupPriority, IsOptional = :IsOptional, OrganizationId = :OrganizationId, MaxImplementationCount = :MaxImplementationCount, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State, ImplementationType = :ImplementationType, MaxImplementationAmount = :MaxImplementationAmount, ImplementationCalcType = :ImplementationCalcType WHERE OrganizationId = :OrganizationId;
+
+deleteSyncCampaignMasterEntity:
+DELETE FROM SyncCampaignMasterEntity WHERE OrganizationId = :OrganizationId;
+
+deleteAllSyncCampaignMasterEntity:
+DELETE FROM SyncCampaignMasterEntity;

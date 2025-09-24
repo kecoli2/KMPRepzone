@@ -1,0 +1,33 @@
+﻿-- EagleEyeLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: EagleEyeLogInformation
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS EagleEyeLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Data TEXT,
+    LocDate INTEGER,
+    Status INTEGER
+);
+
+selectAllEagleEyeLogInformationEntity:
+SELECT * FROM EagleEyeLogInformationEntity;
+
+selectByEagleEyeLogInformationEntityId:
+SELECT * FROM EagleEyeLogInformationEntity WHERE Id = :Id;
+
+insertEagleEyeLogInformationEntity:
+INSERT INTO EagleEyeLogInformationEntity (Data, LocDate, Status)
+VALUES (:Data, :LocDate, :Status);
+
+insertOrReplaceEagleEyeLogInformationEntity:
+INSERT OR REPLACE INTO EagleEyeLogInformationEntity (Data, LocDate, Status)
+VALUES (:Data, :LocDate, :Status);
+
+updateEagleEyeLogInformationEntity:
+UPDATE EagleEyeLogInformationEntity SET Data = :Data, LocDate = :LocDate, Status = :Status WHERE Id = :Id;
+
+deleteEagleEyeLogInformationEntity:
+DELETE FROM EagleEyeLogInformationEntity WHERE Id = :Id;
+
+deleteAllEagleEyeLogInformationEntity:
+DELETE FROM EagleEyeLogInformationEntity;

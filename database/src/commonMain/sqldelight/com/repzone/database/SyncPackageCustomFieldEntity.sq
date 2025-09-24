@@ -1,0 +1,36 @@
+﻿-- SyncPackageCustomFieldEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncPackageCustomFieldModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncPackageCustomFieldEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Description TEXT,
+    ImageUrl TEXT,
+    IsActive INTEGER,
+    Name TEXT,
+    PackageId INTEGER,
+    PackageName TEXT
+);
+
+selectAllSyncPackageCustomFieldEntity:
+SELECT * FROM SyncPackageCustomFieldEntity;
+
+selectBySyncPackageCustomFieldEntityId:
+SELECT * FROM SyncPackageCustomFieldEntity WHERE Id = :Id;
+
+insertSyncPackageCustomFieldEntity:
+INSERT INTO SyncPackageCustomFieldEntity (PackageId, PackageName, Name, ImageUrl, Description, IsActive)
+VALUES (:PackageId, :PackageName, :Name, :ImageUrl, :Description, :IsActive);
+
+insertOrReplaceSyncPackageCustomFieldEntity:
+INSERT OR REPLACE INTO SyncPackageCustomFieldEntity (PackageId, PackageName, Name, ImageUrl, Description, IsActive)
+VALUES (:PackageId, :PackageName, :Name, :ImageUrl, :Description, :IsActive);
+
+updateSyncPackageCustomFieldEntity:
+UPDATE SyncPackageCustomFieldEntity SET PackageId = :PackageId, PackageName = :PackageName, Name = :Name, ImageUrl = :ImageUrl, Description = :Description, IsActive = :IsActive WHERE Id = :Id;
+
+deleteSyncPackageCustomFieldEntity:
+DELETE FROM SyncPackageCustomFieldEntity WHERE Id = :Id;
+
+deleteAllSyncPackageCustomFieldEntity:
+DELETE FROM SyncPackageCustomFieldEntity;

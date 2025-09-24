@@ -1,0 +1,38 @@
+﻿-- SyncCustomerEmailEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCustomerEmailModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncCustomerEmailEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CompanyName TEXT,
+    CustomerId INTEGER,
+    Email TEXT,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    Title TEXT
+);
+
+selectAllSyncCustomerEmailEntity:
+SELECT * FROM SyncCustomerEmailEntity;
+
+selectBySyncCustomerEmailEntityId:
+SELECT * FROM SyncCustomerEmailEntity WHERE CustomerId = :CustomerId;
+
+insertSyncCustomerEmailEntity:
+INSERT INTO SyncCustomerEmailEntity (Name, CompanyName, Title, Email, CustomerId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:Name, :CompanyName, :Title, :Email, :CustomerId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncCustomerEmailEntity:
+INSERT OR REPLACE INTO SyncCustomerEmailEntity (Name, CompanyName, Title, Email, CustomerId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:Name, :CompanyName, :Title, :Email, :CustomerId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncCustomerEmailEntity:
+UPDATE SyncCustomerEmailEntity SET Name = :Name, CompanyName = :CompanyName, Title = :Title, Email = :Email, CustomerId = :CustomerId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE CustomerId = :CustomerId;
+
+deleteSyncCustomerEmailEntity:
+DELETE FROM SyncCustomerEmailEntity WHERE CustomerId = :CustomerId;
+
+deleteAllSyncCustomerEmailEntity:
+DELETE FROM SyncCustomerEmailEntity;

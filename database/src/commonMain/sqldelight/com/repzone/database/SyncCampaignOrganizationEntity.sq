@@ -1,0 +1,36 @@
+﻿-- SyncCampaignOrganizationEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCampaignOrganizationModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncCampaignOrganizationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CampaignMasterId INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    TenantId INTEGER
+);
+
+selectAllSyncCampaignOrganizationEntity:
+SELECT * FROM SyncCampaignOrganizationEntity;
+
+selectBySyncCampaignOrganizationEntityId:
+SELECT * FROM SyncCampaignOrganizationEntity WHERE TenantId = :TenantId;
+
+insertSyncCampaignOrganizationEntity:
+INSERT INTO SyncCampaignOrganizationEntity (TenantId, OrganizationId, CampaignMasterId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:TenantId, :OrganizationId, :CampaignMasterId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncCampaignOrganizationEntity:
+INSERT OR REPLACE INTO SyncCampaignOrganizationEntity (TenantId, OrganizationId, CampaignMasterId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:TenantId, :OrganizationId, :CampaignMasterId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncCampaignOrganizationEntity:
+UPDATE SyncCampaignOrganizationEntity SET TenantId = :TenantId, OrganizationId = :OrganizationId, CampaignMasterId = :CampaignMasterId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE TenantId = :TenantId;
+
+deleteSyncCampaignOrganizationEntity:
+DELETE FROM SyncCampaignOrganizationEntity WHERE TenantId = :TenantId;
+
+deleteAllSyncCampaignOrganizationEntity:
+DELETE FROM SyncCampaignOrganizationEntity;

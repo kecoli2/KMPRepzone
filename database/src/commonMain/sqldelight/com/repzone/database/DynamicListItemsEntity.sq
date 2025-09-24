@@ -1,0 +1,36 @@
+﻿-- DynamicListItemsEntity SQLDelight dosyası
+-- Orijinal tablo: DynamicListItems
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS DynamicListItemsEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    DynamicListId INTEGER,
+    EntityId INTEGER,
+    ItemType INTEGER,
+    ModificationDateUtc INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllDynamicListItemsEntity:
+SELECT * FROM DynamicListItemsEntity;
+
+selectByDynamicListItemsEntityId:
+SELECT * FROM DynamicListItemsEntity WHERE EntityId = :EntityId;
+
+insertDynamicListItemsEntity:
+INSERT INTO DynamicListItemsEntity (EntityId, DynamicListId, ItemType, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:EntityId, :DynamicListId, :ItemType, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceDynamicListItemsEntity:
+INSERT OR REPLACE INTO DynamicListItemsEntity (EntityId, DynamicListId, ItemType, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:EntityId, :DynamicListId, :ItemType, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateDynamicListItemsEntity:
+UPDATE DynamicListItemsEntity SET EntityId = :EntityId, DynamicListId = :DynamicListId, ItemType = :ItemType, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE EntityId = :EntityId;
+
+deleteDynamicListItemsEntity:
+DELETE FROM DynamicListItemsEntity WHERE EntityId = :EntityId;
+
+deleteAllDynamicListItemsEntity:
+DELETE FROM DynamicListItemsEntity;

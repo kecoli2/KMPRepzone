@@ -1,0 +1,42 @@
+﻿-- SyncTaskModelAddressEntity SQLDelight dosyası
+-- Orijinal tablo: SyncTaskModelAddress
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncTaskModelAddressEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    City TEXT,
+    Country TEXT,
+    District TEXT,
+    Latitude REAL,
+    Longitude REAL,
+    PhoneNumber TEXT,
+    PostalCode TEXT,
+    RelatedPerson TEXT,
+    State INTEGER,
+    Street1 TEXT,
+    Street2 TEXT,
+    TaskStepId INTEGER
+);
+
+selectAllSyncTaskModelAddressEntity:
+SELECT * FROM SyncTaskModelAddressEntity;
+
+selectBySyncTaskModelAddressEntityId:
+SELECT * FROM SyncTaskModelAddressEntity WHERE TaskStepId = :TaskStepId;
+
+insertSyncTaskModelAddressEntity:
+INSERT INTO SyncTaskModelAddressEntity (TaskStepId, Street1, Street2, City, District, Country, PostalCode, Latitude, Longitude, PhoneNumber, RelatedPerson, State)
+VALUES (:TaskStepId, :Street1, :Street2, :City, :District, :Country, :PostalCode, :Latitude, :Longitude, :PhoneNumber, :RelatedPerson, :State);
+
+insertOrReplaceSyncTaskModelAddressEntity:
+INSERT OR REPLACE INTO SyncTaskModelAddressEntity (TaskStepId, Street1, Street2, City, District, Country, PostalCode, Latitude, Longitude, PhoneNumber, RelatedPerson, State)
+VALUES (:TaskStepId, :Street1, :Street2, :City, :District, :Country, :PostalCode, :Latitude, :Longitude, :PhoneNumber, :RelatedPerson, :State);
+
+updateSyncTaskModelAddressEntity:
+UPDATE SyncTaskModelAddressEntity SET TaskStepId = :TaskStepId, Street1 = :Street1, Street2 = :Street2, City = :City, District = :District, Country = :Country, PostalCode = :PostalCode, Latitude = :Latitude, Longitude = :Longitude, PhoneNumber = :PhoneNumber, RelatedPerson = :RelatedPerson, State = :State WHERE TaskStepId = :TaskStepId;
+
+deleteSyncTaskModelAddressEntity:
+DELETE FROM SyncTaskModelAddressEntity WHERE TaskStepId = :TaskStepId;
+
+deleteAllSyncTaskModelAddressEntity:
+DELETE FROM SyncTaskModelAddressEntity;

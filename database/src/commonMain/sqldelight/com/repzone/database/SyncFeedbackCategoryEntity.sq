@@ -1,0 +1,38 @@
+﻿-- SyncFeedbackCategoryEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncFeedbackCategoryModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncFeedbackCategoryEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Description TEXT,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    OrganizationId INTEGER,
+    ParentId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    TenantId INTEGER
+);
+
+selectAllSyncFeedbackCategoryEntity:
+SELECT * FROM SyncFeedbackCategoryEntity;
+
+selectBySyncFeedbackCategoryEntityId:
+SELECT * FROM SyncFeedbackCategoryEntity WHERE TenantId = :TenantId;
+
+insertSyncFeedbackCategoryEntity:
+INSERT INTO SyncFeedbackCategoryEntity (TenantId, OrganizationId, Name, Description, ParentId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:TenantId, :OrganizationId, :Name, :Description, :ParentId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncFeedbackCategoryEntity:
+INSERT OR REPLACE INTO SyncFeedbackCategoryEntity (TenantId, OrganizationId, Name, Description, ParentId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:TenantId, :OrganizationId, :Name, :Description, :ParentId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncFeedbackCategoryEntity:
+UPDATE SyncFeedbackCategoryEntity SET TenantId = :TenantId, OrganizationId = :OrganizationId, Name = :Name, Description = :Description, ParentId = :ParentId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE TenantId = :TenantId;
+
+deleteSyncFeedbackCategoryEntity:
+DELETE FROM SyncFeedbackCategoryEntity WHERE TenantId = :TenantId;
+
+deleteAllSyncFeedbackCategoryEntity:
+DELETE FROM SyncFeedbackCategoryEntity;

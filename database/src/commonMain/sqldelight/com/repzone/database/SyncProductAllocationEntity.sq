@@ -1,0 +1,41 @@
+﻿-- SyncProductAllocationEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncProductAllocationModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncProductAllocationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Begin INTEGER,
+    `End` INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    OrganizationId INTEGER,
+    ProductId INTEGER,
+    Quantity INTEGER,
+    RecordDateUtc INTEGER,
+    Scope INTEGER,
+    State INTEGER,
+    UnitId INTEGER
+);
+
+selectAllSyncProductAllocationEntity:
+SELECT * FROM SyncProductAllocationEntity;
+
+selectBySyncProductAllocationEntityId:
+SELECT * FROM SyncProductAllocationEntity WHERE OrganizationId = :OrganizationId;
+
+insertSyncProductAllocationEntity:
+INSERT INTO SyncProductAllocationEntity (OrganizationId, Name, Begin, `End`, Scope, ProductId, UnitId, Quantity, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:OrganizationId, :Name, :Begin, :End, :Scope, :ProductId, :UnitId, :Quantity, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncProductAllocationEntity:
+INSERT OR REPLACE INTO SyncProductAllocationEntity (OrganizationId, Name, Begin, `End`, Scope, ProductId, UnitId, Quantity, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:OrganizationId, :Name, :Begin, :End, :Scope, :ProductId, :UnitId, :Quantity, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncProductAllocationEntity:
+UPDATE SyncProductAllocationEntity SET OrganizationId = :OrganizationId, Name = :Name, Begin = :Begin, `End` = :End, Scope = :Scope, ProductId = :ProductId, UnitId = :UnitId, Quantity = :Quantity, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE OrganizationId = :OrganizationId;
+
+deleteSyncProductAllocationEntity:
+DELETE FROM SyncProductAllocationEntity WHERE OrganizationId = :OrganizationId;
+
+deleteAllSyncProductAllocationEntity:
+DELETE FROM SyncProductAllocationEntity;

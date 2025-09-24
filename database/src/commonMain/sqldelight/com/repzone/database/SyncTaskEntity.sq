@@ -1,0 +1,45 @@
+﻿-- SyncTaskEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncTaskModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncTaskEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    BeginDate INTEGER,
+    Customers TEXT,
+    EndDate INTEGER,
+    ModificationDateUtc INTEGER,
+    Note TEXT,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    Status INTEGER,
+    Target INTEGER,
+    TargetGroupId INTEGER,
+    TargetTags TEXT,
+    TargetType INTEGER,
+    TaskSource INTEGER,
+    Title TEXT
+);
+
+selectAllSyncTaskEntity:
+SELECT * FROM SyncTaskEntity;
+
+selectBySyncTaskEntityId:
+SELECT * FROM SyncTaskEntity WHERE OrganizationId = :OrganizationId;
+
+insertSyncTaskEntity:
+INSERT INTO SyncTaskEntity (OrganizationId, Title, BeginDate, EndDate, Note, Status, TargetType, TargetTags, TargetGroupId, Target, Customers, TaskSource, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:OrganizationId, :Title, :BeginDate, :EndDate, :Note, :Status, :TargetType, :TargetTags, :TargetGroupId, :Target, :Customers, :TaskSource, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncTaskEntity:
+INSERT OR REPLACE INTO SyncTaskEntity (OrganizationId, Title, BeginDate, EndDate, Note, Status, TargetType, TargetTags, TargetGroupId, Target, Customers, TaskSource, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:OrganizationId, :Title, :BeginDate, :EndDate, :Note, :Status, :TargetType, :TargetTags, :TargetGroupId, :Target, :Customers, :TaskSource, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncTaskEntity:
+UPDATE SyncTaskEntity SET OrganizationId = :OrganizationId, Title = :Title, BeginDate = :BeginDate, EndDate = :EndDate, Note = :Note, Status = :Status, TargetType = :TargetType, TargetTags = :TargetTags, TargetGroupId = :TargetGroupId, Target = :Target, Customers = :Customers, TaskSource = :TaskSource, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE OrganizationId = :OrganizationId;
+
+deleteSyncTaskEntity:
+DELETE FROM SyncTaskEntity WHERE OrganizationId = :OrganizationId;
+
+deleteAllSyncTaskEntity:
+DELETE FROM SyncTaskEntity;

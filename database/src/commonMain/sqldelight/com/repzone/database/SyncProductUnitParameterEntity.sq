@@ -1,0 +1,39 @@
+﻿-- SyncProductUnitParameterEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncProductUnitParameter
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncProductUnitParameterEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    EntityId INTEGER,
+    EntityType INTEGER,
+    MaxOrderQuantity INTEGER,
+    MinOrderQuantity INTEGER,
+    ModificationDateUtc INTEGER,
+    ProductId INTEGER,
+    ProductUnitId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncProductUnitParameterEntity:
+SELECT * FROM SyncProductUnitParameterEntity;
+
+selectBySyncProductUnitParameterEntityId:
+SELECT * FROM SyncProductUnitParameterEntity WHERE ProductId = :ProductId;
+
+insertSyncProductUnitParameterEntity:
+INSERT INTO SyncProductUnitParameterEntity (ProductId, ProductUnitId, MinOrderQuantity, MaxOrderQuantity, EntityType, EntityId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:ProductId, :ProductUnitId, :MinOrderQuantity, :MaxOrderQuantity, :EntityType, :EntityId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncProductUnitParameterEntity:
+INSERT OR REPLACE INTO SyncProductUnitParameterEntity (ProductId, ProductUnitId, MinOrderQuantity, MaxOrderQuantity, EntityType, EntityId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:ProductId, :ProductUnitId, :MinOrderQuantity, :MaxOrderQuantity, :EntityType, :EntityId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncProductUnitParameterEntity:
+UPDATE SyncProductUnitParameterEntity SET ProductId = :ProductId, ProductUnitId = :ProductUnitId, MinOrderQuantity = :MinOrderQuantity, MaxOrderQuantity = :MaxOrderQuantity, EntityType = :EntityType, EntityId = :EntityId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE ProductId = :ProductId;
+
+deleteSyncProductUnitParameterEntity:
+DELETE FROM SyncProductUnitParameterEntity WHERE ProductId = :ProductId;
+
+deleteAllSyncProductUnitParameterEntity:
+DELETE FROM SyncProductUnitParameterEntity;

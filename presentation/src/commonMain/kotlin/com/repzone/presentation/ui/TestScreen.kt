@@ -58,13 +58,7 @@ fun TestScreen() = ViewModelHost<TestScreenViewModel> { vm ->
     val latest by remember(vm.iFireBaseRealtimeDatabase) { vm.iFireBaseRealtimeDatabase.observe("Test") }
         .collectAsState(initial = "Henüz yok")
 
-    Column(
-        modifier = Modifier
-            .background(MaterialTheme.colorScheme.primaryContainer)
-            .safeContentPadding()
-            .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
+    Column(modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer).safeContentPadding().fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally,    ) {
         Text("Son değer: $latest")
         Text(stringResource(com.repzone.core.generated.resources.Res.string.hello))
         Button(onClick = {

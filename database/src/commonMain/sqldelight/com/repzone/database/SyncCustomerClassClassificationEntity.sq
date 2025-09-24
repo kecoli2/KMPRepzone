@@ -1,0 +1,38 @@
+﻿-- SyncCustomerClassClassificationEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCustomerClassClassificationModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncCustomerClassClassificationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ClassificationId INTEGER,
+    ClassificationName TEXT,
+    CustomerId INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    ShareStatus INTEGER,
+    State INTEGER
+);
+
+selectAllSyncCustomerClassClassificationEntity:
+SELECT * FROM SyncCustomerClassClassificationEntity;
+
+selectBySyncCustomerClassClassificationEntityId:
+SELECT * FROM SyncCustomerClassClassificationEntity WHERE ClassificationId = :ClassificationId;
+
+insertSyncCustomerClassClassificationEntity:
+INSERT INTO SyncCustomerClassClassificationEntity (ClassificationId, ClassificationName, CustomerId, OrganizationId, ShareStatus, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:ClassificationId, :ClassificationName, :CustomerId, :OrganizationId, :ShareStatus, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncCustomerClassClassificationEntity:
+INSERT OR REPLACE INTO SyncCustomerClassClassificationEntity (ClassificationId, ClassificationName, CustomerId, OrganizationId, ShareStatus, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:ClassificationId, :ClassificationName, :CustomerId, :OrganizationId, :ShareStatus, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncCustomerClassClassificationEntity:
+UPDATE SyncCustomerClassClassificationEntity SET ClassificationId = :ClassificationId, ClassificationName = :ClassificationName, CustomerId = :CustomerId, OrganizationId = :OrganizationId, ShareStatus = :ShareStatus, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE ClassificationId = :ClassificationId;
+
+deleteSyncCustomerClassClassificationEntity:
+DELETE FROM SyncCustomerClassClassificationEntity WHERE ClassificationId = :ClassificationId;
+
+deleteAllSyncCustomerClassClassificationEntity:
+DELETE FROM SyncCustomerClassClassificationEntity;

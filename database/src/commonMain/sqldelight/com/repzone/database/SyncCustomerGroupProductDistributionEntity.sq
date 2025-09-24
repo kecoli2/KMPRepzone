@@ -1,0 +1,41 @@
+﻿-- SyncCustomerGroupProductDistributionEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCustomerGroupProductDistributionModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncCustomerGroupProductDistributionEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ModificationDateUtc INTEGER,
+    MustStockListId INTEGER,
+    OrganizationId INTEGER,
+    PricePurchaseReturnDamagedListId INTEGER,
+    PriceSalesDamagedListId INTEGER,
+    PriceSalesDistributionListId INTEGER,
+    PriceSalesReturnDistributionListId INTEGER,
+    ProductSalesDistributionListId INTEGER,
+    ProductSalesReturnDistributionListId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncCustomerGroupProductDistributionEntity:
+SELECT * FROM SyncCustomerGroupProductDistributionEntity;
+
+selectBySyncCustomerGroupProductDistributionEntityId:
+SELECT * FROM SyncCustomerGroupProductDistributionEntity WHERE OrganizationId = :OrganizationId;
+
+insertSyncCustomerGroupProductDistributionEntity:
+INSERT INTO SyncCustomerGroupProductDistributionEntity (OrganizationId, ProductSalesDistributionListId, ProductSalesReturnDistributionListId, PriceSalesDistributionListId, PriceSalesReturnDistributionListId, PriceSalesDamagedListId, PricePurchaseReturnDamagedListId, MustStockListId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:OrganizationId, :ProductSalesDistributionListId, :ProductSalesReturnDistributionListId, :PriceSalesDistributionListId, :PriceSalesReturnDistributionListId, :PriceSalesDamagedListId, :PricePurchaseReturnDamagedListId, :MustStockListId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncCustomerGroupProductDistributionEntity:
+INSERT OR REPLACE INTO SyncCustomerGroupProductDistributionEntity (OrganizationId, ProductSalesDistributionListId, ProductSalesReturnDistributionListId, PriceSalesDistributionListId, PriceSalesReturnDistributionListId, PriceSalesDamagedListId, PricePurchaseReturnDamagedListId, MustStockListId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:OrganizationId, :ProductSalesDistributionListId, :ProductSalesReturnDistributionListId, :PriceSalesDistributionListId, :PriceSalesReturnDistributionListId, :PriceSalesDamagedListId, :PricePurchaseReturnDamagedListId, :MustStockListId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncCustomerGroupProductDistributionEntity:
+UPDATE SyncCustomerGroupProductDistributionEntity SET OrganizationId = :OrganizationId, ProductSalesDistributionListId = :ProductSalesDistributionListId, ProductSalesReturnDistributionListId = :ProductSalesReturnDistributionListId, PriceSalesDistributionListId = :PriceSalesDistributionListId, PriceSalesReturnDistributionListId = :PriceSalesReturnDistributionListId, PriceSalesDamagedListId = :PriceSalesDamagedListId, PricePurchaseReturnDamagedListId = :PricePurchaseReturnDamagedListId, MustStockListId = :MustStockListId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE OrganizationId = :OrganizationId;
+
+deleteSyncCustomerGroupProductDistributionEntity:
+DELETE FROM SyncCustomerGroupProductDistributionEntity WHERE OrganizationId = :OrganizationId;
+
+deleteAllSyncCustomerGroupProductDistributionEntity:
+DELETE FROM SyncCustomerGroupProductDistributionEntity;

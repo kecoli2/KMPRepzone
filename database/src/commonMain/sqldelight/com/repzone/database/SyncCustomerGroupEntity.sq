@@ -1,0 +1,39 @@
+﻿-- SyncCustomerGroupEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCustomerGroupModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncCustomerGroupEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    IconIndex INTEGER,
+    IsDefault INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    OrganizationId INTEGER,
+    ParentId INTEGER,
+    RecordDateUtc INTEGER,
+    Shared INTEGER,
+    State INTEGER
+);
+
+selectAllSyncCustomerGroupEntity:
+SELECT * FROM SyncCustomerGroupEntity;
+
+selectBySyncCustomerGroupEntityId:
+SELECT * FROM SyncCustomerGroupEntity WHERE ParentId = :ParentId;
+
+insertSyncCustomerGroupEntity:
+INSERT INTO SyncCustomerGroupEntity (Name, ParentId, OrganizationId, Shared, IsDefault, IconIndex, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:Name, :ParentId, :OrganizationId, :Shared, :IsDefault, :IconIndex, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncCustomerGroupEntity:
+INSERT OR REPLACE INTO SyncCustomerGroupEntity (Name, ParentId, OrganizationId, Shared, IsDefault, IconIndex, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:Name, :ParentId, :OrganizationId, :Shared, :IsDefault, :IconIndex, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncCustomerGroupEntity:
+UPDATE SyncCustomerGroupEntity SET Name = :Name, ParentId = :ParentId, OrganizationId = :OrganizationId, Shared = :Shared, IsDefault = :IsDefault, IconIndex = :IconIndex, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE ParentId = :ParentId;
+
+deleteSyncCustomerGroupEntity:
+DELETE FROM SyncCustomerGroupEntity WHERE ParentId = :ParentId;
+
+deleteAllSyncCustomerGroupEntity:
+DELETE FROM SyncCustomerGroupEntity;

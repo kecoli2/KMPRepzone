@@ -1,0 +1,36 @@
+﻿-- SyncUnitEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncUnitModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncUnitEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    IsVisible INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    TenantId INTEGER
+);
+
+selectAllSyncUnitEntity:
+SELECT * FROM SyncUnitEntity;
+
+selectBySyncUnitEntityId:
+SELECT * FROM SyncUnitEntity WHERE TenantId = :TenantId;
+
+insertSyncUnitEntity:
+INSERT INTO SyncUnitEntity (TenantId, Name, IsVisible, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:TenantId, :Name, :IsVisible, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncUnitEntity:
+INSERT OR REPLACE INTO SyncUnitEntity (TenantId, Name, IsVisible, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:TenantId, :Name, :IsVisible, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncUnitEntity:
+UPDATE SyncUnitEntity SET TenantId = :TenantId, Name = :Name, IsVisible = :IsVisible, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE TenantId = :TenantId;
+
+deleteSyncUnitEntity:
+DELETE FROM SyncUnitEntity WHERE TenantId = :TenantId;
+
+deleteAllSyncUnitEntity:
+DELETE FROM SyncUnitEntity;

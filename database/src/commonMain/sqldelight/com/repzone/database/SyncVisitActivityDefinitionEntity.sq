@@ -1,0 +1,39 @@
+﻿-- SyncVisitActivityDefinitionEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncVisitActivityDefinitionModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncVisitActivityDefinitionEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CustomerTags TEXT,
+    Descriptions TEXT,
+    FormTags TEXT,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    `Order` INTEGER,
+    RecordDateUtc INTEGER,
+    RepresentativeTags TEXT,
+    State INTEGER
+);
+
+selectAllSyncVisitActivityDefinitionEntity:
+SELECT * FROM SyncVisitActivityDefinitionEntity;
+
+selectBySyncVisitActivityDefinitionEntityId:
+SELECT * FROM SyncVisitActivityDefinitionEntity WHERE Id = :Id;
+
+insertSyncVisitActivityDefinitionEntity:
+INSERT INTO SyncVisitActivityDefinitionEntity (CustomerTags, RepresentativeTags, FormTags, Name, Descriptions, `Order`, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:CustomerTags, :RepresentativeTags, :FormTags, :Name, :Descriptions, :Order, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncVisitActivityDefinitionEntity:
+INSERT OR REPLACE INTO SyncVisitActivityDefinitionEntity (CustomerTags, RepresentativeTags, FormTags, Name, Descriptions, `Order`, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:CustomerTags, :RepresentativeTags, :FormTags, :Name, :Descriptions, :Order, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncVisitActivityDefinitionEntity:
+UPDATE SyncVisitActivityDefinitionEntity SET CustomerTags = :CustomerTags, RepresentativeTags = :RepresentativeTags, FormTags = :FormTags, Name = :Name, Descriptions = :Descriptions, `Order` = :Order, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE Id = :Id;
+
+deleteSyncVisitActivityDefinitionEntity:
+DELETE FROM SyncVisitActivityDefinitionEntity WHERE Id = :Id;
+
+deleteAllSyncVisitActivityDefinitionEntity:
+DELETE FROM SyncVisitActivityDefinitionEntity;

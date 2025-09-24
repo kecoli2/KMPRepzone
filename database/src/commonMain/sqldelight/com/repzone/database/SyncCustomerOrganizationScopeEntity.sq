@@ -1,0 +1,39 @@
+﻿-- SyncCustomerOrganizationScopeEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCustomerOrganizationScopeModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncCustomerOrganizationScopeEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CustomerId INTEGER,
+    Fulfillment INTEGER,
+    ManufacturerId INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    OrganizationName TEXT,
+    RecordDateUtc INTEGER,
+    SalesNotAllowed INTEGER,
+    State INTEGER
+);
+
+selectAllSyncCustomerOrganizationScopeEntity:
+SELECT * FROM SyncCustomerOrganizationScopeEntity;
+
+selectBySyncCustomerOrganizationScopeEntityId:
+SELECT * FROM SyncCustomerOrganizationScopeEntity WHERE Id = :Id;
+
+insertSyncCustomerOrganizationScopeEntity:
+INSERT INTO SyncCustomerOrganizationScopeEntity (State, RecordDateUtc, ModificationDateUtc, CustomerId, OrganizationId, OrganizationName, ManufacturerId, Fulfillment, SalesNotAllowed)
+VALUES (:State, :RecordDateUtc, :ModificationDateUtc, :CustomerId, :OrganizationId, :OrganizationName, :ManufacturerId, :Fulfillment, :SalesNotAllowed);
+
+insertOrReplaceSyncCustomerOrganizationScopeEntity:
+INSERT OR REPLACE INTO SyncCustomerOrganizationScopeEntity (State, RecordDateUtc, ModificationDateUtc, CustomerId, OrganizationId, OrganizationName, ManufacturerId, Fulfillment, SalesNotAllowed)
+VALUES (:State, :RecordDateUtc, :ModificationDateUtc, :CustomerId, :OrganizationId, :OrganizationName, :ManufacturerId, :Fulfillment, :SalesNotAllowed);
+
+updateSyncCustomerOrganizationScopeEntity:
+UPDATE SyncCustomerOrganizationScopeEntity SET State = :State, RecordDateUtc = :RecordDateUtc, ModificationDateUtc = :ModificationDateUtc, CustomerId = :CustomerId, OrganizationId = :OrganizationId, OrganizationName = :OrganizationName, ManufacturerId = :ManufacturerId, Fulfillment = :Fulfillment, SalesNotAllowed = :SalesNotAllowed WHERE Id = :Id;
+
+deleteSyncCustomerOrganizationScopeEntity:
+DELETE FROM SyncCustomerOrganizationScopeEntity WHERE Id = :Id;
+
+deleteAllSyncCustomerOrganizationScopeEntity:
+DELETE FROM SyncCustomerOrganizationScopeEntity;

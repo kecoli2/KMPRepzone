@@ -1,0 +1,42 @@
+﻿-- SyncOrganizationInfoEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncOrganizationInfoModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncOrganizationInfoEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    City TEXT,
+    Country TEXT,
+    District TEXT,
+    FaxNumber TEXT,
+    IsEOrganization INTEGER,
+    LogoPath TEXT,
+    Name TEXT,
+    PhoneNumber TEXT,
+    PostalCode TEXT,
+    Street1 TEXT,
+    Street2 TEXT,
+    Title TEXT
+);
+
+selectAllSyncOrganizationInfoEntity:
+SELECT * FROM SyncOrganizationInfoEntity;
+
+selectBySyncOrganizationInfoEntityId:
+SELECT * FROM SyncOrganizationInfoEntity WHERE Id = :Id;
+
+insertSyncOrganizationInfoEntity:
+INSERT INTO SyncOrganizationInfoEntity (Name, City, Country, Street1, Street2, PostalCode, District, PhoneNumber, FaxNumber, LogoPath, Title, IsEOrganization)
+VALUES (:Name, :City, :Country, :Street1, :Street2, :PostalCode, :District, :PhoneNumber, :FaxNumber, :LogoPath, :Title, :IsEOrganization);
+
+insertOrReplaceSyncOrganizationInfoEntity:
+INSERT OR REPLACE INTO SyncOrganizationInfoEntity (Name, City, Country, Street1, Street2, PostalCode, District, PhoneNumber, FaxNumber, LogoPath, Title, IsEOrganization)
+VALUES (:Name, :City, :Country, :Street1, :Street2, :PostalCode, :District, :PhoneNumber, :FaxNumber, :LogoPath, :Title, :IsEOrganization);
+
+updateSyncOrganizationInfoEntity:
+UPDATE SyncOrganizationInfoEntity SET Name = :Name, City = :City, Country = :Country, Street1 = :Street1, Street2 = :Street2, PostalCode = :PostalCode, District = :District, PhoneNumber = :PhoneNumber, FaxNumber = :FaxNumber, LogoPath = :LogoPath, Title = :Title, IsEOrganization = :IsEOrganization WHERE Id = :Id;
+
+deleteSyncOrganizationInfoEntity:
+DELETE FROM SyncOrganizationInfoEntity WHERE Id = :Id;
+
+deleteAllSyncOrganizationInfoEntity:
+DELETE FROM SyncOrganizationInfoEntity;

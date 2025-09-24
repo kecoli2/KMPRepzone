@@ -1,0 +1,39 @@
+﻿-- SyncProductGroupEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncProductGroupModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncProductGroupEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    IconIndex INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    OrganizationId INTEGER,
+    ParentId INTEGER,
+    PhotoPath TEXT,
+    RecordDateUtc INTEGER,
+    Shared INTEGER,
+    State INTEGER
+);
+
+selectAllSyncProductGroupEntity:
+SELECT * FROM SyncProductGroupEntity;
+
+selectBySyncProductGroupEntityId:
+SELECT * FROM SyncProductGroupEntity WHERE ParentId = :ParentId;
+
+insertSyncProductGroupEntity:
+INSERT INTO SyncProductGroupEntity (ParentId, OrganizationId, Name, Shared, IconIndex, PhotoPath, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:ParentId, :OrganizationId, :Name, :Shared, :IconIndex, :PhotoPath, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncProductGroupEntity:
+INSERT OR REPLACE INTO SyncProductGroupEntity (ParentId, OrganizationId, Name, Shared, IconIndex, PhotoPath, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:ParentId, :OrganizationId, :Name, :Shared, :IconIndex, :PhotoPath, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncProductGroupEntity:
+UPDATE SyncProductGroupEntity SET ParentId = :ParentId, OrganizationId = :OrganizationId, Name = :Name, Shared = :Shared, IconIndex = :IconIndex, PhotoPath = :PhotoPath, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE ParentId = :ParentId;
+
+deleteSyncProductGroupEntity:
+DELETE FROM SyncProductGroupEntity WHERE ParentId = :ParentId;
+
+deleteAllSyncProductGroupEntity:
+DELETE FROM SyncProductGroupEntity;

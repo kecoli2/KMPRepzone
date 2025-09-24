@@ -1,0 +1,43 @@
+﻿-- SyncFeedbackListEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncFeedbackListModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncFeedbackListEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CategoryId INTEGER,
+    CategoryName TEXT,
+    LastFeedbackDate INTEGER,
+    Message TEXT,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    OrganizationName TEXT,
+    ParentId INTEGER,
+    RecordDateUtc INTEGER,
+    RootId INTEGER,
+    State INTEGER,
+    UserId INTEGER,
+    UserName TEXT
+);
+
+selectAllSyncFeedbackListEntity:
+SELECT * FROM SyncFeedbackListEntity;
+
+selectBySyncFeedbackListEntityId:
+SELECT * FROM SyncFeedbackListEntity WHERE OrganizationId = :OrganizationId;
+
+insertSyncFeedbackListEntity:
+INSERT INTO SyncFeedbackListEntity (OrganizationId, OrganizationName, Message, UserId, UserName, CategoryId, CategoryName, LastFeedbackDate, ParentId, RootId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:OrganizationId, :OrganizationName, :Message, :UserId, :UserName, :CategoryId, :CategoryName, :LastFeedbackDate, :ParentId, :RootId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncFeedbackListEntity:
+INSERT OR REPLACE INTO SyncFeedbackListEntity (OrganizationId, OrganizationName, Message, UserId, UserName, CategoryId, CategoryName, LastFeedbackDate, ParentId, RootId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:OrganizationId, :OrganizationName, :Message, :UserId, :UserName, :CategoryId, :CategoryName, :LastFeedbackDate, :ParentId, :RootId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncFeedbackListEntity:
+UPDATE SyncFeedbackListEntity SET OrganizationId = :OrganizationId, OrganizationName = :OrganizationName, Message = :Message, UserId = :UserId, UserName = :UserName, CategoryId = :CategoryId, CategoryName = :CategoryName, LastFeedbackDate = :LastFeedbackDate, ParentId = :ParentId, RootId = :RootId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE OrganizationId = :OrganizationId;
+
+deleteSyncFeedbackListEntity:
+DELETE FROM SyncFeedbackListEntity WHERE OrganizationId = :OrganizationId;
+
+deleteAllSyncFeedbackListEntity:
+DELETE FROM SyncFeedbackListEntity;

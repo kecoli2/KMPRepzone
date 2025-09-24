@@ -1,0 +1,37 @@
+﻿-- StockTransactionLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: StockTransactionLogInformation
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS StockTransactionLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Amount REAL,
+    Direction INTEGER,
+    DocumentGroup INTEGER,
+    ProductId INTEGER,
+    ReferenceId INTEGER,
+    TransactionDate INTEGER,
+    WarehouseType INTEGER
+);
+
+selectAllStockTransactionLogInformationEntity:
+SELECT * FROM StockTransactionLogInformationEntity;
+
+selectByStockTransactionLogInformationEntityId:
+SELECT * FROM StockTransactionLogInformationEntity WHERE Id = :Id;
+
+insertStockTransactionLogInformationEntity:
+INSERT INTO StockTransactionLogInformationEntity (TransactionDate, ProductId, Amount, Direction, DocumentGroup, ReferenceId, WarehouseType)
+VALUES (:TransactionDate, :ProductId, :Amount, :Direction, :DocumentGroup, :ReferenceId, :WarehouseType);
+
+insertOrReplaceStockTransactionLogInformationEntity:
+INSERT OR REPLACE INTO StockTransactionLogInformationEntity (TransactionDate, ProductId, Amount, Direction, DocumentGroup, ReferenceId, WarehouseType)
+VALUES (:TransactionDate, :ProductId, :Amount, :Direction, :DocumentGroup, :ReferenceId, :WarehouseType);
+
+updateStockTransactionLogInformationEntity:
+UPDATE StockTransactionLogInformationEntity SET TransactionDate = :TransactionDate, ProductId = :ProductId, Amount = :Amount, Direction = :Direction, DocumentGroup = :DocumentGroup, ReferenceId = :ReferenceId, WarehouseType = :WarehouseType WHERE Id = :Id;
+
+deleteStockTransactionLogInformationEntity:
+DELETE FROM StockTransactionLogInformationEntity WHERE Id = :Id;
+
+deleteAllStockTransactionLogInformationEntity:
+DELETE FROM StockTransactionLogInformationEntity;

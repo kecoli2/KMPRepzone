@@ -1,0 +1,31 @@
+﻿-- AppSettingEntity SQLDelight dosyası
+-- Orijinal tablo: AppSetting
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS AppSettingEntity (
+    `Key` TEXT NOT NULL PRIMARY KEY,
+    Value TEXT
+);
+
+selectAllAppSettingEntity:
+SELECT * FROM AppSettingEntity;
+
+selectByAppSettingEntityId:
+SELECT * FROM AppSettingEntity WHERE `Key` = :Key;
+
+insertAppSettingEntity:
+INSERT INTO AppSettingEntity (`Key`, Value)
+VALUES (:Key, :Value);
+
+insertOrReplaceAppSettingEntity:
+INSERT OR REPLACE INTO AppSettingEntity (`Key`, Value)
+VALUES (:Key, :Value);
+
+updateAppSettingEntity:
+UPDATE AppSettingEntity SET Value = :Value WHERE `Key` = :Key;
+
+deleteAppSettingEntity:
+DELETE FROM AppSettingEntity WHERE `Key` = :Key;
+
+deleteAllAppSettingEntity:
+DELETE FROM AppSettingEntity;

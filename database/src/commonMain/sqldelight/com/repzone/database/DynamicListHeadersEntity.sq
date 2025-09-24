@@ -1,0 +1,38 @@
+﻿-- DynamicListHeadersEntity SQLDelight dosyası
+-- Orijinal tablo: DynamicListHeaders
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS DynamicListHeadersEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Description TEXT,
+    ListType INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    ShareStatus INTEGER,
+    State INTEGER
+);
+
+selectAllDynamicListHeadersEntity:
+SELECT * FROM DynamicListHeadersEntity;
+
+selectByDynamicListHeadersEntityId:
+SELECT * FROM DynamicListHeadersEntity WHERE OrganizationId = :OrganizationId;
+
+insertDynamicListHeadersEntity:
+INSERT INTO DynamicListHeadersEntity (OrganizationId, Name, Description, ListType, ShareStatus, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:OrganizationId, :Name, :Description, :ListType, :ShareStatus, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceDynamicListHeadersEntity:
+INSERT OR REPLACE INTO DynamicListHeadersEntity (OrganizationId, Name, Description, ListType, ShareStatus, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:OrganizationId, :Name, :Description, :ListType, :ShareStatus, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateDynamicListHeadersEntity:
+UPDATE DynamicListHeadersEntity SET OrganizationId = :OrganizationId, Name = :Name, Description = :Description, ListType = :ListType, ShareStatus = :ShareStatus, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE OrganizationId = :OrganizationId;
+
+deleteDynamicListHeadersEntity:
+DELETE FROM DynamicListHeadersEntity WHERE OrganizationId = :OrganizationId;
+
+deleteAllDynamicListHeadersEntity:
+DELETE FROM DynamicListHeadersEntity;

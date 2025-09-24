@@ -1,0 +1,45 @@
+﻿-- SyncGameEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncGame
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncGameEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Description TEXT,
+    Icon TEXT,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    Point INTEGER,
+    Priority INTEGER,
+    RankDescription TEXT,
+    RankId INTEGER,
+    RankName TEXT,
+    RecordDateUtc INTEGER,
+    StageIcon TEXT,
+    StageId INTEGER,
+    StageName TEXT,
+    State INTEGER,
+    UnSuccessIcon TEXT
+);
+
+selectAllSyncGameEntity:
+SELECT * FROM SyncGameEntity;
+
+selectBySyncGameEntityId:
+SELECT * FROM SyncGameEntity WHERE RankId = :RankId;
+
+insertSyncGameEntity:
+INSERT INTO SyncGameEntity (Name, Description, Icon, RankId, RankName, RankDescription, StageId, StageName, StageIcon, Priority, UnSuccessIcon, Point, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:Name, :Description, :Icon, :RankId, :RankName, :RankDescription, :StageId, :StageName, :StageIcon, :Priority, :UnSuccessIcon, :Point, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncGameEntity:
+INSERT OR REPLACE INTO SyncGameEntity (Name, Description, Icon, RankId, RankName, RankDescription, StageId, StageName, StageIcon, Priority, UnSuccessIcon, Point, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:Name, :Description, :Icon, :RankId, :RankName, :RankDescription, :StageId, :StageName, :StageIcon, :Priority, :UnSuccessIcon, :Point, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncGameEntity:
+UPDATE SyncGameEntity SET Name = :Name, Description = :Description, Icon = :Icon, RankId = :RankId, RankName = :RankName, RankDescription = :RankDescription, StageId = :StageId, StageName = :StageName, StageIcon = :StageIcon, Priority = :Priority, UnSuccessIcon = :UnSuccessIcon, Point = :Point, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE RankId = :RankId;
+
+deleteSyncGameEntity:
+DELETE FROM SyncGameEntity WHERE RankId = :RankId;
+
+deleteAllSyncGameEntity:
+DELETE FROM SyncGameEntity;

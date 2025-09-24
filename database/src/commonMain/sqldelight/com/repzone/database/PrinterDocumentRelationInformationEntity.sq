@@ -1,0 +1,35 @@
+﻿-- PrinterDocumentRelationInformationEntity SQLDelight dosyası
+-- Orijinal tablo: PrinterDocumentRelationInformation
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS PrinterDocumentRelationInformationEntity (
+    DocumentMapId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    PaperWidth INTEGER,
+    PrinterAddress TEXT,
+    PrinterName TEXT,
+    PrinterType INTEGER,
+    State INTEGER
+);
+
+selectAllPrinterDocumentRelationInformationEntity:
+SELECT * FROM PrinterDocumentRelationInformationEntity;
+
+selectByPrinterDocumentRelationInformationEntityId:
+SELECT * FROM PrinterDocumentRelationInformationEntity WHERE DocumentMapId = :DocumentMapId;
+
+insertPrinterDocumentRelationInformationEntity:
+INSERT INTO PrinterDocumentRelationInformationEntity (PrinterName, PrinterAddress, State, PrinterType, PaperWidth)
+VALUES (:PrinterName, :PrinterAddress, :State, :PrinterType, :PaperWidth);
+
+insertOrReplacePrinterDocumentRelationInformationEntity:
+INSERT OR REPLACE INTO PrinterDocumentRelationInformationEntity (PrinterName, PrinterAddress, State, PrinterType, PaperWidth)
+VALUES (:PrinterName, :PrinterAddress, :State, :PrinterType, :PaperWidth);
+
+updatePrinterDocumentRelationInformationEntity:
+UPDATE PrinterDocumentRelationInformationEntity SET PrinterName = :PrinterName, PrinterAddress = :PrinterAddress, State = :State, PrinterType = :PrinterType, PaperWidth = :PaperWidth WHERE DocumentMapId = :DocumentMapId;
+
+deletePrinterDocumentRelationInformationEntity:
+DELETE FROM PrinterDocumentRelationInformationEntity WHERE DocumentMapId = :DocumentMapId;
+
+deleteAllPrinterDocumentRelationInformationEntity:
+DELETE FROM PrinterDocumentRelationInformationEntity;

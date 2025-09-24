@@ -1,0 +1,35 @@
+﻿-- TaskVisitLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: TaskVisitLogInformation
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS TaskVisitLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CustomerId INTEGER,
+    FinishDate INTEGER,
+    StartDate INTEGER,
+    TaskId INTEGER,
+    VisitUniqueId TEXT
+);
+
+selectAllTaskVisitLogInformationEntity:
+SELECT * FROM TaskVisitLogInformationEntity;
+
+selectByTaskVisitLogInformationEntityId:
+SELECT * FROM TaskVisitLogInformationEntity WHERE Id = :Id;
+
+insertTaskVisitLogInformationEntity:
+INSERT INTO TaskVisitLogInformationEntity (VisitUniqueId, CustomerId, TaskId, StartDate, FinishDate)
+VALUES (:VisitUniqueId, :CustomerId, :TaskId, :StartDate, :FinishDate);
+
+insertOrReplaceTaskVisitLogInformationEntity:
+INSERT OR REPLACE INTO TaskVisitLogInformationEntity (VisitUniqueId, CustomerId, TaskId, StartDate, FinishDate)
+VALUES (:VisitUniqueId, :CustomerId, :TaskId, :StartDate, :FinishDate);
+
+updateTaskVisitLogInformationEntity:
+UPDATE TaskVisitLogInformationEntity SET VisitUniqueId = :VisitUniqueId, CustomerId = :CustomerId, TaskId = :TaskId, StartDate = :StartDate, FinishDate = :FinishDate WHERE Id = :Id;
+
+deleteTaskVisitLogInformationEntity:
+DELETE FROM TaskVisitLogInformationEntity WHERE Id = :Id;
+
+deleteAllTaskVisitLogInformationEntity:
+DELETE FROM TaskVisitLogInformationEntity;

@@ -1,0 +1,41 @@
+﻿-- SyncAppListEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncAppList
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncAppListEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ApplicationId INTEGER,
+    ClientKey TEXT,
+    ClientSecretKey TEXT,
+    Code TEXT,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    TenantId INTEGER,
+    Url TEXT
+);
+
+selectAllSyncAppListEntity:
+SELECT * FROM SyncAppListEntity;
+
+selectBySyncAppListEntityId:
+SELECT * FROM SyncAppListEntity WHERE ApplicationId = :ApplicationId;
+
+insertSyncAppListEntity:
+INSERT INTO SyncAppListEntity (ApplicationId, Name, Code, Url, ClientKey, ClientSecretKey, TenantId, OrganizationId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:ApplicationId, :Name, :Code, :Url, :ClientKey, :ClientSecretKey, :TenantId, :OrganizationId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncAppListEntity:
+INSERT OR REPLACE INTO SyncAppListEntity (ApplicationId, Name, Code, Url, ClientKey, ClientSecretKey, TenantId, OrganizationId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:ApplicationId, :Name, :Code, :Url, :ClientKey, :ClientSecretKey, :TenantId, :OrganizationId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncAppListEntity:
+UPDATE SyncAppListEntity SET ApplicationId = :ApplicationId, Name = :Name, Code = :Code, Url = :Url, ClientKey = :ClientKey, ClientSecretKey = :ClientSecretKey, TenantId = :TenantId, OrganizationId = :OrganizationId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE ApplicationId = :ApplicationId;
+
+deleteSyncAppListEntity:
+DELETE FROM SyncAppListEntity WHERE ApplicationId = :ApplicationId;
+
+deleteAllSyncAppListEntity:
+DELETE FROM SyncAppListEntity;

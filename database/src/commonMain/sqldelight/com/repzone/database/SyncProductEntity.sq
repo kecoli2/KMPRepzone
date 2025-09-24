@@ -1,0 +1,58 @@
+﻿-- SyncProductEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncProductModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncProductEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    BrandId INTEGER,
+    BrandName TEXT,
+    BrandPhotoPath TEXT,
+    CloseToReturns INTEGER,
+    CloseToSales INTEGER,
+    Color TEXT,
+    Description TEXT,
+    DisplayOrder INTEGER,
+    GroupId INTEGER,
+    GroupName TEXT,
+    GroupPhotoPath TEXT,
+    IsVisible INTEGER,
+    ManufacturerId INTEGER,
+    MaximumOrderQuantity INTEGER,
+    MinimumOrderQuantity INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    OrderQuantityFactor INTEGER,
+    OrganizationId INTEGER,
+    OrganizationIds TEXT,
+    PhotoPath TEXT,
+    RecordDateUtc INTEGER,
+    Shared INTEGER,
+    Sku TEXT,
+    State INTEGER,
+    Tags TEXT,
+    TenantId INTEGER,
+    Vat REAL
+);
+
+selectAllSyncProductEntity:
+SELECT * FROM SyncProductEntity;
+
+selectBySyncProductEntityId:
+SELECT * FROM SyncProductEntity WHERE TenantId = :TenantId;
+
+insertSyncProductEntity:
+INSERT INTO SyncProductEntity (TenantId, Sku, Name, Description, Tags, BrandId, DisplayOrder, OrderQuantityFactor, MinimumOrderQuantity, MaximumOrderQuantity, GroupId, PhotoPath, Vat, IsVisible, OrganizationId, OrganizationIds, BrandName, GroupName, Color, BrandPhotoPath, GroupPhotoPath, CloseToSales, CloseToReturns, ModificationDateUtc, RecordDateUtc, State, ManufacturerId, Shared)
+VALUES (:TenantId, :Sku, :Name, :Description, :Tags, :BrandId, :DisplayOrder, :OrderQuantityFactor, :MinimumOrderQuantity, :MaximumOrderQuantity, :GroupId, :PhotoPath, :Vat, :IsVisible, :OrganizationId, :OrganizationIds, :BrandName, :GroupName, :Color, :BrandPhotoPath, :GroupPhotoPath, :CloseToSales, :CloseToReturns, :ModificationDateUtc, :RecordDateUtc, :State, :ManufacturerId, :Shared);
+
+insertOrReplaceSyncProductEntity:
+INSERT OR REPLACE INTO SyncProductEntity (TenantId, Sku, Name, Description, Tags, BrandId, DisplayOrder, OrderQuantityFactor, MinimumOrderQuantity, MaximumOrderQuantity, GroupId, PhotoPath, Vat, IsVisible, OrganizationId, OrganizationIds, BrandName, GroupName, Color, BrandPhotoPath, GroupPhotoPath, CloseToSales, CloseToReturns, ModificationDateUtc, RecordDateUtc, State, ManufacturerId, Shared)
+VALUES (:TenantId, :Sku, :Name, :Description, :Tags, :BrandId, :DisplayOrder, :OrderQuantityFactor, :MinimumOrderQuantity, :MaximumOrderQuantity, :GroupId, :PhotoPath, :Vat, :IsVisible, :OrganizationId, :OrganizationIds, :BrandName, :GroupName, :Color, :BrandPhotoPath, :GroupPhotoPath, :CloseToSales, :CloseToReturns, :ModificationDateUtc, :RecordDateUtc, :State, :ManufacturerId, :Shared);
+
+updateSyncProductEntity:
+UPDATE SyncProductEntity SET TenantId = :TenantId, Sku = :Sku, Name = :Name, Description = :Description, Tags = :Tags, BrandId = :BrandId, DisplayOrder = :DisplayOrder, OrderQuantityFactor = :OrderQuantityFactor, MinimumOrderQuantity = :MinimumOrderQuantity, MaximumOrderQuantity = :MaximumOrderQuantity, GroupId = :GroupId, PhotoPath = :PhotoPath, Vat = :Vat, IsVisible = :IsVisible, OrganizationId = :OrganizationId, OrganizationIds = :OrganizationIds, BrandName = :BrandName, GroupName = :GroupName, Color = :Color, BrandPhotoPath = :BrandPhotoPath, GroupPhotoPath = :GroupPhotoPath, CloseToSales = :CloseToSales, CloseToReturns = :CloseToReturns, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State, ManufacturerId = :ManufacturerId, Shared = :Shared WHERE TenantId = :TenantId;
+
+deleteSyncProductEntity:
+DELETE FROM SyncProductEntity WHERE TenantId = :TenantId;
+
+deleteAllSyncProductEntity:
+DELETE FROM SyncProductEntity;

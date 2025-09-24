@@ -1,0 +1,38 @@
+﻿-- SyncRepresentativeProductDistributionEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncRepresentativeProductDistributionModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncRepresentativeProductDistributionEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    GroupId INTEGER,
+    GroupSalesDistributionListId INTEGER,
+    GroupSalesReturnDistributionListId INTEGER,
+    ModificationDateUtc INTEGER,
+    RecordDateUtc INTEGER,
+    SalesDistributionListId INTEGER,
+    SalesReturnDistributionListId INTEGER,
+    State INTEGER
+);
+
+selectAllSyncRepresentativeProductDistributionEntity:
+SELECT * FROM SyncRepresentativeProductDistributionEntity;
+
+selectBySyncRepresentativeProductDistributionEntityId:
+SELECT * FROM SyncRepresentativeProductDistributionEntity WHERE GroupId = :GroupId;
+
+insertSyncRepresentativeProductDistributionEntity:
+INSERT INTO SyncRepresentativeProductDistributionEntity (GroupId, SalesDistributionListId, SalesReturnDistributionListId, GroupSalesDistributionListId, GroupSalesReturnDistributionListId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:GroupId, :SalesDistributionListId, :SalesReturnDistributionListId, :GroupSalesDistributionListId, :GroupSalesReturnDistributionListId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncRepresentativeProductDistributionEntity:
+INSERT OR REPLACE INTO SyncRepresentativeProductDistributionEntity (GroupId, SalesDistributionListId, SalesReturnDistributionListId, GroupSalesDistributionListId, GroupSalesReturnDistributionListId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:GroupId, :SalesDistributionListId, :SalesReturnDistributionListId, :GroupSalesDistributionListId, :GroupSalesReturnDistributionListId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncRepresentativeProductDistributionEntity:
+UPDATE SyncRepresentativeProductDistributionEntity SET GroupId = :GroupId, SalesDistributionListId = :SalesDistributionListId, SalesReturnDistributionListId = :SalesReturnDistributionListId, GroupSalesDistributionListId = :GroupSalesDistributionListId, GroupSalesReturnDistributionListId = :GroupSalesReturnDistributionListId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE GroupId = :GroupId;
+
+deleteSyncRepresentativeProductDistributionEntity:
+DELETE FROM SyncRepresentativeProductDistributionEntity WHERE GroupId = :GroupId;
+
+deleteAllSyncRepresentativeProductDistributionEntity:
+DELETE FROM SyncRepresentativeProductDistributionEntity;

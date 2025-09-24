@@ -1,0 +1,37 @@
+﻿-- SyncManufacturerParameterEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncManufacturerParameterModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncManufacturerParameterEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    AllowedUnitIds TEXT,
+    ManufacturerId INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    TenantId INTEGER
+);
+
+selectAllSyncManufacturerParameterEntity:
+SELECT * FROM SyncManufacturerParameterEntity;
+
+selectBySyncManufacturerParameterEntityId:
+SELECT * FROM SyncManufacturerParameterEntity WHERE TenantId = :TenantId;
+
+insertSyncManufacturerParameterEntity:
+INSERT INTO SyncManufacturerParameterEntity (TenantId, OrganizationId, ManufacturerId, AllowedUnitIds, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:TenantId, :OrganizationId, :ManufacturerId, :AllowedUnitIds, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncManufacturerParameterEntity:
+INSERT OR REPLACE INTO SyncManufacturerParameterEntity (TenantId, OrganizationId, ManufacturerId, AllowedUnitIds, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:TenantId, :OrganizationId, :ManufacturerId, :AllowedUnitIds, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncManufacturerParameterEntity:
+UPDATE SyncManufacturerParameterEntity SET TenantId = :TenantId, OrganizationId = :OrganizationId, ManufacturerId = :ManufacturerId, AllowedUnitIds = :AllowedUnitIds, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE TenantId = :TenantId;
+
+deleteSyncManufacturerParameterEntity:
+DELETE FROM SyncManufacturerParameterEntity WHERE TenantId = :TenantId;
+
+deleteAllSyncManufacturerParameterEntity:
+DELETE FROM SyncManufacturerParameterEntity;

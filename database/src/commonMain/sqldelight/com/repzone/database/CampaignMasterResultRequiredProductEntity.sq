@@ -1,0 +1,36 @@
+﻿-- CampaignMasterResultRequiredProductEntity SQLDelight dosyası
+-- Orijinal tablo: CampaignMasterResultRequiredProduct
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS CampaignMasterResultRequiredProductEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CampaignMasterResultId INTEGER,
+    ModificationDateUtc INTEGER,
+    ProductId INTEGER,
+    Quantity INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllCampaignMasterResultRequiredProductEntity:
+SELECT * FROM CampaignMasterResultRequiredProductEntity;
+
+selectByCampaignMasterResultRequiredProductEntityId:
+SELECT * FROM CampaignMasterResultRequiredProductEntity WHERE ProductId = :ProductId;
+
+insertCampaignMasterResultRequiredProductEntity:
+INSERT INTO CampaignMasterResultRequiredProductEntity (ProductId, Quantity, CampaignMasterResultId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:ProductId, :Quantity, :CampaignMasterResultId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceCampaignMasterResultRequiredProductEntity:
+INSERT OR REPLACE INTO CampaignMasterResultRequiredProductEntity (ProductId, Quantity, CampaignMasterResultId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:ProductId, :Quantity, :CampaignMasterResultId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateCampaignMasterResultRequiredProductEntity:
+UPDATE CampaignMasterResultRequiredProductEntity SET ProductId = :ProductId, Quantity = :Quantity, CampaignMasterResultId = :CampaignMasterResultId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE ProductId = :ProductId;
+
+deleteCampaignMasterResultRequiredProductEntity:
+DELETE FROM CampaignMasterResultRequiredProductEntity WHERE ProductId = :ProductId;
+
+deleteAllCampaignMasterResultRequiredProductEntity:
+DELETE FROM CampaignMasterResultRequiredProductEntity;

@@ -1,0 +1,40 @@
+﻿-- SyncDynamicPageReportEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncDynamicPageReportModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncDynamicPageReportEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Category TEXT,
+    Code TEXT,
+    Description TEXT,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    QuickAccessOrder INTEGER,
+    QuickAccessShow INTEGER,
+    RecordDateUtc INTEGER,
+    Requested INTEGER,
+    State INTEGER
+);
+
+selectAllSyncDynamicPageReportEntity:
+SELECT * FROM SyncDynamicPageReportEntity;
+
+selectBySyncDynamicPageReportEntityId:
+SELECT * FROM SyncDynamicPageReportEntity WHERE Id = :Id;
+
+insertSyncDynamicPageReportEntity:
+INSERT INTO SyncDynamicPageReportEntity (Name, Category, Code, Description, Requested, QuickAccessShow, QuickAccessOrder, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:Name, :Category, :Code, :Description, :Requested, :QuickAccessShow, :QuickAccessOrder, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncDynamicPageReportEntity:
+INSERT OR REPLACE INTO SyncDynamicPageReportEntity (Name, Category, Code, Description, Requested, QuickAccessShow, QuickAccessOrder, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:Name, :Category, :Code, :Description, :Requested, :QuickAccessShow, :QuickAccessOrder, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncDynamicPageReportEntity:
+UPDATE SyncDynamicPageReportEntity SET Name = :Name, Category = :Category, Code = :Code, Description = :Description, Requested = :Requested, QuickAccessShow = :QuickAccessShow, QuickAccessOrder = :QuickAccessOrder, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE Id = :Id;
+
+deleteSyncDynamicPageReportEntity:
+DELETE FROM SyncDynamicPageReportEntity WHERE Id = :Id;
+
+deleteAllSyncDynamicPageReportEntity:
+DELETE FROM SyncDynamicPageReportEntity;

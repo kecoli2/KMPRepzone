@@ -1,0 +1,46 @@
+﻿-- SyncCampaignResultRuleEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCampaignResultRule
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncCampaignResultRuleEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    AndDiscover REAL,
+    AndDiscoverLimit REAL,
+    AndDiscoverUnitId INTEGER,
+    AndIsEqual INTEGER,
+    AndIsQuantity INTEGER,
+    CalcOperator INTEGER,
+    CalcSource INTEGER,
+    CampaignMasterResultId INTEGER,
+    Discover TEXT,
+    IsOr INTEGER,
+    IsSingleRule INTEGER,
+    ModificationDateUtc INTEGER,
+    Operator INTEGER,
+    Property INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncCampaignResultRuleEntity:
+SELECT * FROM SyncCampaignResultRuleEntity;
+
+selectBySyncCampaignResultRuleEntityId:
+SELECT * FROM SyncCampaignResultRuleEntity WHERE CampaignMasterResultId = :CampaignMasterResultId;
+
+insertSyncCampaignResultRuleEntity:
+INSERT INTO SyncCampaignResultRuleEntity (IsSingleRule, CampaignMasterResultId, IsOr, Property, Operator, Discover, AndDiscover, AndIsQuantity, AndIsEqual, ModificationDateUtc, RecordDateUtc, State, AndDiscoverUnitId, AndDiscoverLimit, CalcSource, CalcOperator)
+VALUES (:IsSingleRule, :CampaignMasterResultId, :IsOr, :Property, :Operator, :Discover, :AndDiscover, :AndIsQuantity, :AndIsEqual, :ModificationDateUtc, :RecordDateUtc, :State, :AndDiscoverUnitId, :AndDiscoverLimit, :CalcSource, :CalcOperator);
+
+insertOrReplaceSyncCampaignResultRuleEntity:
+INSERT OR REPLACE INTO SyncCampaignResultRuleEntity (IsSingleRule, CampaignMasterResultId, IsOr, Property, Operator, Discover, AndDiscover, AndIsQuantity, AndIsEqual, ModificationDateUtc, RecordDateUtc, State, AndDiscoverUnitId, AndDiscoverLimit, CalcSource, CalcOperator)
+VALUES (:IsSingleRule, :CampaignMasterResultId, :IsOr, :Property, :Operator, :Discover, :AndDiscover, :AndIsQuantity, :AndIsEqual, :ModificationDateUtc, :RecordDateUtc, :State, :AndDiscoverUnitId, :AndDiscoverLimit, :CalcSource, :CalcOperator);
+
+updateSyncCampaignResultRuleEntity:
+UPDATE SyncCampaignResultRuleEntity SET IsSingleRule = :IsSingleRule, CampaignMasterResultId = :CampaignMasterResultId, IsOr = :IsOr, Property = :Property, Operator = :Operator, Discover = :Discover, AndDiscover = :AndDiscover, AndIsQuantity = :AndIsQuantity, AndIsEqual = :AndIsEqual, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State, AndDiscoverUnitId = :AndDiscoverUnitId, AndDiscoverLimit = :AndDiscoverLimit, CalcSource = :CalcSource, CalcOperator = :CalcOperator WHERE CampaignMasterResultId = :CampaignMasterResultId;
+
+deleteSyncCampaignResultRuleEntity:
+DELETE FROM SyncCampaignResultRuleEntity WHERE CampaignMasterResultId = :CampaignMasterResultId;
+
+deleteAllSyncCampaignResultRuleEntity:
+DELETE FROM SyncCampaignResultRuleEntity;

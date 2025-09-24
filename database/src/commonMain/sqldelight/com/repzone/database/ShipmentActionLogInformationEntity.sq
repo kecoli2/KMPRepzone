@@ -1,0 +1,36 @@
+﻿-- ShipmentActionLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: ShipmentActionLogInformation
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS ShipmentActionLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ActionDate INTEGER,
+    ActionType INTEGER,
+    Description TEXT,
+    ReasonId INTEGER,
+    ShippingDocumentId TEXT,
+    ShippingPlanId INTEGER
+);
+
+selectAllShipmentActionLogInformationEntity:
+SELECT * FROM ShipmentActionLogInformationEntity;
+
+selectByShipmentActionLogInformationEntityId:
+SELECT * FROM ShipmentActionLogInformationEntity WHERE Id = :Id;
+
+insertShipmentActionLogInformationEntity:
+INSERT INTO ShipmentActionLogInformationEntity (ShippingPlanId, ShippingDocumentId, ReasonId, ActionType, ActionDate, Description)
+VALUES (:ShippingPlanId, :ShippingDocumentId, :ReasonId, :ActionType, :ActionDate, :Description);
+
+insertOrReplaceShipmentActionLogInformationEntity:
+INSERT OR REPLACE INTO ShipmentActionLogInformationEntity (ShippingPlanId, ShippingDocumentId, ReasonId, ActionType, ActionDate, Description)
+VALUES (:ShippingPlanId, :ShippingDocumentId, :ReasonId, :ActionType, :ActionDate, :Description);
+
+updateShipmentActionLogInformationEntity:
+UPDATE ShipmentActionLogInformationEntity SET ShippingPlanId = :ShippingPlanId, ShippingDocumentId = :ShippingDocumentId, ReasonId = :ReasonId, ActionType = :ActionType, ActionDate = :ActionDate, Description = :Description WHERE Id = :Id;
+
+deleteShipmentActionLogInformationEntity:
+DELETE FROM ShipmentActionLogInformationEntity WHERE Id = :Id;
+
+deleteAllShipmentActionLogInformationEntity:
+DELETE FROM ShipmentActionLogInformationEntity;

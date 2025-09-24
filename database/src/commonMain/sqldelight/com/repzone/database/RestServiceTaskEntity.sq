@@ -1,0 +1,39 @@
+﻿-- RestServiceTaskEntity SQLDelight dosyası
+-- Orijinal tablo: RestServiceTask
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS RestServiceTaskEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ActionName TEXT,
+    CallType INTEGER,
+    CreatedTime INTEGER,
+    MethodPath TEXT,
+    RequestObject TEXT,
+    RequestObjectUniqueID TEXT,
+    RequestType TEXT,
+    Result TEXT,
+    Status INTEGER
+);
+
+selectAllRestServiceTaskEntity:
+SELECT * FROM RestServiceTaskEntity;
+
+selectByRestServiceTaskEntityId:
+SELECT * FROM RestServiceTaskEntity WHERE Id = :Id;
+
+insertRestServiceTaskEntity:
+INSERT INTO RestServiceTaskEntity (RequestObject, RequestType, MethodPath, CallType, Status, Result, ActionName, CreatedTime, RequestObjectUniqueID)
+VALUES (:RequestObject, :RequestType, :MethodPath, :CallType, :Status, :Result, :ActionName, :CreatedTime, :RequestObjectUniqueID);
+
+insertOrReplaceRestServiceTaskEntity:
+INSERT OR REPLACE INTO RestServiceTaskEntity (RequestObject, RequestType, MethodPath, CallType, Status, Result, ActionName, CreatedTime, RequestObjectUniqueID)
+VALUES (:RequestObject, :RequestType, :MethodPath, :CallType, :Status, :Result, :ActionName, :CreatedTime, :RequestObjectUniqueID);
+
+updateRestServiceTaskEntity:
+UPDATE RestServiceTaskEntity SET RequestObject = :RequestObject, RequestType = :RequestType, MethodPath = :MethodPath, CallType = :CallType, Status = :Status, Result = :Result, ActionName = :ActionName, CreatedTime = :CreatedTime, RequestObjectUniqueID = :RequestObjectUniqueID WHERE Id = :Id;
+
+deleteRestServiceTaskEntity:
+DELETE FROM RestServiceTaskEntity WHERE Id = :Id;
+
+deleteAllRestServiceTaskEntity:
+DELETE FROM RestServiceTaskEntity;

@@ -1,0 +1,36 @@
+﻿-- SyncRouteAppointmentEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncRouteAppointmentModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncRouteAppointmentEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CustomerId INTEGER,
+    Description TEXT,
+    EndDate INTEGER,
+    SprintId INTEGER,
+    StartDate INTEGER,
+    State INTEGER
+);
+
+selectAllSyncRouteAppointmentEntity:
+SELECT * FROM SyncRouteAppointmentEntity;
+
+selectBySyncRouteAppointmentEntityId:
+SELECT * FROM SyncRouteAppointmentEntity WHERE Id = :Id;
+
+insertSyncRouteAppointmentEntity:
+INSERT INTO SyncRouteAppointmentEntity (State, StartDate, EndDate, CustomerId, SprintId, Description)
+VALUES (:State, :StartDate, :EndDate, :CustomerId, :SprintId, :Description);
+
+insertOrReplaceSyncRouteAppointmentEntity:
+INSERT OR REPLACE INTO SyncRouteAppointmentEntity (State, StartDate, EndDate, CustomerId, SprintId, Description)
+VALUES (:State, :StartDate, :EndDate, :CustomerId, :SprintId, :Description);
+
+updateSyncRouteAppointmentEntity:
+UPDATE SyncRouteAppointmentEntity SET State = :State, StartDate = :StartDate, EndDate = :EndDate, CustomerId = :CustomerId, SprintId = :SprintId, Description = :Description WHERE Id = :Id;
+
+deleteSyncRouteAppointmentEntity:
+DELETE FROM SyncRouteAppointmentEntity WHERE Id = :Id;
+
+deleteAllSyncRouteAppointmentEntity:
+DELETE FROM SyncRouteAppointmentEntity;

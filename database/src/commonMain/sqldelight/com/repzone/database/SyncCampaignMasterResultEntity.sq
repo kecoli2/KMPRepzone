@@ -1,0 +1,52 @@
+﻿-- SyncCampaignMasterResultEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCampaignMasterResult
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncCampaignMasterResultEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CampaignMasterId INTEGER,
+    Discount REAL,
+    DiscountIndex INTEGER,
+    IsOrGroup TEXT,
+    IsPercent INTEGER,
+    ModificationDateUtc INTEGER,
+    ProductBrandId INTEGER,
+    ProductCustomFieldId INTEGER,
+    ProductDynamicListId INTEGER,
+    ProductGroupId INTEGER,
+    ProductId INTEGER,
+    ProductTag TEXT,
+    PromotionGroup TEXT,
+    PromotionGroupIndex INTEGER,
+    PromotionQuantityLimit INTEGER,
+    PromotionType INTEGER,
+    Quantity REAL,
+    RecordDateUtc INTEGER,
+    ResultType INTEGER,
+    State INTEGER,
+    Title TEXT,
+    UnitId INTEGER
+);
+
+selectAllSyncCampaignMasterResultEntity:
+SELECT * FROM SyncCampaignMasterResultEntity;
+
+selectBySyncCampaignMasterResultEntityId:
+SELECT * FROM SyncCampaignMasterResultEntity WHERE CampaignMasterId = :CampaignMasterId;
+
+insertSyncCampaignMasterResultEntity:
+INSERT INTO SyncCampaignMasterResultEntity (CampaignMasterId, ResultType, Title, ProductId, UnitId, Quantity, PromotionType, DiscountIndex, Discount, IsPercent, ProductGroupId, ProductTag, PromotionGroup, PromotionGroupIndex, ModificationDateUtc, RecordDateUtc, State, ProductBrandId, ProductDynamicListId, ProductCustomFieldId, PromotionQuantityLimit, IsOrGroup)
+VALUES (:CampaignMasterId, :ResultType, :Title, :ProductId, :UnitId, :Quantity, :PromotionType, :DiscountIndex, :Discount, :IsPercent, :ProductGroupId, :ProductTag, :PromotionGroup, :PromotionGroupIndex, :ModificationDateUtc, :RecordDateUtc, :State, :ProductBrandId, :ProductDynamicListId, :ProductCustomFieldId, :PromotionQuantityLimit, :IsOrGroup);
+
+insertOrReplaceSyncCampaignMasterResultEntity:
+INSERT OR REPLACE INTO SyncCampaignMasterResultEntity (CampaignMasterId, ResultType, Title, ProductId, UnitId, Quantity, PromotionType, DiscountIndex, Discount, IsPercent, ProductGroupId, ProductTag, PromotionGroup, PromotionGroupIndex, ModificationDateUtc, RecordDateUtc, State, ProductBrandId, ProductDynamicListId, ProductCustomFieldId, PromotionQuantityLimit, IsOrGroup)
+VALUES (:CampaignMasterId, :ResultType, :Title, :ProductId, :UnitId, :Quantity, :PromotionType, :DiscountIndex, :Discount, :IsPercent, :ProductGroupId, :ProductTag, :PromotionGroup, :PromotionGroupIndex, :ModificationDateUtc, :RecordDateUtc, :State, :ProductBrandId, :ProductDynamicListId, :ProductCustomFieldId, :PromotionQuantityLimit, :IsOrGroup);
+
+updateSyncCampaignMasterResultEntity:
+UPDATE SyncCampaignMasterResultEntity SET CampaignMasterId = :CampaignMasterId, ResultType = :ResultType, Title = :Title, ProductId = :ProductId, UnitId = :UnitId, Quantity = :Quantity, PromotionType = :PromotionType, DiscountIndex = :DiscountIndex, Discount = :Discount, IsPercent = :IsPercent, ProductGroupId = :ProductGroupId, ProductTag = :ProductTag, PromotionGroup = :PromotionGroup, PromotionGroupIndex = :PromotionGroupIndex, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State, ProductBrandId = :ProductBrandId, ProductDynamicListId = :ProductDynamicListId, ProductCustomFieldId = :ProductCustomFieldId, PromotionQuantityLimit = :PromotionQuantityLimit, IsOrGroup = :IsOrGroup WHERE CampaignMasterId = :CampaignMasterId;
+
+deleteSyncCampaignMasterResultEntity:
+DELETE FROM SyncCampaignMasterResultEntity WHERE CampaignMasterId = :CampaignMasterId;
+
+deleteAllSyncCampaignMasterResultEntity:
+DELETE FROM SyncCampaignMasterResultEntity;

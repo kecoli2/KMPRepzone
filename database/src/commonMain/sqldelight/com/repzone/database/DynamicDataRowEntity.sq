@@ -1,0 +1,32 @@
+﻿-- DynamicDataRowEntity SQLDelight dosyası
+-- Orijinal tablo: DynamicDataRowModel
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS DynamicDataRowEntity (
+    RowId INTEGER,
+    RowValue TEXT,
+    UtcLogDate INTEGER
+);
+
+selectAllDynamicDataRowEntity:
+SELECT * FROM DynamicDataRowEntity;
+
+selectByDynamicDataRowEntityId:
+SELECT * FROM DynamicDataRowEntity WHERE RowId = :RowId;
+
+insertDynamicDataRowEntity:
+INSERT INTO DynamicDataRowEntity (RowId, RowValue, UtcLogDate)
+VALUES (:RowId, :RowValue, :UtcLogDate);
+
+insertOrReplaceDynamicDataRowEntity:
+INSERT OR REPLACE INTO DynamicDataRowEntity (RowId, RowValue, UtcLogDate)
+VALUES (:RowId, :RowValue, :UtcLogDate);
+
+updateDynamicDataRowEntity:
+UPDATE DynamicDataRowEntity SET RowId = :RowId, RowValue = :RowValue, UtcLogDate = :UtcLogDate WHERE RowId = :RowId;
+
+deleteDynamicDataRowEntity:
+DELETE FROM DynamicDataRowEntity WHERE RowId = :RowId;
+
+deleteAllDynamicDataRowEntity:
+DELETE FROM DynamicDataRowEntity;

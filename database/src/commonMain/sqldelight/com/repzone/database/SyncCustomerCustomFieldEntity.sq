@@ -1,0 +1,38 @@
+﻿-- SyncCustomerCustomFieldEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCustomerCustomField
+-- Oluşturma tarihi: 2025-09-24 13:38:04
+
+CREATE TABLE IF NOT EXISTS SyncCustomerCustomFieldEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    EntityId INTEGER,
+    FieldId INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    ProductId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    Value TEXT
+);
+
+selectAllSyncCustomerCustomFieldEntity:
+SELECT * FROM SyncCustomerCustomFieldEntity;
+
+selectBySyncCustomerCustomFieldEntityId:
+SELECT * FROM SyncCustomerCustomFieldEntity WHERE ProductId = :ProductId;
+
+insertSyncCustomerCustomFieldEntity:
+INSERT INTO SyncCustomerCustomFieldEntity (ProductId, OrganizationId, FieldId, Value, EntityId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:ProductId, :OrganizationId, :FieldId, :Value, :EntityId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+insertOrReplaceSyncCustomerCustomFieldEntity:
+INSERT OR REPLACE INTO SyncCustomerCustomFieldEntity (ProductId, OrganizationId, FieldId, Value, EntityId, ModificationDateUtc, RecordDateUtc, State)
+VALUES (:ProductId, :OrganizationId, :FieldId, :Value, :EntityId, :ModificationDateUtc, :RecordDateUtc, :State);
+
+updateSyncCustomerCustomFieldEntity:
+UPDATE SyncCustomerCustomFieldEntity SET ProductId = :ProductId, OrganizationId = :OrganizationId, FieldId = :FieldId, Value = :Value, EntityId = :EntityId, ModificationDateUtc = :ModificationDateUtc, RecordDateUtc = :RecordDateUtc, State = :State WHERE ProductId = :ProductId;
+
+deleteSyncCustomerCustomFieldEntity:
+DELETE FROM SyncCustomerCustomFieldEntity WHERE ProductId = :ProductId;
+
+deleteAllSyncCustomerCustomFieldEntity:
+DELETE FROM SyncCustomerCustomFieldEntity;
