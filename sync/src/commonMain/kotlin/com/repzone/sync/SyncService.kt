@@ -1,5 +1,6 @@
 package com.repzone.sync
 
+/*
 import com.repzone.domain.repository.IOrderRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -16,4 +17,4 @@ class SyncService(private val orderRepository: IOrderRepository) {
             // Başarılı olursa DB’de güncelle
         }
     }
-}
+}*/

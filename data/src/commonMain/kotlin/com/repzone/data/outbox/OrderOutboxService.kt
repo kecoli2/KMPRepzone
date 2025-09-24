@@ -1,5 +1,6 @@
 package com.repzone.data.outbox
 
+/*
 import com.repzone.core.util.json
 import com.repzone.data.mapper.OrderDbMapper
 import com.repzone.data.mapper.OrderOutboxDbMapper
@@ -50,4 +51,4 @@ class OrderOutboxService(
         val jitter = (0..base).random()
         return (base + jitter).seconds
     }
-}
+}*/

@@ -1,8 +1,7 @@
 package com.repzone.sync.job
+/*
 
 import com.repzone.core.util.json
-import com.repzone.data.outbox.OrderOutboxService
-import com.repzone.domain.model.OrderOutBoxEntity
 import com.repzone.network.api.IOrderApi
 import com.repzone.network.dto.OrderDto
 import kotlinx.coroutines.CoroutineScope
@@ -46,4 +45,4 @@ class OrderSyncJob(
     }
 
     fun stop() { running?.cancel(); running = null }
-}
+}*/

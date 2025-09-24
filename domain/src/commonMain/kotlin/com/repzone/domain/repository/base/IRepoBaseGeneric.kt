@@ -1,4 +1,4 @@
-package com.repzone.domain.repository
+package com.repzone.domain.repository.base
 
 interface ReadOnlyRepository<ID, DOMAIN> {
     suspend fun getById(id: ID): DOMAIN?
