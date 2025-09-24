@@ -8,4 +8,5 @@ import org.koin.dsl.module
 val DatabaseModule = module {
     single { AppDatabase(get<SqlDriver>()) }
     single { get<AppDatabase>().syncCustomerEntityQueries }
+    single { get<AppDatabase>().syncProductEntityQueries }
 }
