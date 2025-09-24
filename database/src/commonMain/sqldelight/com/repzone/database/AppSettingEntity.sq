@@ -4,7 +4,8 @@
 
 CREATE TABLE IF NOT EXISTS AppSettingEntity (
     `Key` TEXT NOT NULL PRIMARY KEY,
-    Value TEXT
+    Value TEXT,
+    Value2 TEXT
 );
 
 selectAllAppSettingEntity:

@@ -38,6 +38,12 @@ kotlin {
     // common to share sources between related targets.
     // See: https://kotlinlang.org/docs/multiplatform-hierarchy.html
     sourceSets {
+        androidMain {
+            dependencies {
+                implementation(libs.ktor.client.okhttp)
+            }
+        }
+
         commonMain {
             dependencies {
                 implementation(project(":core"))
@@ -48,11 +54,10 @@ kotlin {
                 implementation(libs.ktor.serialization.json)
                 implementation(libs.ktor.client.logging)
                 implementation(libs.ktor.client.auth)
-                                // DI
                 implementation(libs.koin.core)
-
             }
         }
+
         iosMain{
             dependencies {
                 implementation(libs.ktor.client.darwin)

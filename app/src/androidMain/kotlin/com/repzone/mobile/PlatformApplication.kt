@@ -9,6 +9,7 @@ import com.repzone.mobile.di.AndroidDIModule
 import com.repzone.network.api.IOrderApi
 import com.repzone.network.api.ITokenApiController
 import com.repzone.network.di.NetworkModule
+import com.repzone.network.di.NetworkPlatformModule
 import com.repzone.presentation.di.PresentationModule
 import com.repzone.sync.di.SyncModule
 import io.ktor.client.HttpClient
@@ -40,6 +41,7 @@ class PlatformApplication: Application() {
                 DatabaseAndroidModule,
                 DatabaseModule,
                 NetworkModule,
+                NetworkPlatformModule,
                 RepositoryModule,
                 SyncModule,
                 AndroidDIModule,
@@ -48,15 +50,9 @@ class PlatformApplication: Application() {
             )
         }
 
-        val client: HttpClient = getKoin().get {
-            parametersOf(
-                { OkHttp.create { /* OkHttpConfig opsiyonel ayarlar */ } }, // 👈 engine **instance** üretir
-                null // veya getOrNull<TokenProvider>()
-            )
-        }
-
-        val orderApi: IOrderApi = getKoin().get { parametersOf(client) }
-        val tokenApi: ITokenApiController = getKoin().get { parametersOf(client) }
+        val client: HttpClient = getKoin().get()                 // ortak client
+        val tokenApi: ITokenApiController = getKoin().get()      // parametre yok
+        val orderApi: IOrderApi = getKoin().get()
         loadKoinModules(FirebaseAndroidModule)
     }
     //endregion

@@ -10,8 +10,11 @@ import com.repzone.data.repository.di.RepositoryModule
 import com.repzone.database.di.DatabaseAndroidModule
 import com.repzone.database.di.DatabaseModule
 import com.repzone.firebase.di.FirebaseMockAndroidModule
+import com.repzone.mobile.di.AndroidDIModule
+import com.repzone.mobile.di.AndroidDIModulePreview
 import com.repzone.mobile.thema.AppTheme
 import com.repzone.network.di.NetworkModule
+import com.repzone.network.di.NetworkPlatformModule
 import com.repzone.network.http.TokenProvider
 import com.repzone.presentation.di.PresentationModule
 import com.repzone.presentation.ui.TestScreen
@@ -47,6 +50,8 @@ fun AppAndroidPreview() {
             modules(
             DatabaseModule,
             DatabaseAndroidModule,
+                NetworkPlatformModule,
+                AndroidDIModulePreview,
             NetworkModule,
             RepositoryModule,
             SyncModule,

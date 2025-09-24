@@ -1,0 +1,1 @@
+ALTER TABLE AppSettingEntity ADD COLUMN Value2 TEXT;
