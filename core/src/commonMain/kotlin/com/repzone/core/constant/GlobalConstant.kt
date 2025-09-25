@@ -8,6 +8,6 @@ object PreferencesConstant {
 
 
 object ITokenApiControllerConstant {
-    const val TOKEN_ENDPOINT = "/TokenEndPoint"
-    const val TOKEN_REFRESH_ENDPOINT= "/TokenEndPointRefresh"
+    const val TOKEN_ENDPOINT = "/api/ExternalAccount/MobileLogin"
+    const val TOKEN_REFRESH_ENDPOINT= "/api/TokenEndPointRefresh"
 }

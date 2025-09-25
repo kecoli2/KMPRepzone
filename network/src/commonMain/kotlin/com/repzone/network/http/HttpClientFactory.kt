@@ -18,7 +18,7 @@ import kotlinx.serialization.json.Json
 class HttpClientFactory(
     private val cfg: NetworkConfig,
     private val engineProvider: () -> HttpClientEngine,
-    private val tokenProvider: ITokenProvider,
+    private val tokenProvider: ITokenProvider?,
     private val onUnauthenticated: (() -> Unit)? = null  // 401'de çağrılacak
 ) {
     fun create(): HttpClient = HttpClient(engineProvider()) {
@@ -45,14 +45,14 @@ class HttpClientFactory(
             url(cfg.baseUrl) // "https://api.example.com" gibi tam base
             header(HttpHeaders.Accept, "application/json")
             header(HttpHeaders.ContentType, "application/json")
-            tokenProvider.getToken()?.takeIf { it.isNotBlank() }?.let {
+            tokenProvider?.getToken()?.takeIf { it.isNotBlank() }?.let {
                 header(HttpHeaders.Authorization, "Bearer $it")
             }
         }
 
         // Logging (geliştirmede faydalı)
         install(Logging) {
-            level = LogLevel.INFO
+            level = LogLevel.BODY
         }
 
         // 401/403 yakalama
@@ -61,8 +61,8 @@ class HttpClientFactory(
                 if (resp.status == HttpStatusCode.Unauthorized ||
                     resp.status == HttpStatusCode.Forbidden) {
                     // refresh token denemesi (varsa)
-                    val refreshed = tokenProvider.refreshToken()
-                    if (!refreshed) {
+                    val refreshed = tokenProvider?.refreshToken()
+                    if (refreshed == false) {
                         // artık oturum geçersiz: UI tarafına haber ver
                         onUnauthenticated?.invoke()
                         //throw UnauthenticatedException()

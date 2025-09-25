@@ -9,6 +9,8 @@ import com.repzone.mobile.di.AndroidDIModule
 import com.repzone.network.api.IOrderApi
 import com.repzone.network.api.ITokenApiController
 import com.repzone.network.di.NetworkModule
+import com.repzone.network.di.PlatformNetworkModule
+import com.repzone.presentation.base.initializeSmartViewModelStore
 import com.repzone.presentation.di.PresentationModule
 import com.repzone.sync.di.SyncModule
 import io.ktor.client.HttpClient
@@ -37,6 +39,7 @@ class PlatformApplication: Application() {
             modules(
                 DatabaseAndroidModule,
                 DatabaseModule,
+                PlatformNetworkModule,
                 NetworkModule,
                 RepositoryModule,
                 SyncModule,
@@ -50,6 +53,7 @@ class PlatformApplication: Application() {
         val tokenApi: ITokenApiController = getKoin().get()      // parametre yok
         val orderApi: IOrderApi = getKoin().get()
         loadKoinModules(FirebaseAndroidModule)
+        initializeSmartViewModelStore()
     }
     //endregion
 

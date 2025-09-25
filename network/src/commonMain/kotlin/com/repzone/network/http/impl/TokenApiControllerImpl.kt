@@ -12,8 +12,6 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
-import io.ktor.http.ContentType
-import io.ktor.http.contentType
 
 class TokenApiControllerImpl(private val client: HttpClient): ITokenApiController {
     //region Field
@@ -34,7 +32,6 @@ class TokenApiControllerImpl(private val client: HttpClient): ITokenApiControlle
         return try{
             val response = client.post(ITokenApiControllerConstant.TOKEN_ENDPOINT) {
                 setBody(tokenRequest)
-                //contentType(ContentType.Application.Json)
             }
             ApiResult.Success(response.body<LoginResponse>())
         }catch (e: Exception){

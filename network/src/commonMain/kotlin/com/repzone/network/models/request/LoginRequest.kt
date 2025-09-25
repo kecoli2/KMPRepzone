@@ -1,12 +1,17 @@
 package com.repzone.network.models.request
 
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
+
 
 @Serializable
 data class LoginRequest(
-    @SerialName("user_id")
-    val userName: String,
-    @SerialName("password")
-    val password: String
+    @SerialName("Email")
+    val email: String,
+    @SerialName("Password")
+    val password: String,
+    @SerialName("UniqueId")
+    val uniqueId: String? = null,
+    @SerialName("UseHashing")
+    val useHashing: Boolean = false,
 )

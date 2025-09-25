@@ -17,11 +17,16 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun LoginScreen() = ViewModelHost<LoginScreenViewModel>() { viewModel ->
-    var username by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    val state by viewModel.state.collectAsState()
     var isPasswordVisible by remember { mutableStateOf(false) }
-    var isLoading by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+
+    // Success handling
+    LaunchedEffect(state.isLoginSuccessful) {
+        if (state.isLoginSuccessful) {
+            // Navigate to main screen
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -33,23 +38,23 @@ fun LoginScreen() = ViewModelHost<LoginScreenViewModel>() { viewModel ->
     ) {
 
         OutlinedTextField(
-            value = username,
-            onValueChange = { username = it },
+            value = state.username, // ✅ ViewModel'den geliyor
+            onValueChange = viewModel::updateUsername, // ✅ ViewModel'i güncelliyor
             label = { Text("Kullanıcı Adı") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            enabled = !isLoading
+            enabled = state.uiFrame.isInteractionEnabled
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = state.password, // ✅ ViewModel'den geliyor
+            onValueChange = viewModel::updatePassword, // ✅ ViewModel'i güncelliyor
             label = { Text("Şifre") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            enabled = !isLoading,
+            enabled = state.uiFrame.isInteractionEnabled,
             visualTransformation = if (isPasswordVisible) {
                 VisualTransformation.None
             } else {
@@ -59,7 +64,7 @@ fun LoginScreen() = ViewModelHost<LoginScreenViewModel>() { viewModel ->
             trailingIcon = {
                 TextButton(
                     onClick = { isPasswordVisible = !isPasswordVisible },
-                    enabled = !isLoading
+                    enabled = state.uiFrame.isInteractionEnabled
                 ) {
                     Text(
                         text = if (isPasswordVisible) "Gizle" else "Göster",
@@ -73,19 +78,14 @@ fun LoginScreen() = ViewModelHost<LoginScreenViewModel>() { viewModel ->
 
         Button(
             onClick = {
-                isLoading = true
                 scope.launch {
-                    try {
-                        viewModel.login(username, password)
-                    } finally {
-                        isLoading = false
-                    }
+                    viewModel.login(state.username, state.password)
                 }
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = !isLoading && username.isNotBlank() && password.isNotBlank()
+            enabled = state.canSubmit
         ) {
-            if (isLoading) {
+            if (state.uiFrame.isLoading) {
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -95,11 +95,21 @@ fun LoginScreen() = ViewModelHost<LoginScreenViewModel>() { viewModel ->
                         color = MaterialTheme.colorScheme.onPrimary,
                         strokeWidth = 2.dp
                     )
-                    Text("Giriş yapılıyor...")
+                    Text(state.loadingMessage)
                 }
             } else {
                 Text("Giriş Yap")
             }
+        }
+
+        // Error display
+        state.uiFrame.error?.let { error ->
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                text = error,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
     }
 }

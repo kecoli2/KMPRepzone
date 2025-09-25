@@ -1,53 +1,129 @@
 package com.repzone.presentation.viewmodel.login
 
-import com.repzone.core.constant.ITokenApiControllerConstant
 import com.repzone.core.interfaces.IPreferencesManager
+import com.repzone.core.model.UiFrame
 import com.repzone.network.api.ITokenApiController
+import com.repzone.network.http.wrapper.ApiException
+import com.repzone.network.http.wrapper.ApiResult
 import com.repzone.network.models.request.LoginRequest
-import com.repzone.presentation.base.BaseViewModel
+import com.repzone.network.models.response.LoginResponse
+import com.repzone.network.models.response.RefreshTokenResponse
+import com.repzone.presentation.base.*
+import kotlinx.coroutines.delay
+import kotlin.time.Clock
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
-class LoginScreenViewModel(private val tokenApiController: ITokenApiController, private val isharedPreferences: IPreferencesManager): BaseViewModel<LoginScreenUiState, Nothing>(LoginScreenUiState()) {
-    //region Field
-    //endregion
+class LoginScreenViewModel(
+    private val tokenApiController: ITokenApiController,
+    private val isharedPreferences: IPreferencesManager
+) : BaseViewModel<LoginScreenUiState, Nothing>(LoginScreenUiState()) {
 
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
-    //region Public Method
-    override fun onStart() {
-        super.onStart()
+    companion object {
+        private const val DEBUG_DELAY = 3000L // Test için 3 saniye
+        private const val MIN_LOADING_TIME = 1500L // Minimum loading süresi
     }
 
-    override fun onDispose() {
-        super.onDispose()
-    }
-
-    override fun onStop() {
-        super.onStop()
-    }
-
-
-    suspend fun login(username: String, password: String) {
-        /*val response = tokenApiController.pushToken(LoginRequest(username, password))
-        if(response.){
-            isharedPreferences.setToken(response.getOrNull()?.token)
+    @OptIn(ExperimentalUuidApi::class)
+    suspend fun login(email: String, password: String) {
+        // Validation
+        if (email.isBlank() || password.isBlank()) {
+            setError("Kullanıcı adı ve şifre alanları boş olamaz")
+            return
         }
-        else{
 
-        }*/
+        // Loading başlat ve username/password'ı state'e kaydet
+        updateState { currentState ->
+            currentState.copy(
+                username = email,
+                password = password,
+                uiFrame = currentState.uiFrame.copy(isLoading = true, error = null),
+                loadingMessage = "Kullanıcı bilgileri kontrol ediliyor..."
+            )
+        }
 
+        try {
+
+            // Progress simulation
+            updateLoadingMessage("Sunucuya bağlanılıyor...")
+            delay(800)
+
+            updateLoadingMessage("Kimlik doğrulanıyor...")
+            delay(700)
+
+            val request = LoginRequest(
+                email = email,
+                password = password,
+                uniqueId = Uuid.random().toString(),
+            )
+
+            updateLoadingMessage("Oturum oluşturuluyor...")
+            val response = tokenApiController.pushToken(request)
+
+            handleLoginResponse(response)
+
+        } catch (e: Exception) {
+            setError("Beklenmeyen hata: ${e.message}")
+        }
+    }
+    fun updateUsername(username: String) {
+        updateState { it.copy(username = username) }
+        if (hasError()) clearError() // Clear error when user starts typing
     }
 
+    fun updatePassword(password: String) {
+        updateState { it.copy(password = password) }
+        if (hasError()) clearError() // Clear error when user starts typing
+    }
 
+    fun clearLoginError() {
+        clearError()
+    }
 
-    //endregion
+    fun resetLoginState() {
+        updateState {
+            LoginScreenUiState() // Reset to initial state
+        }
+    }
 
-    //region Protected Method
-    //endregion
+    private fun updateLoadingMessage(message: String) {
+        updateState { currentState ->
+            currentState.copy(loadingMessage = message)
+        }
+    }
 
-    //region Private Method
-    //endregion
+    private suspend fun handleLoginResponse(response: ApiResult<LoginResponse>) {
+        when (response) {
+            is ApiResult.Success -> {
+                updateLoadingMessage("Giriş başarılı!")
+                delay(500) // Success mesajını göster
+
+                // Token'ı kaydet
+                isharedPreferences.setToken(response.data.tokenResponse?.accessToken)
+
+                // Success state
+                updateState { currentState ->
+                    currentState.copy(
+                        uiFrame = UiFrame(), // Reset UiFrame
+                        isLoginSuccessful = true,
+                        loadingMessage = "Giriş yapılıyor..."
+                    )
+                }
+            }
+            is ApiResult.Error -> {
+                setError(getErrorMessage(response.exception))
+            }
+            is ApiResult.Loading -> {
+                // Already loading
+            }
+        }
+    }
+
+    private fun getErrorMessage(exception: ApiException): String = when (exception) {
+        is ApiException.Unauthorized -> "Kullanıcı adı veya şifre hatalı"
+        is ApiException.NetworkError -> "İnternet bağlantısı kontrol edin"
+        is ApiException.ValidationError -> exception.errors.joinToString(", ")
+        is ApiException.ServerError -> "Sunucu hatası, lütfen daha sonra tekrar deneyin"
+        is ApiException.UnknownError -> "Bilinmeyen hata: ${exception.originalMessage ?: "Bilinmeyen hata"}"
+    }
 }
