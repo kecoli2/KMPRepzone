@@ -27,6 +27,30 @@ class IOSPreferencesManager: IPreferencesManager {
             prefs.setObject(token, PreferencesConstant.TOKEN)
         }
     }
+
+    override fun setExpiresAtEpochSeconds(expiresAtEpochSeconds: Long?) {
+        if(expiresAtEpochSeconds == null){
+            prefs.removeObjectForKey(PreferencesConstant.TOKEN_EXPIRES_AT)
+        }else{
+            prefs.setInteger(expiresAtEpochSeconds, PreferencesConstant.TOKEN_EXPIRES_AT)
+        }
+    }
+
+    override fun getExpiresAtEpochSeconds(): Long? {
+        return prefs.integerForKey(PreferencesConstant.TOKEN_EXPIRES_AT)
+    }
+
+    override fun getRefreshToken(): String? {
+        return prefs.stringForKey(PreferencesConstant.REFRESH_TOKEN)
+    }
+
+    override fun setRefreshToken(token: String?) {
+        if (token == null) {
+            prefs.removeObjectForKey(PreferencesConstant.REFRESH_TOKEN)
+        }else{
+            prefs.setObject(token, PreferencesConstant.REFRESH_TOKEN)
+        }
+    }
     //endregion
 
     //region Protected Method

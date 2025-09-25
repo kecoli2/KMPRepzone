@@ -9,15 +9,12 @@ import com.repzone.mobile.di.AndroidDIModule
 import com.repzone.network.api.IOrderApi
 import com.repzone.network.api.ITokenApiController
 import com.repzone.network.di.NetworkModule
-import com.repzone.network.di.NetworkPlatformModule
 import com.repzone.presentation.di.PresentationModule
 import com.repzone.sync.di.SyncModule
 import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.context.loadKoinModules
-import org.koin.core.parameter.parametersOf
 import org.koin.java.KoinJavaComponent.getKoin
 
 class PlatformApplication: Application() {
@@ -41,7 +38,6 @@ class PlatformApplication: Application() {
                 DatabaseAndroidModule,
                 DatabaseModule,
                 NetworkModule,
-                NetworkPlatformModule,
                 RepositoryModule,
                 SyncModule,
                 AndroidDIModule,

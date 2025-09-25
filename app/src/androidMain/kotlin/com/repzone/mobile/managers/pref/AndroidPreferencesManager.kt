@@ -28,6 +28,30 @@ class AndroidPreferencesManager(private val context: Context) : IPreferencesMana
             prefs.edit { putString(PreferencesConstant.TOKEN, token) }
         }
     }
+
+    override fun setExpiresAtEpochSeconds(expiresAtEpochSeconds: Long?) {
+        if(expiresAtEpochSeconds == null){
+            prefs.edit { remove(PreferencesConstant.TOKEN_EXPIRES_AT) }
+        }else{
+            prefs.edit { putLong(PreferencesConstant.TOKEN_EXPIRES_AT, expiresAtEpochSeconds) }
+        }
+    }
+
+    override fun getExpiresAtEpochSeconds(): Long? {
+        return prefs.getLong(PreferencesConstant.TOKEN_EXPIRES_AT, 0)
+    }
+
+    override fun getRefreshToken(): String? {
+        return prefs.getString(PreferencesConstant.REFRESH_TOKEN, null)
+    }
+
+    override fun setRefreshToken(token: String?) {
+        if (token == null) {
+            prefs.edit { remove(PreferencesConstant.REFRESH_TOKEN) }
+        }else{
+            prefs.edit { putString(PreferencesConstant.REFRESH_TOKEN, token) }
+        }
+    }
     //endregion
 
     //region Protected Method

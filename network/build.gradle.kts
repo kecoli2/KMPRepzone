@@ -55,6 +55,7 @@ kotlin {
                 implementation(libs.ktor.client.logging)
                 implementation(libs.ktor.client.auth)
                 implementation(libs.koin.core)
+                implementation(libs.kotlinx.datetime)
             }
         }
 

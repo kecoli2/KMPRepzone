@@ -31,13 +31,13 @@ class LoginScreenViewModel(private val tokenApiController: ITokenApiController, 
 
 
     suspend fun login(username: String, password: String) {
-        val response = tokenApiController.pushToken(LoginRequest(username, password))
-        if(response.isSuccess){
+        /*val response = tokenApiController.pushToken(LoginRequest(username, password))
+        if(response.){
             isharedPreferences.setToken(response.getOrNull()?.token)
         }
         else{
 
-        }
+        }*/
 
     }
 

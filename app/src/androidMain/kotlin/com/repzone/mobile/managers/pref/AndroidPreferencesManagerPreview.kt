@@ -27,4 +27,20 @@ class AndroidPreferencesManagerPreview: IPreferencesManager {
     override fun setToken(token: String?) {
         TODO("Not yet implemented")
     }
+
+    override fun setExpiresAtEpochSeconds(expiresAtEpochSeconds: Long?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getExpiresAtEpochSeconds(): Long? {
+        TODO("Not yet implemented")
+    }
+
+    override fun getRefreshToken(): String? {
+        TODO("Not yet implemented")
+    }
+
+    override fun setRefreshToken(token: String?) {
+        TODO("Not yet implemented")
+    }
 }
