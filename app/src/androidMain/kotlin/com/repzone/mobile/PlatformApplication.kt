@@ -6,18 +6,14 @@ import com.repzone.database.di.DatabaseAndroidModule
 import com.repzone.database.di.DatabaseModule
 import com.repzone.firebase.di.FirebaseAndroidModule
 import com.repzone.mobile.di.AndroidDIModule
-import com.repzone.network.api.IOrderApi
-import com.repzone.network.api.ITokenApiController
 import com.repzone.network.di.NetworkModule
 import com.repzone.network.di.PlatformNetworkModule
 import com.repzone.presentation.base.initializeSmartViewModelStore
 import com.repzone.presentation.di.PresentationModule
 import com.repzone.sync.di.SyncModule
-import io.ktor.client.HttpClient
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.context.loadKoinModules
-import org.koin.java.KoinJavaComponent.getKoin
 
 class PlatformApplication: Application() {
 
@@ -48,10 +44,6 @@ class PlatformApplication: Application() {
                 FirebaseAndroidModule
             )
         }
-
-        val client: HttpClient = getKoin().get()                 // ortak client
-        val tokenApi: ITokenApiController = getKoin().get()      // parametre yok
-        val orderApi: IOrderApi = getKoin().get()
         loadKoinModules(FirebaseAndroidModule)
         initializeSmartViewModelStore()
     }

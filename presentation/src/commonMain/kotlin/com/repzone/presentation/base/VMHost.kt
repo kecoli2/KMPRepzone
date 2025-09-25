@@ -55,7 +55,7 @@ object SmartViewModelStore {
     // Smart cleanup - sadece inactive ViewModel'leri temizle
     fun smartCleanup() {
         val currentTime = Clock.System.now().toEpochMilliseconds()
-        val timeout = 2 * 60 * 1000L // 2 dakika (test için kısa)
+        val timeout = 5 * 60 * 1000L // 2 dakika (test için kısa)
 
         val toRemove = store.filter { (key, entry) ->
             val isOld = currentTime - entry.lastAccessTime > timeout
