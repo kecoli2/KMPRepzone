@@ -1,16 +1,36 @@
 package com.repzone.sync.di
 
+import com.repzone.domain.model.SyncCustomerModel
+import com.repzone.domain.model.SyncProductModel
+import com.repzone.sync.factory.SyncJobFactory
+import com.repzone.sync.interfaces.IBulkInsertService
+import com.repzone.sync.service.CustomerRawSqlBulkInsertService
+import com.repzone.sync.service.ProductRawSqlBulkInsertService
+import com.repzone.sync.transaction.TransactionCoordinator
 import org.koin.dsl.module
 
 val SyncModule = module {
+    single { TransactionCoordinator(get(), get()) }
 
-    // OrderSyncJob: HttpClient ve CoroutineScope parametre ile gelecek
-   /* factory { (client: HttpClient, scope: CoroutineScope) ->
-        val api = get<IOrderApi> { parametersOf(client) } // NetworkModule, client parametresi ister
-        OrderSyncJob(
-            outbox = get<OrderOutboxService>(),          // data:repository Koin modülünden gelir
-            api = api,
-            scope = scope
+    single<IBulkInsertService<SyncProductModel>> {
+        ProductRawSqlBulkInsertService(
+            get(),
+            get()
         )
-    }*/
+    }
+
+    single<IBulkInsertService<SyncCustomerModel>>{
+        CustomerRawSqlBulkInsertService(
+            get(),
+            get())
+    }
+
+    single {
+        get<SyncJobFactory>().createJobs(
+            productApi = get(),
+            customerApi = get(),
+            productBulkInsert = get(), // ← Bulk service injection
+            customerBulkInsert = get()
+        )
+    }
 }

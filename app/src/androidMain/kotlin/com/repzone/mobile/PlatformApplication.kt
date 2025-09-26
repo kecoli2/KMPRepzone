@@ -41,7 +41,7 @@ class PlatformApplication: Application() {
                 SyncModule,
                 AndroidDIModule,
                 PresentationModule,
-                FirebaseAndroidModule
+                FirebaseAndroidModule,
             )
         }
         loadKoinModules(FirebaseAndroidModule)

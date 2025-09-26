@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.sqldelight)
 }
 
 kotlin {
@@ -50,6 +51,7 @@ kotlin {
                 implementation(project(":core"))
                 implementation(project(":data"))
                 implementation(project(":domain"))
+                implementation(project(":database"))
                 implementation(project(":network"))
             }
         }
