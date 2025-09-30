@@ -1,0 +1,44 @@
+﻿-- SyncRepresentativeCustomFieldEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncRepresentativeCustomField
+-- Oluşturma tarihi: 2025-09-24 14:54:18
+
+CREATE TABLE IF NOT EXISTS SyncRepresentativeCustomFieldEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    EntityId INTEGER,
+    FieldId INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    ProductId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    Value TEXT
+);
+
+selectAllSyncRepresentativeCustomFieldEntity:
+SELECT * FROM SyncRepresentativeCustomFieldEntity;
+
+selectBySyncRepresentativeCustomFieldEntityId:
+SELECT * FROM SyncRepresentativeCustomFieldEntity WHERE Id = ?;
+
+insertSyncRepresentativeCustomFieldEntity:
+INSERT INTO SyncRepresentativeCustomFieldEntity
+VALUES ?;
+
+insertOrReplaceSyncRepresentativeCustomFieldEntity:
+INSERT OR REPLACE INTO SyncRepresentativeCustomFieldEntity
+VALUES ?;
+
+updateSyncRepresentativeCustomFieldEntity:
+UPDATE SyncRepresentativeCustomFieldEntity SET
+    ProductId = ?,
+    OrganizationId = ?,
+    FieldId = ?,
+    Value = ?,
+    EntityId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncRepresentativeCustomFieldEntity:
+DELETE FROM SyncRepresentativeCustomFieldEntity WHERE Id = ?;

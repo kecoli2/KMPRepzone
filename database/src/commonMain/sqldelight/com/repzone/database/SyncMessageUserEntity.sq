@@ -1,0 +1,52 @@
+﻿-- SyncMessageUserEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncMessageUser
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncMessageUserEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CellPhone TEXT,
+    Email TEXT,
+    FirstName TEXT,
+    LastName TEXT,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    OrganizationName TEXT,
+    PhotoPath TEXT,
+    RecordDateUtc INTEGER,
+    RoleId INTEGER,
+    RoleName TEXT,
+    State INTEGER
+);
+
+selectAllSyncMessageUserEntity:
+SELECT * FROM SyncMessageUserEntity;
+
+selectBySyncMessageUserEntityId:
+SELECT * FROM SyncMessageUserEntity WHERE Id = ?;
+
+insertSyncMessageUserEntity:
+INSERT INTO SyncMessageUserEntity
+VALUES ?;
+
+insertOrReplaceSyncMessageUserEntity:
+INSERT OR REPLACE INTO SyncMessageUserEntity
+VALUES ?;
+
+updateSyncMessageUserEntity:
+UPDATE SyncMessageUserEntity SET
+    FirstName = ?,
+    LastName = ?,
+    CellPhone = ?,
+    Email = ?,
+    PhotoPath = ?,
+    RoleId = ?,
+    RoleName = ?,
+    OrganizationId = ?,
+    OrganizationName = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncMessageUserEntity:
+DELETE FROM SyncMessageUserEntity WHERE Id = ?;

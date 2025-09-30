@@ -1,0 +1,30 @@
+﻿-- CustomDataHeaderEntity SQLDelight dosyası
+-- Orijinal tablo: CustomDataHeader
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS CustomDataHeaderEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Name TEXT
+);
+
+selectAllCustomDataHeaderEntity:
+SELECT * FROM CustomDataHeaderEntity;
+
+selectByCustomDataHeaderEntityId:
+SELECT * FROM CustomDataHeaderEntity WHERE Id = ?;
+
+insertCustomDataHeaderEntity:
+INSERT INTO CustomDataHeaderEntity
+VALUES ?;
+
+insertOrReplaceCustomDataHeaderEntity:
+INSERT OR REPLACE INTO CustomDataHeaderEntity
+VALUES ?;
+
+updateCustomDataHeaderEntity:
+UPDATE CustomDataHeaderEntity SET
+    Name = ?
+WHERE Id = ?;
+
+deleteCustomDataHeaderEntity:
+DELETE FROM CustomDataHeaderEntity WHERE Id = ?;

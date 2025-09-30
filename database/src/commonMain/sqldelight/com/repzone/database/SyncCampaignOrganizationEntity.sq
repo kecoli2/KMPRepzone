@@ -1,0 +1,40 @@
+﻿-- SyncCampaignOrganizationEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCampaignOrganizationModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncCampaignOrganizationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CampaignMasterId INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    TenantId INTEGER
+);
+
+selectAllSyncCampaignOrganizationEntity:
+SELECT * FROM SyncCampaignOrganizationEntity;
+
+selectBySyncCampaignOrganizationEntityId:
+SELECT * FROM SyncCampaignOrganizationEntity WHERE Id = ?;
+
+insertSyncCampaignOrganizationEntity:
+INSERT INTO SyncCampaignOrganizationEntity
+VALUES ?;
+
+insertOrReplaceSyncCampaignOrganizationEntity:
+INSERT OR REPLACE INTO SyncCampaignOrganizationEntity
+VALUES ?;
+
+updateSyncCampaignOrganizationEntity:
+UPDATE SyncCampaignOrganizationEntity SET
+    TenantId = ?,
+    OrganizationId = ?,
+    CampaignMasterId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncCampaignOrganizationEntity:
+DELETE FROM SyncCampaignOrganizationEntity WHERE Id = ?;

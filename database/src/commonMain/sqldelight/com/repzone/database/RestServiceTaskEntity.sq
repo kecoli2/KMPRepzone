@@ -1,0 +1,46 @@
+﻿-- RestServiceTaskEntity SQLDelight dosyası
+-- Orijinal tablo: RestServiceTask
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS RestServiceTaskEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ActionName TEXT,
+    CallType INTEGER,
+    CreatedTime INTEGER,
+    MethodPath TEXT,
+    RequestObject TEXT,
+    RequestObjectUniqueID TEXT,
+    RequestType TEXT,
+    Result TEXT,
+    Status INTEGER
+);
+
+selectAllRestServiceTaskEntity:
+SELECT * FROM RestServiceTaskEntity;
+
+selectByRestServiceTaskEntityId:
+SELECT * FROM RestServiceTaskEntity WHERE Id = ?;
+
+insertRestServiceTaskEntity:
+INSERT INTO RestServiceTaskEntity
+VALUES ?;
+
+insertOrReplaceRestServiceTaskEntity:
+INSERT OR REPLACE INTO RestServiceTaskEntity
+VALUES ?;
+
+updateRestServiceTaskEntity:
+UPDATE RestServiceTaskEntity SET
+    RequestObject = ?,
+    RequestType = ?,
+    MethodPath = ?,
+    CallType = ?,
+    Status = ?,
+    Result = ?,
+    ActionName = ?,
+    CreatedTime = ?,
+    RequestObjectUniqueID = ?
+WHERE Id = ?;
+
+deleteRestServiceTaskEntity:
+DELETE FROM RestServiceTaskEntity WHERE Id = ?;

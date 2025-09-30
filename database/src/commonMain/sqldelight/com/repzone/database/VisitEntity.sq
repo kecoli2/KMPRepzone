@@ -1,0 +1,60 @@
+﻿-- VisitEntity SQLDelight dosyası
+-- Orijinal tablo: Visit
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS VisitEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    AppointmentExceptionId INTEGER,
+    AppointmentId INTEGER,
+    DistanceFromCustomerLocation INTEGER,
+    Finish INTEGER,
+    FormIdsRaw TEXT,
+    Guid TEXT,
+    IsItOnLocation INTEGER,
+    IsItOnRoute INTEGER,
+    IsItOnTime INTEGER,
+    Latitude REAL,
+    Longitude REAL,
+    OrderIdsRaw TEXT,
+    SelectedCustomerOrganizationId INTEGER,
+    Start INTEGER,
+    VisitNote TEXT,
+    VisitType INTEGER
+);
+
+selectAllVisitEntity:
+SELECT * FROM VisitEntity;
+
+selectByVisitEntityId:
+SELECT * FROM VisitEntity WHERE Id = ?;
+
+insertVisitEntity:
+INSERT INTO VisitEntity
+VALUES ?;
+
+insertOrReplaceVisitEntity:
+INSERT OR REPLACE INTO VisitEntity
+VALUES ?;
+
+updateVisitEntity:
+UPDATE VisitEntity SET
+    AppointmentId = ?,
+    Guid = ?,
+    Start = ?,
+    Finish = ?,
+    AppointmentExceptionId = ?,
+    Latitude = ?,
+    Longitude = ?,
+    OrderIdsRaw = ?,
+    FormIdsRaw = ?,
+    VisitNote = ?,
+    IsItOnRoute = ?,
+    IsItOnTime = ?,
+    IsItOnLocation = ?,
+    DistanceFromCustomerLocation = ?,
+    VisitType = ?,
+    SelectedCustomerOrganizationId = ?
+WHERE Id = ?;
+
+deleteVisitEntity:
+DELETE FROM VisitEntity WHERE Id = ?;

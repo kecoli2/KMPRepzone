@@ -1,0 +1,54 @@
+﻿-- SyncCrmPriceListParameterEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCrmPriceListParameter
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncCrmPriceListParameterEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    EntityId INTEGER,
+    EntityType INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    PaymentPlanId INTEGER,
+    PricePurchaseReturnDamagedListId INTEGER,
+    PriceSalesDamagedListId INTEGER,
+    PurchasePriceListId INTEGER,
+    PurchaseReturnPriceListId INTEGER,
+    RecordDateUtc INTEGER,
+    SalesPriceListId INTEGER,
+    SalesReturnPriceListId INTEGER,
+    State INTEGER
+);
+
+selectAllSyncCrmPriceListParameterEntity:
+SELECT * FROM SyncCrmPriceListParameterEntity;
+
+selectBySyncCrmPriceListParameterEntityId:
+SELECT * FROM SyncCrmPriceListParameterEntity WHERE Id = ?;
+
+insertSyncCrmPriceListParameterEntity:
+INSERT INTO SyncCrmPriceListParameterEntity
+VALUES ?;
+
+insertOrReplaceSyncCrmPriceListParameterEntity:
+INSERT OR REPLACE INTO SyncCrmPriceListParameterEntity
+VALUES ?;
+
+updateSyncCrmPriceListParameterEntity:
+UPDATE SyncCrmPriceListParameterEntity SET
+    EntityType = ?,
+    EntityId = ?,
+    PaymentPlanId = ?,
+    SalesPriceListId = ?,
+    SalesReturnPriceListId = ?,
+    PurchasePriceListId = ?,
+    PurchaseReturnPriceListId = ?,
+    PriceSalesDamagedListId = ?,
+    PricePurchaseReturnDamagedListId = ?,
+    OrganizationId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncCrmPriceListParameterEntity:
+DELETE FROM SyncCrmPriceListParameterEntity WHERE Id = ?;

@@ -1,0 +1,40 @@
+﻿-- SyncRiskDueDayEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncRiskDueDayModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncRiskDueDayEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CustomerId INTEGER,
+    LastInvoiceDate INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncRiskDueDayEntity:
+SELECT * FROM SyncRiskDueDayEntity;
+
+selectBySyncRiskDueDayEntityId:
+SELECT * FROM SyncRiskDueDayEntity WHERE Id = ?;
+
+insertSyncRiskDueDayEntity:
+INSERT INTO SyncRiskDueDayEntity
+VALUES ?;
+
+insertOrReplaceSyncRiskDueDayEntity:
+INSERT OR REPLACE INTO SyncRiskDueDayEntity
+VALUES ?;
+
+updateSyncRiskDueDayEntity:
+UPDATE SyncRiskDueDayEntity SET
+    CustomerId = ?,
+    OrganizationId = ?,
+    LastInvoiceDate = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncRiskDueDayEntity:
+DELETE FROM SyncRiskDueDayEntity WHERE Id = ?;

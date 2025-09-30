@@ -1,0 +1,21 @@
+﻿-- DynamicDataRowEntity SQLDelight dosyası
+-- Orijinal tablo: DynamicDataRowModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS DynamicDataRowEntity (
+    RowId INTEGER,
+    RowValue TEXT,
+    UtcLogDate INTEGER
+);
+
+selectAllDynamicDataRowEntity:
+SELECT * FROM DynamicDataRowEntity;
+
+insertDynamicDataRowEntity:
+INSERT INTO DynamicDataRowEntity
+VALUES ?;
+
+insertOrReplaceDynamicDataRowEntity:
+INSERT OR REPLACE INTO DynamicDataRowEntity
+VALUES ?;
+

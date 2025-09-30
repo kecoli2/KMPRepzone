@@ -1,0 +1,40 @@
+﻿-- DocumentMapDocNumberInformationEntity SQLDelight dosyası
+-- Orijinal tablo: DocumentMapDocNumberInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS DocumentMapDocNumberInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    DocumentMapId INTEGER,
+    DocumentNumberBody INTEGER,
+    DocumentNumberPostfix TEXT,
+    DocumentNumberPrefix TEXT,
+    DocumentType INTEGER,
+    State INTEGER
+);
+
+selectAllDocumentMapDocNumberInformationEntity:
+SELECT * FROM DocumentMapDocNumberInformationEntity;
+
+selectByDocumentMapDocNumberInformationEntityId:
+SELECT * FROM DocumentMapDocNumberInformationEntity WHERE Id = ?;
+
+insertDocumentMapDocNumberInformationEntity:
+INSERT INTO DocumentMapDocNumberInformationEntity
+VALUES ?;
+
+insertOrReplaceDocumentMapDocNumberInformationEntity:
+INSERT OR REPLACE INTO DocumentMapDocNumberInformationEntity
+VALUES ?;
+
+updateDocumentMapDocNumberInformationEntity:
+UPDATE DocumentMapDocNumberInformationEntity SET
+    DocumentType = ?,
+    DocumentMapId = ?,
+    DocumentNumberPrefix = ?,
+    DocumentNumberBody = ?,
+    DocumentNumberPostfix = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteDocumentMapDocNumberInformationEntity:
+DELETE FROM DocumentMapDocNumberInformationEntity WHERE Id = ?;

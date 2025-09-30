@@ -1,0 +1,40 @@
+﻿-- PaymentTransactionLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: PaymentTransactionLogInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS PaymentTransactionLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Amount REAL,
+    CustomerId INTEGER,
+    Direction INTEGER,
+    DocumentGroup INTEGER,
+    ReferenceId INTEGER,
+    TransactionDate INTEGER
+);
+
+selectAllPaymentTransactionLogInformationEntity:
+SELECT * FROM PaymentTransactionLogInformationEntity;
+
+selectByPaymentTransactionLogInformationEntityId:
+SELECT * FROM PaymentTransactionLogInformationEntity WHERE Id = ?;
+
+insertPaymentTransactionLogInformationEntity:
+INSERT INTO PaymentTransactionLogInformationEntity
+VALUES ?;
+
+insertOrReplacePaymentTransactionLogInformationEntity:
+INSERT OR REPLACE INTO PaymentTransactionLogInformationEntity
+VALUES ?;
+
+updatePaymentTransactionLogInformationEntity:
+UPDATE PaymentTransactionLogInformationEntity SET
+    TransactionDate = ?,
+    CustomerId = ?,
+    Amount = ?,
+    Direction = ?,
+    DocumentGroup = ?,
+    ReferenceId = ?
+WHERE Id = ?;
+
+deletePaymentTransactionLogInformationEntity:
+DELETE FROM PaymentTransactionLogInformationEntity WHERE Id = ?;

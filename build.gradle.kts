@@ -9,3 +9,26 @@ plugins {
     alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
     alias(libs.plugins.androidLint) apply false
 }
+
+val tmpDir = if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+    "C:/Temp"
+} else {
+    "/tmp"
+}
+
+allprojects {
+    tasks.withType<JavaCompile> {
+        options.compilerArgs.addAll(
+            listOf(
+                "-Djava.io.tmpdir=$tmpDir",
+                "-Dorg.sqlite.tmpdir=$tmpDir"
+            )
+        )
+    }
+    tasks.withType<Test> {
+        jvmArgs(
+            "-Djava.io.tmpdir=$tmpDir",
+            "-Dorg.sqlite.tmpdir=$tmpDir"
+        )
+    }
+}

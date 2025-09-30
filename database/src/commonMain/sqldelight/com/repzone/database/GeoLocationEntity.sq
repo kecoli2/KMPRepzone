@@ -1,0 +1,54 @@
+﻿-- GeoLocationEntity SQLDelight dosyası
+-- Orijinal tablo: GeoLocation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS GeoLocationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Accuracy REAL,
+    Altitude REAL,
+    AltitudeAccuracy REAL,
+    BatteryLevel INTEGER,
+    DailyOperationType INTEGER,
+    Description TEXT,
+    Heading REAL,
+    Latitude REAL,
+    Longitude REAL,
+    RepresentativeId INTEGER,
+    ReverseGeocoded TEXT,
+    Speed REAL,
+    Time INTEGER
+);
+
+selectAllGeoLocationEntity:
+SELECT * FROM GeoLocationEntity;
+
+selectByGeoLocationEntityId:
+SELECT * FROM GeoLocationEntity WHERE Id = ?;
+
+insertGeoLocationEntity:
+INSERT INTO GeoLocationEntity
+VALUES ?;
+
+insertOrReplaceGeoLocationEntity:
+INSERT OR REPLACE INTO GeoLocationEntity
+VALUES ?;
+
+updateGeoLocationEntity:
+UPDATE GeoLocationEntity SET
+    Latitude = ?,
+    Longitude = ?,
+    Time = ?,
+    Accuracy = ?,
+    Altitude = ?,
+    AltitudeAccuracy = ?,
+    Heading = ?,
+    Speed = ?,
+    RepresentativeId = ?,
+    DailyOperationType = ?,
+    Description = ?,
+    ReverseGeocoded = ?,
+    BatteryLevel = ?
+WHERE Id = ?;
+
+deleteGeoLocationEntity:
+DELETE FROM GeoLocationEntity WHERE Id = ?;

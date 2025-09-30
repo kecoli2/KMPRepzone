@@ -1,0 +1,40 @@
+﻿-- DynamicListItemsEntity SQLDelight dosyası
+-- Orijinal tablo: DynamicListItems
+-- Oluşturma tarihi: 2025-09-24 14:54:18
+
+CREATE TABLE IF NOT EXISTS DynamicListItemsEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    DynamicListId INTEGER,
+    EntityId INTEGER,
+    ItemType INTEGER,
+    ModificationDateUtc INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllDynamicListItemsEntity:
+SELECT * FROM DynamicListItemsEntity;
+
+selectByDynamicListItemsEntityId:
+SELECT * FROM DynamicListItemsEntity WHERE Id = ?;
+
+insertDynamicListItemsEntity:
+INSERT INTO DynamicListItemsEntity
+VALUES ?;
+
+insertOrReplaceDynamicListItemsEntity:
+INSERT OR REPLACE INTO DynamicListItemsEntity
+VALUES ?;
+
+updateDynamicListItemsEntity:
+UPDATE DynamicListItemsEntity SET
+    EntityId = ?,
+    DynamicListId = ?,
+    ItemType = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteDynamicListItemsEntity:
+DELETE FROM DynamicListItemsEntity WHERE Id = ?;

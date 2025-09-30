@@ -1,0 +1,46 @@
+﻿-- SyncCustomerOrganizationScopeEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCustomerOrganizationScopeModel
+-- Oluşturma tarihi: 2025-09-24 14:54:18
+
+CREATE TABLE IF NOT EXISTS SyncCustomerOrganizationScopeEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CustomerId INTEGER,
+    Fulfillment INTEGER,
+    ManufacturerId INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    OrganizationName TEXT,
+    RecordDateUtc INTEGER,
+    SalesNotAllowed INTEGER,
+    State INTEGER
+);
+
+selectAllSyncCustomerOrganizationScopeEntity:
+SELECT * FROM SyncCustomerOrganizationScopeEntity;
+
+selectBySyncCustomerOrganizationScopeEntityId:
+SELECT * FROM SyncCustomerOrganizationScopeEntity WHERE Id = ?;
+
+insertSyncCustomerOrganizationScopeEntity:
+INSERT INTO SyncCustomerOrganizationScopeEntity
+VALUES ?;
+
+insertOrReplaceSyncCustomerOrganizationScopeEntity:
+INSERT OR REPLACE INTO SyncCustomerOrganizationScopeEntity
+VALUES ?;
+
+updateSyncCustomerOrganizationScopeEntity:
+UPDATE SyncCustomerOrganizationScopeEntity SET
+    State = ?,
+    RecordDateUtc = ?,
+    ModificationDateUtc = ?,
+    CustomerId = ?,
+    OrganizationId = ?,
+    OrganizationName = ?,
+    ManufacturerId = ?,
+    Fulfillment = ?,
+    SalesNotAllowed = ?
+WHERE Id = ?;
+
+deleteSyncCustomerOrganizationScopeEntity:
+DELETE FROM SyncCustomerOrganizationScopeEntity WHERE Id = ?;

@@ -1,0 +1,54 @@
+﻿-- SyncFeedbackListEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncFeedbackListModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncFeedbackListEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CategoryId INTEGER,
+    CategoryName TEXT,
+    LastFeedbackDate INTEGER,
+    Message TEXT,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    OrganizationName TEXT,
+    ParentId INTEGER,
+    RecordDateUtc INTEGER,
+    RootId INTEGER,
+    State INTEGER,
+    UserId INTEGER,
+    UserName TEXT
+);
+
+selectAllSyncFeedbackListEntity:
+SELECT * FROM SyncFeedbackListEntity;
+
+selectBySyncFeedbackListEntityId:
+SELECT * FROM SyncFeedbackListEntity WHERE Id = ?;
+
+insertSyncFeedbackListEntity:
+INSERT INTO SyncFeedbackListEntity
+VALUES ?;
+
+insertOrReplaceSyncFeedbackListEntity:
+INSERT OR REPLACE INTO SyncFeedbackListEntity
+VALUES ?;
+
+updateSyncFeedbackListEntity:
+UPDATE SyncFeedbackListEntity SET
+    OrganizationId = ?,
+    OrganizationName = ?,
+    Message = ?,
+    UserId = ?,
+    UserName = ?,
+    CategoryId = ?,
+    CategoryName = ?,
+    LastFeedbackDate = ?,
+    ParentId = ?,
+    RootId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncFeedbackListEntity:
+DELETE FROM SyncFeedbackListEntity WHERE Id = ?;

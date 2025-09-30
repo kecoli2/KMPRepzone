@@ -1,0 +1,44 @@
+﻿-- SyncFeedbackCategoryEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncFeedbackCategoryModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncFeedbackCategoryEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Description TEXT,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    OrganizationId INTEGER,
+    ParentId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    TenantId INTEGER
+);
+
+selectAllSyncFeedbackCategoryEntity:
+SELECT * FROM SyncFeedbackCategoryEntity;
+
+selectBySyncFeedbackCategoryEntityId:
+SELECT * FROM SyncFeedbackCategoryEntity WHERE Id = ?;
+
+insertSyncFeedbackCategoryEntity:
+INSERT INTO SyncFeedbackCategoryEntity
+VALUES ?;
+
+insertOrReplaceSyncFeedbackCategoryEntity:
+INSERT OR REPLACE INTO SyncFeedbackCategoryEntity
+VALUES ?;
+
+updateSyncFeedbackCategoryEntity:
+UPDATE SyncFeedbackCategoryEntity SET
+    TenantId = ?,
+    OrganizationId = ?,
+    Name = ?,
+    Description = ?,
+    ParentId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncFeedbackCategoryEntity:
+DELETE FROM SyncFeedbackCategoryEntity WHERE Id = ?;

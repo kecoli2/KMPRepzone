@@ -1,0 +1,46 @@
+﻿-- ProductParameterv4Entity SQLDelight dosyası
+-- Orijinal tablo: MobileProductParameterv4
+-- Oluşturma tarihi: 2025-09-24 14:54:18
+
+CREATE TABLE IF NOT EXISTS ProductParameterv4Entity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Color TEXT,
+    EdiCode TEXT,
+    IsVisible INTEGER,
+    ModificationDateUtc INTEGER,
+    `Order` INTEGER,
+    OrganizationId INTEGER,
+    ProductId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllProductParameterv4Entity:
+SELECT * FROM ProductParameterv4Entity;
+
+selectByProductParameterv4EntityId:
+SELECT * FROM ProductParameterv4Entity WHERE Id = ?;
+
+insertProductParameterv4Entity:
+INSERT INTO ProductParameterv4Entity
+VALUES ?;
+
+insertOrReplaceProductParameterv4Entity:
+INSERT OR REPLACE INTO ProductParameterv4Entity
+VALUES ?;
+
+updateProductParameterv4Entity:
+UPDATE ProductParameterv4Entity SET
+    ProductId = ?,
+    OrganizationId = ?,
+    `Order` = ?,
+    EdiCode = ?,
+    IsVisible = ?,
+    Color = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteProductParameterv4Entity:
+DELETE FROM ProductParameterv4Entity WHERE Id = ?;

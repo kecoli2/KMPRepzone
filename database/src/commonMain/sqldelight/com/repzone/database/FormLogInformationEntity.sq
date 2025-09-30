@@ -1,0 +1,54 @@
+﻿-- FormLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: FormLogInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS FormLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CustomerId INTEGER,
+    CustomerName TEXT,
+    FormId INTEGER,
+    IsListView INTEGER,
+    LastOpenedPage INTEGER,
+    RecordDate INTEGER,
+    RestServiceTaskDoneDate INTEGER,
+    RestServiceTaskId INTEGER,
+    RestServiceTaskObject TEXT,
+    RouteAppointmentId INTEGER,
+    Status INTEGER,
+    Version TEXT,
+    visitUniqueId TEXT
+);
+
+selectAllFormLogInformationEntity:
+SELECT * FROM FormLogInformationEntity;
+
+selectByFormLogInformationEntityId:
+SELECT * FROM FormLogInformationEntity WHERE Id = ?;
+
+insertFormLogInformationEntity:
+INSERT INTO FormLogInformationEntity
+VALUES ?;
+
+insertOrReplaceFormLogInformationEntity:
+INSERT OR REPLACE INTO FormLogInformationEntity
+VALUES ?;
+
+updateFormLogInformationEntity:
+UPDATE FormLogInformationEntity SET
+    RestServiceTaskId = ?,
+    CustomerName = ?,
+    CustomerId = ?,
+    Version = ?,
+    FormId = ?,
+    RecordDate = ?,
+    RestServiceTaskObject = ?,
+    LastOpenedPage = ?,
+    Status = ?,
+    RouteAppointmentId = ?,
+    IsListView = ?,
+    visitUniqueId = ?,
+    RestServiceTaskDoneDate = ?
+WHERE Id = ?;
+
+deleteFormLogInformationEntity:
+DELETE FROM FormLogInformationEntity WHERE Id = ?;

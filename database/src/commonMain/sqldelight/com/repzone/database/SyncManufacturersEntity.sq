@@ -1,0 +1,44 @@
+﻿-- SyncManufacturersEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncManufacturers
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncManufacturersEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CustomerId INTEGER,
+    DocNote TEXT,
+    Fulfillment INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncManufacturersEntity:
+SELECT * FROM SyncManufacturersEntity;
+
+selectBySyncManufacturersEntityId:
+SELECT * FROM SyncManufacturersEntity WHERE Id = ?;
+
+insertSyncManufacturersEntity:
+INSERT INTO SyncManufacturersEntity
+VALUES ?;
+
+insertOrReplaceSyncManufacturersEntity:
+INSERT OR REPLACE INTO SyncManufacturersEntity
+VALUES ?;
+
+updateSyncManufacturersEntity:
+UPDATE SyncManufacturersEntity SET
+    OrganizationId = ?,
+    Name = ?,
+    DocNote = ?,
+    CustomerId = ?,
+    Fulfillment = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncManufacturersEntity:
+DELETE FROM SyncManufacturersEntity WHERE Id = ?;

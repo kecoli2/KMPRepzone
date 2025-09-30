@@ -5,17 +5,15 @@ import com.repzone.data.repository.di.RepositoryModule
 import com.repzone.database.di.DatabaseAndroidModule
 import com.repzone.database.di.DatabaseModule
 import com.repzone.firebase.di.FirebaseAndroidModule
-import com.repzone.mobile.di.AndroidLocationModule
+import com.repzone.mobile.di.AndroidDIModule
 import com.repzone.network.di.NetworkModule
+import com.repzone.network.di.PlatformNetworkModule
+import com.repzone.presentation.base.initializeSmartViewModelStore
 import com.repzone.presentation.di.PresentationModule
 import com.repzone.sync.di.SyncModule
-import io.ktor.client.HttpClient
-import io.ktor.client.engine.okhttp.OkHttp
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.context.loadKoinModules
-import org.koin.core.parameter.parametersOf
-import org.koin.java.KoinJavaComponent.getKoin
 
 class PlatformApplication: Application() {
 
@@ -31,25 +29,23 @@ class PlatformApplication: Application() {
     //region Public Method
     override fun onCreate() {
         super.onCreate()
+
         startKoin {
             androidContext(this@PlatformApplication)
             modules(
-                DatabaseModule,
                 DatabaseAndroidModule,
+                DatabaseModule,
+                PlatformNetworkModule,
                 NetworkModule,
                 RepositoryModule,
                 SyncModule,
-                AndroidLocationModule,
-                PresentationModule
+                AndroidDIModule,
+                PresentationModule,
+                FirebaseAndroidModule,
             )
         }
-        val engine = OkHttp.create()
-        val client: HttpClient = getKoin().get { parametersOf(engine, null) }
-
-    /*    val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
-        val job: OrderSyncJob = getKoin().get { parametersOf(client, scope) }
-        job.start()*/
         loadKoinModules(FirebaseAndroidModule)
+        initializeSmartViewModelStore()
     }
     //endregion
 

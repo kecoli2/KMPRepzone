@@ -1,3 +1,4 @@
+/*
 package com.repzone.database.dao
 
 import com.repzone.database.AppDatabase
@@ -22,4 +23,4 @@ class OrderOutboxDao(private val db: AppDatabase) {
 
     fun updateAttempt(id: String, lastError: String?, nextAttemptAt: Long) =
         q.updateAttempt(lastError, nextAttemptAt, id)
-}
+}*/

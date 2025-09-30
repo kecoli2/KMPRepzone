@@ -1,0 +1,48 @@
+﻿-- SyncCustomerProductDistributionEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCustomerProductDistributionModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncCustomerProductDistributionEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    PricePurchaseReturnDamagedListId INTEGER,
+    PriceSalesDamagedListId INTEGER,
+    PriceSalesDistributionListId INTEGER,
+    PriceSalesReturnDistributionListId INTEGER,
+    ProductSalesDistributionListId INTEGER,
+    ProductSalesReturnDistributionListId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncCustomerProductDistributionEntity:
+SELECT * FROM SyncCustomerProductDistributionEntity;
+
+selectBySyncCustomerProductDistributionEntityId:
+SELECT * FROM SyncCustomerProductDistributionEntity WHERE Id = ?;
+
+insertSyncCustomerProductDistributionEntity:
+INSERT INTO SyncCustomerProductDistributionEntity
+VALUES ?;
+
+insertOrReplaceSyncCustomerProductDistributionEntity:
+INSERT OR REPLACE INTO SyncCustomerProductDistributionEntity
+VALUES ?;
+
+updateSyncCustomerProductDistributionEntity:
+UPDATE SyncCustomerProductDistributionEntity SET
+    OrganizationId = ?,
+    ProductSalesDistributionListId = ?,
+    ProductSalesReturnDistributionListId = ?,
+    PriceSalesDistributionListId = ?,
+    PriceSalesReturnDistributionListId = ?,
+    PriceSalesDamagedListId = ?,
+    PricePurchaseReturnDamagedListId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncCustomerProductDistributionEntity:
+DELETE FROM SyncCustomerProductDistributionEntity WHERE Id = ?;

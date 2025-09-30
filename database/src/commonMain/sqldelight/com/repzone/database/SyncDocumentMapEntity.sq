@@ -1,0 +1,70 @@
+﻿-- SyncDocumentMapEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncDocumentMapModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncDocumentMapEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Description TEXT,
+    DocumentHeader TEXT,
+    DocumentTypeGroup INTEGER,
+    IoType INTEGER,
+    IsElectronicDocument INTEGER,
+    IsFulfillment INTEGER,
+    Lang TEXT,
+    LogoPathUrl TEXT,
+    LogoSelection INTEGER,
+    MinMaxControl INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    Note TEXT,
+    OperationType INTEGER,
+    PrinterTemplatePath TEXT,
+    PrintQrCode INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    UniqueIdCaption TEXT UNIQUE,
+    UseFinancialLogo INTEGER,
+    WarehouseType INTEGER
+);
+
+selectAllSyncDocumentMapEntity:
+SELECT * FROM SyncDocumentMapEntity;
+
+selectBySyncDocumentMapEntityId:
+SELECT * FROM SyncDocumentMapEntity WHERE Id = ?;
+
+insertSyncDocumentMapEntity:
+INSERT INTO SyncDocumentMapEntity
+VALUES ?;
+
+insertOrReplaceSyncDocumentMapEntity:
+INSERT OR REPLACE INTO SyncDocumentMapEntity
+VALUES ?;
+
+updateSyncDocumentMapEntity:
+UPDATE SyncDocumentMapEntity SET
+    Name = ?,
+    Description = ?,
+    IoType = ?,
+    IsElectronicDocument = ?,
+    DocumentTypeGroup = ?,
+    WarehouseType = ?,
+    MinMaxControl = ?,
+    Lang = ?,
+    LogoSelection = ?,
+    LogoPathUrl = ?,
+    PrintQrCode = ?,
+    UseFinancialLogo = ?,
+    DocumentHeader = ?,
+    UniqueIdCaption = ?,
+    Note = ?,
+    PrinterTemplatePath = ?,
+    OperationType = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?,
+    IsFulfillment = ?
+WHERE Id = ?;
+
+deleteSyncDocumentMapEntity:
+DELETE FROM SyncDocumentMapEntity WHERE Id = ?;

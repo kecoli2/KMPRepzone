@@ -1,0 +1,44 @@
+﻿-- SyncProductDistributionLineEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncProductDistributionLineModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncProductDistributionLineEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Color TEXT,
+    DisplayOrder INTEGER,
+    DistributionId INTEGER,
+    ModificationDateUtc INTEGER,
+    MustHave INTEGER,
+    ProductId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncProductDistributionLineEntity:
+SELECT * FROM SyncProductDistributionLineEntity;
+
+selectBySyncProductDistributionLineEntityId:
+SELECT * FROM SyncProductDistributionLineEntity WHERE Id = ?;
+
+insertSyncProductDistributionLineEntity:
+INSERT INTO SyncProductDistributionLineEntity
+VALUES ?;
+
+insertOrReplaceSyncProductDistributionLineEntity:
+INSERT OR REPLACE INTO SyncProductDistributionLineEntity
+VALUES ?;
+
+updateSyncProductDistributionLineEntity:
+UPDATE SyncProductDistributionLineEntity SET
+    DistributionId = ?,
+    ProductId = ?,
+    DisplayOrder = ?,
+    Color = ?,
+    MustHave = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncProductDistributionLineEntity:
+DELETE FROM SyncProductDistributionLineEntity WHERE Id = ?;

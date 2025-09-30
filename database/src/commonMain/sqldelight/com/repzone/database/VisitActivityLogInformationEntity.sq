@@ -1,0 +1,36 @@
+﻿-- VisitActivityLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: VisitActivityLogInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS VisitActivityLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ActionDate INTEGER,
+    ActionType INTEGER,
+    VisitActivityId INTEGER,
+    VisitId INTEGER
+);
+
+selectAllVisitActivityLogInformationEntity:
+SELECT * FROM VisitActivityLogInformationEntity;
+
+selectByVisitActivityLogInformationEntityId:
+SELECT * FROM VisitActivityLogInformationEntity WHERE Id = ?;
+
+insertVisitActivityLogInformationEntity:
+INSERT INTO VisitActivityLogInformationEntity
+VALUES ?;
+
+insertOrReplaceVisitActivityLogInformationEntity:
+INSERT OR REPLACE INTO VisitActivityLogInformationEntity
+VALUES ?;
+
+updateVisitActivityLogInformationEntity:
+UPDATE VisitActivityLogInformationEntity SET
+    VisitActivityId = ?,
+    VisitId = ?,
+    ActionDate = ?,
+    ActionType = ?
+WHERE Id = ?;
+
+deleteVisitActivityLogInformationEntity:
+DELETE FROM VisitActivityLogInformationEntity WHERE Id = ?;

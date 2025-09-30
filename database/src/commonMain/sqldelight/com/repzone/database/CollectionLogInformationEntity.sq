@@ -1,0 +1,40 @@
+﻿-- CollectionLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: CollectionLogInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS CollectionLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CollectionDate INTEGER,
+    CustomerId INTEGER,
+    DocumentUniqueId TEXT,
+    Note TEXT,
+    RestServiceTaskId INTEGER,
+    SumTotal REAL
+);
+
+selectAllCollectionLogInformationEntity:
+SELECT * FROM CollectionLogInformationEntity;
+
+selectByCollectionLogInformationEntityId:
+SELECT * FROM CollectionLogInformationEntity WHERE Id = ?;
+
+insertCollectionLogInformationEntity:
+INSERT INTO CollectionLogInformationEntity
+VALUES ?;
+
+insertOrReplaceCollectionLogInformationEntity:
+INSERT OR REPLACE INTO CollectionLogInformationEntity
+VALUES ?;
+
+updateCollectionLogInformationEntity:
+UPDATE CollectionLogInformationEntity SET
+    RestServiceTaskId = ?,
+    DocumentUniqueId = ?,
+    CustomerId = ?,
+    CollectionDate = ?,
+    SumTotal = ?,
+    Note = ?
+WHERE Id = ?;
+
+deleteCollectionLogInformationEntity:
+DELETE FROM CollectionLogInformationEntity WHERE Id = ?;

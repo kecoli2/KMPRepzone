@@ -1,0 +1,40 @@
+﻿-- SyncCampaignCustomerImplementationsEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCampaignCustomerImplementations
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncCampaignCustomerImplementationsEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CampaignMasterId INTEGER,
+    Count INTEGER,
+    CustomerId INTEGER,
+    ModificationDateUtc INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncCampaignCustomerImplementationsEntity:
+SELECT * FROM SyncCampaignCustomerImplementationsEntity;
+
+selectBySyncCampaignCustomerImplementationsEntityId:
+SELECT * FROM SyncCampaignCustomerImplementationsEntity WHERE Id = ?;
+
+insertSyncCampaignCustomerImplementationsEntity:
+INSERT INTO SyncCampaignCustomerImplementationsEntity
+VALUES ?;
+
+insertOrReplaceSyncCampaignCustomerImplementationsEntity:
+INSERT OR REPLACE INTO SyncCampaignCustomerImplementationsEntity
+VALUES ?;
+
+updateSyncCampaignCustomerImplementationsEntity:
+UPDATE SyncCampaignCustomerImplementationsEntity SET
+    CampaignMasterId = ?,
+    CustomerId = ?,
+    Count = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncCampaignCustomerImplementationsEntity:
+DELETE FROM SyncCampaignCustomerImplementationsEntity WHERE Id = ?;

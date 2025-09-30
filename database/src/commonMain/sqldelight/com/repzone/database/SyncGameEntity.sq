@@ -1,0 +1,58 @@
+﻿-- SyncGameEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncGame
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncGameEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Description TEXT,
+    Icon TEXT,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    Point INTEGER,
+    Priority INTEGER,
+    RankDescription TEXT,
+    RankId INTEGER,
+    RankName TEXT,
+    RecordDateUtc INTEGER,
+    StageIcon TEXT,
+    StageId INTEGER,
+    StageName TEXT,
+    State INTEGER,
+    UnSuccessIcon TEXT
+);
+
+selectAllSyncGameEntity:
+SELECT * FROM SyncGameEntity;
+
+selectBySyncGameEntityId:
+SELECT * FROM SyncGameEntity WHERE Id = ?;
+
+insertSyncGameEntity:
+INSERT INTO SyncGameEntity
+VALUES ?;
+
+insertOrReplaceSyncGameEntity:
+INSERT OR REPLACE INTO SyncGameEntity
+VALUES ?;
+
+updateSyncGameEntity:
+UPDATE SyncGameEntity SET
+    Name = ?,
+    Description = ?,
+    Icon = ?,
+    RankId = ?,
+    RankName = ?,
+    RankDescription = ?,
+    StageId = ?,
+    StageName = ?,
+    StageIcon = ?,
+    Priority = ?,
+    UnSuccessIcon = ?,
+    Point = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncGameEntity:
+DELETE FROM SyncGameEntity WHERE Id = ?;

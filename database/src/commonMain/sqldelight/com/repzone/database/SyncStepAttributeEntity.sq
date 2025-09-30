@@ -1,0 +1,25 @@
+﻿-- SyncStepAttributeEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncStepAttribute
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncStepAttributeEntity (
+    Alias TEXT,
+    Description TEXT,
+    Id INTEGER,
+    `Key` TEXT,
+    TaskStepId INTEGER,
+    Value TEXT,
+    ValueType INTEGER
+);
+
+selectAllSyncStepAttributeEntity:
+SELECT * FROM SyncStepAttributeEntity;
+
+insertSyncStepAttributeEntity:
+INSERT INTO SyncStepAttributeEntity
+VALUES ?;
+
+insertOrReplaceSyncStepAttributeEntity:
+INSERT OR REPLACE INTO SyncStepAttributeEntity
+VALUES ?;
+

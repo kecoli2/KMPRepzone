@@ -1,0 +1,36 @@
+﻿-- FormHotSaleDailyOperationInformationEntity SQLDelight dosyası
+-- Orijinal tablo: FormHotSaleDailyOperationInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS FormHotSaleDailyOperationInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    FormId INTEGER,
+    HotSaleDailyInformationId INTEGER,
+    LogTimeStamp INTEGER,
+    OperationDay INTEGER
+);
+
+selectAllFormHotSaleDailyOperationInformationEntity:
+SELECT * FROM FormHotSaleDailyOperationInformationEntity;
+
+selectByFormHotSaleDailyOperationInformationEntityId:
+SELECT * FROM FormHotSaleDailyOperationInformationEntity WHERE Id = ?;
+
+insertFormHotSaleDailyOperationInformationEntity:
+INSERT INTO FormHotSaleDailyOperationInformationEntity
+VALUES ?;
+
+insertOrReplaceFormHotSaleDailyOperationInformationEntity:
+INSERT OR REPLACE INTO FormHotSaleDailyOperationInformationEntity
+VALUES ?;
+
+updateFormHotSaleDailyOperationInformationEntity:
+UPDATE FormHotSaleDailyOperationInformationEntity SET
+    OperationDay = ?,
+    HotSaleDailyInformationId = ?,
+    FormId = ?,
+    LogTimeStamp = ?
+WHERE Id = ?;
+
+deleteFormHotSaleDailyOperationInformationEntity:
+DELETE FROM FormHotSaleDailyOperationInformationEntity WHERE Id = ?;

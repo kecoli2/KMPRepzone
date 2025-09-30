@@ -1,0 +1,38 @@
+﻿-- InventoryCountLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: InventoryCountLogInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS InventoryCountLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ApprovalDate INTEGER,
+    Data TEXT,
+    Direction INTEGER,
+    TotalProductKind INTEGER,
+    TotalProductQuantity REAL
+);
+
+selectAllInventoryCountLogInformationEntity:
+SELECT * FROM InventoryCountLogInformationEntity;
+
+selectByInventoryCountLogInformationEntityId:
+SELECT * FROM InventoryCountLogInformationEntity WHERE Id = ?;
+
+insertInventoryCountLogInformationEntity:
+INSERT INTO InventoryCountLogInformationEntity
+VALUES ?;
+
+insertOrReplaceInventoryCountLogInformationEntity:
+INSERT OR REPLACE INTO InventoryCountLogInformationEntity
+VALUES ?;
+
+updateInventoryCountLogInformationEntity:
+UPDATE InventoryCountLogInformationEntity SET
+    Data = ?,
+    ApprovalDate = ?,
+    TotalProductKind = ?,
+    TotalProductQuantity = ?,
+    Direction = ?
+WHERE Id = ?;
+
+deleteInventoryCountLogInformationEntity:
+DELETE FROM InventoryCountLogInformationEntity WHERE Id = ?;

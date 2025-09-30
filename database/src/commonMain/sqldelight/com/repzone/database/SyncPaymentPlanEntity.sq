@@ -1,0 +1,46 @@
+﻿-- SyncPaymentPlanEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncPaymentPlanModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncPaymentPlanEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Code TEXT,
+    EdiCode TEXT,
+    Ids TEXT,
+    IsDefault INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    TenantId INTEGER
+);
+
+selectAllSyncPaymentPlanEntity:
+SELECT * FROM SyncPaymentPlanEntity;
+
+selectBySyncPaymentPlanEntityId:
+SELECT * FROM SyncPaymentPlanEntity WHERE Id = ?;
+
+insertSyncPaymentPlanEntity:
+INSERT INTO SyncPaymentPlanEntity
+VALUES ?;
+
+insertOrReplaceSyncPaymentPlanEntity:
+INSERT OR REPLACE INTO SyncPaymentPlanEntity
+VALUES ?;
+
+updateSyncPaymentPlanEntity:
+UPDATE SyncPaymentPlanEntity SET
+    TenantId = ?,
+    Name = ?,
+    EdiCode = ?,
+    IsDefault = ?,
+    Ids = ?,
+    Code = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncPaymentPlanEntity:
+DELETE FROM SyncPaymentPlanEntity WHERE Id = ?;

@@ -1,0 +1,58 @@
+﻿-- SyncTaskEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncTaskModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncTaskEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    BeginDate INTEGER,
+    Customers TEXT,
+    EndDate INTEGER,
+    ModificationDateUtc INTEGER,
+    Note TEXT,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    Status INTEGER,
+    Target INTEGER,
+    TargetGroupId INTEGER,
+    TargetTags TEXT,
+    TargetType INTEGER,
+    TaskSource INTEGER,
+    Title TEXT
+);
+
+selectAllSyncTaskEntity:
+SELECT * FROM SyncTaskEntity;
+
+selectBySyncTaskEntityId:
+SELECT * FROM SyncTaskEntity WHERE Id = ?;
+
+insertSyncTaskEntity:
+INSERT INTO SyncTaskEntity
+VALUES ?;
+
+insertOrReplaceSyncTaskEntity:
+INSERT OR REPLACE INTO SyncTaskEntity
+VALUES ?;
+
+updateSyncTaskEntity:
+UPDATE SyncTaskEntity SET
+    OrganizationId = ?,
+    Title = ?,
+    BeginDate = ?,
+    EndDate = ?,
+    Note = ?,
+    Status = ?,
+    TargetType = ?,
+    TargetTags = ?,
+    TargetGroupId = ?,
+    Target = ?,
+    Customers = ?,
+    TaskSource = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncTaskEntity:
+DELETE FROM SyncTaskEntity WHERE Id = ?;

@@ -1,0 +1,44 @@
+﻿-- SyncCustomerClassClassificationEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCustomerClassClassificationModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncCustomerClassClassificationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ClassificationId INTEGER,
+    ClassificationName TEXT,
+    CustomerId INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    ShareStatus INTEGER,
+    State INTEGER
+);
+
+selectAllSyncCustomerClassClassificationEntity:
+SELECT * FROM SyncCustomerClassClassificationEntity;
+
+selectBySyncCustomerClassClassificationEntityId:
+SELECT * FROM SyncCustomerClassClassificationEntity WHERE Id = ?;
+
+insertSyncCustomerClassClassificationEntity:
+INSERT INTO SyncCustomerClassClassificationEntity
+VALUES ?;
+
+insertOrReplaceSyncCustomerClassClassificationEntity:
+INSERT OR REPLACE INTO SyncCustomerClassClassificationEntity
+VALUES ?;
+
+updateSyncCustomerClassClassificationEntity:
+UPDATE SyncCustomerClassClassificationEntity SET
+    ClassificationId = ?,
+    ClassificationName = ?,
+    CustomerId = ?,
+    OrganizationId = ?,
+    ShareStatus = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncCustomerClassClassificationEntity:
+DELETE FROM SyncCustomerClassClassificationEntity WHERE Id = ?;

@@ -1,0 +1,42 @@
+﻿-- SyncManufacturerParameterEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncManufacturerParameterModel
+-- Oluşturma tarihi: 2025-09-24 14:54:18
+
+CREATE TABLE IF NOT EXISTS SyncManufacturerParameterEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    AllowedUnitIds TEXT,
+    ManufacturerId INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    TenantId INTEGER
+);
+
+selectAllSyncManufacturerParameterEntity:
+SELECT * FROM SyncManufacturerParameterEntity;
+
+selectBySyncManufacturerParameterEntityId:
+SELECT * FROM SyncManufacturerParameterEntity WHERE Id = ?;
+
+insertSyncManufacturerParameterEntity:
+INSERT INTO SyncManufacturerParameterEntity
+VALUES ?;
+
+insertOrReplaceSyncManufacturerParameterEntity:
+INSERT OR REPLACE INTO SyncManufacturerParameterEntity
+VALUES ?;
+
+updateSyncManufacturerParameterEntity:
+UPDATE SyncManufacturerParameterEntity SET
+    TenantId = ?,
+    OrganizationId = ?,
+    ManufacturerId = ?,
+    AllowedUnitIds = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncManufacturerParameterEntity:
+DELETE FROM SyncManufacturerParameterEntity WHERE Id = ?;

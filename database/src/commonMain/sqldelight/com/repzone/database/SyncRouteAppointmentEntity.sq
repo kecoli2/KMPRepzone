@@ -1,0 +1,40 @@
+﻿-- SyncRouteAppointmentEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncRouteAppointmentModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncRouteAppointmentEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CustomerId INTEGER,
+    Description TEXT,
+    EndDate INTEGER,
+    SprintId INTEGER,
+    StartDate INTEGER,
+    State INTEGER
+);
+
+selectAllSyncRouteAppointmentEntity:
+SELECT * FROM SyncRouteAppointmentEntity;
+
+selectBySyncRouteAppointmentEntityId:
+SELECT * FROM SyncRouteAppointmentEntity WHERE Id = ?;
+
+insertSyncRouteAppointmentEntity:
+INSERT INTO SyncRouteAppointmentEntity
+VALUES ?;
+
+insertOrReplaceSyncRouteAppointmentEntity:
+INSERT OR REPLACE INTO SyncRouteAppointmentEntity
+VALUES ?;
+
+updateSyncRouteAppointmentEntity:
+UPDATE SyncRouteAppointmentEntity SET
+    State = ?,
+    StartDate = ?,
+    EndDate = ?,
+    CustomerId = ?,
+    SprintId = ?,
+    Description = ?
+WHERE Id = ?;
+
+deleteSyncRouteAppointmentEntity:
+DELETE FROM SyncRouteAppointmentEntity WHERE Id = ?;

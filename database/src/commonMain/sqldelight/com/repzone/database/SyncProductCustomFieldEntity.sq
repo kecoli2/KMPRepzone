@@ -1,0 +1,44 @@
+﻿-- SyncProductCustomFieldEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncProductCustomField
+-- Oluşturma tarihi: 2025-09-24 14:54:18
+
+CREATE TABLE IF NOT EXISTS SyncProductCustomFieldEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    EntityId INTEGER,
+    FieldId INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    ProductId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    Value TEXT
+);
+
+selectAllSyncProductCustomFieldEntity:
+SELECT * FROM SyncProductCustomFieldEntity;
+
+selectBySyncProductCustomFieldEntityId:
+SELECT * FROM SyncProductCustomFieldEntity WHERE Id = ?;
+
+insertSyncProductCustomFieldEntity:
+INSERT INTO SyncProductCustomFieldEntity
+VALUES ?;
+
+insertOrReplaceSyncProductCustomFieldEntity:
+INSERT OR REPLACE INTO SyncProductCustomFieldEntity
+VALUES ?;
+
+updateSyncProductCustomFieldEntity:
+UPDATE SyncProductCustomFieldEntity SET
+    ProductId = ?,
+    OrganizationId = ?,
+    FieldId = ?,
+    Value = ?,
+    EntityId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncProductCustomFieldEntity:
+DELETE FROM SyncProductCustomFieldEntity WHERE Id = ?;

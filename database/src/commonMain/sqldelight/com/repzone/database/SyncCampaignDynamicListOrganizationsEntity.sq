@@ -1,0 +1,42 @@
+﻿-- SyncCampaignDynamicListOrganizationsEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCampaignDynamicListOrganizations
+-- Oluşturma tarihi: 2025-09-24 14:54:18
+
+CREATE TABLE IF NOT EXISTS SyncCampaignDynamicListOrganizationsEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CampaignMasterId INTEGER,
+    DynamicListId INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    TenantId INTEGER
+);
+
+selectAllSyncCampaignDynamicListOrganizationsEntity:
+SELECT * FROM SyncCampaignDynamicListOrganizationsEntity;
+
+selectBySyncCampaignDynamicListOrganizationsEntityId:
+SELECT * FROM SyncCampaignDynamicListOrganizationsEntity WHERE Id = ?;
+
+insertSyncCampaignDynamicListOrganizationsEntity:
+INSERT INTO SyncCampaignDynamicListOrganizationsEntity
+VALUES ?;
+
+insertOrReplaceSyncCampaignDynamicListOrganizationsEntity:
+INSERT OR REPLACE INTO SyncCampaignDynamicListOrganizationsEntity
+VALUES ?;
+
+updateSyncCampaignDynamicListOrganizationsEntity:
+UPDATE SyncCampaignDynamicListOrganizationsEntity SET
+    TenantId = ?,
+    OrganizationId = ?,
+    CampaignMasterId = ?,
+    DynamicListId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncCampaignDynamicListOrganizationsEntity:
+DELETE FROM SyncCampaignDynamicListOrganizationsEntity WHERE Id = ?;

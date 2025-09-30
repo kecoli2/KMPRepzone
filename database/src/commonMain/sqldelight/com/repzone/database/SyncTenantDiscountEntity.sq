@@ -1,0 +1,52 @@
+﻿-- SyncTenantDiscountEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncTenantDiscountModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncTenantDiscountEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    DiscountType INTEGER,
+    IsDeletable INTEGER,
+    LineEffectScopeType INTEGER,
+    MaxPercent REAL,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    `Order` INTEGER,
+    RecordDateUtc INTEGER,
+    Reserved INTEGER,
+    Scope INTEGER,
+    State INTEGER,
+    TenantId INTEGER
+);
+
+selectAllSyncTenantDiscountEntity:
+SELECT * FROM SyncTenantDiscountEntity;
+
+selectBySyncTenantDiscountEntityId:
+SELECT * FROM SyncTenantDiscountEntity WHERE Id = ?;
+
+insertSyncTenantDiscountEntity:
+INSERT INTO SyncTenantDiscountEntity
+VALUES ?;
+
+insertOrReplaceSyncTenantDiscountEntity:
+INSERT OR REPLACE INTO SyncTenantDiscountEntity
+VALUES ?;
+
+updateSyncTenantDiscountEntity:
+UPDATE SyncTenantDiscountEntity SET
+    TenantId = ?,
+    `Order` = ?,
+    DiscountType = ?,
+    LineEffectScopeType = ?,
+    IsDeletable = ?,
+    Name = ?,
+    Scope = ?,
+    MaxPercent = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?,
+    Reserved = ?
+WHERE Id = ?;
+
+deleteSyncTenantDiscountEntity:
+DELETE FROM SyncTenantDiscountEntity WHERE Id = ?;

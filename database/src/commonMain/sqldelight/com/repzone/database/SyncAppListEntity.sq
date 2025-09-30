@@ -1,0 +1,50 @@
+﻿-- SyncAppListEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncAppList
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncAppListEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ApplicationId INTEGER,
+    ClientKey TEXT,
+    ClientSecretKey TEXT,
+    Code TEXT,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    TenantId INTEGER,
+    Url TEXT
+);
+
+selectAllSyncAppListEntity:
+SELECT * FROM SyncAppListEntity;
+
+selectBySyncAppListEntityId:
+SELECT * FROM SyncAppListEntity WHERE Id = ?;
+
+insertSyncAppListEntity:
+INSERT INTO SyncAppListEntity
+VALUES ?;
+
+insertOrReplaceSyncAppListEntity:
+INSERT OR REPLACE INTO SyncAppListEntity
+VALUES ?;
+
+updateSyncAppListEntity:
+UPDATE SyncAppListEntity SET
+    ApplicationId = ?,
+    Name = ?,
+    Code = ?,
+    Url = ?,
+    ClientKey = ?,
+    ClientSecretKey = ?,
+    TenantId = ?,
+    OrganizationId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncAppListEntity:
+DELETE FROM SyncAppListEntity WHERE Id = ?;

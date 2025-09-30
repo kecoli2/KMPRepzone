@@ -1,0 +1,40 @@
+﻿-- SyncPackageCustomFieldEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncPackageCustomFieldModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncPackageCustomFieldEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Description TEXT,
+    ImageUrl TEXT,
+    IsActive INTEGER,
+    Name TEXT,
+    PackageId INTEGER,
+    PackageName TEXT
+);
+
+selectAllSyncPackageCustomFieldEntity:
+SELECT * FROM SyncPackageCustomFieldEntity;
+
+selectBySyncPackageCustomFieldEntityId:
+SELECT * FROM SyncPackageCustomFieldEntity WHERE Id = ?;
+
+insertSyncPackageCustomFieldEntity:
+INSERT INTO SyncPackageCustomFieldEntity
+VALUES ?;
+
+insertOrReplaceSyncPackageCustomFieldEntity:
+INSERT OR REPLACE INTO SyncPackageCustomFieldEntity
+VALUES ?;
+
+updateSyncPackageCustomFieldEntity:
+UPDATE SyncPackageCustomFieldEntity SET
+    PackageId = ?,
+    PackageName = ?,
+    Name = ?,
+    ImageUrl = ?,
+    Description = ?,
+    IsActive = ?
+WHERE Id = ?;
+
+deleteSyncPackageCustomFieldEntity:
+DELETE FROM SyncPackageCustomFieldEntity WHERE Id = ?;

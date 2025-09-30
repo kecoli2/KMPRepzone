@@ -14,15 +14,6 @@ kotlin {
         namespace = "${providers.gradleProperty("APP_NAMESPACE_BASE").get()}." + providers.gradleProperty("APP_NAMESPACE_DATABASE").get()
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
-
-        withHostTestBuilder {
-        }
-
-        withDeviceTestBuilder {
-            sourceSetTreeName = "test"
-        }.configure {
-            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        }
     }
 
     // For iOS targets, this is also where you should
@@ -58,12 +49,6 @@ kotlin {
             }
         }
 
-        commonTest {
-            dependencies {
-                implementation(libs.kotlin.test)
-            }
-        }
-
         androidMain {
             dependencies {
                 implementation(libs.koin.android)
@@ -71,14 +56,6 @@ kotlin {
                 // commonMain by default and will correctly pull the Android artifacts of any KMP
                 // dependencies declared in commonMain.
                 dependencies { implementation(libs.sqldelight.androidDriver) }
-            }
-        }
-
-        getByName("androidDeviceTest") {
-            dependencies {
-                implementation(libs.androidx.runner)
-                implementation(libs.androidx.core)
-                implementation(libs.androidx.testExt.junit)
             }
         }
 
@@ -99,9 +76,8 @@ sqldelight {
     databases {
         create("AppDatabase") {
             packageName.set("com.repzone.database")
-            verifyMigrations.set(false)
-            //schemaOutputDirectory.set(file("src/commonMain/sqldelight/schema"))
-            //migrationOutputDirectory.set(file("src/commonMain/sqldelight/migrations"))
+            schemaOutputDirectory.set(file("src/commonMain/sqldelight/schema"))
+            migrationOutputDirectory.set(file("src/commonMain/sqldelight/migrations"))
         }
     }
 }

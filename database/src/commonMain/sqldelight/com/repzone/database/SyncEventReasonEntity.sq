@@ -1,0 +1,40 @@
+﻿-- SyncEventReasonEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncEventReasonModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncEventReasonEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    ReasonType INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    Tags TEXT
+);
+
+selectAllSyncEventReasonEntity:
+SELECT * FROM SyncEventReasonEntity;
+
+selectBySyncEventReasonEntityId:
+SELECT * FROM SyncEventReasonEntity WHERE Id = ?;
+
+insertSyncEventReasonEntity:
+INSERT INTO SyncEventReasonEntity
+VALUES ?;
+
+insertOrReplaceSyncEventReasonEntity:
+INSERT OR REPLACE INTO SyncEventReasonEntity
+VALUES ?;
+
+updateSyncEventReasonEntity:
+UPDATE SyncEventReasonEntity SET
+    Name = ?,
+    Tags = ?,
+    ReasonType = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncEventReasonEntity:
+DELETE FROM SyncEventReasonEntity WHERE Id = ?;

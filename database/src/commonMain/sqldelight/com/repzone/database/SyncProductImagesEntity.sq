@@ -1,0 +1,40 @@
+﻿-- SyncProductImagesEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncProductImages
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncProductImagesEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    FileId INTEGER,
+    ImageUrl TEXT,
+    ModificationDateUtc INTEGER,
+    ProductId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncProductImagesEntity:
+SELECT * FROM SyncProductImagesEntity;
+
+selectBySyncProductImagesEntityId:
+SELECT * FROM SyncProductImagesEntity WHERE Id = ?;
+
+insertSyncProductImagesEntity:
+INSERT INTO SyncProductImagesEntity
+VALUES ?;
+
+insertOrReplaceSyncProductImagesEntity:
+INSERT OR REPLACE INTO SyncProductImagesEntity
+VALUES ?;
+
+updateSyncProductImagesEntity:
+UPDATE SyncProductImagesEntity SET
+    FileId = ?,
+    ProductId = ?,
+    ImageUrl = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncProductImagesEntity:
+DELETE FROM SyncProductImagesEntity WHERE Id = ?;

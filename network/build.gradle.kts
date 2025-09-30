@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -13,15 +14,6 @@ kotlin {
         namespace = "${providers.gradleProperty("APP_NAMESPACE_BASE").get()}." + providers.gradleProperty("APP_NAMESPACE_NETWORK").get()
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
-
-        withHostTestBuilder {
-        }
-
-        withDeviceTestBuilder {
-            sourceSetTreeName = "test"
-        }.configure {
-            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        }
     }
 
     // For iOS targets, this is also where you should
@@ -47,9 +39,16 @@ kotlin {
     // common to share sources between related targets.
     // See: https://kotlinlang.org/docs/multiplatform-hierarchy.html
     sourceSets {
+        androidMain {
+            dependencies {
+                implementation(libs.ktor.client.okhttp)
+            }
+        }
+
         commonMain {
             dependencies {
                 implementation(project(":core"))
+                implementation(libs.kotlinx.serialization.json)
                 implementation(libs.kotlin.stdlib)
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.ktor.client.core)
@@ -57,29 +56,15 @@ kotlin {
                 implementation(libs.ktor.serialization.json)
                 implementation(libs.ktor.client.logging)
                 implementation(libs.ktor.client.auth)
-                                // DI
                 implementation(libs.koin.core)
+                implementation(libs.kotlinx.datetime)
 
-            }
-        }
-
-        commonTest {
-            dependencies {
-                implementation(libs.kotlin.test)
             }
         }
 
         iosMain{
             dependencies {
                 implementation(libs.ktor.client.darwin)
-            }
-        }
-
-        getByName("androidDeviceTest") {
-            dependencies {
-                implementation(libs.androidx.runner)
-                implementation(libs.androidx.core)
-                implementation(libs.androidx.testExt.junit)
             }
         }
     }

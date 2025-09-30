@@ -1,0 +1,42 @@
+﻿-- StockTransactionLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: StockTransactionLogInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS StockTransactionLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Amount REAL,
+    Direction INTEGER,
+    DocumentGroup INTEGER,
+    ProductId INTEGER,
+    ReferenceId INTEGER,
+    TransactionDate INTEGER,
+    WarehouseType INTEGER
+);
+
+selectAllStockTransactionLogInformationEntity:
+SELECT * FROM StockTransactionLogInformationEntity;
+
+selectByStockTransactionLogInformationEntityId:
+SELECT * FROM StockTransactionLogInformationEntity WHERE Id = ?;
+
+insertStockTransactionLogInformationEntity:
+INSERT INTO StockTransactionLogInformationEntity
+VALUES ?;
+
+insertOrReplaceStockTransactionLogInformationEntity:
+INSERT OR REPLACE INTO StockTransactionLogInformationEntity
+VALUES ?;
+
+updateStockTransactionLogInformationEntity:
+UPDATE StockTransactionLogInformationEntity SET
+    TransactionDate = ?,
+    ProductId = ?,
+    Amount = ?,
+    Direction = ?,
+    DocumentGroup = ?,
+    ReferenceId = ?,
+    WarehouseType = ?
+WHERE Id = ?;
+
+deleteStockTransactionLogInformationEntity:
+DELETE FROM StockTransactionLogInformationEntity WHERE Id = ?;

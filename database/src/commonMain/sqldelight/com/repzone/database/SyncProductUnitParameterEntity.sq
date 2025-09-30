@@ -1,0 +1,46 @@
+﻿-- SyncProductUnitParameterEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncProductUnitParameter
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncProductUnitParameterEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    EntityId INTEGER,
+    EntityType INTEGER,
+    MaxOrderQuantity INTEGER,
+    MinOrderQuantity INTEGER,
+    ModificationDateUtc INTEGER,
+    ProductId INTEGER,
+    ProductUnitId INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncProductUnitParameterEntity:
+SELECT * FROM SyncProductUnitParameterEntity;
+
+selectBySyncProductUnitParameterEntityId:
+SELECT * FROM SyncProductUnitParameterEntity WHERE Id = ?;
+
+insertSyncProductUnitParameterEntity:
+INSERT INTO SyncProductUnitParameterEntity
+VALUES ?;
+
+insertOrReplaceSyncProductUnitParameterEntity:
+INSERT OR REPLACE INTO SyncProductUnitParameterEntity
+VALUES ?;
+
+updateSyncProductUnitParameterEntity:
+UPDATE SyncProductUnitParameterEntity SET
+    ProductId = ?,
+    ProductUnitId = ?,
+    MinOrderQuantity = ?,
+    MaxOrderQuantity = ?,
+    EntityType = ?,
+    EntityId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncProductUnitParameterEntity:
+DELETE FROM SyncProductUnitParameterEntity WHERE Id = ?;

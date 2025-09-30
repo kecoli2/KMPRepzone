@@ -1,0 +1,21 @@
+﻿-- SyncWarehouseTotalEntity SQLDelight dosyası
+-- Orijinal tablo: SyncMobileWarehouseTotalModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncWarehouseTotalEntity (
+    OrderStock REAL,
+    ProductId INTEGER,
+    Stock REAL
+);
+
+selectAllSyncWarehouseTotalEntity:
+SELECT * FROM SyncWarehouseTotalEntity;
+
+insertSyncWarehouseTotalEntity:
+INSERT INTO SyncWarehouseTotalEntity
+VALUES ?;
+
+insertOrReplaceSyncWarehouseTotalEntity:
+INSERT OR REPLACE INTO SyncWarehouseTotalEntity
+VALUES ?;
+

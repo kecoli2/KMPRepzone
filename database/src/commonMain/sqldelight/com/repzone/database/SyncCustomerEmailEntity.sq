@@ -1,0 +1,44 @@
+﻿-- SyncCustomerEmailEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCustomerEmailModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncCustomerEmailEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CompanyName TEXT,
+    CustomerId INTEGER,
+    Email TEXT,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    Title TEXT
+);
+
+selectAllSyncCustomerEmailEntity:
+SELECT * FROM SyncCustomerEmailEntity;
+
+selectBySyncCustomerEmailEntityId:
+SELECT * FROM SyncCustomerEmailEntity WHERE Id = ?;
+
+insertSyncCustomerEmailEntity:
+INSERT INTO SyncCustomerEmailEntity
+VALUES ?;
+
+insertOrReplaceSyncCustomerEmailEntity:
+INSERT OR REPLACE INTO SyncCustomerEmailEntity
+VALUES ?;
+
+updateSyncCustomerEmailEntity:
+UPDATE SyncCustomerEmailEntity SET
+    Name = ?,
+    CompanyName = ?,
+    Title = ?,
+    Email = ?,
+    CustomerId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncCustomerEmailEntity:
+DELETE FROM SyncCustomerEmailEntity WHERE Id = ?;

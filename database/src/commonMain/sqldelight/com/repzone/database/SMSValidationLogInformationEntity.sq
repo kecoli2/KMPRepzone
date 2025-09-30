@@ -1,0 +1,40 @@
+﻿-- SMSValidationLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: SMSValidationLogInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SMSValidationLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Data TEXT,
+    RequestTime INTEGER,
+    ResponseTime INTEGER,
+    Result TEXT,
+    Success INTEGER,
+    Verified INTEGER
+);
+
+selectAllSMSValidationLogInformationEntity:
+SELECT * FROM SMSValidationLogInformationEntity;
+
+selectBySMSValidationLogInformationEntityId:
+SELECT * FROM SMSValidationLogInformationEntity WHERE Id = ?;
+
+insertSMSValidationLogInformationEntity:
+INSERT INTO SMSValidationLogInformationEntity
+VALUES ?;
+
+insertOrReplaceSMSValidationLogInformationEntity:
+INSERT OR REPLACE INTO SMSValidationLogInformationEntity
+VALUES ?;
+
+updateSMSValidationLogInformationEntity:
+UPDATE SMSValidationLogInformationEntity SET
+    Data = ?,
+    RequestTime = ?,
+    ResponseTime = ?,
+    Success = ?,
+    Result = ?,
+    Verified = ?
+WHERE Id = ?;
+
+deleteSMSValidationLogInformationEntity:
+DELETE FROM SMSValidationLogInformationEntity WHERE Id = ?;

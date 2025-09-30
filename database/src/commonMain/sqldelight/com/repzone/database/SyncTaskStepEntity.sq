@@ -1,0 +1,46 @@
+﻿-- SyncTaskStepEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncTaskStepModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncTaskStepEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ControlType INTEGER,
+    ControlTypeDescription TEXT,
+    ModificationDateUtc INTEGER,
+    NeedComplteThisToGoToNextStep INTEGER,
+    `Order` INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    TaskId INTEGER,
+    Title TEXT
+);
+
+selectAllSyncTaskStepEntity:
+SELECT * FROM SyncTaskStepEntity;
+
+selectBySyncTaskStepEntityId:
+SELECT * FROM SyncTaskStepEntity WHERE Id = ?;
+
+insertSyncTaskStepEntity:
+INSERT INTO SyncTaskStepEntity
+VALUES ?;
+
+insertOrReplaceSyncTaskStepEntity:
+INSERT OR REPLACE INTO SyncTaskStepEntity
+VALUES ?;
+
+updateSyncTaskStepEntity:
+UPDATE SyncTaskStepEntity SET
+    TaskId = ?,
+    Title = ?,
+    ControlType = ?,
+    ControlTypeDescription = ?,
+    `Order` = ?,
+    NeedComplteThisToGoToNextStep = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncTaskStepEntity:
+DELETE FROM SyncTaskStepEntity WHERE Id = ?;

@@ -1,0 +1,44 @@
+﻿-- SyncRepresentativeProductDistributionEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncRepresentativeProductDistributionModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncRepresentativeProductDistributionEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    GroupId INTEGER,
+    GroupSalesDistributionListId INTEGER,
+    GroupSalesReturnDistributionListId INTEGER,
+    ModificationDateUtc INTEGER,
+    RecordDateUtc INTEGER,
+    SalesDistributionListId INTEGER,
+    SalesReturnDistributionListId INTEGER,
+    State INTEGER
+);
+
+selectAllSyncRepresentativeProductDistributionEntity:
+SELECT * FROM SyncRepresentativeProductDistributionEntity;
+
+selectBySyncRepresentativeProductDistributionEntityId:
+SELECT * FROM SyncRepresentativeProductDistributionEntity WHERE Id = ?;
+
+insertSyncRepresentativeProductDistributionEntity:
+INSERT INTO SyncRepresentativeProductDistributionEntity
+VALUES ?;
+
+insertOrReplaceSyncRepresentativeProductDistributionEntity:
+INSERT OR REPLACE INTO SyncRepresentativeProductDistributionEntity
+VALUES ?;
+
+updateSyncRepresentativeProductDistributionEntity:
+UPDATE SyncRepresentativeProductDistributionEntity SET
+    GroupId = ?,
+    SalesDistributionListId = ?,
+    SalesReturnDistributionListId = ?,
+    GroupSalesDistributionListId = ?,
+    GroupSalesReturnDistributionListId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncRepresentativeProductDistributionEntity:
+DELETE FROM SyncRepresentativeProductDistributionEntity WHERE Id = ?;

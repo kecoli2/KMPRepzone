@@ -1,0 +1,38 @@
+﻿-- SyncStockApprovalLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: SyncStockApprovalLogInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncStockApprovalLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ApprovalDate INTEGER,
+    Data TEXT,
+    ReferenceDocUniqueId TEXT,
+    TotalProductKind INTEGER,
+    TotalProductQuantity REAL
+);
+
+selectAllSyncStockApprovalLogInformationEntity:
+SELECT * FROM SyncStockApprovalLogInformationEntity;
+
+selectBySyncStockApprovalLogInformationEntityId:
+SELECT * FROM SyncStockApprovalLogInformationEntity WHERE Id = ?;
+
+insertSyncStockApprovalLogInformationEntity:
+INSERT INTO SyncStockApprovalLogInformationEntity
+VALUES ?;
+
+insertOrReplaceSyncStockApprovalLogInformationEntity:
+INSERT OR REPLACE INTO SyncStockApprovalLogInformationEntity
+VALUES ?;
+
+updateSyncStockApprovalLogInformationEntity:
+UPDATE SyncStockApprovalLogInformationEntity SET
+    Data = ?,
+    ApprovalDate = ?,
+    TotalProductKind = ?,
+    TotalProductQuantity = ?,
+    ReferenceDocUniqueId = ?
+WHERE Id = ?;
+
+deleteSyncStockApprovalLogInformationEntity:
+DELETE FROM SyncStockApprovalLogInformationEntity WHERE Id = ?;

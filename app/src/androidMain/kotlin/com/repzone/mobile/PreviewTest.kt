@@ -27,9 +27,11 @@ private fun Content() {
     Text(text = stringResource(Res.string.hello))
 }
 
+/*
 @Preview(showBackground = true)
 @Composable
 fun AppAndroidPreview() {
     Text(text = stringResource(Res.string.hello))
     //Text(text = (Res::class.qualifiedName ?: "no Res"))
 }
+*/

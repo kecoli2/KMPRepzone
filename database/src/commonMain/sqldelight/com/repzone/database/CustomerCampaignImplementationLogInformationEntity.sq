@@ -1,0 +1,34 @@
+﻿-- CustomerCampaignImplementationLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: CustomerCampaignImplementationLogInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS CustomerCampaignImplementationLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CampaignMasterId INTEGER,
+    Count INTEGER,
+    CustomerId INTEGER
+);
+
+selectAllCustomerCampaignImplementationLogInformationEntity:
+SELECT * FROM CustomerCampaignImplementationLogInformationEntity;
+
+selectByCustomerCampaignImplementationLogInformationEntityId:
+SELECT * FROM CustomerCampaignImplementationLogInformationEntity WHERE Id = ?;
+
+insertCustomerCampaignImplementationLogInformationEntity:
+INSERT INTO CustomerCampaignImplementationLogInformationEntity
+VALUES ?;
+
+insertOrReplaceCustomerCampaignImplementationLogInformationEntity:
+INSERT OR REPLACE INTO CustomerCampaignImplementationLogInformationEntity
+VALUES ?;
+
+updateCustomerCampaignImplementationLogInformationEntity:
+UPDATE CustomerCampaignImplementationLogInformationEntity SET
+    CampaignMasterId = ?,
+    CustomerId = ?,
+    Count = ?
+WHERE Id = ?;
+
+deleteCustomerCampaignImplementationLogInformationEntity:
+DELETE FROM CustomerCampaignImplementationLogInformationEntity WHERE Id = ?;

@@ -1,0 +1,42 @@
+﻿-- NotificationLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: NotificationLogInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS NotificationLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    body TEXT,
+    EventSource TEXT,
+    EventType TEXT,
+    footer TEXT,
+    header TEXT,
+    image TEXT,
+    LogDate INTEGER
+);
+
+selectAllNotificationLogInformationEntity:
+SELECT * FROM NotificationLogInformationEntity;
+
+selectByNotificationLogInformationEntityId:
+SELECT * FROM NotificationLogInformationEntity WHERE Id = ?;
+
+insertNotificationLogInformationEntity:
+INSERT INTO NotificationLogInformationEntity
+VALUES ?;
+
+insertOrReplaceNotificationLogInformationEntity:
+INSERT OR REPLACE INTO NotificationLogInformationEntity
+VALUES ?;
+
+updateNotificationLogInformationEntity:
+UPDATE NotificationLogInformationEntity SET
+    image = ?,
+    footer = ?,
+    header = ?,
+    body = ?,
+    EventType = ?,
+    EventSource = ?,
+    LogDate = ?
+WHERE Id = ?;
+
+deleteNotificationLogInformationEntity:
+DELETE FROM NotificationLogInformationEntity WHERE Id = ?;

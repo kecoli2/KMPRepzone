@@ -1,0 +1,46 @@
+﻿-- SyncFormBaseEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncFormBase
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncFormBaseEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Data TEXT,
+    Description TEXT,
+    DocumentTypeId INTEGER,
+    FormId INTEGER,
+    FormName TEXT,
+    ModificationDateUtc INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    VisibleOption INTEGER
+);
+
+selectAllSyncFormBaseEntity:
+SELECT * FROM SyncFormBaseEntity;
+
+selectBySyncFormBaseEntityId:
+SELECT * FROM SyncFormBaseEntity WHERE Id = ?;
+
+insertSyncFormBaseEntity:
+INSERT INTO SyncFormBaseEntity
+VALUES ?;
+
+insertOrReplaceSyncFormBaseEntity:
+INSERT OR REPLACE INTO SyncFormBaseEntity
+VALUES ?;
+
+updateSyncFormBaseEntity:
+UPDATE SyncFormBaseEntity SET
+    FormName = ?,
+    Description = ?,
+    Data = ?,
+    FormId = ?,
+    DocumentTypeId = ?,
+    VisibleOption = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncFormBaseEntity:
+DELETE FROM SyncFormBaseEntity WHERE Id = ?;

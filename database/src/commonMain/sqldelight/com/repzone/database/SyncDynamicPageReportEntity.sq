@@ -1,0 +1,48 @@
+﻿-- SyncDynamicPageReportEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncDynamicPageReportModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncDynamicPageReportEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Category TEXT,
+    Code TEXT,
+    Description TEXT,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    QuickAccessOrder INTEGER,
+    QuickAccessShow INTEGER,
+    RecordDateUtc INTEGER,
+    Requested INTEGER,
+    State INTEGER
+);
+
+selectAllSyncDynamicPageReportEntity:
+SELECT * FROM SyncDynamicPageReportEntity;
+
+selectBySyncDynamicPageReportEntityId:
+SELECT * FROM SyncDynamicPageReportEntity WHERE Id = ?;
+
+insertSyncDynamicPageReportEntity:
+INSERT INTO SyncDynamicPageReportEntity
+VALUES ?;
+
+insertOrReplaceSyncDynamicPageReportEntity:
+INSERT OR REPLACE INTO SyncDynamicPageReportEntity
+VALUES ?;
+
+updateSyncDynamicPageReportEntity:
+UPDATE SyncDynamicPageReportEntity SET
+    Name = ?,
+    Category = ?,
+    Code = ?,
+    Description = ?,
+    Requested = ?,
+    QuickAccessShow = ?,
+    QuickAccessOrder = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncDynamicPageReportEntity:
+DELETE FROM SyncDynamicPageReportEntity WHERE Id = ?;

@@ -1,0 +1,42 @@
+﻿-- SyncOrganizationEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncOrganizationModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncOrganizationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    IsParent INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    ParentId INTEGER,
+    RecordDateUtc INTEGER,
+    RelationId INTEGER,
+    State INTEGER
+);
+
+selectAllSyncOrganizationEntity:
+SELECT * FROM SyncOrganizationEntity;
+
+selectBySyncOrganizationEntityId:
+SELECT * FROM SyncOrganizationEntity WHERE Id = ?;
+
+insertSyncOrganizationEntity:
+INSERT INTO SyncOrganizationEntity
+VALUES ?;
+
+insertOrReplaceSyncOrganizationEntity:
+INSERT OR REPLACE INTO SyncOrganizationEntity
+VALUES ?;
+
+updateSyncOrganizationEntity:
+UPDATE SyncOrganizationEntity SET
+    RelationId = ?,
+    IsParent = ?,
+    Name = ?,
+    ParentId = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncOrganizationEntity:
+DELETE FROM SyncOrganizationEntity WHERE Id = ?;

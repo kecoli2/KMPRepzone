@@ -1,0 +1,72 @@
+﻿-- OrderLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: OrderLogInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS OrderLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    ClosedStatus INTEGER,
+    CustomerId INTEGER,
+    CustomerName TEXT,
+    CustomerOrganizationId INTEGER,
+    DocumentMapName TEXT,
+    DocumentTypeId INTEGER,
+    DocumentUniqueId TEXT,
+    IsApproved INTEGER,
+    OrderDate INTEGER,
+    RepzoneCurrentState INTEGER,
+    RepzoneDocNumber TEXT,
+    RepzoneOrderId INTEGER,
+    RepzoneOrderStatus INTEGER,
+    RestServiceTaskDoneDate INTEGER,
+    RestServiceTaskId INTEGER,
+    RouteAppointmentId INTEGER,
+    SessionId TEXT,
+    State INTEGER,
+    Status INTEGER,
+    TotalCost REAL,
+    TransferStatus INTEGER,
+    WaitingOnRepzone INTEGER
+);
+
+selectAllOrderLogInformationEntity:
+SELECT * FROM OrderLogInformationEntity;
+
+selectByOrderLogInformationEntityId:
+SELECT * FROM OrderLogInformationEntity WHERE Id = ?;
+
+insertOrderLogInformationEntity:
+INSERT INTO OrderLogInformationEntity
+VALUES ?;
+
+insertOrReplaceOrderLogInformationEntity:
+INSERT OR REPLACE INTO OrderLogInformationEntity
+VALUES ?;
+
+updateOrderLogInformationEntity:
+UPDATE OrderLogInformationEntity SET
+    RestServiceTaskId = ?,
+    CustomerName = ?,
+    TotalCost = ?,
+    OrderDate = ?,
+    Status = ?,
+    RouteAppointmentId = ?,
+    CustomerOrganizationId = ?,
+    CustomerId = ?,
+    DocumentTypeId = ?,
+    ClosedStatus = ?,
+    DocumentUniqueId = ?,
+    State = ?,
+    RestServiceTaskDoneDate = ?,
+    DocumentMapName = ?,
+    WaitingOnRepzone = ?,
+    TransferStatus = ?,
+    RepzoneCurrentState = ?,
+    IsApproved = ?,
+    RepzoneOrderStatus = ?,
+    RepzoneOrderId = ?,
+    RepzoneDocNumber = ?,
+    SessionId = ?
+WHERE Id = ?;
+
+deleteOrderLogInformationEntity:
+DELETE FROM OrderLogInformationEntity WHERE Id = ?;

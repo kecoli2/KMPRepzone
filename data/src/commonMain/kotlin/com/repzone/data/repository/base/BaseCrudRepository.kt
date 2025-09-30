@@ -2,7 +2,7 @@ package com.repzone.data.repository.base
 
 import com.repzone.data.util.IDbCrudOps
 import com.repzone.data.util.Mapper
-import com.repzone.domain.repository.CrudRepository
+import com.repzone.domain.repository.base.CrudRepository
 
 /**
  * DB <-> DOMAIN dönüşümü yapan generic CRUD implementasyonu.

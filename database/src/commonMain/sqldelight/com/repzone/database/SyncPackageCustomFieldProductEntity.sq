@@ -1,0 +1,64 @@
+﻿-- SyncPackageCustomFieldProductEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncPackageCustomFieldProductModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncPackageCustomFieldProductEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    DataType INTEGER,
+    DateMax INTEGER,
+    DateMin INTEGER,
+    DecimalMax REAL,
+    DecimalMin REAL,
+    DefaultValue TEXT,
+    Description TEXT,
+    FieldName TEXT,
+    IntegerMax INTEGER,
+    IntegerMin INTEGER,
+    ItemList TEXT,
+    Mandatory INTEGER,
+    `Order` INTEGER,
+    PackageId INTEGER,
+    PackageName TEXT,
+    ProductId INTEGER,
+    StringMax INTEGER,
+    Value TEXT
+);
+
+selectAllSyncPackageCustomFieldProductEntity:
+SELECT * FROM SyncPackageCustomFieldProductEntity;
+
+selectBySyncPackageCustomFieldProductEntityId:
+SELECT * FROM SyncPackageCustomFieldProductEntity WHERE Id = ?;
+
+insertSyncPackageCustomFieldProductEntity:
+INSERT INTO SyncPackageCustomFieldProductEntity
+VALUES ?;
+
+insertOrReplaceSyncPackageCustomFieldProductEntity:
+INSERT OR REPLACE INTO SyncPackageCustomFieldProductEntity
+VALUES ?;
+
+updateSyncPackageCustomFieldProductEntity:
+UPDATE SyncPackageCustomFieldProductEntity SET
+    ProductId = ?,
+    FieldName = ?,
+    DataType = ?,
+    ItemList = ?,
+    StringMax = ?,
+    IntegerMax = ?,
+    IntegerMin = ?,
+    DateMin = ?,
+    DateMax = ?,
+    DecimalMin = ?,
+    DecimalMax = ?,
+    Mandatory = ?,
+    `Order` = ?,
+    DefaultValue = ?,
+    Description = ?,
+    Value = ?,
+    PackageId = ?,
+    PackageName = ?
+WHERE Id = ?;
+
+deleteSyncPackageCustomFieldProductEntity:
+DELETE FROM SyncPackageCustomFieldProductEntity WHERE Id = ?;

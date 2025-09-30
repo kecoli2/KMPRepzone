@@ -1,0 +1,56 @@
+﻿-- TaskLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: TaskLogInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS TaskLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CustomerId INTEGER,
+    Date INTEGER,
+    FileUrl TEXT,
+    FormDataUniqueId TEXT,
+    FormId INTEGER,
+    Latitude REAL,
+    Longitude REAL,
+    Note TEXT,
+    Status INTEGER,
+    StepId INTEGER,
+    TaskId INTEGER,
+    UniqueId TEXT,
+    VisitId INTEGER,
+    VisitUniqueId TEXT
+);
+
+selectAllTaskLogInformationEntity:
+SELECT * FROM TaskLogInformationEntity;
+
+selectByTaskLogInformationEntityId:
+SELECT * FROM TaskLogInformationEntity WHERE Id = ?;
+
+insertTaskLogInformationEntity:
+INSERT INTO TaskLogInformationEntity
+VALUES ?;
+
+insertOrReplaceTaskLogInformationEntity:
+INSERT OR REPLACE INTO TaskLogInformationEntity
+VALUES ?;
+
+updateTaskLogInformationEntity:
+UPDATE TaskLogInformationEntity SET
+    TaskId = ?,
+    StepId = ?,
+    Latitude = ?,
+    Longitude = ?,
+    FormId = ?,
+    FileUrl = ?,
+    Date = ?,
+    Status = ?,
+    Note = ?,
+    CustomerId = ?,
+    VisitId = ?,
+    VisitUniqueId = ?,
+    UniqueId = ?,
+    FormDataUniqueId = ?
+WHERE Id = ?;
+
+deleteTaskLogInformationEntity:
+DELETE FROM TaskLogInformationEntity WHERE Id = ?;

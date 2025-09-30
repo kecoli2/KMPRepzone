@@ -14,15 +14,6 @@ kotlin {
         namespace = "${providers.gradleProperty("APP_NAMESPACE_BASE").get()}." + providers.gradleProperty("APP_NAMESPACE_PRESENTATION").get()
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
-
-        withHostTestBuilder {
-        }
-
-        withDeviceTestBuilder {
-            sourceSetTreeName = "test"
-        }.configure {
-            instrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        }
     }
 
     // For iOS targets, this is also where you should
@@ -51,7 +42,8 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
-                // Add KMP dependencies here
+
+            // Add KMP dependencies here
 
                 // Compose
                 implementation(libs.compose.runtime)
@@ -65,12 +57,7 @@ kotlin {
                 implementation(project(":core"))
                 implementation(project(":domain"))
                 implementation(project(":firebase"))
-            }
-        }
-
-        commonTest {
-            dependencies {
-                implementation(libs.kotlin.test)
+                implementation(project(":network"))
             }
         }
 
@@ -80,14 +67,6 @@ kotlin {
                 implementation(files("libs/ZSDK_ANDROID_API.jar"))
                 implementation(libs.androidx.activity.compose)
 
-            }
-        }
-
-        getByName("androidDeviceTest") {
-            dependencies {
-                implementation(libs.androidx.runner)
-                implementation(libs.androidx.core)
-                implementation(libs.androidx.testExt.junit)
             }
         }
 

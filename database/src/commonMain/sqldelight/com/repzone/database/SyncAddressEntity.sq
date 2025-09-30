@@ -1,0 +1,56 @@
+﻿-- SyncAddressEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncAddressModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncAddressEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    AddressName TEXT,
+    AddressType INTEGER,
+    City TEXT,
+    Contact TEXT,
+    Country TEXT,
+    CustomerId INTEGER,
+    District TEXT,
+    FaxNumber TEXT,
+    Latitude REAL,
+    Longitude REAL,
+    PhoneNumber TEXT,
+    State INTEGER,
+    Street TEXT,
+    Street2 TEXT
+);
+
+selectAllSyncAddressEntity:
+SELECT * FROM SyncAddressEntity;
+
+selectBySyncAddressEntityId:
+SELECT * FROM SyncAddressEntity WHERE Id = ?;
+
+insertSyncAddressEntity:
+INSERT INTO SyncAddressEntity
+VALUES ?;
+
+insertOrReplaceSyncAddressEntity:
+INSERT OR REPLACE INTO SyncAddressEntity
+VALUES ?;
+
+updateSyncAddressEntity:
+UPDATE SyncAddressEntity SET
+    CustomerId = ?,
+    Street = ?,
+    City = ?,
+    District = ?,
+    Latitude = ?,
+    Longitude = ?,
+    AddressType = ?,
+    AddressName = ?,
+    Contact = ?,
+    PhoneNumber = ?,
+    FaxNumber = ?,
+    Street2 = ?,
+    Country = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncAddressEntity:
+DELETE FROM SyncAddressEntity WHERE Id = ?;

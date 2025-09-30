@@ -1,0 +1,58 @@
+﻿-- SyncCampaignMasterEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCampaignMaster
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncCampaignMasterEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    DocumentTypes TEXT,
+    `End` INTEGER,
+    GroupKey TEXT,
+    GroupPriority INTEGER,
+    ImplementationCalcType INTEGER,
+    ImplementationType INTEGER,
+    IsOptional INTEGER,
+    MaxImplementationAmount REAL,
+    MaxImplementationCount INTEGER,
+    ModificationDateUtc INTEGER,
+    OrganizationId INTEGER,
+    RecordDateUtc INTEGER,
+    Start INTEGER,
+    State INTEGER,
+    Title TEXT
+);
+
+selectAllSyncCampaignMasterEntity:
+SELECT * FROM SyncCampaignMasterEntity;
+
+selectBySyncCampaignMasterEntityId:
+SELECT * FROM SyncCampaignMasterEntity WHERE Id = ?;
+
+insertSyncCampaignMasterEntity:
+INSERT INTO SyncCampaignMasterEntity
+VALUES ?;
+
+insertOrReplaceSyncCampaignMasterEntity:
+INSERT OR REPLACE INTO SyncCampaignMasterEntity
+VALUES ?;
+
+updateSyncCampaignMasterEntity:
+UPDATE SyncCampaignMasterEntity SET
+    Title = ?,
+    Start = ?,
+    `End` = ?,
+    DocumentTypes = ?,
+    GroupKey = ?,
+    GroupPriority = ?,
+    IsOptional = ?,
+    OrganizationId = ?,
+    MaxImplementationCount = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?,
+    ImplementationType = ?,
+    MaxImplementationAmount = ?,
+    ImplementationCalcType = ?
+WHERE Id = ?;
+
+deleteSyncCampaignMasterEntity:
+DELETE FROM SyncCampaignMasterEntity WHERE Id = ?;

@@ -1,0 +1,50 @@
+﻿-- SyncProductAllocationEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncProductAllocationModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncProductAllocationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Begin INTEGER,
+    `End` INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    OrganizationId INTEGER,
+    ProductId INTEGER,
+    Quantity INTEGER,
+    RecordDateUtc INTEGER,
+    Scope INTEGER,
+    State INTEGER,
+    UnitId INTEGER
+);
+
+selectAllSyncProductAllocationEntity:
+SELECT * FROM SyncProductAllocationEntity;
+
+selectBySyncProductAllocationEntityId:
+SELECT * FROM SyncProductAllocationEntity WHERE Id = ?;
+
+insertSyncProductAllocationEntity:
+INSERT INTO SyncProductAllocationEntity
+VALUES ?;
+
+insertOrReplaceSyncProductAllocationEntity:
+INSERT OR REPLACE INTO SyncProductAllocationEntity
+VALUES ?;
+
+updateSyncProductAllocationEntity:
+UPDATE SyncProductAllocationEntity SET
+    OrganizationId = ?,
+    Name = ?,
+    Begin = ?,
+    `End` = ?,
+    Scope = ?,
+    ProductId = ?,
+    UnitId = ?,
+    Quantity = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncProductAllocationEntity:
+DELETE FROM SyncProductAllocationEntity WHERE Id = ?;

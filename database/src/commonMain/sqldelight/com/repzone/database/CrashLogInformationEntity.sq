@@ -1,0 +1,34 @@
+﻿-- CrashLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: CrashLogInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS CrashLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    Level INTEGER,
+    LogDate INTEGER,
+    LogMessage TEXT
+);
+
+selectAllCrashLogInformationEntity:
+SELECT * FROM CrashLogInformationEntity;
+
+selectByCrashLogInformationEntityId:
+SELECT * FROM CrashLogInformationEntity WHERE Id = ?;
+
+insertCrashLogInformationEntity:
+INSERT INTO CrashLogInformationEntity
+VALUES ?;
+
+insertOrReplaceCrashLogInformationEntity:
+INSERT OR REPLACE INTO CrashLogInformationEntity
+VALUES ?;
+
+updateCrashLogInformationEntity:
+UPDATE CrashLogInformationEntity SET
+    LogDate = ?,
+    LogMessage = ?,
+    Level = ?
+WHERE Id = ?;
+
+deleteCrashLogInformationEntity:
+DELETE FROM CrashLogInformationEntity WHERE Id = ?;

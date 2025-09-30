@@ -1,0 +1,40 @@
+﻿-- SyncUnitEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncUnitModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncUnitEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    IsVisible INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    RecordDateUtc INTEGER,
+    State INTEGER,
+    TenantId INTEGER
+);
+
+selectAllSyncUnitEntity:
+SELECT * FROM SyncUnitEntity;
+
+selectBySyncUnitEntityId:
+SELECT * FROM SyncUnitEntity WHERE Id = ?;
+
+insertSyncUnitEntity:
+INSERT INTO SyncUnitEntity
+VALUES ?;
+
+insertOrReplaceSyncUnitEntity:
+INSERT OR REPLACE INTO SyncUnitEntity
+VALUES ?;
+
+updateSyncUnitEntity:
+UPDATE SyncUnitEntity SET
+    TenantId = ?,
+    Name = ?,
+    IsVisible = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncUnitEntity:
+DELETE FROM SyncUnitEntity WHERE Id = ?;

@@ -1,0 +1,48 @@
+package com.repzone.data.repository.imp
+
+import com.repzone.data.mapper.ProductEntityDbMapper
+import com.repzone.data.repository.base.BaseCrudRepository
+import com.repzone.data.util.IDbCrudOps
+import com.repzone.database.SyncProductEntity
+import com.repzone.database.SyncProductEntityQueries
+import com.repzone.domain.model.SyncProductModel
+import com.repzone.domain.repository.IProductRepository
+
+class ProductRepositoryImpl(ops: IDbCrudOps<Long, SyncProductEntity>,
+                            private val mapper: ProductEntityDbMapper,
+                            private val queries: SyncProductEntityQueries
+): BaseCrudRepository<Long, SyncProductEntity, SyncProductModel>(ops, mapper), IProductRepository {
+    //region Field
+    //endregion
+
+    //region Properties
+    //endregion
+
+    //region Constructor
+    //endregion
+
+    //region Public Method
+    override suspend fun deleteById(id: Long) {
+        queries.deleteSyncProductEntity(id)
+    }
+
+    override suspend fun getAll(): List<SyncProductModel> {
+        return queries.selectAllSyncProductEntity().executeAsList().map { mapper.toDomain(it) }
+    }
+
+    override suspend fun getById(id: Long): SyncProductModel? {
+        return queries.selectBySyncProductEntityId(id).executeAsOneOrNull()?.let { mapper.toDomain(it) }
+    }
+
+    override suspend fun upsert(entity: SyncProductModel) {
+        queries.insertOrReplaceSyncProductEntity(mapper.fromDomain(entity))
+    }
+
+    //endregion
+
+    //region Protected Method
+    //endregion
+
+    //region Private Method
+    //endregion
+}

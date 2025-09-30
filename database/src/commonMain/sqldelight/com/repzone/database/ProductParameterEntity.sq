@@ -1,0 +1,24 @@
+﻿-- ProductParameterEntity SQLDelight dosyası
+-- Orijinal tablo: MobileProductParameter
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS ProductParameterEntity (
+    Color TEXT,
+    Id INTEGER,
+    IsVisible INTEGER,
+    `Order` INTEGER,
+    OrganizationId INTEGER,
+    ProductId INTEGER
+);
+
+selectAllProductParameterEntity:
+SELECT * FROM ProductParameterEntity;
+
+insertProductParameterEntity:
+INSERT INTO ProductParameterEntity
+VALUES ?;
+
+insertOrReplaceProductParameterEntity:
+INSERT OR REPLACE INTO ProductParameterEntity
+VALUES ?;
+

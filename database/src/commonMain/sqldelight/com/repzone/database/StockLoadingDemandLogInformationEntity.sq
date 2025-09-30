@@ -1,0 +1,36 @@
+﻿-- StockLoadingDemandLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: StockLoadingDemandLogInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS StockLoadingDemandLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    RecordDate INTEGER,
+    RestServiceTaskId INTEGER,
+    TotalProductKind INTEGER,
+    TotalProductQuantity REAL
+);
+
+selectAllStockLoadingDemandLogInformationEntity:
+SELECT * FROM StockLoadingDemandLogInformationEntity;
+
+selectByStockLoadingDemandLogInformationEntityId:
+SELECT * FROM StockLoadingDemandLogInformationEntity WHERE Id = ?;
+
+insertStockLoadingDemandLogInformationEntity:
+INSERT INTO StockLoadingDemandLogInformationEntity
+VALUES ?;
+
+insertOrReplaceStockLoadingDemandLogInformationEntity:
+INSERT OR REPLACE INTO StockLoadingDemandLogInformationEntity
+VALUES ?;
+
+updateStockLoadingDemandLogInformationEntity:
+UPDATE StockLoadingDemandLogInformationEntity SET
+    RestServiceTaskId = ?,
+    RecordDate = ?,
+    TotalProductKind = ?,
+    TotalProductQuantity = ?
+WHERE Id = ?;
+
+deleteStockLoadingDemandLogInformationEntity:
+DELETE FROM StockLoadingDemandLogInformationEntity WHERE Id = ?;

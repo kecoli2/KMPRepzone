@@ -1,0 +1,38 @@
+﻿-- VisitLogInformationEntity SQLDelight dosyası
+-- Orijinal tablo: VisitLogInformation
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS VisitLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CustomerName TEXT,
+    RecordDate INTEGER,
+    RestServiceTaskId INTEGER,
+    RouteAppointmentId INTEGER,
+    VisitUniqueId TEXT
+);
+
+selectAllVisitLogInformationEntity:
+SELECT * FROM VisitLogInformationEntity;
+
+selectByVisitLogInformationEntityId:
+SELECT * FROM VisitLogInformationEntity WHERE Id = ?;
+
+insertVisitLogInformationEntity:
+INSERT INTO VisitLogInformationEntity
+VALUES ?;
+
+insertOrReplaceVisitLogInformationEntity:
+INSERT OR REPLACE INTO VisitLogInformationEntity
+VALUES ?;
+
+updateVisitLogInformationEntity:
+UPDATE VisitLogInformationEntity SET
+    RestServiceTaskId = ?,
+    RouteAppointmentId = ?,
+    VisitUniqueId = ?,
+    CustomerName = ?,
+    RecordDate = ?
+WHERE Id = ?;
+
+deleteVisitLogInformationEntity:
+DELETE FROM VisitLogInformationEntity WHERE Id = ?;

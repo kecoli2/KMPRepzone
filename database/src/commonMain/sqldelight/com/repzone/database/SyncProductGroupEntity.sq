@@ -1,0 +1,46 @@
+﻿-- SyncProductGroupEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncProductGroupModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncProductGroupEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    IconIndex INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    OrganizationId INTEGER,
+    ParentId INTEGER,
+    PhotoPath TEXT,
+    RecordDateUtc INTEGER,
+    Shared INTEGER,
+    State INTEGER
+);
+
+selectAllSyncProductGroupEntity:
+SELECT * FROM SyncProductGroupEntity;
+
+selectBySyncProductGroupEntityId:
+SELECT * FROM SyncProductGroupEntity WHERE Id = ?;
+
+insertSyncProductGroupEntity:
+INSERT INTO SyncProductGroupEntity
+VALUES ?;
+
+insertOrReplaceSyncProductGroupEntity:
+INSERT OR REPLACE INTO SyncProductGroupEntity
+VALUES ?;
+
+updateSyncProductGroupEntity:
+UPDATE SyncProductGroupEntity SET
+    ParentId = ?,
+    OrganizationId = ?,
+    Name = ?,
+    Shared = ?,
+    IconIndex = ?,
+    PhotoPath = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncProductGroupEntity:
+DELETE FROM SyncProductGroupEntity WHERE Id = ?;

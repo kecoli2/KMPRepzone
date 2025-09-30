@@ -1,0 +1,46 @@
+﻿-- SyncWarehouseEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncWarehouseModel
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncWarehouseEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    MobileCloseToDamagedReturns INTEGER,
+    MobileCloseToReturns INTEGER,
+    MobileCloseToSales INTEGER,
+    ModificationDateUtc INTEGER,
+    Name TEXT,
+    OrganizationId INTEGER,
+    OrganizationName TEXT,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncWarehouseEntity:
+SELECT * FROM SyncWarehouseEntity;
+
+selectBySyncWarehouseEntityId:
+SELECT * FROM SyncWarehouseEntity WHERE Id = ?;
+
+insertSyncWarehouseEntity:
+INSERT INTO SyncWarehouseEntity
+VALUES ?;
+
+insertOrReplaceSyncWarehouseEntity:
+INSERT OR REPLACE INTO SyncWarehouseEntity
+VALUES ?;
+
+updateSyncWarehouseEntity:
+UPDATE SyncWarehouseEntity SET
+    Name = ?,
+    OrganizationId = ?,
+    OrganizationName = ?,
+    MobileCloseToSales = ?,
+    MobileCloseToReturns = ?,
+    MobileCloseToDamagedReturns = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?
+WHERE Id = ?;
+
+deleteSyncWarehouseEntity:
+DELETE FROM SyncWarehouseEntity WHERE Id = ?;

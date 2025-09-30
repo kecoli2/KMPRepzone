@@ -1,3 +1,4 @@
+/*
 package com.repzone.database.dao
 
 import com.repzone.database.AppDatabase
@@ -17,4 +18,4 @@ class OrderDao(private val db: AppDatabase) {
 
     fun pending(): List<Orders> =
         queries.selectPending().executeAsList()
-}
+}*/

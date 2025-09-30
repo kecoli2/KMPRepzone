@@ -1,0 +1,72 @@
+﻿-- SyncCampaignMasterResultEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCampaignMasterResult
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncCampaignMasterResultEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    CampaignMasterId INTEGER,
+    Discount REAL,
+    DiscountIndex INTEGER,
+    IsOrGroup TEXT,
+    IsPercent INTEGER,
+    ModificationDateUtc INTEGER,
+    ProductBrandId INTEGER,
+    ProductCustomFieldId INTEGER,
+    ProductDynamicListId INTEGER,
+    ProductGroupId INTEGER,
+    ProductId INTEGER,
+    ProductTag TEXT,
+    PromotionGroup TEXT,
+    PromotionGroupIndex INTEGER,
+    PromotionQuantityLimit INTEGER,
+    PromotionType INTEGER,
+    Quantity REAL,
+    RecordDateUtc INTEGER,
+    ResultType INTEGER,
+    State INTEGER,
+    Title TEXT,
+    UnitId INTEGER
+);
+
+selectAllSyncCampaignMasterResultEntity:
+SELECT * FROM SyncCampaignMasterResultEntity;
+
+selectBySyncCampaignMasterResultEntityId:
+SELECT * FROM SyncCampaignMasterResultEntity WHERE Id = ?;
+
+insertSyncCampaignMasterResultEntity:
+INSERT INTO SyncCampaignMasterResultEntity
+VALUES ?;
+
+insertOrReplaceSyncCampaignMasterResultEntity:
+INSERT OR REPLACE INTO SyncCampaignMasterResultEntity
+VALUES ?;
+
+updateSyncCampaignMasterResultEntity:
+UPDATE SyncCampaignMasterResultEntity SET
+    CampaignMasterId = ?,
+    ResultType = ?,
+    Title = ?,
+    ProductId = ?,
+    UnitId = ?,
+    Quantity = ?,
+    PromotionType = ?,
+    DiscountIndex = ?,
+    Discount = ?,
+    IsPercent = ?,
+    ProductGroupId = ?,
+    ProductTag = ?,
+    PromotionGroup = ?,
+    PromotionGroupIndex = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?,
+    ProductBrandId = ?,
+    ProductDynamicListId = ?,
+    ProductCustomFieldId = ?,
+    PromotionQuantityLimit = ?,
+    IsOrGroup = ?
+WHERE Id = ?;
+
+deleteSyncCampaignMasterResultEntity:
+DELETE FROM SyncCampaignMasterResultEntity WHERE Id = ?;

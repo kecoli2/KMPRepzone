@@ -1,0 +1,32 @@
+﻿-- DownedDriveItemEntity SQLDelight dosyası
+-- Orijinal tablo: MobileDownedDriveItem
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS DownedDriveItemEntity (
+    UniqueId TEXT NOT NULL PRIMARY KEY,
+    DownloadedPath TEXT,
+    DriveItemJson TEXT
+);
+
+selectAllDownedDriveItemEntity:
+SELECT * FROM DownedDriveItemEntity;
+
+selectByDownedDriveItemEntityId:
+SELECT * FROM DownedDriveItemEntity WHERE UniqueId = ?;
+
+insertDownedDriveItemEntity:
+INSERT INTO DownedDriveItemEntity
+VALUES ?;
+
+insertOrReplaceDownedDriveItemEntity:
+INSERT OR REPLACE INTO DownedDriveItemEntity
+VALUES ?;
+
+updateDownedDriveItemEntity:
+UPDATE DownedDriveItemEntity SET
+    DriveItemJson = ?,
+    DownloadedPath = ?
+WHERE UniqueId = ?;
+
+deleteDownedDriveItemEntity:
+DELETE FROM DownedDriveItemEntity WHERE UniqueId = ?;

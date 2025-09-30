@@ -1,0 +1,60 @@
+﻿-- SyncCampaignResultRuleEntity SQLDelight dosyası
+-- Orijinal tablo: MobileSyncCampaignResultRule
+-- Oluşturma tarihi: 2025-09-24 14:54:17
+
+CREATE TABLE IF NOT EXISTS SyncCampaignResultRuleEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    AndDiscover REAL,
+    AndDiscoverLimit REAL,
+    AndDiscoverUnitId INTEGER,
+    AndIsEqual INTEGER,
+    AndIsQuantity INTEGER,
+    CalcOperator INTEGER,
+    CalcSource INTEGER,
+    CampaignMasterResultId INTEGER,
+    Discover TEXT,
+    IsOr INTEGER,
+    IsSingleRule INTEGER,
+    ModificationDateUtc INTEGER,
+    Operator INTEGER,
+    Property INTEGER,
+    RecordDateUtc INTEGER,
+    State INTEGER
+);
+
+selectAllSyncCampaignResultRuleEntity:
+SELECT * FROM SyncCampaignResultRuleEntity;
+
+selectBySyncCampaignResultRuleEntityId:
+SELECT * FROM SyncCampaignResultRuleEntity WHERE Id = ?;
+
+insertSyncCampaignResultRuleEntity:
+INSERT INTO SyncCampaignResultRuleEntity
+VALUES ?;
+
+insertOrReplaceSyncCampaignResultRuleEntity:
+INSERT OR REPLACE INTO SyncCampaignResultRuleEntity
+VALUES ?;
+
+updateSyncCampaignResultRuleEntity:
+UPDATE SyncCampaignResultRuleEntity SET
+    IsSingleRule = ?,
+    CampaignMasterResultId = ?,
+    IsOr = ?,
+    Property = ?,
+    Operator = ?,
+    Discover = ?,
+    AndDiscover = ?,
+    AndIsQuantity = ?,
+    AndIsEqual = ?,
+    ModificationDateUtc = ?,
+    RecordDateUtc = ?,
+    State = ?,
+    AndDiscoverUnitId = ?,
+    AndDiscoverLimit = ?,
+    CalcSource = ?,
+    CalcOperator = ?
+WHERE Id = ?;
+
+deleteSyncCampaignResultRuleEntity:
+DELETE FROM SyncCampaignResultRuleEntity WHERE Id = ?;
