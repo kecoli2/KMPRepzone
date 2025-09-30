@@ -1,6 +1,6 @@
 package com.repzone.data.repository.imp
 
-import com.repzone.data.mapper.SyncCustomerEntityDbMapper
+import com.repzone.data.mapper.CustomerEntityDbMapper
 import com.repzone.data.repository.base.BaseCrudRepository
 import com.repzone.data.util.IDbCrudOps
 import com.repzone.database.SyncCustomerEntity
@@ -8,7 +8,7 @@ import com.repzone.database.SyncCustomerEntityQueries
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.repository.ICustomerRepository
 
-class CustomerRepositoryImpl(ops: IDbCrudOps<Long, SyncCustomerEntity>, private val mapper: SyncCustomerEntityDbMapper,
+class CustomerRepositoryImpl(ops: IDbCrudOps<Long, SyncCustomerEntity>, private val mapper: CustomerEntityDbMapper,
                              private val queries: SyncCustomerEntityQueries):BaseCrudRepository<Long, SyncCustomerEntity, SyncCustomerModel>(ops, mapper),
     ICustomerRepository {
     //region Field

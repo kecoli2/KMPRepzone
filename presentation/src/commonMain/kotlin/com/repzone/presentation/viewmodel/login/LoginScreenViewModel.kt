@@ -97,7 +97,6 @@ class LoginScreenViewModel(
             is ApiResult.Success -> {
                 updateLoadingMessage("Giriş başarılı!")
                 delay(500) // Success mesajını göster
-
                 // Token'ı kaydet
                 isharedPreferences.setToken(response.data.tokenResponse?.accessToken)
 

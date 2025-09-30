@@ -1,13 +1,15 @@
 package com.repzone.sync.service
 
-import com.repzone.data.mapper.SyncCustomerEntityDbMapper
+import com.repzone.data.mapper.CustomerEntityDbMapper
+import com.repzone.data.util.Mapper
+import com.repzone.database.SyncCustomerEntity
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.sync.service.bulk.base.RawSqlBulkInsertService
 import com.repzone.sync.transaction.TransactionCoordinator
 
 class CustomerRawSqlBulkInsertService(
-                                      private val dbMapper: SyncCustomerEntityDbMapper,
-                                      coordinator: TransactionCoordinator): RawSqlBulkInsertService<SyncCustomerModel>(coordinator) {
+    private val dbMapper: CustomerEntityDbMapper,
+    coordinator: TransactionCoordinator): RawSqlBulkInsertService<SyncCustomerModel>(coordinator) {
     //region Field
     override val tableName = "SyncCustomerEntity"
     override val insertColumns = listOf(
@@ -46,7 +48,7 @@ class CustomerRawSqlBulkInsertService(
         "TaxNumber",
         "TaxOffice")
 
-    override val clearSql = "DELETE FROM products"
+    override val clearSql = "DELETE FROM SyncCustomerEntity"
     //endregion
 
     //region Properties

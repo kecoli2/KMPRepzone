@@ -1,6 +1,7 @@
 package com.repzone.sync.job.impl
 
 import com.repzone.domain.model.SyncCustomerModel
+import com.repzone.network.http.wrapper.ApiResult
 import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.RoleBasedSyncJob
@@ -23,16 +24,30 @@ class CustomerSyncJob(private val apiService: ISyncApiService<SyncCustomerModel>
     override suspend fun executeSync(): Int {
         updateProgress(0, 100, "Fetching customers...")
         checkCancellation()
-        val result = apiService.fetchAll()
-        if(result.isFailure){
-            throw Exception("API Error: ${result.exceptionOrNull()?.message}")
-        }
-        val customer = result.getOrThrow()
-        updateProgress(50, 100, "${customer.size} customer alındı, veritabanına yazılıyor...")
-        checkCancellation()
+        val response = apiService.fetchAll()
+        var customer : List<SyncCustomerModel>? = null
+        when(response){
+            is ApiResult.Success ->{
+                customer = response.data
+            }
 
-        val insertedCount = bulkInsertService.clearAndInsert(customer)
-        updateProgress(100, 100, "$insertedCount Musteriler kaydedildi")
+            is ApiResult.Error -> {
+                throw Exception("API Error: ${response.exception.message}")
+            }
+
+            ApiResult.Loading -> {
+                updateProgress(25, 100, "Customer cekiliyor")
+            }
+        }
+
+        updateProgress(50, 100, "${customer?.size} customer alındı, veritabanına yazılıyor...")
+        checkCancellation()
+        var  insertedCount = 0
+        customer?.let {
+            insertedCount = bulkInsertService.clearAndInsert(customer)
+            updateProgress(100, 100, "$insertedCount Musteriler kaydedildi")
+        }
+
         return insertedCount
     }
     //endregion

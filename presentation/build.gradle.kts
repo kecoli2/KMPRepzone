@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.androidLint)
+    alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
 }
 
@@ -53,11 +54,14 @@ kotlin {
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
                 implementation(libs.compose.components.resources)
+                implementation(compose.materialIconsExtended)
 
                 implementation(project(":core"))
                 implementation(project(":domain"))
                 implementation(project(":firebase"))
                 implementation(project(":network"))
+                implementation(project(":sync"))
+
             }
         }
 

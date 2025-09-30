@@ -94,9 +94,9 @@ abstract class RawSqlBulkInsertService<T>(private val coordinator: TransactionCo
     private fun buildDatabaseOperation(items: List<T>, type: OperationType): DatabaseOperation {
         // Optimal chunk size - SQL length limit ve performance balance
         val chunkSize = when (insertColumns.size) {
-            in 1..3 -> 75    // Az column → büyük chunk
-            in 4..6 -> 50    // Orta column → orta chunk
-            else -> 25       // Çok column → küçük chunk
+            in 1..3 -> 200    // Az column → büyük chunk
+            in 4..6 -> 150    // Orta column → orta chunk
+            else -> 100       // Çok column → küçük chunk
         }
 
         val chunkedValues = items.chunked(chunkSize).map { chunk ->

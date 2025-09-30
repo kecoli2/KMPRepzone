@@ -1,7 +1,7 @@
 package com.repzone.data.repository.di
 
 import com.repzone.data.mapper.ProductEntityDbMapper
-import com.repzone.data.mapper.SyncCustomerEntityDbMapper
+import com.repzone.data.mapper.CustomerEntityDbMapper
 import com.repzone.data.repository.imp.CustomerRepositoryImpl
 import com.repzone.data.repository.imp.ProductRepositoryImpl
 import com.repzone.data.util.Mapper
@@ -14,9 +14,11 @@ import com.repzone.domain.repository.IProductRepository
 import org.koin.dsl.module
 
 val RepositoryModule = module {
-    single<Mapper<SyncCustomerEntity, SyncCustomerModel>> { SyncCustomerEntityDbMapper() }
+    single { CustomerEntityDbMapper() }
+    single<Mapper<SyncCustomerEntity, SyncCustomerModel>> { CustomerEntityDbMapper() }
     single<ICustomerRepository> { CustomerRepositoryImpl(get(), get(), get()) }
 
+    single { ProductEntityDbMapper() }
     single<Mapper<SyncProductEntity, SyncProductModel>> { ProductEntityDbMapper() }
     single<IProductRepository> { ProductRepositoryImpl(get(), get(), get()) }
 

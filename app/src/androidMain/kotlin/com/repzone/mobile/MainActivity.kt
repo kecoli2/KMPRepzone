@@ -15,6 +15,7 @@ import com.repzone.mobile.thema.AppTheme
 import com.repzone.network.di.NetworkModule
 import com.repzone.presentation.di.PresentationModule
 import com.repzone.presentation.ui.login.LoginScreen
+import com.repzone.presentation.viewmodel.sync.SyncTestScreen
 import com.repzone.sync.di.SyncModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
@@ -26,7 +27,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                LoginScreen()
+                SyncTestScreen()
             }
 
             //App()
@@ -49,7 +50,7 @@ fun AppAndroidPreview() {
         )
     }
     loadKoinModules(FirebaseMockAndroidModule)
-    AppTheme { LoginScreen() }
+    AppTheme { SyncTestScreen() }
 }
 
 
