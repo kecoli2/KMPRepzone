@@ -57,7 +57,7 @@ class ProductSyncJob(private val apiService: ISyncApiService<MobileProductDto>,
         checkCancellation()
         var insertedCount = 0
         products?.let {
-            insertedCount = bulkInsertService.clearAndInsert(products)
+            insertedCount = bulkInsertService.upsertBatch(products)
         }
 
         updateProgress(100, 100, "$insertedCount ürün kaydedildi")

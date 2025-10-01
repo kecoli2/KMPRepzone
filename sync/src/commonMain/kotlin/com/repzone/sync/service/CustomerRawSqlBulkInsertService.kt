@@ -1,6 +1,5 @@
 package com.repzone.sync.service
 
-import com.repzone.data.mapper.CustomerEntityDbMapper
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncCustomerEntity
 import com.repzone.domain.model.SyncCustomerModel
@@ -8,7 +7,7 @@ import com.repzone.sync.service.bulk.base.RawSqlBulkInsertService
 import com.repzone.sync.transaction.TransactionCoordinator
 
 class CustomerRawSqlBulkInsertService(
-    private val dbMapper: CustomerEntityDbMapper,
+    private val dbMapper: Mapper<SyncCustomerEntity, SyncCustomerModel>,
     coordinator: TransactionCoordinator): RawSqlBulkInsertService<SyncCustomerModel>(coordinator) {
     //region Field
     override val tableName = "SyncCustomerEntity"

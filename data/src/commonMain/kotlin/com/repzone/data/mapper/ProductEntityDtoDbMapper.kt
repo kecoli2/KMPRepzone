@@ -3,8 +3,12 @@ package com.repzone.data.mapper
 import com.repzone.core.util.extensions.toBoolean
 import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
+import com.repzone.database.ProductParameterEntity
 import com.repzone.database.SyncProductEntity
+import com.repzone.database.SyncProductUnitEntity
 import com.repzone.network.dto.MobileProductDto
+import com.repzone.network.dto.MobileProductParameterDto
+import com.repzone.network.dto.ServiceProductUnitDto
 
 class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, MobileProductDto> {
     //region Field
@@ -81,6 +85,49 @@ class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, MobileProductDto> {
             TenantId = null,
             Vat = domain.vat
         )
+    }
+
+    fun toUnitEntities(productId : Long?, list: List<ServiceProductUnitDto>): List<SyncProductUnitEntity>  {
+        return list.map { domain ->
+            SyncProductUnitEntity(
+                Id = domain.id.toLong(),
+                Barcode = domain.barcode,
+                DisplayOrder = domain.displayOrder.toLong(),
+                IsVisible = false.toLong(),
+                MaxOrderQuantity = domain.maxOrderQuantity.toLong(),
+                MinimumOrderQuantity = domain.minimumOrderQuantity.toLong(),
+                ModificationDateUtc = null,
+                Multiplier = domain.multiplier.toLong(),
+                OrderQuantityFactor = domain.orderQuantityFactor.toLong(),
+                Price = domain.price,
+                PriceId = domain.priceId.toLong(),
+                ProductId = productId,
+                PurchaseDamagedReturnPrice = domain.purchaseDamagedReturnPrice,
+                PurchasePrice = domain.purchasePrice,
+                PurchaseReturnPrice = domain.purchaseReturnPrice,
+                RecordDateUtc = null,
+                SalesDamagedReturnPrice = domain.salesDamagedReturnPrice,
+                SalesReturnPrice = domain.salesReturnPrice,
+                Selected = domain.selected.let{ if (it) 1L else 0L },
+                State = domain.state.toLong(),
+                TenantId = null,
+                UnitId = domain.unitId.toLong(),
+                Weight = domain.weight
+            )
+        }
+    }
+
+    fun toParametersEnties(productId : Long?, list: List<MobileProductParameterDto>): List<ProductParameterEntity> {
+        return list.map { domain ->
+            ProductParameterEntity(
+                Id = domain.id.toLong(),
+                ProductId = productId,
+                Order = domain.order.toLong(),
+                Color = domain.color,
+                IsVisible = false.toLong(),
+                OrganizationId = null
+            )
+        }
     }
     //endregion
 

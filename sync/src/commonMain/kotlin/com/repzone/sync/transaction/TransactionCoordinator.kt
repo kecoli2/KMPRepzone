@@ -32,9 +32,9 @@ class TransactionCoordinator(
             }
         }
     }
-
     private val operationQueue = Channel<DatabaseOperation>(capacity = Channel.UNLIMITED)
-
+    private val compositeQueue = Channel<CompositeOperation>(capacity = Channel.UNLIMITED)
+    private val compositeResultChannels = mutableMapOf<Long, Channel<OperationResult>>()
     // Result channels for each operation
     private val resultChannels = mutableMapOf<Long, Channel<OperationResult>>()
 
@@ -56,10 +56,30 @@ class TransactionCoordinator(
                 processOperation(operation)
             }
         }
+
+        scope.launch {
+            for (compositeOp in compositeQueue) {
+                processCompositeOperation(compositeOp)
+            }
+        }
     }
     //endregion
 
     //region Public Method
+    suspend fun executeCompositeOperation(compositeOp: CompositeOperation): OperationResult {
+        val operationId = generateOperationId()
+        compositeOp.id = operationId
+
+        val resultChannel = Channel<OperationResult>(1)
+        compositeResultChannels[operationId] = resultChannel
+
+        compositeQueue.send(compositeOp)
+        val result = resultChannel.receive()
+        compositeResultChannels.remove(operationId)
+
+        return result
+    }
+
     /**
      * Bulk operation'ı queue'ya ekler ve sonucu bekler
      * Thread-safe, multiple job'lar aynı anda çağırabilir
@@ -74,8 +94,6 @@ class TransactionCoordinator(
 
         // Queue'ya ekle
         operationQueue.send(operation)
-
-        println("📤 Operation queued: ${operation.type} for ${operation.tableName} (ID: $operationId)")
 
         // Sonucu bekle
         val result = resultChannel.receive()
@@ -135,7 +153,7 @@ class TransactionCoordinator(
                 operationId = operation.id
             )
 
-            println("✅ Operation completed: ${operation.type} ${operation.tableName} - $result records in ${duration}ms")
+            println("Operation completed: ${operation.type} ${operation.tableName} - $result records in ${duration}ms")
 
             // Result'ı gönder
             resultChannels[operation.id]?.send(successResult)
@@ -154,7 +172,7 @@ class TransactionCoordinator(
                 operationId = operation.id
             )
 
-            println("❌ Operation failed: ${operation.type} ${operation.tableName} - ${e.message}")
+            println("Operation failed: ${operation.type} ${operation.tableName} - ${e.message}")
 
             // Error result'ı gönder
             resultChannels[operation.id]?.send(errorResult)
@@ -162,7 +180,13 @@ class TransactionCoordinator(
     }
 
     private fun executeRawSql(sql: String) {
-        driver.execute(null, sql, 0)
+        try {
+            driver.execute(null, sql, 0)
+        }catch (ex: Exception){
+            println("Syntax Error Sql: ${sql} ")
+            throw ex;
+        }
+
     }
 
     private fun executeBulkInsert(operation: DatabaseOperation) {
@@ -187,6 +211,86 @@ class TransactionCoordinator(
         return "INSERT OR REPLACE INTO ${operation.tableName} ($columns) VALUES $values"
     }
 
+    @OptIn(ExperimentalTime::class)
+    private suspend fun processCompositeOperation(compositeOp: CompositeOperation) {
+        val startTime = Clock.System.now().toEpochMilliseconds()
+
+        statsMutex.withLock {
+            totalOperations++
+        }
+
+        try {
+            val totalRecords = database.transactionWithResult {
+                var recordCount = 0
+
+                compositeOp.operations.forEach { tableOp ->
+                    if (tableOp.recordCount <= 0) {
+                        return@forEach
+                    }
+                    if(tableOp.includeClears && tableOp.clearSql != null && tableOp.clearSql != ""){
+                        executeRawSql(tableOp.clearSql)
+                    }
+
+                    val sql = if(tableOp.useUpsert){
+                        buildBulkUpsertSqlFromTableOp(tableOp)
+                    }else{
+                        buildBulkInsertSqlFromTableOp(tableOp)
+                    }
+                    executeRawSql(sql)
+
+                    recordCount += tableOp.recordCount
+                }
+
+                recordCount
+            }
+
+            val duration = Clock.System.now().toEpochMilliseconds() - startTime
+
+            statsMutex.withLock {
+                successfulOperations++
+            }
+
+            val successResult = OperationResult.Success(
+                recordCount = totalRecords,
+                duration = duration,
+                operationId = compositeOp.id
+            )
+
+            println("✅ Composite operation completed: ${compositeOp.description} - $totalRecords records in ${duration}ms")
+
+            compositeResultChannels[compositeOp.id]?.send(successResult)
+
+        } catch (e: Exception) {
+            val duration = Clock.System.now().toEpochMilliseconds() - startTime
+
+            statsMutex.withLock {
+                failedOperations++
+            }
+
+            val errorResult = OperationResult.Error(
+                error = e.message ?: "Unknown error",
+                duration = duration,
+                operationId = compositeOp.id
+            )
+
+            println("❌ Composite operation failed: ${compositeOp.description} - ${e.message}")
+
+            compositeResultChannels[compositeOp.id]?.send(errorResult)
+        }
+    }
+
+    private fun buildBulkInsertSqlFromTableOp(tableOp: TableOperation): String {
+        val columns = tableOp.columns.joinToString(", ")
+        val values = tableOp.values.joinToString(", ")
+        return "INSERT INTO ${tableOp.tableName} ($columns) VALUES $values"
+    }
+
+    private fun buildBulkUpsertSqlFromTableOp(tableOp: TableOperation): String {
+        val columns = tableOp.columns.joinToString(", ")
+        val values = tableOp.values.joinToString(", ")
+        return "INSERT OR REPLACE INTO ${tableOp.tableName} ($columns) VALUES $values"
+    }
+
     /**
      * Statistics - Thread-safe
      */
@@ -203,6 +307,7 @@ class TransactionCoordinator(
 
     fun shutdown() {
         operationQueue.close()
+        compositeQueue.close() // BU SATIRI EKLEYİN
         scope.cancel()
         println("🛑 TransactionCoordinator shutdown")
     }

@@ -1,12 +1,14 @@
 package com.repzone.data.repository.imp
 
 import com.repzone.data.mapper.SyncModuleEntityDbMapper
+import com.repzone.data.util.Mapper
+import com.repzone.database.SyncModuleEntity
 import com.repzone.database.SyncModuleEntityQueries
 import com.repzone.domain.model.SyncModuleModel
 import com.repzone.domain.repository.ISyncModuleRepository
 
 class SyncModuleRepositoryImpl(
-    private val mapper: SyncModuleEntityDbMapper,
+    private val mapper: Mapper<SyncModuleEntity, SyncModuleModel>,
     private val queries: SyncModuleEntityQueries
 ): ISyncModuleRepository {
     //region Field

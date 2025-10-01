@@ -1,7 +1,7 @@
 package com.repzone.mobile
 
 import android.app.Application
-import com.repzone.data.repository.di.RepositoryModule
+import com.repzone.data.di.RepositoryModule
 import com.repzone.database.di.DatabaseAndroidModule
 import com.repzone.database.di.DatabaseModule
 import com.repzone.firebase.di.FirebaseAndroidModule

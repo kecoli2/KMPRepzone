@@ -4,7 +4,7 @@ import com.repzone.data.util.Mapper
 import com.repzone.database.SyncCustomerEntity
 import com.repzone.domain.model.SyncCustomerModel
 
-class CustomerEntityDbMapper:Mapper<SyncCustomerEntity, SyncCustomerModel> {
+class CustomerEntityDbMapper: Mapper<SyncCustomerEntity, SyncCustomerModel> {
     //region Field
     //endregion
 

@@ -1,0 +1,43 @@
+package com.repzone.data.di
+
+import com.repzone.data.mapper.*
+import com.repzone.data.repository.imp.CustomerRepositoryImpl
+import com.repzone.data.repository.imp.ProductRepositoryImpl
+import com.repzone.data.repository.imp.SyncModuleRepositoryImpl
+import com.repzone.data.util.Mapper
+import com.repzone.database.ProductParameterEntity
+import com.repzone.database.SyncCustomerEntity
+import com.repzone.database.SyncModuleEntity
+import com.repzone.database.SyncProductEntity
+import com.repzone.domain.model.ProductParameterModel
+import com.repzone.domain.model.SyncCustomerModel
+import com.repzone.domain.model.SyncModuleModel
+import com.repzone.domain.model.SyncProductModel
+import com.repzone.domain.repository.*
+import org.koin.core.qualifier.named
+import org.koin.dsl.module
+
+val RepositoryModule = module {
+
+
+    //region Customer
+    single<Mapper<SyncCustomerEntity, SyncCustomerModel>>(named("CustomerEntityDbMapperInterface")) { CustomerEntityDbMapper() }
+    single<ICustomerRepository> { CustomerRepositoryImpl(get(named("CustomerEntityDbMapperInterface")), get()) }
+    //endregion
+
+    //region Product
+    single<Mapper<SyncProductEntity, SyncProductModel>>(named("ProductEntityDbMapperInterface")) { ProductEntityDbMapper() }
+    single<IProductRepository> { ProductRepositoryImpl(get(named("ProductEntityDbMapperInterface")), get()) }
+    //endregion
+
+    //region SyncModule
+    single<Mapper<SyncModuleEntity, SyncModuleModel>>(named("SyncModuleEntityDbMapper")) { SyncModuleEntityDbMapper() }
+    single<ISyncModuleRepository> { SyncModuleRepositoryImpl(get(named("SyncModuleEntityDbMapper")), get()) }
+    //endregion
+
+    //region ProductParameters
+    single { ProductEntityDtoDbMapper() }
+    /*single<Mapper<ProductParameterEntity, ProductParameterModel>>(named("ProductParameterEntityDbMapper")) { ProductParameterEntityDbMapper() }*/
+    //endregion
+
+}
