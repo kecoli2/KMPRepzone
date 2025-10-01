@@ -3,6 +3,7 @@ package com.repzone.sync.job.impl
 import com.repzone.core.constant.IProductApiControllerConstant
 import com.repzone.domain.model.SyncProductModel
 import com.repzone.domain.repository.ISyncModuleRepository
+import com.repzone.network.dto.MobileProductDto
 import com.repzone.network.http.wrapper.ApiResult
 import com.repzone.network.models.request.FilterModelRequest
 import com.repzone.sync.interfaces.IBulkInsertService
@@ -11,8 +12,8 @@ import com.repzone.sync.job.base.RoleBasedSyncJob
 import com.repzone.sync.model.SyncJobType
 
 
-class ProductSyncJob(private val apiService: ISyncApiService<SyncProductModel>,
-                     private val bulkInsertService: IBulkInsertService<SyncProductModel>,
+class ProductSyncJob(private val apiService: ISyncApiService<MobileProductDto>,
+                     private val bulkInsertService: IBulkInsertService<MobileProductDto>,
                      syncModuleRepository: ISyncModuleRepository
 ): RoleBasedSyncJob(syncModuleRepository) {
     //region Field
@@ -37,7 +38,7 @@ class ProductSyncJob(private val apiService: ISyncApiService<SyncProductModel>,
         updateProgress(0, 100, "Fetching products...")
         checkCancellation()
         val response = apiService.fetchAll(getSyncModuleModel()!!)
-        var products: List<SyncProductModel>? = null
+        var products: List<MobileProductDto>? = null
 
         when(response){
             is ApiResult.Success ->{

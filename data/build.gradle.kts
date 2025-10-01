@@ -49,6 +49,7 @@ kotlin {
                 implementation(project(":domain"))   // Domain arayüzleri + entity'ler
                 implementation(project(":database"))
                 implementation(project(":core"))
+                implementation(project(":network"))
 
             }
         }

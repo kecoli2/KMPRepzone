@@ -1,12 +1,14 @@
 package com.repzone.sync.service
 
 import com.repzone.data.mapper.ProductEntityDbMapper
+import com.repzone.data.mapper.ProductEntityDtoDbMapper
 import com.repzone.domain.model.SyncProductModel
+import com.repzone.network.dto.MobileProductDto
 import com.repzone.sync.service.bulk.base.RawSqlBulkInsertService
 import com.repzone.sync.transaction.TransactionCoordinator
 
-class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDbMapper,
-                                     coordinator: TransactionCoordinator): RawSqlBulkInsertService<SyncProductModel>(coordinator) {
+class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMapper,
+                                     coordinator: TransactionCoordinator): RawSqlBulkInsertService<MobileProductDto>(coordinator) {
     //region Field
     override val tableName = "SyncProductEntity"
     override val insertColumns = listOf(
@@ -51,7 +53,7 @@ class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDbMapper
     //endregion
 
     //region Public Method
-    override fun getValues(item: SyncProductModel): List<Any?>{
+    override fun getValues(item: MobileProductDto): List<Any?>{
         val dbItem = dbMapper.fromDomain(item)
         return listOf(
             dbItem.Id,

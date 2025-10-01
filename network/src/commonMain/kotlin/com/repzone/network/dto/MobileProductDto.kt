@@ -10,51 +10,51 @@ data class MobileProductDto(
     @SerialName("State")
     val state: Int,
     @SerialName("Sku")
-    val sku: String,
+    val sku: String?,
     @SerialName("Name")
-    val name: String,
+    val name: String?,
     @SerialName("Description")
-    val description: String,
+    val description: String?,
     @SerialName("Tags")
-    val tags: String,
+    val tags: String?,
     @SerialName("BrandId")
-    val brandId: Int,
+    val brandId: Int?,
     @SerialName("BrandName")
-    val brandName: String,
+    val brandName: String?,
     @SerialName("DisplayOrder")
-    val displayOrder: Int,
+    val displayOrder: Int?,
     @SerialName("OrderQuantityFactor")
-    val orderQuantityFactor: Int,
+    val orderQuantityFactor: Int?,
     @SerialName("MinimumOrderQuantity")
-    val minimumOrderQuantity: Int,
+    val minimumOrderQuantity: Int?,
     @SerialName("MaximumOrderQuantity")
-    val maximumOrderQuantity: Int,
+    val maximumOrderQuantity: Int?,
     @SerialName("GroupId")
-    val groupId: Int,
+    val groupId: Int?,
     @SerialName("GroupName")
-    val groupName: String,
+    val groupName: String?,
     @SerialName("PhotoPath")
-    val photoPath: String,
+    val photoPath: String?,
     @SerialName("Vat")
-    val vat: Double,
+    val vat: Double?,
     @SerialName("OrganizationId")
-    val organizationId: Int,
+    val organizationId: Int?,
     @SerialName("OrganizationIds")
-    val organizationIds: String,
+    val organizationIds: String?,
     @SerialName("Units")
-    val units: ArrayList<ServiceProductUnitDto>,
+    val units: List<ServiceProductUnitDto>,
     @SerialName("Color")
-    val color: String,
+    val color: String?,
     @SerialName("BrandPhotoPath")
-    val brandPhotoPath: String,
+    val brandPhotoPath: String?,
     @SerialName("GroupPhotoPath")
-    val groupPhotoPath: String,
+    val groupPhotoPath: String?,
     @SerialName("Parameters")
     val parameters: List<MobileProductParameterDto>,
     @SerialName("ModificationDateUtc")
-    val modificationDateUtc: String, // ISO 8601 format string olarak
+    val modificationDateUtc: Long?, // ISO 8601 format string olarak
     @SerialName("CloseToSales")
-    val closeToSales: Boolean,
+    val closeToSales: Boolean?,
     @SerialName("CloseToReturns")
-    val closeToReturns: Boolean
+    val closeToReturns: Boolean?
 )

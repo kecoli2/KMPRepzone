@@ -3,6 +3,7 @@ package com.repzone.sync.factory
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.SyncProductModel
 import com.repzone.domain.repository.ISyncModuleRepository
+import com.repzone.network.dto.MobileProductDto
 import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.interfaces.ISyncJob
@@ -22,9 +23,9 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository) {
 
     //region Public Method
     fun createJobs(
-        productApi: ISyncApiService<SyncProductModel>,
+        productApi: ISyncApiService<MobileProductDto>,
         customerApi: ISyncApiService<SyncCustomerModel>,
-        productBulkInsert: IBulkInsertService<SyncProductModel>,
+        productBulkInsert: IBulkInsertService<MobileProductDto>,
         customerBulkInsert: IBulkInsertService<SyncCustomerModel>,
     ): Map<SyncJobType, ISyncJob> {
 

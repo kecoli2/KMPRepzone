@@ -3,7 +3,7 @@ package com.repzone.core.util.extensions
 /**
  * Enum değerini Long'a çevirir
  */
-fun <T : Enum<T>> T.toLong(): Long = this.ordinal.toLong()
+fun <T : Enum<T>> T.enumToLong(): Long = this.ordinal.toLong()
 
 /**
  * Long değerinden Enum oluşturur

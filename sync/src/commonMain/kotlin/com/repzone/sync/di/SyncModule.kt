@@ -2,6 +2,7 @@ package com.repzone.sync.di
 
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.SyncProductModel
+import com.repzone.network.dto.MobileProductDto
 import com.repzone.sync.factory.SyncJobFactory
 import com.repzone.sync.impl.SyncApiCustomerImpl
 import com.repzone.sync.impl.SyncApiProductImpl
@@ -20,8 +21,8 @@ val SyncModule = module {
     single { TransactionCoordinator(get(), get()) }
 
     //PRODUCT
-    single<IBulkInsertService<SyncProductModel>> { ProductRawSqlBulkInsertService(get(),get()) }
-    single<ISyncApiService<SyncProductModel>>{ SyncApiProductImpl(get()) }
+    single<IBulkInsertService<MobileProductDto>> { ProductRawSqlBulkInsertService(get(),get()) }
+    single<ISyncApiService<MobileProductDto>>{ SyncApiProductImpl(get()) }
 
     //CUSTOMER
     single<IBulkInsertService<SyncCustomerModel>>{ CustomerRawSqlBulkInsertService(get(), get()) }
