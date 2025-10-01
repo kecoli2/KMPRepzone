@@ -50,97 +50,62 @@ open class BaseViewModel<S : Any, E : Any>(initialState: S) {
         _state.value = newState
     }
     //endregion
-}
 
-//region Extension Functions
-
-/**
- * HasUiFrame implement eden state'ler için loading durumunu ayarlar
- */
-fun <S> BaseViewModel<S, *>.setLoading(isLoading: Boolean)
-        where S : Any, S : HasUiFrame {
-    updateStateInternal { currentState ->
-        currentState.copyWithUiFrame(
-            currentState.uiFrame.copy(
-                isLoading = isLoading,
-                error = if (isLoading) null else currentState.uiFrame.error
-            )
-        ) as S
+    //region KMM iOS Export Edilebilir Fonksiyonlar
+    open fun setLoading(isLoading: Boolean) {
+        val currentState = _state.value
+        if (currentState is HasUiFrame) {
+            updateStateInternal {
+                (currentState as HasUiFrame).copyWithUiFrame(
+                    currentState.uiFrame.copy(
+                        isLoading = isLoading,
+                        error = if (isLoading) null else currentState.uiFrame.error
+                    )
+                ) as S
+            }
+        }
     }
-}
 
-/**
- * HasUiFrame implement eden state'ler için error durumunu ayarlar
- */
-fun <S> BaseViewModel<S, *>.setError(error: String?)
-        where S : Any, S : HasUiFrame {
-    updateStateInternal { currentState ->
-        currentState.copyWithUiFrame(
-            currentState.uiFrame.copy(
-                isLoading = false,
-                error = error
-            )
-        ) as S
+    open fun setError(error: String?) {
+        val currentState = _state.value
+        if (currentState is HasUiFrame) {
+            updateStateInternal {
+                (currentState as HasUiFrame).copyWithUiFrame(
+                    currentState.uiFrame.copy(
+                        isLoading = false,
+                        error = error
+                    )
+                ) as S
+            }
+        }
     }
-}
 
-/**
- * Error'ı temizler
- */
-fun <S> BaseViewModel<S, *>.clearError()
-        where S : Any, S : HasUiFrame {
-    setError(null)
-}
-
-/**
- * UiFrame'i varsayılan duruma sıfırlar
- */
-fun <S> BaseViewModel<S, *>.resetUiFrame()
-        where S : Any, S : HasUiFrame {
-    updateStateInternal { currentState ->
-        currentState.copyWithUiFrame(UiFrame()) as S
+    open fun clearError() {
+        setError(null)
     }
+
+    open fun resetUiFrame() {
+        val currentState = _state.value
+        if (currentState is HasUiFrame) {
+            updateStateInternal {
+                (currentState as HasUiFrame).copyWithUiFrame(UiFrame()) as S
+            }
+        }
+    }
+
+    open fun isLoading(): Boolean {
+        val currentState = _state.value
+        return if (currentState is HasUiFrame) currentState.uiFrame.isLoading else false
+    }
+
+    open fun hasError(): Boolean {
+        val currentState = _state.value
+        return if (currentState is HasUiFrame) currentState.uiFrame.error != null else false
+    }
+
+    open fun getCurrentError(): String? {
+        val currentState = _state.value
+        return if (currentState is HasUiFrame) currentState.uiFrame.error else null
+    }
+    //endregion
 }
-
-/**
- * Loading durumunu kontrol eder
- */
-fun <S> BaseViewModel<S, *>.isLoading(): Boolean
-        where S : Any, S : HasUiFrame {
-    return state.value.uiFrame.isLoading
-}
-
-/**
- * Error varsa true döner
- */
-fun <S> BaseViewModel<S, *>.hasError(): Boolean
-        where S : Any, S : HasUiFrame {
-    return state.value.uiFrame.error != null
-}
-
-/**
- * Mevcut error mesajını döner
- */
-fun <S> BaseViewModel<S, *>.getCurrentError(): String?
-        where S : Any, S : HasUiFrame {
-    return state.value.uiFrame.error
-}
-
-//endregion
-
-//region UiFrame Extension Functions
-
-/**
- * UiFrame için yardımcı extension'lar
- */
-fun UiFrame.withLoading(isLoading: Boolean = true): UiFrame =
-    copy(isLoading = isLoading, error = if (isLoading) null else error)
-
-fun UiFrame.withError(error: String?): UiFrame =
-    copy(isLoading = false, error = error)
-
-fun UiFrame.reset(): UiFrame = UiFrame()
-
-val UiFrame.isSuccess: Boolean get() = !isLoading && error == null
-
-//endregion
