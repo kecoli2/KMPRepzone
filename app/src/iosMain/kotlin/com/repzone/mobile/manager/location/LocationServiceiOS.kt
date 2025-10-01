@@ -6,11 +6,12 @@ import kotlinx.coroutines.flow.Flow
 
 class LocationServiceiOS : ILocationService {
     override suspend fun ensurePermission(): Boolean {
-        TODO("Not yet implemented")
+        // iOS için gerçek izin kontrolü yoksa, her zaman izin varmış gibi davran
+        return true
     }
 
     override suspend fun getCurrentLocation(highAccuracy: Boolean): GeoPoint? {
-        TODO("Not yet implemented")
+        return GeoPoint(55.0082, 25.9784) // Example: Coordinates of Istanbul
     }
 
     override fun observeLocationUpdates(
@@ -18,6 +19,9 @@ class LocationServiceiOS : ILocationService {
         minTimeMillis: Long,
         minDistanceMeters: Float
     ): Flow<GeoPoint> {
-        TODO("Not yet implemented")
+        // iOS için gerçek konum güncellemesi yoksa, sabit bir değer döndür
+        return kotlinx.coroutines.flow.flow {
+            emit(GeoPoint(51.0082, 58.9784)) // İstanbul koordinatları
+        }
     }
 }

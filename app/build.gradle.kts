@@ -141,3 +141,12 @@ tasks.register("assembleXCFramework") {
         println("XCFramework created at $outputDir/Mobile.xcframework")
     }
 }
+
+val xcodeFrameworksDir = rootProject.file("../iosApp/Frameworks")
+
+tasks.register<Copy>("copyXCFrameworkToXcode") {
+    dependsOn("assembleXCFramework")
+    from(buildDir.resolve("XCFrameworks/release"))
+    into(xcodeFrameworksDir)
+    include("Mobile.xcframework/**")
+}

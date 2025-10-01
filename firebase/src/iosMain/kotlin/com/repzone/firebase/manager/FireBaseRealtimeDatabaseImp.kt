@@ -24,7 +24,7 @@ class FireBaseRealtimeDatabaseImp : IFireBaseRealtimeDatabase {
 
     override fun observe(path: String): Flow<String> {
         return callbackFlow {
-            trySend("iOS Fake Value")
+            trySend("iOS Fake Value 1.1")
             awaitClose { }
         }
     }
