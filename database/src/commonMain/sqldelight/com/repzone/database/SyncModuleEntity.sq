@@ -1,0 +1,32 @@
+
+CREATE TABLE SyncModuleEntity (
+    SyncType      INTEGER UNIQUE NOT NULL PRIMARY KEY,
+    RequestUrl    TEXT    NOT NULL,
+    RequestFilter TEXT,
+    LastSyncDate  INTEGER,
+    RequestType INTEGER
+);
+
+selectAllSyncModuleEntity:
+SELECT * FROM SyncModuleEntity;
+
+selectBySyncModuleEntitySyncType:
+SELECT * FROM SyncModuleEntity WHERE SyncType = ?;
+
+insertSyncModuleEntity:
+INSERT INTO SyncModuleEntity
+VALUES ?;
+
+insertOrReplaceSyncModuleEntity:
+INSERT OR REPLACE INTO SyncModuleEntity
+VALUES ?;
+
+updateSyncModuleEntity:
+UPDATE SyncModuleEntity SET
+    RequestUrl = ?,
+    RequestFilter = ?,
+    LastSyncDate = ?
+WHERE SyncType = ?;
+
+deleteSyncModuleEntity:
+DELETE FROM SyncModuleEntity WHERE SyncType = ?;

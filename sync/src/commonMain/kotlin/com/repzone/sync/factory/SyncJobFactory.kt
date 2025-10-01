@@ -2,6 +2,7 @@ package com.repzone.sync.factory
 
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.SyncProductModel
+import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.interfaces.ISyncJob
@@ -9,7 +10,7 @@ import com.repzone.sync.job.impl.CustomerSyncJob
 import com.repzone.sync.job.impl.ProductSyncJob
 import com.repzone.sync.model.SyncJobType
 
-class SyncJobFactory {
+class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository) {
     //region Field
     //endregion
 
@@ -28,8 +29,8 @@ class SyncJobFactory {
     ): Map<SyncJobType, ISyncJob> {
 
         return mapOf(
-            SyncJobType.PRODUCTS to ProductSyncJob(productApi, productBulkInsert),
-            SyncJobType.CUSTOMERS to CustomerSyncJob(customerApi, customerBulkInsert),
+            SyncJobType.PRODUCTS to ProductSyncJob(productApi, productBulkInsert, syncModuleRepository),
+            SyncJobType.CUSTOMERS to CustomerSyncJob(customerApi, customerBulkInsert, syncModuleRepository),
         )
     }
     //endregion

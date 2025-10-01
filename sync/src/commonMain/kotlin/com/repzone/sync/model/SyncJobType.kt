@@ -4,9 +4,5 @@ package com.repzone.sync.model
 
 enum class SyncJobType {
     PRODUCTS,
-    CUSTOMERS,
-    PRICES,
-    GROUP_CODES,
-    ORDERS,
-    INVENTORY
+    CUSTOMERS
 }

@@ -1,8 +1,9 @@
 package com.repzone.sync.job.base
 
+import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.sync.model.UserRole
 
-abstract class RoleBasedSyncJob: BaseSyncJob() {
+abstract class RoleBasedSyncJob(syncModuleRepository: ISyncModuleRepository): BaseSyncJob(syncModuleRepository) {
     //region Field
     protected abstract val allowedRoles: Set<UserRole>
 

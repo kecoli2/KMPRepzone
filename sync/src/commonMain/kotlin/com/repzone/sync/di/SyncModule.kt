@@ -1,8 +1,5 @@
 package com.repzone.sync.di
 
-import com.repzone.data.util.Mapper
-import com.repzone.database.SyncCustomerEntity
-import com.repzone.database.SyncProductEntity
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.SyncProductModel
 import com.repzone.sync.factory.SyncJobFactory
@@ -18,7 +15,7 @@ import com.repzone.sync.transaction.TransactionCoordinator
 import org.koin.dsl.module
 
 val SyncModule = module {
-    single { SyncJobFactory() }
+    single { SyncJobFactory(get()) }
 
     single { TransactionCoordinator(get(), get()) }
 

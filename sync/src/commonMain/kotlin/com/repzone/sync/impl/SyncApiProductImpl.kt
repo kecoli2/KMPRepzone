@@ -1,14 +1,12 @@
 package com.repzone.sync.impl
 
-import com.repzone.core.constant.ITokenApiControllerConstant
+import com.repzone.domain.model.SyncModuleModel
 import com.repzone.domain.model.SyncProductModel
 import com.repzone.network.http.extensions.toApiException
 import com.repzone.network.http.wrapper.ApiResult
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.model.SyncPage
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.post
 import kotlin.random.Random
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
@@ -24,7 +22,7 @@ class SyncApiProductImpl(private val client: HttpClient): ISyncApiService<SyncPr
     //endregion
 
     //region Public Method
-    override suspend fun fetchAll(): ApiResult<List<SyncProductModel>> {
+    override suspend fun fetchAll(model: SyncModuleModel): ApiResult<List<SyncProductModel>> {
         return try{
            /* val response = client.post(ITokenApiControllerConstant.TOKEN_ENDPOINT) {
             }
@@ -35,11 +33,7 @@ class SyncApiProductImpl(private val client: HttpClient): ISyncApiService<SyncPr
         }
     }
 
-    override suspend fun fetchUpdatedSince(sinceIso: String): ApiResult<List<SyncProductModel>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun fetchPage(page: Int, size: Int): ApiResult<SyncPage<SyncProductModel>> {
+    override suspend fun fetchPage(model: SyncModuleModel, page: Int, size: Int): ApiResult<SyncPage<SyncProductModel>> {
         TODO("Not yet implemented")
     }
     //endregion

@@ -134,9 +134,6 @@ fun SyncTestScreen(
                         onStartCustomers = {
                             viewModel.onEvent(SyncTestViewModel.Event.StartSpecificJob(SyncJobType.CUSTOMERS))
                         },
-                        onStartPrices = {
-                            viewModel.onEvent(SyncTestViewModel.Event.StartSpecificJob(SyncJobType.PRICES))
-                        },
                         isLoading = state.uiFrame.isLoading
                     )
                 }
@@ -188,7 +185,6 @@ private fun QuickActionsCard(
     onStartFullSync: () -> Unit,
     onStartProducts: () -> Unit,
     onStartCustomers: () -> Unit,
-    onStartPrices: () -> Unit,
     isLoading: Boolean
 ) {
     Card(
@@ -241,16 +237,6 @@ private fun QuickActionsCard(
                     Text("👥")
                     Spacer(modifier = Modifier.width(4.dp))
                     Text("Müşteriler")
-                }
-
-                OutlinedButton(
-                    onClick = onStartPrices,
-                    enabled = !isLoading,
-                    modifier = Modifier.weight(1f)
-                ) {
-                    Text("💰")
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text("Fiyatlar")
                 }
             }
         }
@@ -491,19 +477,11 @@ private fun StatColumn(label: String, value: String) {
 private fun SyncJobType.getIcon(): String = when (this) {
     SyncJobType.PRODUCTS -> "📦"
     SyncJobType.CUSTOMERS -> "👥"
-    SyncJobType.PRICES -> "💰"
-    SyncJobType.GROUP_CODES -> "🏷️"
-    SyncJobType.ORDERS -> "📋"
-    SyncJobType.INVENTORY -> "📊"
 }
 
 private fun SyncJobType.getDisplayName(): String = when (this) {
     SyncJobType.PRODUCTS -> "Ürünler"
     SyncJobType.CUSTOMERS -> "Müşteriler"
-    SyncJobType.PRICES -> "Fiyatlar"
-    SyncJobType.GROUP_CODES -> "Grup Kodları"
-    SyncJobType.ORDERS -> "Siparişler"
-    SyncJobType.INVENTORY -> "Envanter"
 }
 
 private fun UserRole.getDisplayName(): String = when (this) {
@@ -517,8 +495,6 @@ private fun isJobApplicableForRole(jobType: SyncJobType, userRole: UserRole): Bo
     return when (jobType) {
         SyncJobType.PRODUCTS -> userRole in setOf(UserRole.MERGE_STAFF, UserRole.MANAGER, UserRole.ADMIN)
         SyncJobType.CUSTOMERS -> userRole in setOf(UserRole.SALES_REP, UserRole.MANAGER, UserRole.ADMIN)
-        SyncJobType.PRICES, SyncJobType.GROUP_CODES -> true
-        SyncJobType.ORDERS, SyncJobType.INVENTORY -> userRole in setOf(UserRole.MANAGER, UserRole.ADMIN)
     }
 }
 

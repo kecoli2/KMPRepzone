@@ -1,20 +1,25 @@
 package com.repzone.sync.job.impl
 
 import com.repzone.domain.model.SyncCustomerModel
+import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.network.http.wrapper.ApiResult
+import com.repzone.network.models.request.FilterModelRequest
 import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.RoleBasedSyncJob
 import com.repzone.sync.model.SyncJobType
 
 class CustomerSyncJob(private val apiService: ISyncApiService<SyncCustomerModel>,
-                      private val bulkInsertService: IBulkInsertService<SyncCustomerModel>):RoleBasedSyncJob() {
+                      private val bulkInsertService: IBulkInsertService<SyncCustomerModel>,
+                      syncModuleRepository: ISyncModuleRepository
+): RoleBasedSyncJob(syncModuleRepository) {
     //region Field
     //endregion
 
     //region Properties
     override val allowedRoles = MERGE_ROLES
     override val jobType = SyncJobType.CUSTOMERS
+    override val defaultRequestEndPoint = ""
     //endregion
 
     //region Constructor
@@ -24,7 +29,7 @@ class CustomerSyncJob(private val apiService: ISyncApiService<SyncCustomerModel>
     override suspend fun executeSync(): Int {
         updateProgress(0, 100, "Fetching customers...")
         checkCancellation()
-        val response = apiService.fetchAll()
+        val response = apiService.fetchAll(getSyncModuleModel()!!)
         var customer : List<SyncCustomerModel>? = null
         when(response){
             is ApiResult.Success ->{
@@ -49,6 +54,10 @@ class CustomerSyncJob(private val apiService: ISyncApiService<SyncCustomerModel>
         }
 
         return insertedCount
+    }
+
+    override fun onPreExecuteFilterModel(value: FilterModelRequest): FilterModelRequest {
+        return value
     }
     //endregion
 

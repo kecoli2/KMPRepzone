@@ -312,8 +312,4 @@ private fun UserRole.getDisplayName(): String = when (this) {
 private fun SyncJobType.getDisplayName(): String = when (this) {
     SyncJobType.PRODUCTS -> "Ürünler"
     SyncJobType.CUSTOMERS -> "Müşteriler"
-    SyncJobType.PRICES -> "Fiyatlar"
-    SyncJobType.GROUP_CODES -> "Grup Kodları"
-    SyncJobType.ORDERS -> "Siparişler"
-    SyncJobType.INVENTORY -> "Envanter"
 }

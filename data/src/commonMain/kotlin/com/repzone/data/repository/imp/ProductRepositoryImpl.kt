@@ -1,17 +1,13 @@
 package com.repzone.data.repository.imp
 
 import com.repzone.data.mapper.ProductEntityDbMapper
-import com.repzone.data.repository.base.BaseCrudRepository
-import com.repzone.data.util.IDbCrudOps
-import com.repzone.database.SyncProductEntity
 import com.repzone.database.SyncProductEntityQueries
 import com.repzone.domain.model.SyncProductModel
 import com.repzone.domain.repository.IProductRepository
 
-class ProductRepositoryImpl(ops: IDbCrudOps<Long, SyncProductEntity>,
-                            private val mapper: ProductEntityDbMapper,
+class ProductRepositoryImpl(private val mapper: ProductEntityDbMapper,
                             private val queries: SyncProductEntityQueries
-): BaseCrudRepository<Long, SyncProductEntity, SyncProductModel>(ops, mapper), IProductRepository {
+): IProductRepository {
     //region Field
     //endregion
 

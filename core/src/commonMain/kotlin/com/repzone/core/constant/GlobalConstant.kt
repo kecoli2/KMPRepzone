@@ -11,3 +11,7 @@ object ITokenApiControllerConstant {
     const val TOKEN_ENDPOINT = "/api/ExternalAccount/MobileLogin"
     const val TOKEN_REFRESH_ENDPOINT= "/api/TokenEndPointRefresh"
 }
+
+object IProductApiControllerConstant {
+    const val PRODUCT_LIST_ENDPOINT = "/api/v1/Product/List"
+}

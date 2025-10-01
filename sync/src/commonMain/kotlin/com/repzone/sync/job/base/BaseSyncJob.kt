@@ -1,5 +1,12 @@
 package com.repzone.sync.job.base
 
+import com.repzone.core.util.toJson
+import com.repzone.core.util.toModel
+import com.repzone.core.util.toModelOrDefault
+import com.repzone.domain.model.RequestType
+import com.repzone.domain.model.SyncModuleModel
+import com.repzone.domain.repository.ISyncModuleRepository
+import com.repzone.network.models.request.FilterModelRequest
 import com.repzone.sync.interfaces.ISyncJob
 import com.repzone.sync.model.SyncJobResult
 import com.repzone.sync.model.SyncJobStatus
@@ -9,12 +16,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlin.coroutines.cancellation.CancellationException
 
-abstract class BaseSyncJob : ISyncJob {
+abstract class BaseSyncJob(private val iSyncModuleRepository: ISyncModuleRepository) : ISyncJob {
     //region Field
     private val _statusFlow = MutableStateFlow<SyncJobStatus>(SyncJobStatus.Idle)
     override val statusFlow: StateFlow<SyncJobStatus> = _statusFlow.asStateFlow()
-
     private var isCancelled = false
+    private var requestFilter : FilterModelRequest? = null
+    private var syncModuleModel : SyncModuleModel? = null
     //endregion
 
     //region Properties
@@ -24,6 +32,11 @@ abstract class BaseSyncJob : ISyncJob {
     //endregion
 
     //region Public Method
+
+    fun getSyncModuleModel(): SyncModuleModel? {
+        return syncModuleModel
+    }
+
     override suspend fun execute(): SyncJobResult {
         val startTime = getTimeMillis()
         var recordsProcessed = 0
@@ -31,7 +44,15 @@ abstract class BaseSyncJob : ISyncJob {
 
         return try {
             updateStatus(SyncJobStatus.Running)
-
+            syncModuleModel = iSyncModuleRepository.getById(jobType.ordinal.toLong())
+            if(syncModuleModel == null){
+                syncModuleModel = SyncModuleModel(jobType.ordinal.toLong(), defaultRequestEndPoint,requestFilter.toJson(),null,
+                    RequestType.POST)
+                requestFilter = onPreExecuteFilterModel(FilterModelRequest())
+            }else{
+                requestFilter = onPreExecuteFilterModel(syncModuleModel!!.requestFilter!!.toModel<FilterModelRequest>()!!)
+            }
+            syncModuleModel?.requestFilter = requestFilter.toJson()
             recordsProcessed = executeSync()
             val endTime = getTimeMillis()
             val duration = endTime - startTime
@@ -39,6 +60,8 @@ abstract class BaseSyncJob : ISyncJob {
             val successStatus = SyncJobStatus.Success(recordsProcessed, duration)
             updateStatus(successStatus)
 
+            syncModuleModel?.lastSyncDate = endTime
+            iSyncModuleRepository.upsert(syncModuleModel!!)
             SyncJobResult(
                 jobType = jobType,
                 status = successStatus,
@@ -46,6 +69,8 @@ abstract class BaseSyncJob : ISyncJob {
                 endTime = endTime,
                 recordsProcessed = recordsProcessed
             )
+
+
         } catch (e: CancellationException) {
             val cancelledStatus = SyncJobStatus.Failed("Job cancelled", retryable = false)
             updateStatus(cancelledStatus)
@@ -80,13 +105,14 @@ abstract class BaseSyncJob : ISyncJob {
         isCancelled = true
         updateStatus(SyncJobStatus.Failed("Cancelled", retryable = false))
     }
+    //endregion
 
+    //region Protected Method
     protected fun checkCancellation() {
         if (isCancelled) {
             throw CancellationException("Job cancelled")
         }
     }
-
     protected fun updateProgress(current: Int, total: Int, message: String? = null) {
         updateStatus(SyncJobStatus.Progress(current, total, message))
     }
@@ -97,14 +123,18 @@ abstract class BaseSyncJob : ISyncJob {
      * @return İşlenen kayıt sayısı
      */
     protected abstract suspend fun executeSync(): Int
-    //endregion
-
-    //region Protected Method
+    protected abstract fun onPreExecuteFilterModel(value: FilterModelRequest): FilterModelRequest
     protected fun updateStatus(status: SyncJobStatus) {
         _statusFlow.value = status
     }
+    protected abstract val defaultRequestEndPoint: String
+
+
     //endregion
 
     //region Private Method
+    private fun updateSyncModule(){
+
+    }
     //endregion
 }

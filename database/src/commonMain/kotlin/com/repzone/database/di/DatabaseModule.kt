@@ -9,4 +9,5 @@ val DatabaseModule = module {
     single { AppDatabase(get<SqlDriver>()) }
     single { get<AppDatabase>().syncCustomerEntityQueries }
     single { get<AppDatabase>().syncProductEntityQueries }
+    single { get<AppDatabase>().syncModuleEntityQueries }
 }

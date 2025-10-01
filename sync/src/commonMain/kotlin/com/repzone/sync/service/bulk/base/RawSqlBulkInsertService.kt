@@ -96,7 +96,7 @@ abstract class RawSqlBulkInsertService<T>(private val coordinator: TransactionCo
         val chunkSize = when (insertColumns.size) {
             in 1..3 -> 200    // Az column → büyük chunk
             in 4..6 -> 150    // Orta column → orta chunk
-            else -> 100       // Çok column → küçük chunk
+            else -> 500       // Çok column → küçük chunk
         }
 
         val chunkedValues = items.chunked(chunkSize).map { chunk ->

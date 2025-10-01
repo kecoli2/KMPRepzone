@@ -1,16 +1,11 @@
 package com.repzone.data.repository.imp
 
 import com.repzone.data.mapper.CustomerEntityDbMapper
-import com.repzone.data.repository.base.BaseCrudRepository
-import com.repzone.data.util.IDbCrudOps
-import com.repzone.database.SyncCustomerEntity
 import com.repzone.database.SyncCustomerEntityQueries
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.repository.ICustomerRepository
 
-class CustomerRepositoryImpl(ops: IDbCrudOps<Long, SyncCustomerEntity>, private val mapper: CustomerEntityDbMapper,
-                             private val queries: SyncCustomerEntityQueries):BaseCrudRepository<Long, SyncCustomerEntity, SyncCustomerModel>(ops, mapper),
-    ICustomerRepository {
+class CustomerRepositoryImpl(private val mapper: CustomerEntityDbMapper, private val queries: SyncCustomerEntityQueries): ICustomerRepository {
     //region Field
     //endregion
 
@@ -22,7 +17,6 @@ class CustomerRepositoryImpl(ops: IDbCrudOps<Long, SyncCustomerEntity>, private 
 
     //region Public Method
     override suspend fun deleteById(id: Long) {
-        super.deleteById(id)
         queries.deleteSyncCustomerEntity(id)
     }
 

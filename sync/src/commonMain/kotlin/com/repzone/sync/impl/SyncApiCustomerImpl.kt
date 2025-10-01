@@ -2,6 +2,7 @@ package com.repzone.sync.impl
 
 import com.repzone.core.constant.ITokenApiControllerConstant
 import com.repzone.domain.model.SyncCustomerModel
+import com.repzone.domain.model.SyncModuleModel
 import com.repzone.network.http.extensions.toApiException
 import com.repzone.network.http.wrapper.ApiResult
 import com.repzone.sync.interfaces.ISyncApiService
@@ -23,7 +24,7 @@ class SyncApiCustomerImpl(private val client: HttpClient): ISyncApiService<SyncC
     //endregion
 
     //region Public Method
-    override suspend fun fetchAll(): ApiResult<List<SyncCustomerModel>> {
+    override suspend fun fetchAll(model: SyncModuleModel): ApiResult<List<SyncCustomerModel>> {
         return try{
             //delay(5000)
             /*val response = client.post(ITokenApiControllerConstant.TOKEN_ENDPOINT) {
@@ -35,11 +36,7 @@ class SyncApiCustomerImpl(private val client: HttpClient): ISyncApiService<SyncC
         }
     }
 
-    override suspend fun fetchUpdatedSince(sinceIso: String): ApiResult<List<SyncCustomerModel>> {
-        TODO("Not yet implemented")
-    }
-
-    override suspend fun fetchPage(page: Int, size: Int): ApiResult<SyncPage<SyncCustomerModel>> {
+    override suspend fun fetchPage(model: SyncModuleModel, page: Int, size: Int): ApiResult<SyncPage<SyncCustomerModel>> {
         TODO("Not yet implemented")
     }
     //endregion
