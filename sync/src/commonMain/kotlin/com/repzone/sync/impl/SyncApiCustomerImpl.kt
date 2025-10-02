@@ -1,16 +1,11 @@
 package com.repzone.sync.impl
 
-import com.repzone.core.constant.ITokenApiControllerConstant
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.SyncModuleModel
 import com.repzone.network.http.extensions.toApiException
 import com.repzone.network.http.wrapper.ApiResult
 import com.repzone.sync.interfaces.ISyncApiService
-import com.repzone.sync.model.SyncPage
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.post
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlin.random.Random
 

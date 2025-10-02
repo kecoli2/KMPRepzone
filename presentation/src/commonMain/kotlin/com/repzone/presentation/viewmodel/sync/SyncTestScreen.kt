@@ -52,6 +52,16 @@ import com.repzone.presentation.base.ViewModelHost
 import com.repzone.sync.model.SyncJobResult
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
+import com.repzone.sync.model.SyncJobType.COMMON
+import com.repzone.sync.model.SyncJobType.CUSTOMERS
+import com.repzone.sync.model.SyncJobType.CUSTOMERS_GROUP
+import com.repzone.sync.model.SyncJobType.EXTRA_TABLE
+import com.repzone.sync.model.SyncJobType.FORM
+import com.repzone.sync.model.SyncJobType.PRODUCTS
+import com.repzone.sync.model.SyncJobType.PRODUCTS_GROUP
+import com.repzone.sync.model.SyncJobType.ROUTE
+import com.repzone.sync.model.SyncJobType.STOCK
+import com.repzone.sync.model.SyncJobType.TABLE_REPLICATION
 import com.repzone.sync.model.SyncProgress
 import com.repzone.sync.model.UserRole
 import com.repzone.sync.transaction.TransactionStats
@@ -477,11 +487,27 @@ private fun StatColumn(label: String, value: String) {
 private fun SyncJobType.getIcon(): String = when (this) {
     SyncJobType.PRODUCTS -> "📦"
     SyncJobType.CUSTOMERS -> "👥"
+    SyncJobType.PRODUCTS_GROUP -> "📦"
+    SyncJobType.ROUTE -> "📦"
+    SyncJobType.CUSTOMERS_GROUP -> "📦"
+    SyncJobType.TABLE_REPLICATION -> "📦"
+    SyncJobType.COMMON -> "📦"
+    SyncJobType.FORM -> "📦"
+    SyncJobType.EXTRA_TABLE -> "📦"
+    SyncJobType.STOCK -> "📦"
 }
 
 private fun SyncJobType.getDisplayName(): String = when (this) {
-    SyncJobType.PRODUCTS -> "Ürünler"
-    SyncJobType.CUSTOMERS -> "Müşteriler"
+    PRODUCTS -> "Ürünler"
+    CUSTOMERS -> "Müşteriler"
+    PRODUCTS_GROUP -> "Ürün Grupları"
+    ROUTE -> "Rotalar"
+    CUSTOMERS_GROUP -> "Müşteri Grupları"
+    TABLE_REPLICATION -> "Replikasyon"
+    COMMON -> "Genel Görev"
+    FORM -> "Formlar"
+    EXTRA_TABLE -> "Extarnal"
+    STOCK -> "Stoklar"
 }
 
 private fun UserRole.getDisplayName(): String = when (this) {
@@ -495,6 +521,14 @@ private fun isJobApplicableForRole(jobType: SyncJobType, userRole: UserRole): Bo
     return when (jobType) {
         SyncJobType.PRODUCTS -> userRole in setOf(UserRole.MERGE_STAFF, UserRole.MANAGER, UserRole.ADMIN)
         SyncJobType.CUSTOMERS -> userRole in setOf(UserRole.SALES_REP, UserRole.MANAGER, UserRole.ADMIN)
+        SyncJobType.PRODUCTS_GROUP -> userRole in setOf(UserRole.MANAGER, UserRole.ADMIN, UserRole.SALES_REP)
+        SyncJobType.ROUTE -> TODO()
+        SyncJobType.CUSTOMERS_GROUP -> TODO()
+        SyncJobType.TABLE_REPLICATION -> TODO()
+        SyncJobType.COMMON -> TODO()
+        SyncJobType.FORM -> TODO()
+        SyncJobType.EXTRA_TABLE -> TODO()
+        SyncJobType.STOCK -> TODO()
     }
 }
 

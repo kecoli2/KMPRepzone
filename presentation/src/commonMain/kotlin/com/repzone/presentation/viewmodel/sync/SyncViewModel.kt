@@ -7,6 +7,7 @@ import com.repzone.sync.interfaces.ISyncManager
 import com.repzone.sync.model.SyncJobResult
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
+import com.repzone.sync.model.SyncJobType.*
 import com.repzone.sync.model.SyncProgress
 import com.repzone.sync.model.UserRole
 import com.repzone.sync.transaction.TransactionCoordinator
@@ -310,6 +311,14 @@ private fun UserRole.getDisplayName(): String = when (this) {
 }
 
 private fun SyncJobType.getDisplayName(): String = when (this) {
-    SyncJobType.PRODUCTS -> "Ürünler"
-    SyncJobType.CUSTOMERS -> "Müşteriler"
+    PRODUCTS -> "Ürünler"
+    CUSTOMERS -> "Müşteriler"
+    PRODUCTS_GROUP -> "Ürün Grupları"
+    ROUTE -> "Rotalar"
+    CUSTOMERS_GROUP -> "Müşteri Grupları"
+    TABLE_REPLICATION -> "Replikasyon"
+    COMMON -> "Genel Görev"
+    FORM -> "Formlar"
+    EXTRA_TABLE -> "Extarnal"
+    STOCK -> "Stoklar"
 }

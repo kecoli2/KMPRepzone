@@ -1,7 +1,6 @@
 package com.repzone.sync.impl
 
 import com.repzone.core.util.extensions.toDateString
-import com.repzone.core.util.toJson
 import com.repzone.core.util.toModel
 import com.repzone.domain.model.SyncModuleModel
 import com.repzone.network.dto.MobileProductDto
@@ -11,17 +10,13 @@ import com.repzone.network.http.extensions.toApiException
 import com.repzone.network.http.wrapper.ApiResult
 import com.repzone.network.models.request.FilterModelRequest
 import com.repzone.sync.interfaces.ISyncApiService
-import com.repzone.sync.model.SyncPage
 import io.ktor.client.HttpClient
-import io.ktor.client.call.body
-import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlin.random.Random
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 class SyncApiProductImpl(private val client: HttpClient): ISyncApiService<List<MobileProductDto>> {
     //region Field
@@ -61,22 +56,13 @@ class SyncApiProductImpl(private val client: HttpClient): ISyncApiService<List<M
                 val response = client.safePost<List<MobileProductDto>>(model.requestUrl!!){
                     setBody(requestModel)
                 }
-
-                /*val response = client.post(model.requestUrl!!){
-                    setBody(requestModel!!)
-                }*/
-
                 when(response){
                     is ApiResult.Error -> {
-
                     }
                     is ApiResult.Loading -> {
-                        TODO()
                     }
-                    is ApiResult.Success<*> -> {
-
-                        val data = response.data as List<MobileProductDto>
-
+                    is ApiResult.Success -> {
+                        val data = response.data
                         if(data.isEmpty()){
                             hasMore = false
                         }else{
@@ -87,9 +73,6 @@ class SyncApiProductImpl(private val client: HttpClient): ISyncApiService<List<M
                         }
                     }
                 }
-
-
-
             }catch (ex: Exception){
                 emit(ApiResult.Error(ex.toApiException()))
                 hasMore = false

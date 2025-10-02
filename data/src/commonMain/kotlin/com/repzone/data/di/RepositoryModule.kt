@@ -5,11 +5,9 @@ import com.repzone.data.repository.imp.CustomerRepositoryImpl
 import com.repzone.data.repository.imp.ProductRepositoryImpl
 import com.repzone.data.repository.imp.SyncModuleRepositoryImpl
 import com.repzone.data.util.Mapper
-import com.repzone.database.ProductParameterEntity
 import com.repzone.database.SyncCustomerEntity
 import com.repzone.database.SyncModuleEntity
 import com.repzone.database.SyncProductEntity
-import com.repzone.domain.model.ProductParameterModel
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.SyncModuleModel
 import com.repzone.domain.model.SyncProductModel
@@ -37,7 +35,10 @@ val RepositoryModule = module {
 
     //region ProductParameters
     single { ProductEntityDtoDbMapper() }
-    /*single<Mapper<ProductParameterEntity, ProductParameterModel>>(named("ProductParameterEntityDbMapper")) { ProductParameterEntityDbMapper() }*/
+    //endregion
+
+    //region ProductGroup
+    single { SyncProductGroupEntityDbMapper() }
     //endregion
 
 }
