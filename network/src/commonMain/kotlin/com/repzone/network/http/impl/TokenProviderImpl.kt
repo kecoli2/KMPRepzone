@@ -25,7 +25,8 @@ class TokenProviderImpl(private val iPreferencesManager: IPreferencesManager,
 
     //region Public Method
     override fun getToken(): String? {
-        return iPreferencesManager.getToken()
+        return "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidHJkZW1vdXNlcjZAcmVwLnpvbmUiLCJUZW5hbnRJZCI6IjI1MCIsIk9yZ2FuaXphdGlvbklkIjoiNTY2IiwiUmVwcmVzZW50YXRpdmVJZCI6IjM1NDg3IiwiVXNlcklkIjoiMzk3NDMiLCJpZGVudGl0eVVzZXJJZCI6IjQyNTEwIiwiRW1haWwiOiJ0cmRlbW91c2VyNkByZXAuem9uZSIsIlByb2ZpbGVJZCI6IjAiLCJGdWxsTmFtZSI6IkRlbW8gVXNlciA2IiwiQ3VsdHVyZSI6InRyLVRSIiwiUGhvdG9QYXRoIjoiIiwiSWRlbnRpdHlUZW5hbnRJZCI6IjI5MCIsIk93bmVyVXNlcklkIjoiMzk3NDMiLCJPd25lclVzZXJJZGVudGl0eUlkIjoiNDI1MTAiLCJSb2xlIjoiUmVwcmVzZW50YXRpdmUiLCJOZWVkVG9DaGFuZ2VQYXNzd29yZCI6IjAiLCJJcENvbnRyb2wiOiIwIiwiZXhwIjoxNzYxOTc4NjQ2LCJpc3MiOiJodHRwczovL3BvcnRhbC5yZXB6b25lLmNvbSIsImF1ZCI6Imh0dHBzOi8vcG9ydGFsLnJlcHpvbmUuY29tIn0.-mVqB1H-fQ83yoO2AQfqyeD1NRSsjcaISxAQtjNtwfw"
+        //return iPreferencesManager.getToken()
     }
 
     override suspend fun setToken(token: String, expiresAtEpochSeconds: Long?, refreshToken: String?) {

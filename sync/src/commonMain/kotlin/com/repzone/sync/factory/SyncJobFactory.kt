@@ -1,7 +1,6 @@
 package com.repzone.sync.factory
 
 import com.repzone.domain.model.SyncCustomerModel
-import com.repzone.domain.model.SyncProductModel
 import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.network.dto.MobileProductDto
 import com.repzone.sync.interfaces.IBulkInsertService
