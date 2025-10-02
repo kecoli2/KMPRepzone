@@ -52,14 +52,13 @@ abstract class BaseSyncJob(private val iSyncModuleRepository: ISyncModuleReposit
             }else{
                 requestFilter = onPreExecuteFilterModel(syncModuleModel!!.requestFilter!!.toModel<FilterModelRequest>()!!)
             }
-            syncModuleModel?.requestFilter = requestFilter.toJson()
             recordsProcessed = executeSync()
             val endTime = getTimeMillis()
             val duration = endTime - startTime
 
             val successStatus = SyncJobStatus.Success(recordsProcessed, duration)
             updateStatus(successStatus)
-
+            syncModuleModel?.requestFilter = requestFilter.toJson()
             syncModuleModel?.lastSyncDate = endTime
             iSyncModuleRepository.upsert(syncModuleModel!!)
             SyncJobResult(

@@ -23,10 +23,10 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository) {
 
     //region Public Method
     fun createJobs(
-        productApi: ISyncApiService<MobileProductDto>,
-        customerApi: ISyncApiService<SyncCustomerModel>,
-        productBulkInsert: IBulkInsertService<MobileProductDto>,
-        customerBulkInsert: IBulkInsertService<SyncCustomerModel>,
+        productApi: ISyncApiService<List<MobileProductDto>>,
+        customerApi: ISyncApiService<List<SyncCustomerModel>>,
+        productBulkInsert: IBulkInsertService<List<MobileProductDto>>,
+        customerBulkInsert: IBulkInsertService<List<SyncCustomerModel>>,
     ): Map<SyncJobType, ISyncJob> {
 
         return mapOf(

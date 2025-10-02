@@ -9,8 +9,8 @@ import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.RoleBasedSyncJob
 import com.repzone.sync.model.SyncJobType
 
-class CustomerSyncJob(private val apiService: ISyncApiService<SyncCustomerModel>,
-                      private val bulkInsertService: IBulkInsertService<SyncCustomerModel>,
+class CustomerSyncJob(private val apiService: ISyncApiService<List<SyncCustomerModel>>,
+                      private val bulkInsertService: IBulkInsertService<List<SyncCustomerModel>>,
                       syncModuleRepository: ISyncModuleRepository
 ): RoleBasedSyncJob(syncModuleRepository) {
     //region Field

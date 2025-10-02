@@ -1,18 +1,26 @@
 package com.repzone.sync.impl
 
+import com.repzone.core.util.extensions.toDateString
+import com.repzone.core.util.toModel
 import com.repzone.domain.model.SyncModuleModel
 import com.repzone.network.dto.MobileProductDto
 import com.repzone.network.dto.ServiceProductUnitDto
 import com.repzone.network.http.extensions.toApiException
 import com.repzone.network.http.wrapper.ApiResult
+import com.repzone.network.models.request.FilterModelRequest
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.model.SyncPage
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlin.random.Random
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 
-class SyncApiProductImpl(private val client: HttpClient): ISyncApiService<MobileProductDto> {
+class SyncApiProductImpl(private val client: HttpClient): ISyncApiService<List<MobileProductDto>> {
     //region Field
     //endregion
 
@@ -34,8 +42,36 @@ class SyncApiProductImpl(private val client: HttpClient): ISyncApiService<Mobile
         }
     }
 
-    override suspend fun fetchPage(model: SyncModuleModel, page: Int, size: Int): ApiResult<SyncPage<MobileProductDto>> {
-        TODO("Not yet implemented")
+    override suspend fun fetchPage(model: SyncModuleModel, pageSize: Int): Flow<ApiResult<List<MobileProductDto>>> = flow {
+        val requestModel = model.requestFilter?.toModel<FilterModelRequest>()
+        var currentPAge = 0
+        var hasMore = true
+        if(model.lastSyncDate == null){
+            requestModel?.fetchOnlyActive = true
+        }else{
+            requestModel?.lastModDate = model.lastSyncDate?.toDateString("yyyy-MM-dd HH:mm:ss.fff")
+        }
+
+        while (hasMore){
+            try {
+                val response = client.post(model.requestUrl!!){
+                    setBody(requestModel)
+                }
+                val data = response.body<List<MobileProductDto>>()
+
+                if(data.isEmpty()){
+                    hasMore = false
+                }else{
+                    emit(ApiResult.Success(data))
+                    currentPAge++
+                    hasMore = data.size >= pageSize
+                }
+            }catch (ex: Exception){
+                emit(ApiResult.Error(ex.toApiException()))
+                hasMore = false
+            }
+        }
+
     }
     //endregion
 

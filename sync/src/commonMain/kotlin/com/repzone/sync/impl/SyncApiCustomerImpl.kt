@@ -11,9 +11,10 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.post
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
 import kotlin.random.Random
 
-class SyncApiCustomerImpl(private val client: HttpClient): ISyncApiService<SyncCustomerModel> {
+class SyncApiCustomerImpl(private val client: HttpClient): ISyncApiService<List<SyncCustomerModel>> {
     //region Field
     //endregion
 
@@ -36,7 +37,7 @@ class SyncApiCustomerImpl(private val client: HttpClient): ISyncApiService<SyncC
         }
     }
 
-    override suspend fun fetchPage(model: SyncModuleModel, page: Int, size: Int): ApiResult<SyncPage<SyncCustomerModel>> {
+    override suspend fun fetchPage(model: SyncModuleModel, pageSize: Int): Flow<ApiResult<List<SyncCustomerModel>>> {
         TODO("Not yet implemented")
     }
     //endregion

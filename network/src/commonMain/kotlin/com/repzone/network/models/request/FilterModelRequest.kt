@@ -13,7 +13,7 @@ data class FilterModelRequest(
     @SerialName("LastId")
     var lastId: Int = 0,
     @SerialName("FetchOnlyActive")
-    var fetchOnlyActive: Boolean = false,
+    var fetchOnlyActive: Boolean = true,
     @SerialName("Keyword")
     var keyword: String? = null,
     @SerialName("FilterModels")

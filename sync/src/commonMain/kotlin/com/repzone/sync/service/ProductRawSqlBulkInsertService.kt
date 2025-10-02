@@ -11,7 +11,7 @@ import com.repzone.sync.transaction.TableOperation
 import com.repzone.sync.transaction.TransactionCoordinator
 
 class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMapper,
-                                     coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<MobileProductDto>(coordinator) {
+                                     coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<MobileProductDto>>(coordinator) {
     //region Field
     //endregion
 

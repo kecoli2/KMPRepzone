@@ -21,12 +21,12 @@ val SyncModule = module {
     single { TransactionCoordinator(get(), get()) }
 
     //PRODUCT
-    single<IBulkInsertService<MobileProductDto>>(named("productBulkInsert")) { ProductRawSqlBulkInsertService(get(),get()) }
-    single<ISyncApiService<MobileProductDto>>(named("productSyncApi")){ SyncApiProductImpl(get()) }
+    single<IBulkInsertService<List<MobileProductDto>>>(named("productBulkInsert")) { ProductRawSqlBulkInsertService(get(),get()) }
+    single<ISyncApiService<List<MobileProductDto>>>(named("productSyncApi")){ SyncApiProductImpl(get()) }
 
     //CUSTOMER
-    single<IBulkInsertService<SyncCustomerModel>>(named("customerBulkInsert")){ CustomerRawSqlBulkInsertService(get(named("CustomerEntityDbMapperInterface")), get()) }
-    single<ISyncApiService<SyncCustomerModel>>(named("customerSyncApi")){ SyncApiCustomerImpl(get()) }
+    single<IBulkInsertService<List<SyncCustomerModel>>>(named("customerBulkInsert")){ CustomerRawSqlBulkInsertService(get(named("CustomerEntityDbMapperInterface")), get()) }
+    single<ISyncApiService<List<SyncCustomerModel>>>(named("customerSyncApi")){ SyncApiCustomerImpl(get()) }
 
     //GENERAL
     single<ISyncManager>{ SyncManagerImpl(get()) }

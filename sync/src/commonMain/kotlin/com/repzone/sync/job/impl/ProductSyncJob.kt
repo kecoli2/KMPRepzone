@@ -1,7 +1,7 @@
 package com.repzone.sync.job.impl
 
 import com.repzone.core.constant.IProductApiControllerConstant
-import com.repzone.domain.model.SyncProductModel
+import com.repzone.core.util.toModel
 import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.network.dto.MobileProductDto
 import com.repzone.network.http.wrapper.ApiResult
@@ -12,8 +12,8 @@ import com.repzone.sync.job.base.RoleBasedSyncJob
 import com.repzone.sync.model.SyncJobType
 
 
-class ProductSyncJob(private val apiService: ISyncApiService<MobileProductDto>,
-                     private val bulkInsertService: IBulkInsertService<MobileProductDto>,
+class ProductSyncJob(private val apiService: ISyncApiService<List<MobileProductDto>>,
+                     private val bulkInsertService: IBulkInsertService<List<MobileProductDto>>,
                      syncModuleRepository: ISyncModuleRepository
 ): RoleBasedSyncJob(syncModuleRepository) {
     //region Field
@@ -37,32 +37,35 @@ class ProductSyncJob(private val apiService: ISyncApiService<MobileProductDto>,
     override suspend fun executeSync(): Int {
         updateProgress(0, 100, "Fetching products...")
         checkCancellation()
-        val response = apiService.fetchAll(getSyncModuleModel()!!)
-        var products: List<MobileProductDto>? = null
+        var totalInserted = 0
+        var totalFetched = 0
+        val requestFilter = getSyncModuleModel()?.requestFilter?.toModel<FilterModelRequest>()
 
-        when(response){
-            is ApiResult.Success ->{
-                products = response.data
+        apiService.fetchPage(getSyncModuleModel()!!, requestFilter?.take ?: 100 )
+            .collect { result ->
+                when(result){
+                    is ApiResult.Error -> {
+                        throw Exception("API Error: ${result.exception.message}")
+                    }
+                    is ApiResult.Loading -> {
+
+                    }
+                    is ApiResult.Success -> {
+                        val products = result.data
+                        totalFetched += products.size
+
+                        updateProgress(25, 100, "Fetched $totalFetched products...")
+                        checkCancellation()
+                        val inserted = bulkInsertService.upsertBatch(result.data)
+                        getSyncModuleModel()?.requestFilter?.toModel<FilterModelRequest>()?.lastId = products.lastOrNull()?.id ?: 0
+                        totalInserted += inserted
+                    }
+                }
             }
-
-            is ApiResult.Error -> {
-                throw Exception("API Error: ${response.exception.message}")
-            }
-
-            is ApiResult.Loading -> {
-                updateProgress(25, 100, "Customer cekiliyor")
-            }
-        }
-        updateProgress(50, 100, "${products?.size} ürün alındı, veritabanına yazılıyor...")
-        checkCancellation()
-        var insertedCount = 0
-        products?.let {
-            insertedCount = bulkInsertService.upsertBatch(products)
-        }
-
-        updateProgress(100, 100, "$insertedCount ürün kaydedildi")
-        return insertedCount
+        updateProgress(100, 100, "$totalFetched product saved...")
+        return totalInserted
     }
+
     //endregion
 
     //region Protected Method

@@ -9,9 +9,9 @@ abstract class CompositeRawSqlBulkInsertService<T>(
     private val coordinator: TransactionCoordinator
 ) : IBulkInsertService<T> {
 
-    override suspend fun insertBatch(items: List<T>): Int {
-        if (items.isEmpty()) return 0
-
+    override suspend fun insertBatch(items: T): Int {
+        if(items as List<Any?> == emptyList<Any?>())
+            return 0
         val compositeOp = buildCompositeOperation(items, includeClears = false)
 
         return when (val result = coordinator.executeCompositeOperation(compositeOp)) {
@@ -24,8 +24,9 @@ abstract class CompositeRawSqlBulkInsertService<T>(
         }
     }
 
-    override suspend fun clearAndInsert(items: List<T>): Int {
-        if (items.isEmpty()) return 0
+    override suspend fun clearAndInsert(items: T): Int {
+        if(items as List<Any?> == emptyList<Any?>())
+            return 0
 
         val compositeOp = buildCompositeOperation(items, includeClears = true)
 
@@ -39,8 +40,9 @@ abstract class CompositeRawSqlBulkInsertService<T>(
         }
     }
 
-    override suspend fun upsertBatch(items: List<T>): Int {
-        if (items.isEmpty()) return 0
+    override suspend fun upsertBatch(items: T): Int {
+        if(items as List<Any?> == emptyList<Any?>())
+            return 0
 
         val compositeOp = buildCompositeOperation(items, includeClears = false, useUpsert = true)
 
@@ -53,5 +55,5 @@ abstract class CompositeRawSqlBulkInsertService<T>(
             }
         }
     }
-    protected abstract fun buildCompositeOperation(items: List<T>, includeClears: Boolean = false, useUpsert: Boolean = false): CompositeOperation
+    protected abstract fun buildCompositeOperation(items: T, includeClears: Boolean = false, useUpsert: Boolean = false): CompositeOperation
 }
