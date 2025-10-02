@@ -1,10 +1,12 @@
 package com.repzone.sync.impl
 
 import com.repzone.core.util.extensions.toDateString
+import com.repzone.core.util.toJson
 import com.repzone.core.util.toModel
 import com.repzone.domain.model.SyncModuleModel
 import com.repzone.network.dto.MobileProductDto
 import com.repzone.network.dto.ServiceProductUnitDto
+import com.repzone.network.http.extensions.safePost
 import com.repzone.network.http.extensions.toApiException
 import com.repzone.network.http.wrapper.ApiResult
 import com.repzone.network.models.request.FilterModelRequest
@@ -19,6 +21,7 @@ import kotlinx.coroutines.flow.flow
 import kotlin.random.Random
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 class SyncApiProductImpl(private val client: HttpClient): ISyncApiService<List<MobileProductDto>> {
     //region Field
@@ -54,18 +57,39 @@ class SyncApiProductImpl(private val client: HttpClient): ISyncApiService<List<M
 
         while (hasMore){
             try {
-                val response = client.post(model.requestUrl!!){
+
+                val response = client.safePost<List<MobileProductDto>>(model.requestUrl!!){
                     setBody(requestModel)
                 }
-                val data = response.body<List<MobileProductDto>>()
 
-                if(data.isEmpty()){
-                    hasMore = false
-                }else{
-                    emit(ApiResult.Success(data))
-                    currentPAge++
-                    hasMore = data.size >= pageSize
+                /*val response = client.post(model.requestUrl!!){
+                    setBody(requestModel!!)
+                }*/
+
+                when(response){
+                    is ApiResult.Error -> {
+
+                    }
+                    is ApiResult.Loading -> {
+                        TODO()
+                    }
+                    is ApiResult.Success<*> -> {
+
+                        val data = response.data as List<MobileProductDto>
+
+                        if(data.isEmpty()){
+                            hasMore = false
+                        }else{
+                            emit(ApiResult.Success(data))
+                            currentPAge++
+                            hasMore = data.size >= pageSize
+                            requestModel?.lastId = data.last().id
+                        }
+                    }
                 }
+
+
+
             }catch (ex: Exception){
                 emit(ApiResult.Error(ex.toApiException()))
                 hasMore = false
@@ -98,7 +122,7 @@ class SyncApiProductImpl(private val client: HttpClient): ISyncApiService<List<M
                 groupPhotoPath = "/photos/groups/${Random.nextInt(1, 100)}.jpg",
                 maximumOrderQuantity = Random.nextLong(10, 1000).toInt(),
                 minimumOrderQuantity = Random.nextLong(1, 10).toInt(),
-                modificationDateUtc = Clock.System.now().toEpochMilliseconds() - Random.nextLong(0, 31536000000),
+                modificationDateUtc = Clock.System.now(),
                 name = "Product $uniqueId",
                 orderQuantityFactor = Random.nextLong(1, 10).toInt(),
                 organizationId = Random.nextLong(1, 50).toInt(),

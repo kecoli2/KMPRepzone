@@ -9,13 +9,13 @@ data class MobileProductParameterDto(
     val id: Int,
 
     @SerialName("ProductId")
-    val productId: Int,
+    val productId: Int? = null ,
 
     @SerialName("Order")
-    val order: Int,
+    val order: Int? = null,
 
     @SerialName("Color")
-    val color: String
+    val color: String? = null
 ) {
     companion object {
         fun create(product: MobileProductDto): List<MobileProductParameterDto> {

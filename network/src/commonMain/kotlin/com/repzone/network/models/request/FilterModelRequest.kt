@@ -9,7 +9,7 @@ data class FilterModelRequest(
     @SerialName("Take")
     var take: Int = 0,
     @SerialName("LastModDate")
-    var lastModDate: String? = null,
+    var lastModDate: String? = "",
     @SerialName("LastId")
     var lastId: Int = 0,
     @SerialName("FetchOnlyActive")

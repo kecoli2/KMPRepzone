@@ -46,10 +46,12 @@ abstract class BaseSyncJob(private val iSyncModuleRepository: ISyncModuleReposit
             updateStatus(SyncJobStatus.Running)
             syncModuleModel = iSyncModuleRepository.getById(jobType.ordinal.toLong())
             if(syncModuleModel == null){
+                requestFilter = onPreExecuteFilterModel(FilterModelRequest())
                 syncModuleModel = SyncModuleModel(jobType.ordinal.toLong(), defaultRequestEndPoint,requestFilter.toJson(),null,
                     RequestType.POST)
-                requestFilter = onPreExecuteFilterModel(FilterModelRequest())
+
             }else{
+                requestFilter?.fetchOnlyActive = syncModuleModel?.lastSyncDate != null
                 requestFilter = onPreExecuteFilterModel(syncModuleModel!!.requestFilter!!.toModel<FilterModelRequest>()!!)
             }
             recordsProcessed = executeSync()

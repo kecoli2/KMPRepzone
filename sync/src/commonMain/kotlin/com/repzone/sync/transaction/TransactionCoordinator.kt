@@ -200,13 +200,13 @@ class TransactionCoordinator(
     }
 
     private fun buildBulkInsertSql(operation: DatabaseOperation): String {
-        val columns = operation.columns.joinToString(", ")
+        val columns = operation.columns.joinToString(", ") { "`$it`" }
         val values = operation.values.joinToString(", ")
         return "INSERT INTO ${operation.tableName} ($columns) VALUES $values"
     }
 
     private fun buildBulkUpsertSql(operation: DatabaseOperation): String {
-        val columns = operation.columns.joinToString(", ")
+        val columns = operation.columns.joinToString(", ") { "`$it`" }
         val values = operation.values.joinToString(", ")
         return "INSERT OR REPLACE INTO ${operation.tableName} ($columns) VALUES $values"
     }
@@ -273,20 +273,20 @@ class TransactionCoordinator(
                 operationId = compositeOp.id
             )
 
-            println("❌ Composite operation failed: ${compositeOp.description} - ${e.message}")
+            println("Composite operation failed: ${compositeOp.description} - ${e.message}")
 
             compositeResultChannels[compositeOp.id]?.send(errorResult)
         }
     }
 
     private fun buildBulkInsertSqlFromTableOp(tableOp: TableOperation): String {
-        val columns = tableOp.columns.joinToString(", ")
+        val columns = tableOp.columns.joinToString(", ") { "`$it`" }
         val values = tableOp.values.joinToString(", ")
         return "INSERT INTO ${tableOp.tableName} ($columns) VALUES $values"
     }
 
     private fun buildBulkUpsertSqlFromTableOp(tableOp: TableOperation): String {
-        val columns = tableOp.columns.joinToString(", ")
+        val columns = tableOp.columns.joinToString(", ") { "`$it`" }
         val values = tableOp.values.joinToString(", ")
         return "INSERT OR REPLACE INTO ${tableOp.tableName} ($columns) VALUES $values"
     }
@@ -307,9 +307,9 @@ class TransactionCoordinator(
 
     fun shutdown() {
         operationQueue.close()
-        compositeQueue.close() // BU SATIRI EKLEYİN
+        compositeQueue.close()
         scope.cancel()
-        println("🛑 TransactionCoordinator shutdown")
+        println("TransactionCoordinator shutdown")
     }
     //endregion
 }

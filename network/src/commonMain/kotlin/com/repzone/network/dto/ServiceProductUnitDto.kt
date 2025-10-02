@@ -14,7 +14,7 @@ data class ServiceProductUnitDto(
     @SerialName("Multiplier")
     val multiplier: Int,
     @SerialName("Barcode")
-    val barcode: String,
+    val barcode: String? = null,
     @SerialName("Weight")
     val weight: Double? = null,
     @SerialName("DisplayOrder")

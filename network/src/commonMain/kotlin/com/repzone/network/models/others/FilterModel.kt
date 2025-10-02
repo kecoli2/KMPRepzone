@@ -10,7 +10,7 @@ data class FilterModel(
     @SerialName("Value")
     var values: String? = null,
     @SerialName("Operator")
-    var operator: FilterOperator
+    var operator: FilterOperator? = null
 )
 
 enum class FilterOperator{

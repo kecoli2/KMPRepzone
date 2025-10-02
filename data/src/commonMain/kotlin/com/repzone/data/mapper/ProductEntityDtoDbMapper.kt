@@ -9,7 +9,10 @@ import com.repzone.database.SyncProductUnitEntity
 import com.repzone.network.dto.MobileProductDto
 import com.repzone.network.dto.MobileProductParameterDto
 import com.repzone.network.dto.ServiceProductUnitDto
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, MobileProductDto> {
     //region Field
     //endregion
@@ -47,7 +50,7 @@ class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, MobileProductDto> {
             brandPhotoPath = from.BrandPhotoPath,
             groupPhotoPath = from.GroupPhotoPath,
             parameters = emptyList(),
-            modificationDateUtc = from.ModificationDateUtc,
+            modificationDateUtc = from.ModificationDateUtc?.let {  Instant.fromEpochMilliseconds(it) },
             closeToSales = from.CloseToSales?.toBoolean(true),
             closeToReturns = from.CloseToReturns.toBoolean(true),
         )
@@ -71,7 +74,7 @@ class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, MobileProductDto> {
             ManufacturerId = null,
             MaximumOrderQuantity = domain.maximumOrderQuantity?.toLong(),
             MinimumOrderQuantity = domain.minimumOrderQuantity?.toLong(),
-            ModificationDateUtc = domain.modificationDateUtc,
+            ModificationDateUtc = domain.modificationDateUtc?.toEpochMilliseconds(),
             Name = domain.name,
             OrderQuantityFactor = domain.orderQuantityFactor?.toLong(),
             OrganizationId = domain.organizationId?.toLong(),
@@ -122,7 +125,7 @@ class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, MobileProductDto> {
             ProductParameterEntity(
                 Id = domain.id.toLong(),
                 ProductId = productId,
-                Order = domain.order.toLong(),
+                Order = domain.order?.toLong(),
                 Color = domain.color,
                 IsVisible = false.toLong(),
                 OrganizationId = null
