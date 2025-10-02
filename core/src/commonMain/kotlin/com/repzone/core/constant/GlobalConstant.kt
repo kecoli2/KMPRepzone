@@ -15,5 +15,8 @@ object ITokenApiControllerConstant {
 object IProductApiControllerConstant {
     const val PRODUCT_LIST_ENDPOINT = "/api/v1/Product/List"
     const val PRODUCT_GROUP_LIST_ENDPOINT = "/api/v1/Product/Groups"
+}
 
+object IRouteApiControllerConstant {
+    const val ROUTE_LIST_ENDPOINT = "/api/v1/Route/List"
 }

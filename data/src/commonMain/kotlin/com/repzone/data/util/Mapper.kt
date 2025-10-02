@@ -10,3 +10,10 @@ fun <Db, Domain> Mapper<Db, Domain>.toDomainList(list: List<Db>) =
 
 fun <Db, Domain> Mapper<Db, Domain>.toDomainNullable(from: Db?) =
     from?.let(::toDomain)
+
+
+interface MapperDto<Db, Domain, Dto> {
+    fun toDomain(from: Db): Domain
+    fun fromDomain(domain: Domain): Db
+    fun fromDto(dto: Dto): Db
+}

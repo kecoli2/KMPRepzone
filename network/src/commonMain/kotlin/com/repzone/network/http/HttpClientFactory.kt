@@ -1,6 +1,7 @@
 package com.repzone.network.http
 
 import com.repzone.core.interfaces.ITokenProvider
+import com.repzone.network.util.PascalCaseNamingStrategy
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.DefaultRequest
@@ -18,8 +19,11 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.OutgoingContent
 import io.ktor.http.content.TextContent
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonNamingStrategy
 
+@OptIn(ExperimentalSerializationApi::class)
 class HttpClientFactory(
     private val cfg: NetworkConfig,
     private val engineProvider: () -> HttpClientEngine,
@@ -42,6 +46,7 @@ class HttpClientFactory(
                     isLenient = true
                     encodeDefaults = true
                     prettyPrint = true // Debug için
+                    namingStrategy = PascalCaseNamingStrategy
                 }
             )
         }

@@ -1,4 +1,4 @@
-package com.repzone.sync.service.bulk
+package com.repzone.sync.service
 
 import com.repzone.data.mapper.SyncProductGroupEntityDbMapper
 import com.repzone.database.SyncProductGroupEntity
@@ -10,7 +10,8 @@ import com.repzone.sync.transaction.TransactionCoordinator
 import io.ktor.http.quote
 
 class ProductGroupRawSqlBulkInsertService(private val dbMapper: SyncProductGroupEntityDbMapper,
-                                          coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<ServiceProductGroupDto>>(coordinator) {
+                                          coordinator: TransactionCoordinator
+): CompositeRawSqlBulkInsertService<List<ServiceProductGroupDto>>(coordinator) {
     //region Field
     //endregion
 
@@ -29,7 +30,18 @@ class ProductGroupRawSqlBulkInsertService(private val dbMapper: SyncProductGroup
             TableOperation(
                 tableName = "SyncProductGroupEntity",
                 clearSql = null,
-                columns = listOf("Id", "IconIndex", "ModificationDateUtc", "Name", "OrganizationId", "ParentId","PhotoPath", "RecordDateUtc", "Shared", "State"),
+                columns = listOf(
+                    "Id",
+                    "IconIndex",
+                    "ModificationDateUtc",
+                    "Name",
+                    "OrganizationId",
+                    "ParentId",
+                    "PhotoPath",
+                    "RecordDateUtc",
+                    "Shared",
+                    "State"
+                ),
                 values = buildProductGroupValues(productGroupEntities),
                 recordCount = productGroupEntities.size,
                 useUpsert = true,

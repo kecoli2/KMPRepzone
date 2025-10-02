@@ -11,6 +11,7 @@ import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.RoleBasedSyncJob
 import com.repzone.sync.model.SyncJobType
 import com.repzone.sync.model.UserRole
+import com.repzone.sync.util.SyncConstant
 
 class ProductGroupSyncJob(private val apiService: ISyncApiService<List<ServiceProductGroupDto>>,
                           private val bulkInsertService: IBulkInsertService<List<ServiceProductGroupDto>>,
@@ -59,7 +60,7 @@ class ProductGroupSyncJob(private val apiService: ISyncApiService<List<ServicePr
     }
 
     override fun onPreExecuteFilterModel(value: FilterModelRequest): FilterModelRequest {
-        value.take = 100
+        value.take = SyncConstant.TAKEN_COUNT
         return value
     }
 

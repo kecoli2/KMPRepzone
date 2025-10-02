@@ -58,8 +58,10 @@ class SyncApiProductImpl(private val client: HttpClient): ISyncApiService<List<M
                 }
                 when(response){
                     is ApiResult.Error -> {
+                        throw Exception("API Error: ${response.exception.message}")
                     }
                     is ApiResult.Loading -> {
+
                     }
                     is ApiResult.Success -> {
                         val data = response.data

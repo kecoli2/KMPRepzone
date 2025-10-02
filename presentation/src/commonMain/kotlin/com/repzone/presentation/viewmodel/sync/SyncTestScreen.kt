@@ -139,10 +139,10 @@ fun SyncTestScreen(
                             viewModel.onEvent(SyncTestViewModel.Event.StartFullSync)
                         },
                         onStartProducts = {
-                            viewModel.onEvent(SyncTestViewModel.Event.StartSpecificJob(SyncJobType.PRODUCTS))
+                            viewModel.onEvent(SyncTestViewModel.Event.StartSpecificJob(PRODUCTS))
                         },
                         onStartCustomers = {
-                            viewModel.onEvent(SyncTestViewModel.Event.StartSpecificJob(SyncJobType.CUSTOMERS))
+                            viewModel.onEvent(SyncTestViewModel.Event.StartSpecificJob(CUSTOMERS))
                         },
                         isLoading = state.uiFrame.isLoading
                     )
@@ -485,16 +485,16 @@ private fun StatColumn(label: String, value: String) {
 
 // Helper functions
 private fun SyncJobType.getIcon(): String = when (this) {
-    SyncJobType.PRODUCTS -> "📦"
-    SyncJobType.CUSTOMERS -> "👥"
-    SyncJobType.PRODUCTS_GROUP -> "📦"
-    SyncJobType.ROUTE -> "📦"
-    SyncJobType.CUSTOMERS_GROUP -> "📦"
-    SyncJobType.TABLE_REPLICATION -> "📦"
-    SyncJobType.COMMON -> "📦"
-    SyncJobType.FORM -> "📦"
-    SyncJobType.EXTRA_TABLE -> "📦"
-    SyncJobType.STOCK -> "📦"
+    PRODUCTS -> "📦"
+    CUSTOMERS -> "👥"
+    PRODUCTS_GROUP -> "📦"
+    ROUTE -> "📦"
+    CUSTOMERS_GROUP -> "📦"
+    TABLE_REPLICATION -> "📦"
+    COMMON -> "📦"
+    FORM -> "📦"
+    EXTRA_TABLE -> "📦"
+    STOCK -> "📦"
 }
 
 private fun SyncJobType.getDisplayName(): String = when (this) {
@@ -519,16 +519,16 @@ private fun UserRole.getDisplayName(): String = when (this) {
 
 private fun isJobApplicableForRole(jobType: SyncJobType, userRole: UserRole): Boolean {
     return when (jobType) {
-        SyncJobType.PRODUCTS -> userRole in setOf(UserRole.MERGE_STAFF, UserRole.MANAGER, UserRole.ADMIN)
-        SyncJobType.CUSTOMERS -> userRole in setOf(UserRole.SALES_REP, UserRole.MANAGER, UserRole.ADMIN)
-        SyncJobType.PRODUCTS_GROUP -> userRole in setOf(UserRole.MANAGER, UserRole.ADMIN, UserRole.SALES_REP)
-        SyncJobType.ROUTE -> TODO()
-        SyncJobType.CUSTOMERS_GROUP -> TODO()
-        SyncJobType.TABLE_REPLICATION -> TODO()
-        SyncJobType.COMMON -> TODO()
-        SyncJobType.FORM -> TODO()
-        SyncJobType.EXTRA_TABLE -> TODO()
-        SyncJobType.STOCK -> TODO()
+        PRODUCTS -> userRole in setOf(UserRole.MERGE_STAFF, UserRole.MANAGER, UserRole.ADMIN)
+        CUSTOMERS -> userRole in setOf(UserRole.SALES_REP, UserRole.MANAGER, UserRole.ADMIN)
+        PRODUCTS_GROUP -> userRole in setOf(UserRole.MANAGER, UserRole.ADMIN, UserRole.SALES_REP)
+        ROUTE -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
+        CUSTOMERS_GROUP -> TODO()
+        TABLE_REPLICATION -> TODO()
+        COMMON -> TODO()
+        FORM -> TODO()
+        EXTRA_TABLE -> TODO()
+        STOCK -> TODO()
     }
 }
 

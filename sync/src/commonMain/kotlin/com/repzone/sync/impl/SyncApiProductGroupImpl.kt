@@ -48,6 +48,7 @@ class SyncApiProductGroupImpl(private val client: HttpClient): ISyncApiService<L
                     }
                     when(response){
                         is ApiResult.Error -> {
+                            throw Exception("API Error: ${response.exception.message}")
                         }
                         is ApiResult.Loading -> {
                         }

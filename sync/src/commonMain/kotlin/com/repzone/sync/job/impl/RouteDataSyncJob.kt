@@ -1,42 +1,37 @@
 package com.repzone.sync.job.impl
 
-import com.repzone.core.constant.IProductApiControllerConstant
+import com.repzone.core.constant.IRouteApiControllerConstant
 import com.repzone.core.util.toModel
 import com.repzone.domain.repository.ISyncModuleRepository
-import com.repzone.network.dto.MobileProductDto
+import com.repzone.network.dto.MobileRouteDto
 import com.repzone.network.http.wrapper.ApiResult
 import com.repzone.network.models.request.FilterModelRequest
 import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.RoleBasedSyncJob
 import com.repzone.sync.model.SyncJobType
+import com.repzone.sync.model.UserRole
 import com.repzone.sync.util.SyncConstant
 
-
-class ProductSyncJob(private val apiService: ISyncApiService<List<MobileProductDto>>,
-                     private val bulkInsertService: IBulkInsertService<List<MobileProductDto>>,
-                     syncModuleRepository: ISyncModuleRepository
-): RoleBasedSyncJob(syncModuleRepository) {
+class RouteDataSyncJob(private val apiService: ISyncApiService<List<MobileRouteDto>>,
+                       private val bulkInsertService: IBulkInsertService<List<MobileRouteDto>>,
+                       syncModuleRepository: ISyncModuleRepository,
+                       ): RoleBasedSyncJob(syncModuleRepository) {
     //region Field
+    override val allowedRoles: Set<UserRole> = setOf(UserRole.ADMIN, UserRole.SALES_REP)
+    override val defaultRequestEndPoint = IRouteApiControllerConstant.ROUTE_LIST_ENDPOINT
+    override val jobType = SyncJobType.ROUTE
     //endregion
 
     //region Properties
-    override val allowedRoles = MERGE_ROLES
-    override val jobType = SyncJobType.PRODUCTS
-    override val defaultRequestEndPoint = IProductApiControllerConstant.PRODUCT_LIST_ENDPOINT
     //endregion
 
     //region Constructor
     //endregion
 
     //region Public Method
-    override fun onPreExecuteFilterModel(value: FilterModelRequest): FilterModelRequest {
-        value.take = SyncConstant.TAKEN_COUNT
-        return value
-    }
-
     override suspend fun executeSync(): Int {
-        updateProgress(0, 100, "Fetching products...")
+        updateProgress(0, 100, "Fetching route...")
         checkCancellation()
         var totalInserted = 0
         var totalFetched = 0
@@ -52,21 +47,25 @@ class ProductSyncJob(private val apiService: ISyncApiService<List<MobileProductD
 
                     }
                     is ApiResult.Success -> {
-                        val products = result.data
-                        totalFetched += products.size
+                        val route = result.data
+                        totalFetched += route.size
 
-                        updateProgress(25, 100, "Fetched $totalFetched products...")
+                        updateProgress(25, 100, "Fetched $totalFetched route...")
                         checkCancellation()
                         val inserted = bulkInsertService.upsertBatch(result.data)
-                        getSyncModuleModel()?.requestFilter?.toModel<FilterModelRequest>()?.lastId = products.lastOrNull()?.id ?: 0
+                        getSyncModuleModel()?.requestFilter?.toModel<FilterModelRequest>()?.lastId = route.lastOrNull()?.id ?: 0
                         totalInserted += inserted
                     }
                 }
             }
-        updateProgress(100, 100, "$totalFetched product saved...")
+        updateProgress(100, 100, "$totalFetched route saved...")
         return totalInserted
     }
 
+    override fun onPreExecuteFilterModel(value: FilterModelRequest): FilterModelRequest {
+        value.take = 1000
+        return value
+    }
     //endregion
 
     //region Protected Method
@@ -74,5 +73,4 @@ class ProductSyncJob(private val apiService: ISyncApiService<List<MobileProductD
 
     //region Private Method
     //endregion
-
 }
