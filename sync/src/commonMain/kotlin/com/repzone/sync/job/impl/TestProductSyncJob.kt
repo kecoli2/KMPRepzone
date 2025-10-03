@@ -1,0 +1,38 @@
+package com.repzone.sync.job.impl
+
+import com.repzone.core.constant.IProductApiControllerConstant
+import com.repzone.domain.repository.ISyncModuleRepository
+import com.repzone.network.dto.MobileProductDto
+import com.repzone.sync.interfaces.IBulkInsertService
+import com.repzone.sync.interfaces.ISyncApiService
+import com.repzone.sync.job.base.BasePaginatedSyncJob
+import com.repzone.sync.model.SyncJobType
+import com.repzone.sync.model.UserRole
+
+class TestProductSyncJob(
+    apiService: ISyncApiService<List<MobileProductDto>>,
+    bulkInsertService: IBulkInsertService<List<MobileProductDto>>,
+    syncModuleRepository: ISyncModuleRepository
+) : BasePaginatedSyncJob<List<MobileProductDto>>(
+    apiService,
+    bulkInsertService,
+    syncModuleRepository
+) {
+
+    override val allowedRoles = setOf(UserRole.SALES_REP, UserRole.MANAGER, UserRole.ADMIN)
+    override val jobType = SyncJobType.PRODUCTS
+    override val defaultRequestEndPoint = IProductApiControllerConstant.PRODUCT_LIST_ENDPOINT
+
+    // Custom messages (opsiyonel)
+    override val fetchingMessage = "Fetching products..."
+    override fun getFetchedMessage(count: Int) = "Fetched $count products..."
+    override fun getCompletedMessage(count: Int) = "$count products saved..."
+
+    override fun extractLastId(dtoData: List<MobileProductDto>): Long {
+        return dtoData.lastOrNull()?.id?.toLong() ?: 0L
+    }
+
+    override fun getDataSize(dtoData: List<MobileProductDto>): Int {
+        return dtoData.size
+    }
+}

@@ -12,6 +12,7 @@ import com.repzone.sync.job.impl.CustomerSyncJob
 import com.repzone.sync.job.impl.ProductGroupSyncJob
 import com.repzone.sync.job.impl.ProductSyncJob
 import com.repzone.sync.job.impl.RouteDataSyncJob
+import com.repzone.sync.job.impl.TestProductSyncJob
 import com.repzone.sync.model.SyncJobType
 
 class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository) {
@@ -36,7 +37,7 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository) {
         routeBulkInsert: IBulkInsertService<List<MobileRouteDto>>,
     ): Map<SyncJobType, ISyncJob> {
         return mapOf(
-            SyncJobType.PRODUCTS to ProductSyncJob(productApi, productBulkInsert, syncModuleRepository),
+            SyncJobType.PRODUCTS to TestProductSyncJob(productApi, productBulkInsert, syncModuleRepository),
             SyncJobType.CUSTOMERS to CustomerSyncJob(customerApi, customerBulkInsert, syncModuleRepository),
             SyncJobType.PRODUCTS_GROUP to ProductGroupSyncJob(productGroupApi, productGroupBulkInsert, syncModuleRepository),
             SyncJobType.ROUTE to RouteDataSyncJob(routeApi, routeBulkInsert, syncModuleRepository)
