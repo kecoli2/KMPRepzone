@@ -5,7 +5,6 @@ import com.repzone.network.dto.MobileProductDto
 import com.repzone.network.dto.MobileRouteDto
 import com.repzone.network.dto.ServiceProductGroupDto
 import com.repzone.sync.factory.SyncJobFactory
-import com.repzone.sync.impl.SyncApiCustomerImpl
 import com.repzone.sync.impl.SyncApiProductGroupImpl
 import com.repzone.sync.impl.SyncApiProductImpl
 import com.repzone.sync.impl.SyncApiRouteDataImpl
@@ -46,8 +45,6 @@ val SyncModule = module {
     //endregion PRODUCT GROUP
 
     //region CUSTOMER
-    single<IBulkInsertService<List<SyncCustomerModel>>>(named("customerBulkInsert")){ CustomerRawSqlBulkInsertService(get(named("CustomerEntityDbMapperInterface")), get()) }
-    single<ISyncApiService<List<SyncCustomerModel>>>(named("customerSyncApi")){ SyncApiCustomerImpl(get()) }
     //endregion CUSTOMER
 
     //region GENERAL
@@ -57,9 +54,7 @@ val SyncModule = module {
     single {
         get<SyncJobFactory>().createJobs(
             productApi = get(named("productSyncApi")),
-            customerApi = get(named("customerSyncApi")),
             productBulkInsert = get(named("productBulkInsert")),
-            customerBulkInsert = get(named("customerBulkInsert")),
             productGroupApi = get(named("productGroupSyncApi")),
             productGroupBulkInsert = get(named("productGroupBulkInsert")),
             routeApi = get(named("routeDataSyncApi")),
