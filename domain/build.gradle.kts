@@ -43,6 +43,7 @@ kotlin {
                 implementation(libs.kotlin.stdlib)
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.kotlinx.datetime)
+                implementation(project(":core"))
                 // Add KMP dependencies here
             }
         }

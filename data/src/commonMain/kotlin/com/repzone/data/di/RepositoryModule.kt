@@ -41,6 +41,10 @@ val RepositoryModule = module {
     single<MapperDto<SyncRouteAppointmentEntity, SyncRouteAppointmentModel, MobileRouteDto>>(named("SyncRouteAppointmentEntityDbMapper")) { SyncRouteAppointmentEntityDbMapper() }
     //endregion MobileRoute
 
+    //region Adress
+    //endregion Adress
+
+
     //region ProductParameters
     single { ProductEntityDtoDbMapper() }
     //endregion

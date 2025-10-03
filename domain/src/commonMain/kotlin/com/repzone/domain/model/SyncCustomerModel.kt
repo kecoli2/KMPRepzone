@@ -1,5 +1,8 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.MonitoringActionType
+import com.repzone.core.enums.PriceType
+
 data class SyncCustomerModel(
     val id: Long,
     val balance: Double?,
@@ -9,26 +12,26 @@ data class SyncCustomerModel(
     val checkRiskOrder: Long?,
     val checkRiskOrderProposal: Long?,
     val code: String?,
-    val damagedReturnPriceType: Long?,
-    val dispatchMonitoringAction: Long?,
+    val damagedReturnPriceType: PriceType?,
+    val dispatchMonitoringAction: MonitoringActionType?,
     val groupId: Long?,
     val groupName: String?,
     val groupPhotoPath: String?,
     val iconIndex: Long?,
-    val invoiceMonitoringAction: Long?,
+    val invoiceMonitoringAction: MonitoringActionType?,
     val isECustomer: Boolean,
     val isVatExempt: Boolean,
     val isVisible: Boolean,
     val name: String?,
-    val orderMonitoringAction: Long?,
-    val orderProposalMonitoringAction: Long?,
+    val orderMonitoringAction: MonitoringActionType?,
+    val orderProposalMonitoringAction: MonitoringActionType?,
     val organizationCode: String?,
     val organizationId: Long?,
     val organizationName: String?,
     val parentId: Long?,
     val paymentPlanId: Long?,
     val photoPath: String?,
-    val returnPriceType: Long?,
+    val returnPriceType: PriceType?,
     val risk: Double?,
     val riskDueDay: Long?,
     val state: Long?,
