@@ -1,10 +1,12 @@
 package com.repzone.sync.di
 
 import com.repzone.domain.model.SyncCustomerModel
+import com.repzone.network.dto.CustomerDto
 import com.repzone.network.dto.MobileProductDto
 import com.repzone.network.dto.MobileRouteDto
 import com.repzone.network.dto.ServiceProductGroupDto
 import com.repzone.sync.factory.SyncJobFactory
+import com.repzone.sync.impl.SyncApiCustomerImpl
 import com.repzone.sync.impl.SyncApiProductGroupImpl
 import com.repzone.sync.impl.SyncApiProductImpl
 import com.repzone.sync.impl.SyncApiRouteDataImpl
@@ -45,6 +47,12 @@ val SyncModule = module {
     //endregion PRODUCT GROUP
 
     //region CUSTOMER
+    single<ISyncApiService<List<CustomerDto>>>(named("customerGroupSyncApi")){ SyncApiCustomerImpl( get()) }
+    single<IBulkInsertService<List<CustomerDto>>>(named("customerBulkInsert")) {
+        CustomerRawSqlBulkInsertService(
+            get(),
+            get())
+    }
     //endregion CUSTOMER
 
     //region GENERAL
@@ -58,7 +66,9 @@ val SyncModule = module {
             productGroupApi = get(named("productGroupSyncApi")),
             productGroupBulkInsert = get(named("productGroupBulkInsert")),
             routeApi = get(named("routeDataSyncApi")),
-            routeBulkInsert = get(named("routeDataBulkInsert"))
+            routeBulkInsert = get(named("routeDataBulkInsert")),
+            customerApi = get(named("customerGroupSyncApi")),
+            customerBulkInsert = get(named("customerBulkInsert"))
         )
     }
 }

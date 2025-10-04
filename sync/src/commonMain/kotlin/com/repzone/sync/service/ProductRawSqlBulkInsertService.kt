@@ -1,5 +1,6 @@
 package com.repzone.sync.service
 
+import com.repzone.core.util.extensions.quote
 import com.repzone.data.mapper.ProductEntityDtoDbMapper
 import com.repzone.database.ProductParameterEntity
 import com.repzone.database.SyncProductEntity
@@ -161,7 +162,5 @@ class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMap
                 .joinToString(", ", prefix = "(", postfix = ")")
         }
     }
-
-    private fun String.quote() = "'${replace("'", "''")}'"
     //endregion
 }

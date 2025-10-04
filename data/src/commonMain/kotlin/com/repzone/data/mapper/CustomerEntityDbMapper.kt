@@ -140,24 +140,26 @@ class CustomerEntityDbMapper: MapperDto<SyncCustomerEntity, SyncCustomerModel, C
         )
     }
 
-    fun fromDtoAdress(dto: MobileAddressDto, customerId: Long?): SyncAddressEntity{
-        return SyncAddressEntity(
-            Id = dto.id.toLong(),
-            AddressName = dto.name,
-            AddressType = dto.type.enumToLong(),
-            City = dto.city,
-            Contact = dto.responsible,
-            Country = dto.country,
-            CustomerId = customerId,
-            District = dto.district,
-            FaxNumber = dto.fax,
-            Latitude = dto.latitude,
-            Longitude = dto.longitude,
-            PhoneNumber = dto.phone,
-            State = dto.state.toLong(),
-            Street = dto.street,
-            Street2 = dto.street2
-        )
+    fun fromDtoAdress(list: List<MobileAddressDto>, customerId: Long?): List<SyncAddressEntity>{
+        return list.map { dto ->
+             SyncAddressEntity(
+                Id = dto.id.toLong(),
+                AddressName = dto.name,
+                AddressType = dto.type.enumToLong(),
+                City = dto.city,
+                Contact = dto.responsible,
+                Country = dto.country,
+                CustomerId = customerId,
+                District = dto.district,
+                FaxNumber = dto.fax,
+                Latitude = dto.latitude,
+                Longitude = dto.longitude,
+                PhoneNumber = dto.phone,
+                State = dto.state.toLong(),
+                Street = dto.street,
+                Street2 = dto.street2
+            )
+        }
     }
 
 

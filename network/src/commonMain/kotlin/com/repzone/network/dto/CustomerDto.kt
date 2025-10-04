@@ -3,6 +3,7 @@ package com.repzone.network.dto
 import com.repzone.core.enums.MonitoringActionType
 import com.repzone.core.enums.PriceType
 import com.repzone.core.util.InstantSerializer
+import com.repzone.network.util.OrdinalEnumSerializer
 import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant

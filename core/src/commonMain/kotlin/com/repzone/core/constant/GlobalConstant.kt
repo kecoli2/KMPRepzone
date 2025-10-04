@@ -20,3 +20,7 @@ object IProductApiControllerConstant {
 object IRouteApiControllerConstant {
     const val ROUTE_LIST_ENDPOINT = "/api/v1/Route/List"
 }
+
+object  ICustomerApiControllerConstant {
+    const val CUSTOMER_LIST_ENDPOINT = "/api/v1/Customer/List"
+}

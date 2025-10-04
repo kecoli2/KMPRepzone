@@ -15,6 +15,7 @@ import com.repzone.domain.model.SyncModuleModel
 import com.repzone.domain.model.SyncProductModel
 import com.repzone.domain.model.SyncRouteAppointmentModel
 import com.repzone.domain.repository.*
+import com.repzone.network.dto.CustomerDto
 import com.repzone.network.dto.MobileRouteDto
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -23,8 +24,9 @@ val RepositoryModule = module {
 
 
     //region Customer
-    single<Mapper<SyncCustomerEntity, SyncCustomerModel>>(named("CustomerEntityDbMapperInterface")) { CustomerEntityDbMapper() }
+    single<MapperDto<SyncCustomerEntity, SyncCustomerModel, CustomerDto>>(named("CustomerEntityDbMapperInterface")) { CustomerEntityDbMapper() }
     single<ICustomerRepository> { CustomerRepositoryImpl(get(named("CustomerEntityDbMapperInterface")), get()) }
+    single{ CustomerEntityDbMapper() }
     //endregion
 
     //region Product
