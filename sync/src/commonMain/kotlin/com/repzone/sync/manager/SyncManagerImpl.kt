@@ -25,6 +25,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.sync.withPermit
 
 class SyncManagerImpl(private val syncJobs: Map<SyncJobType, ISyncJob>, private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)): ISyncManager {
+
     //region Field
     private val mutex = Mutex()
     private val runningJobs = mutableMapOf<SyncJobType, Job>()
