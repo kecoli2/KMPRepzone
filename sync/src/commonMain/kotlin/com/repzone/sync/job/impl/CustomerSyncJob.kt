@@ -15,7 +15,7 @@ class CustomerSyncJob(apiService: ISyncApiService<List<CustomerDto>>,
                       syncModuleRepository: ISyncModuleRepository,
 ): BasePaginatedSyncJob<List<CustomerDto>>(apiService, bulkInsertService, syncModuleRepository) {
     //region Field
-    override val allowedRoles = setOf(UserRole.MERGE_STAFF)
+    override val allowedRoles = setOf(UserRole.SALES_REP, UserRole.MERGE_STAFF, UserRole.MANAGER, UserRole.ADMIN)
     override val jobType = SyncJobType.CUSTOMERS
     override val defaultRequestEndPoint = ICustomerApiControllerConstant.CUSTOMER_LIST_ENDPOINT
     //endregion

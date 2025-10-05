@@ -1,4 +1,4 @@
-package com.repzone.sync.service.api
+package com.repzone.sync.service.api.base
 
 import com.repzone.core.util.extensions.toDateString
 import com.repzone.core.util.toModel
@@ -11,7 +11,7 @@ import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-abstract class BaseSyncApiService<TDto : Any>(protected val client: HttpClient) : ISyncApiService<TDto> {
+abstract class BaseSyncApiService<TDto : Any>(val client: HttpClient) : ISyncApiService<TDto> {
     protected abstract fun extractLastId(data: TDto): Int
     protected abstract fun getDataSize(data: TDto): Int
 

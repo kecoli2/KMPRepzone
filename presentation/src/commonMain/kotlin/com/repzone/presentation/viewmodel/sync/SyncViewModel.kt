@@ -138,7 +138,7 @@ class SyncTestViewModel(
     }
 
     private fun getCurrentUserRole(): UserRole {
-        return UserRole.SALES_REP
+        return UserRole.ADMIN
     }
 
     /**

@@ -11,6 +11,8 @@ import com.repzone.network.di.PlatformNetworkModule
 import com.repzone.presentation.base.initializeSmartViewModelStore
 import com.repzone.presentation.di.PresentationModule
 import com.repzone.sync.di.SyncModule
+import com.repzone.sync.transaction.TransactionCoordinator
+import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.context.loadKoinModules
@@ -18,6 +20,7 @@ import org.koin.core.context.loadKoinModules
 class PlatformApplication: Application() {
 
     //region Field
+    private val transactionCoordinator: TransactionCoordinator by inject()
     //endregion
 
     //region Properties
@@ -50,6 +53,11 @@ class PlatformApplication: Application() {
     //endregion
 
     //region Protected Method
+
+    override fun onTerminate() {
+        super.onTerminate()
+        transactionCoordinator.shutdown()
+    }
     //endregion
 
     //region Private Method

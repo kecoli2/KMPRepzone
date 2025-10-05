@@ -20,16 +20,18 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.scan
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.sync.withPermit
 
-class SyncManagerImpl(private val syncJobs: Map<SyncJobType, ISyncJob>,
-                      private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)):
-    ISyncManager {
+class SyncManagerImpl(private val syncJobs: Map<SyncJobType, ISyncJob>, private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)): ISyncManager {
     //region Field
     private val mutex = Mutex()
     private val runningJobs = mutableMapOf<SyncJobType, Job>()
     private val jobHistory = MutableSharedFlow<SyncJobResult>(replay = 50)
     private var isPaused = false
+
+    private val jobSemaphore = Semaphore(5) // AYNI ANDA CALISACAK JOB SAYISI
     //endregion
 
     //region Properties
@@ -75,14 +77,16 @@ class SyncManagerImpl(private val syncJobs: Map<SyncJobType, ISyncJob>,
                 val job = syncJobs[jobType] ?: return@forEach
 
                 val coroutineJob = scope.launch {
-                    try {
-                        val result = job.execute()
-                        jobHistory.emit(result)
-                    } catch (e: Exception) {
-                        // Job kendi exception'larını handle ediyor
-                    } finally {
-                        mutex.withLock {
-                            runningJobs.remove(jobType)
+                    jobSemaphore.withPermit {
+                        try {
+                            val result = job.execute()
+                            jobHistory.emit(result)
+                        } catch (e: Exception) {
+                            // Job kendi exception'larını handle ediyor
+                        } finally {
+                            mutex.withLock {
+                                runningJobs.remove(jobType)
+                            }
                         }
                     }
                 }
@@ -122,7 +126,7 @@ class SyncManagerImpl(private val syncJobs: Map<SyncJobType, ISyncJob>,
 
     override fun getJobHistory(): Flow<List<SyncJobResult>> =
         jobHistory.asSharedFlow()
-            .scan(emptyList<SyncJobResult>()) { acc, result ->
+            .scan(emptyList()) { acc, result ->
                 (acc + result).takeLast(50) // Son 50 sonucu tut
             }
     //endregion

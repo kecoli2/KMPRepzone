@@ -193,8 +193,6 @@ abstract class BasePaginatedSyncJob<TDto : Any>(
                     checkCancellation()
 
                     val inserted = bulkInsertService.upsertBatch(dtoData)
-
-                    // Update last ID for pagination (will be used by next fetchPage call if any)
                     val lastId = extractLastId(dtoData)
                     requestFilter?.lastId = lastId.toInt()
 
