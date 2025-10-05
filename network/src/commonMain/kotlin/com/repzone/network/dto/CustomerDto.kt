@@ -3,7 +3,6 @@ package com.repzone.network.dto
 import com.repzone.core.enums.MonitoringActionType
 import com.repzone.core.enums.PriceType
 import com.repzone.core.util.InstantSerializer
-import com.repzone.network.util.OrdinalEnumSerializer
 import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -44,12 +43,18 @@ data class CustomerDto(
     val checkRiskDispatch: Boolean,
     val checkRiskOrder: Boolean,
     val checkRiskOrderProposal: Boolean,
+    @Serializable(with = MonitoringActionType.Companion.Serializer::class)
     val invoiceMonitoringAction: MonitoringActionType,
+    @Serializable(with = MonitoringActionType.Companion.Serializer::class)
     val dispatchMonitoringAction: MonitoringActionType,
+    @Serializable(with = MonitoringActionType.Companion.Serializer::class)
     val orderMonitoringAction: MonitoringActionType,
+    @Serializable(with = MonitoringActionType.Companion.Serializer::class)
     val orderProposalMonitoringAction: MonitoringActionType,
     val blocked: Boolean,
     val isVatExempt: Boolean,
+    @Serializable(with = PriceType.Companion.Serializer::class)
     val returnPriceType: PriceType,
+    @Serializable(with = PriceType.Companion.Serializer::class)
     val damagedReturnPriceType: PriceType
 )

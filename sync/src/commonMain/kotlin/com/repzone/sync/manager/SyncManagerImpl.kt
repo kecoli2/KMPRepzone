@@ -72,7 +72,6 @@ class SyncManagerImpl(private val syncJobs: Map<SyncJobType, ISyncJob>, private 
 
     override suspend fun startSpecificJobs(jobs: List<SyncJobType>) = mutex.withLock {
         if (isPaused) return@withLock
-
         jobs.forEach { jobType ->
             if (jobType !in runningJobs) {
                 val job = syncJobs[jobType] ?: return@forEach

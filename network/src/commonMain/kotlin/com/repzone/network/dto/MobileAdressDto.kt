@@ -12,6 +12,7 @@ data class MobileAddressDto(
     val responsible: String? = null,
     val phone: String? = null,
     val fax: String? = null,
+    @Serializable(with = AddressType.Companion.Serializer::class)
     val type: AddressType,
     @SerialName("Streeet")
     val street: String? = null,

@@ -129,12 +129,12 @@ class SyncTestViewModel(
 
     override fun onStop() {
         super.onStop()
-        println("🛑 SyncTestViewModel stopped")
+        transactionCoordinator.shutdown()
     }
 
     override fun onDispose() {
         super.onDispose()
-        println("🗑️ SyncTestViewModel disposed")
+        transactionCoordinator.shutdown()
     }
 
     private fun getCurrentUserRole(): UserRole {
@@ -183,7 +183,7 @@ class SyncTestViewModel(
                 updateState { currentState ->
                     currentState.copy(
                         uiFrame = currentState.uiFrame.copy(isLoading = false),
-                        errorMessage = "❌ Sync başlatılamadı: ${e.message}"
+                        errorMessage = "Sync başlatılamadı: ${e.message}"
                     )
                 }
             }
@@ -243,7 +243,7 @@ class SyncTestViewModel(
                 updateState { currentState ->
                     currentState.copy(
                         uiFrame = currentState.uiFrame.copy(isLoading = false),
-                        errorMessage = "❌ Sync işlemleri başlatılamadı: ${e.message}" // ← Değişti
+                        errorMessage = "Sync işlemleri başlatılamadı: ${e.message}" // ← Değişti
                     )
                 }
             }
@@ -276,9 +276,9 @@ class SyncTestViewModel(
         scope.launch {
             try {
                 syncManager.cancelAll()
-                updateState { it.copy(successMessage = "🛑 Tüm sync işlemleri iptal edildi") }
+                updateState { it.copy(successMessage = "Tüm sync işlemleri iptal edildi") }
             } catch (e: Exception) {
-                updateState { it.copy(errorMessage = "❌ İptal etme başarısız: ${e.message}") }
+                updateState { it.copy(errorMessage = "İptal etme başarısız: ${e.message}") }
             }
         }
     }
@@ -294,7 +294,7 @@ class SyncTestViewModel(
             } catch (e: Exception) {
                 updateState { currentState ->
                     currentState.copy(
-                        uiFrame = currentState.uiFrame.copy(error = "❌ İstatistik güncelleme başarısız: ${e.message}")
+                        uiFrame = currentState.uiFrame.copy(error = "İstatistik güncelleme başarısız: ${e.message}")
                     )
                 }
             }

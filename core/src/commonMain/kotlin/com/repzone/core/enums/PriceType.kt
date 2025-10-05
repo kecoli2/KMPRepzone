@@ -1,16 +1,24 @@
 package com.repzone.core.enums
 
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.SerialName
+import kotlinx.serialization.KSerializer
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 
 @OptIn(ExperimentalSerializationApi::class)
 enum class PriceType {
-    @SerialName("0")
     DEFAULT,
-    @SerialName("1")
     SALES,
-    @SerialName("2")
     RETURN,
-    @SerialName("3")
-    DAMAGERETURN
+    DAMAGERETURN;
+
+    companion object {
+        object Serializer : KSerializer<PriceType> {
+            override val descriptor = PrimitiveSerialDescriptor("PriceType", PrimitiveKind.INT)
+            override fun serialize(encoder: Encoder, value: PriceType) = encoder.encodeInt(value.ordinal)
+            override fun deserialize(decoder: Decoder) = PriceType.entries[decoder.decodeInt()]
+        }
+    }
 }
