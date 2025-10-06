@@ -1,15 +1,16 @@
-package com.repzone.sync.service
+package com.repzone.sync.service.bulk.impl
 
 import com.repzone.data.util.MapperDto
 
 import com.repzone.database.SyncRouteAppointmentEntity
+import com.repzone.database.SyncRouteAppointmentEntityMetadata
+import com.repzone.database.toSqlValuesString
 import com.repzone.domain.model.SyncRouteAppointmentModel
 import com.repzone.network.dto.MobileRouteDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
 import com.repzone.sync.transaction.TableOperation
 import com.repzone.sync.transaction.TransactionCoordinator
-import io.ktor.http.quote
 
 class RouteDataRawSqlBulkInsertService(private val dbMapper: MapperDto<SyncRouteAppointmentEntity, SyncRouteAppointmentModel, MobileRouteDto>,
                                        coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<MobileRouteDto>>(coordinator) {
@@ -28,18 +29,10 @@ class RouteDataRawSqlBulkInsertService(private val dbMapper: MapperDto<SyncRoute
         return CompositeOperation(
             operations = listOf(
                 TableOperation(
-                    tableName = "SyncRouteAppointmentEntity",
+                    tableName = SyncRouteAppointmentEntityMetadata.tableName,
                     clearSql = null,
-                    columns = listOf(
-                        "Id",
-                        "CustomerId",
-                        "Description",
-                        "EndDate",
-                        "SprintId",
-                        "StartDate",
-                        "State"
-                    ),
-                    values = buildRouteValues(routeList),
+                    columns = SyncRouteAppointmentEntityMetadata.columns,
+                    values = routeList.map { it.toSqlValuesString() },
                     recordCount = routeList.size,
                     useUpsert = useUpsert,
                     includeClears = includeClears
@@ -54,18 +47,5 @@ class RouteDataRawSqlBulkInsertService(private val dbMapper: MapperDto<SyncRoute
     //endregion
 
     //region Private Method
-    private fun buildRouteValues(entities: List<SyncRouteAppointmentEntity>): List<String> {
-        return entities.map { e ->
-            listOf(
-                e.Id,
-                e.CustomerId,
-                e.Description?.quote(),
-                e.EndDate,
-                e.SprintId,
-                e.StartDate,
-                e.State
-            ).joinToString(", ", prefix = "(", postfix = ")")
-        }
-    }
     //endregion
 }

@@ -1,10 +1,10 @@
-package com.repzone.sync.service
+package com.repzone.sync.service.bulk.impl
 
-import com.repzone.core.util.extensions.quote
 import com.repzone.data.mapper.ProductEntityDtoDbMapper
-import com.repzone.database.ProductParameterEntity
-import com.repzone.database.SyncProductEntity
-import com.repzone.database.SyncProductUnitEntity
+import com.repzone.database.ProductParameterEntityMetadata
+import com.repzone.database.SyncProductEntityMetadata
+import com.repzone.database.SyncProductUnitEntityMetadata
+import com.repzone.database.toSqlValuesString
 import com.repzone.network.dto.MobileProductDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
@@ -37,34 +37,30 @@ class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMap
 
         val operations = listOf(
             TableOperation(
-                tableName = "SyncProductEntity",
-                clearSql = "DELETE FROM SyncProductUnitEntity",
-                columns = listOf("Id", "BrandId", "BrandName", "BrandPhotoPath", "CloseToReturns", "CloseToSales", "Color", "Description", "DisplayOrder", "GroupId","GroupName",
-                    "GroupPhotoPath", "IsVisible", "ManufacturerId", "MaximumOrderQuantity", "MinimumOrderQuantity", "ModificationDateUtc", "Name", "OrderQuantityFactor", "OrganizationId",
-                    "OrganizationIds", "PhotoPath", "RecordDateUtc", "Shared", "Sku", "State", "Tags", "TenantId", "Vat"),
-                values = buildProductValues(productEntities),
+                tableName = SyncProductEntityMetadata.tableName,
+                clearSql = null,
+                columns = SyncProductEntityMetadata.columns,
+                values = productEntities.map { it.toSqlValuesString() },
                 recordCount = productEntities.size,
                 includeClears = includeClears,
                 useUpsert = useUpsert
             ),
 
             TableOperation(
-                tableName = "SyncProductUnitEntity",
-                clearSql = "DELETE FROM SyncProductUnitEntity",
-                columns = listOf("Id", "Barcode", "DisplayOrder", "IsVisible", "MaxOrderQuantity", "MinimumOrderQuantity", "ModificationDateUtc", "Multiplier", "OrderQuantityFactor", "Price",
-                    "PriceId", "ProductId", "PurchaseDamagedReturnPrice", "PurchasePrice", "PurchaseReturnPrice", "RecordDateUtc", "SalesDamagedReturnPrice", "SalesReturnPrice", "Selected", "State",
-                    "TenantId", "UnitId", "Weight"),
-                values = buildUnitValues(unitEntities),
+                tableName = SyncProductUnitEntityMetadata.tableName,
+                clearSql = null,
+                columns = SyncProductUnitEntityMetadata.columns,
+                values = unitEntities.map { it.toSqlValuesString() },
                 recordCount = unitEntities.size,
                 includeClears = includeClears,
                 useUpsert = useUpsert
             ),
 
             TableOperation(
-                tableName = "ProductParameterEntity",
-                clearSql = "DELETE FROM ProductParameterEntity",
-                columns = listOf("Color", "Id", "IsVisible", "Order", "OrganizationId", "ProductId"),
-                values = buildParameterValues(parameterEntities),
+                tableName = ProductParameterEntityMetadata.tableName,
+                clearSql = null,
+                columns = ProductParameterEntityMetadata.columns,
+                values = parameterEntities.map { it.toSqlValuesString() },
                 recordCount = parameterEntities.size,
                 includeClears = includeClears,
                 useUpsert = useUpsert
@@ -84,83 +80,5 @@ class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMap
     //endregion
 
     //region Private Method
-    private fun buildProductValues(entities: List<SyncProductEntity>): List<String> {
-        return entities.map { e ->
-            listOf(
-                e.Id,
-                e.BrandId,
-                e.BrandName?.quote(),
-                e.BrandPhotoPath?.quote(),
-                e.CloseToReturns,
-                e.CloseToSales,
-                e.Color?.quote(),
-                e.Description?.quote(),
-                e.DisplayOrder,
-                e.GroupId,
-                e.GroupName?.quote(),
-                e.GroupPhotoPath?.quote(),
-                e.IsVisible,
-                e.ManufacturerId,
-                e.MaximumOrderQuantity,
-                e.MinimumOrderQuantity,
-                e.ModificationDateUtc,
-                e.Name?.quote(),
-                e.OrderQuantityFactor,
-                e.OrganizationId,
-                e.OrganizationIds?.quote(),
-                e.PhotoPath?.quote(),
-                e.RecordDateUtc,
-                e.Shared,
-                e.Sku?.quote(),
-                e.State,
-                e.Tags?.quote(),
-                e.TenantId,
-                e.Vat
-            ).joinToString(", ", prefix = "(", postfix = ")")
-        }
-    }
-    private fun buildUnitValues(entities: List<SyncProductUnitEntity>): List<String> {
-        return entities.map { e ->
-            listOf(
-                e.Id,
-                e.Barcode?.quote(),
-                e.DisplayOrder,
-                e.IsVisible,
-                e.MaxOrderQuantity,
-                e.MinimumOrderQuantity,
-                e.ModificationDateUtc,
-                e.Multiplier,
-                e.OrderQuantityFactor,
-                e.Price,
-                e.PriceId,
-                e.ProductId,
-                e.PurchaseDamagedReturnPrice,
-                e.PurchasePrice,
-                e.PurchaseReturnPrice,
-                e.RecordDateUtc,
-                e.SalesDamagedReturnPrice,
-                e.SalesReturnPrice,
-                e.Selected,
-                e.State,
-                e.TenantId,
-                e.UnitId,
-                e.Weight
-            ).map { it ?: "NULL" }
-                .joinToString(", ", prefix = "(", postfix = ")")
-        }
-    }
-    private fun buildParameterValues(entities: List<ProductParameterEntity>): List<String> {
-        return entities.map { e ->
-            listOf(
-                e.Color?.quote(),
-                e.Id,
-                e.IsVisible,
-                e.Order,
-                e.OrganizationId,
-                e.ProductId
-            ).map { it ?: "NULL" }
-                .joinToString(", ", prefix = "(", postfix = ")")
-        }
-    }
     //endregion
 }

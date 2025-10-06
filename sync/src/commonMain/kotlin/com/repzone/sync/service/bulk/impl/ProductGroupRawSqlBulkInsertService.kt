@@ -1,13 +1,13 @@
-package com.repzone.sync.service
+package com.repzone.sync.service.bulk.impl
 
 import com.repzone.data.mapper.SyncProductGroupEntityDbMapper
-import com.repzone.database.SyncProductGroupEntity
+import com.repzone.database.SyncProductGroupEntityMetadata
+import com.repzone.database.toSqlValuesString
 import com.repzone.network.dto.ServiceProductGroupDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
 import com.repzone.sync.transaction.TableOperation
 import com.repzone.sync.transaction.TransactionCoordinator
-import io.ktor.http.quote
 
 class ProductGroupRawSqlBulkInsertService(private val dbMapper: SyncProductGroupEntityDbMapper,
                                           coordinator: TransactionCoordinator
@@ -28,21 +28,10 @@ class ProductGroupRawSqlBulkInsertService(private val dbMapper: SyncProductGroup
 
         val operations = listOf(
             TableOperation(
-                tableName = "SyncProductGroupEntity",
+                tableName = SyncProductGroupEntityMetadata.tableName,
                 clearSql = null,
-                columns = listOf(
-                    "Id",
-                    "IconIndex",
-                    "ModificationDateUtc",
-                    "Name",
-                    "OrganizationId",
-                    "ParentId",
-                    "PhotoPath",
-                    "RecordDateUtc",
-                    "Shared",
-                    "State"
-                ),
-                values = buildProductGroupValues(productGroupEntities),
+                columns = SyncProductGroupEntityMetadata.columns,
+                values = productGroupEntities.map { it.toSqlValuesString() },
                 recordCount = productGroupEntities.size,
                 useUpsert = true,
                 includeClears = false
@@ -60,21 +49,5 @@ class ProductGroupRawSqlBulkInsertService(private val dbMapper: SyncProductGroup
     //endregion
 
     //region Private Method
-    private fun buildProductGroupValues(entities: List<SyncProductGroupEntity>): List<String> {
-        return entities.map { e ->
-            listOf(
-                e.Id,
-                e.IconIndex,
-                e.ModificationDateUtc,
-                e.Name?.quote(),
-                e.OrganizationId,
-                e.ParentId,
-                e.PhotoPath?.quote(),
-                e.RecordDateUtc,
-                e.Shared,
-                e.State
-            ).joinToString(", ", prefix = "(", postfix = ")")
-        }
-    }
     //endregion
 }

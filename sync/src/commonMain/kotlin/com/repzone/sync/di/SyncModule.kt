@@ -13,7 +13,10 @@ import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.interfaces.ISyncManager
 import com.repzone.sync.manager.SyncManagerImpl
-import com.repzone.sync.service.*
+import com.repzone.sync.service.bulk.impl.CustomerRawSqlBulkInsertService
+import com.repzone.sync.service.bulk.impl.ProductGroupRawSqlBulkInsertService
+import com.repzone.sync.service.bulk.impl.ProductRawSqlBulkInsertService
+import com.repzone.sync.service.bulk.impl.RouteDataRawSqlBulkInsertService
 import com.repzone.sync.transaction.TransactionCoordinator
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -25,13 +28,18 @@ val SyncModule = module {
 
     //region ROUTEDATA
     single<IBulkInsertService<List<MobileRouteDto>>>(named("routeDataBulkInsert")) {
-        RouteDataRawSqlBulkInsertService(get(named("SyncRouteAppointmentEntityDbMapper")),get())
+        RouteDataRawSqlBulkInsertService(get(named("SyncRouteAppointmentEntityDbMapper")), get())
     }
     single<ISyncApiService<List<MobileRouteDto>>>(named("routeDataSyncApi")){ SyncApiRouteDataImpl(get() ) }
     //endregion ROUTEDATA
 
     //region PRODUCT
-    single<IBulkInsertService<List<MobileProductDto>>>(named("productBulkInsert")) { ProductRawSqlBulkInsertService(get(),get()) }
+    single<IBulkInsertService<List<MobileProductDto>>>(named("productBulkInsert")) {
+        ProductRawSqlBulkInsertService(
+            get(),
+            get()
+        )
+    }
     single<ISyncApiService<List<MobileProductDto>>>(named("productSyncApi")){ SyncApiProductImpl(get()) }
     //endregion PRODUCT
 
@@ -50,7 +58,8 @@ val SyncModule = module {
     single<IBulkInsertService<List<CustomerDto>>>(named("customerBulkInsert")) {
         CustomerRawSqlBulkInsertService(
             get(),
-            get())
+            get()
+        )
     }
     //endregion CUSTOMER
 
