@@ -1,10 +1,13 @@
 package com.repzone.data.mapper
 
 import com.repzone.data.util.Mapper
+import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncEventReasonEntity
 import com.repzone.domain.model.SyncEventReasonModel
+import com.repzone.network.dto.EventReasonDto
+import kotlin.time.ExperimentalTime
 
-class SyncEventReasonEntityDbMapper : Mapper<SyncEventReasonEntity, SyncEventReasonModel> {
+class SyncEventReasonEntityDbMapper : MapperDto<SyncEventReasonEntity, SyncEventReasonModel, EventReasonDto> {
     //region Field
     //endregion
 
@@ -36,6 +39,19 @@ class SyncEventReasonEntityDbMapper : Mapper<SyncEventReasonEntity, SyncEventRea
             RecordDateUtc = domain.recordDateUtc,
             State = domain.state,
             Tags = domain.tags
+        )
+    }
+
+    @OptIn(ExperimentalTime::class)
+    override fun fromDto(dto: EventReasonDto): SyncEventReasonEntity {
+        return SyncEventReasonEntity(
+            Id = dto.id.toLong(),
+            ModificationDateUtc = dto.modificationDateUtc?.toEpochMilliseconds(),
+            Name = dto.name,
+            ReasonType = dto.reasonType?.toLong(),
+            RecordDateUtc = dto.recordDateUtc?.toEpochMilliseconds(),
+            State = dto.state.toLong(),
+            Tags = dto.tags
         )
     }
     //endregion

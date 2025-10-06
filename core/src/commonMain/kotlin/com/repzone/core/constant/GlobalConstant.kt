@@ -31,5 +31,6 @@ object  ICustomerApiControllerConstant {
 
 object ICommonApiControllerConstant {
     const val COMMON_APP_MODULES_ENDPOINT = "/api/App/Modules"
+    const val COMMON_APP_MODULES_REASONS_ENDPOINT = "/api/v1/Misc/EventReasons"
 
 }

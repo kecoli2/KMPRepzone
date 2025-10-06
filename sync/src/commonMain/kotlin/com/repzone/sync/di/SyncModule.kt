@@ -6,6 +6,7 @@ import com.repzone.network.dto.CustomerEmailDto
 import com.repzone.network.dto.ProductDto
 import com.repzone.network.dto.RouteDto
 import com.repzone.network.dto.CustomerGroupDto
+import com.repzone.network.dto.EventReasonDto
 import com.repzone.network.dto.PackageCustomFieldDto
 import com.repzone.network.dto.ProductGroupDto
 import com.repzone.sync.factory.SyncJobFactory
@@ -21,12 +22,14 @@ import com.repzone.sync.service.api.impl.SyncApiCustomerEmailImpl
 import com.repzone.sync.service.api.impl.SyncApiCustomerGroupImpl
 import com.repzone.sync.service.api.impl.SyncApiCustomerGroupPriceParametersImpl
 import com.repzone.sync.service.api.impl.SyncApiCustomerPriceParametersImpl
+import com.repzone.sync.service.api.impl.SyncApiEventReasonsImpl
 import com.repzone.sync.service.api.impl.SyncApiModulesImpl
 import com.repzone.sync.service.bulk.impl.CustomerEmailRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerGroupPriceParameterslRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerGroupRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerPriceParameterslRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerRawSqlBulkInsertService
+import com.repzone.sync.service.bulk.impl.EventReasonsRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.ModulesRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.ProductGroupRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.ProductRawSqlBulkInsertService
@@ -106,7 +109,8 @@ val SyncModule = module {
             get()
         )
     }
-    //region CUSTOMER GROUP PRICE PARAMETERS
+
+    //region COMMON MODULES
     single<ISyncApiService<List<PackageCustomFieldDto>>>(named("syncModulesImpl")){ SyncApiModulesImpl(get()) }
     single<IBulkInsertService<List<PackageCustomFieldDto>>>(named("syncModulesBulkInsert")){
         ModulesRawSqlBulkInsertService(
@@ -115,9 +119,13 @@ val SyncModule = module {
             get()
         )
     }
-    //region CUSTOM FIELD
+    //endregion COMMON MODULES
 
-    //endregion CUSTOM FIELD
+
+    //region COMMON REASONS
+    single<ISyncApiService<List<EventReasonDto>>>(named("syncApiEventReasonsImpl")){ SyncApiEventReasonsImpl(get()) }
+    single<IBulkInsertService<List<EventReasonDto>>>(named("syncModulesBulkInsert")){ EventReasonsRawSqlBulkInsertService(get(named("SyncEventReasonEntityDbMapper")),get()) }
+    //endregion COMMON REASONS
 
 
     //region GENERAL
@@ -143,6 +151,10 @@ val SyncModule = module {
             customerGroupPriceParametersApi = get(named("customerGroupPriceParametersImpl")),
             customerGroupPriceParametersBulkInsert = get(named("customerGroupEmailBulkInsert")),
             apiModulesApi = get(named("syncModulesImpl")),
-            modulesRawBulkInsert = get(named("syncModulesBulkInsert")))
+            modulesRawBulkInsert = get(named("syncModulesBulkInsert")),
+            eventReasonsApi = get(named("syncApiEventReasonsImpl")),
+            eventReasonsRawBulkInsert = get(named("syncModulesBulkInsert"))
+
+        )
     }
 }

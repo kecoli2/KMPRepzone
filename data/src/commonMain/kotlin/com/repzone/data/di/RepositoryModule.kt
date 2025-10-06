@@ -212,7 +212,7 @@ val RepositoryModule = module {
     //endregion
 
     //region EventReason
-    single<Mapper<SyncEventReasonEntity, SyncEventReasonModel>>(named("SyncEventReasonEntityDbMapper")) { SyncEventReasonEntityDbMapper() }
+    single<MapperDto<SyncEventReasonEntity, SyncEventReasonModel, EventReasonDto>>(named("SyncEventReasonEntityDbMapper")) { SyncEventReasonEntityDbMapper() }
     //endregion
 
     //region FeedbackCategory
