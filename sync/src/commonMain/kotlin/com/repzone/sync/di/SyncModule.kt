@@ -1,9 +1,10 @@
 package com.repzone.sync.di
 
 import com.repzone.network.dto.CustomerDto
-import com.repzone.network.dto.MobileProductDto
-import com.repzone.network.dto.MobileRouteDto
-import com.repzone.network.dto.ServiceProductGroupDto
+import com.repzone.network.dto.ProductDto
+import com.repzone.network.dto.RouteDto
+import com.repzone.network.dto.CustomerGroupDto
+import com.repzone.network.dto.ProductGroupDto
 import com.repzone.sync.factory.SyncJobFactory
 import com.repzone.sync.service.api.impl.SyncApiCustomerImpl
 import com.repzone.sync.service.api.impl.SyncApiProductGroupImpl
@@ -13,6 +14,8 @@ import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.interfaces.ISyncManager
 import com.repzone.sync.manager.SyncManagerImpl
+import com.repzone.sync.service.api.impl.SyncApiCustomerGroupImpl
+import com.repzone.sync.service.bulk.impl.CustomerGroupRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.ProductGroupRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.ProductRawSqlBulkInsertService
@@ -27,25 +30,25 @@ val SyncModule = module {
     single { TransactionCoordinator(get(), get()) }
 
     //region ROUTEDATA
-    single<IBulkInsertService<List<MobileRouteDto>>>(named("routeDataBulkInsert")) {
+    single<IBulkInsertService<List<RouteDto>>>(named("routeDataBulkInsert")) {
         RouteDataRawSqlBulkInsertService(get(named("SyncRouteAppointmentEntityDbMapper")), get())
     }
-    single<ISyncApiService<List<MobileRouteDto>>>(named("routeDataSyncApi")){ SyncApiRouteDataImpl(get() ) }
+    single<ISyncApiService<List<RouteDto>>>(named("routeDataSyncApi")){ SyncApiRouteDataImpl(get() ) }
     //endregion ROUTEDATA
 
     //region PRODUCT
-    single<IBulkInsertService<List<MobileProductDto>>>(named("productBulkInsert")) {
+    single<IBulkInsertService<List<ProductDto>>>(named("productBulkInsert")) {
         ProductRawSqlBulkInsertService(
             get(),
             get()
         )
     }
-    single<ISyncApiService<List<MobileProductDto>>>(named("productSyncApi")){ SyncApiProductImpl(get()) }
+    single<ISyncApiService<List<ProductDto>>>(named("productSyncApi")){ SyncApiProductImpl(get()) }
     //endregion PRODUCT
 
     //region PRODUCT GROUP
-    single<ISyncApiService<List<ServiceProductGroupDto>>>(named("productGroupSyncApi")){ SyncApiProductGroupImpl(get()) }
-    single<IBulkInsertService<List<ServiceProductGroupDto>>>(named("productGroupBulkInsert")) {
+    single<ISyncApiService<List<ProductGroupDto>>>(named("productGroupSyncApi")){ SyncApiProductGroupImpl(get()) }
+    single<IBulkInsertService<List<ProductGroupDto>>>(named("productGroupBulkInsert")) {
         ProductGroupRawSqlBulkInsertService(
             get(),
             get()
@@ -63,6 +66,15 @@ val SyncModule = module {
     }
     //endregion CUSTOMER
 
+    //region CUSTOMER GROUP
+    single<ISyncApiService<List<CustomerGroupDto>>>(named("customerGroupImpl")){ SyncApiCustomerGroupImpl( get()) }
+    single<IBulkInsertService<List<CustomerGroupDto>>>(named("customerGrouplBulkInsert")){
+        CustomerGroupRawSqlBulkInsertService(
+            get(named("SyncCustomerGroupEntityDbMapper")),
+            get())
+    }
+    //endregion CUSTOMER GROUP
+
     //region GENERAL
     single<ISyncManager>{ SyncManagerImpl(get()) }
     //endregion GENERAL
@@ -76,7 +88,9 @@ val SyncModule = module {
             routeApi = get(named("routeDataSyncApi")),
             routeBulkInsert = get(named("routeDataBulkInsert")),
             customerApi = get(named("customerGroupSyncApi")),
-            customerBulkInsert = get(named("customerBulkInsert"))
+            customerBulkInsert = get(named("customerBulkInsert")),
+            customerGroupApi = get(named("customerGroupImpl")),
+            customerGroupBulkInsert = get(named("customerGrouplBulkInsert"))
         )
     }
 }

@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class MobileProductParameterDto(
+data class ProductParameterDto(
     @SerialName("Id")
     val id: Int,
 
@@ -18,9 +18,9 @@ data class MobileProductParameterDto(
     val color: String? = null
 ) {
     companion object {
-        fun create(product: MobileProductDto): List<MobileProductParameterDto> {
+        fun create(product: ProductDto): List<ProductParameterDto> {
             return product.parameters.map { model ->
-                MobileProductParameterDto(
+                ProductParameterDto(
                     id = model.id,
                     productId = product.id,
                     order = model.order,

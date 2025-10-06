@@ -3,7 +3,7 @@ package com.repzone.sync.service.bulk.impl
 import com.repzone.data.mapper.SyncProductGroupEntityDbMapper
 import com.repzone.database.SyncProductGroupEntityMetadata
 import com.repzone.database.toSqlValuesString
-import com.repzone.network.dto.ServiceProductGroupDto
+import com.repzone.network.dto.ProductGroupDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
 import com.repzone.sync.transaction.TableOperation
@@ -11,7 +11,7 @@ import com.repzone.sync.transaction.TransactionCoordinator
 
 class ProductGroupRawSqlBulkInsertService(private val dbMapper: SyncProductGroupEntityDbMapper,
                                           coordinator: TransactionCoordinator
-): CompositeRawSqlBulkInsertService<List<ServiceProductGroupDto>>(coordinator) {
+): CompositeRawSqlBulkInsertService<List<ProductGroupDto>>(coordinator) {
     //region Field
     //endregion
 
@@ -23,7 +23,7 @@ class ProductGroupRawSqlBulkInsertService(private val dbMapper: SyncProductGroup
 
     //region Public Method
 
-    override fun buildCompositeOperation(items: List<ServiceProductGroupDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
+    override fun buildCompositeOperation(items: List<ProductGroupDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val productGroupEntities = items.map { dbMapper.fromDto(it) }
 
         val operations = listOf(

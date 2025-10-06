@@ -1,10 +1,13 @@
 package com.repzone.data.mapper
 
-import com.repzone.data.util.Mapper
+import com.repzone.core.util.extensions.toLong
+import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncCustomerGroupEntity
 import com.repzone.domain.model.SyncCustomerGroupModel
+import com.repzone.network.dto.CustomerGroupDto
+import kotlin.time.ExperimentalTime
 
-class SyncCustomerGroupEntityDbMapper : Mapper<SyncCustomerGroupEntity, SyncCustomerGroupModel> {
+class SyncCustomerGroupEntityDbMapper : MapperDto<SyncCustomerGroupEntity, SyncCustomerGroupModel, CustomerGroupDto> {
     //region Field
     //endregion
 
@@ -42,6 +45,22 @@ class SyncCustomerGroupEntityDbMapper : Mapper<SyncCustomerGroupEntity, SyncCust
             RecordDateUtc = domain.recordDateUtc,
             Shared = domain.shared,
             State = domain.state
+        )
+    }
+
+    @OptIn(ExperimentalTime::class)
+    override fun fromDto(dto: CustomerGroupDto): SyncCustomerGroupEntity {
+        return SyncCustomerGroupEntity(
+            Id = dto.id.toLong(),
+            IconIndex = dto.iconIndex?.toLong(),
+            IsDefault = dto.isDefault.toLong(),
+            ModificationDateUtc = dto.modificationDateUtc?.toEpochMilliseconds(),
+            Name = dto.name,
+            OrganizationId = dto.organizationId?.toLong(),
+            ParentId = dto.parentId?.toLong(),
+            RecordDateUtc = dto.recordDateUtc?.toEpochMilliseconds(),
+            Shared = dto.shared.toLong(),
+            State = dto.state.toLong()
         )
     }
     //endregion

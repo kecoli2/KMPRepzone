@@ -6,14 +6,14 @@ import com.repzone.data.util.Mapper
 import com.repzone.database.ProductParameterEntity
 import com.repzone.database.SyncProductEntity
 import com.repzone.database.SyncProductUnitEntity
-import com.repzone.network.dto.MobileProductDto
-import com.repzone.network.dto.MobileProductParameterDto
-import com.repzone.network.dto.ServiceProductUnitDto
+import com.repzone.network.dto.ProductDto
+import com.repzone.network.dto.ProductParameterDto
+import com.repzone.network.dto.ProductUnitDto
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, MobileProductDto> {
+class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, ProductDto> {
     //region Field
     //endregion
 
@@ -25,8 +25,8 @@ class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, MobileProductDto> {
 
     //region Public Method
 
-    override fun toDomain(from: SyncProductEntity): MobileProductDto {
-        return MobileProductDto(
+    override fun toDomain(from: SyncProductEntity): ProductDto {
+        return ProductDto(
             id = from.Id.toInt(),
             state = from.State?.toInt() ?: 0,
             sku = from.Sku,
@@ -56,7 +56,7 @@ class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, MobileProductDto> {
         )
     }
 
-    override fun fromDomain(domain: MobileProductDto): SyncProductEntity {
+    override fun fromDomain(domain: ProductDto): SyncProductEntity {
         return SyncProductEntity(
             Id = domain.id.toLong(),
             BrandId = domain.brandId?.toLong(),
@@ -90,7 +90,7 @@ class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, MobileProductDto> {
         )
     }
 
-    fun toUnitEntities(productId : Long?, list: List<ServiceProductUnitDto>): List<SyncProductUnitEntity>  {
+    fun toUnitEntities(productId : Long?, list: List<ProductUnitDto>): List<SyncProductUnitEntity>  {
         return list.map { domain ->
             SyncProductUnitEntity(
                 Id = domain.id.toLong(),
@@ -120,7 +120,7 @@ class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, MobileProductDto> {
         }
     }
 
-    fun toParametersEnties(productId : Long?, list: List<MobileProductParameterDto>): List<ProductParameterEntity> {
+    fun toParametersEnties(productId : Long?, list: List<ProductParameterDto>): List<ProductParameterEntity> {
         return list.map { domain ->
             ProductParameterEntity(
                 Id = domain.id.toLong(),

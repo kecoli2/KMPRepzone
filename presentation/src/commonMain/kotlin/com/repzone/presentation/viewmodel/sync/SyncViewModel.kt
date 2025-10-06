@@ -321,4 +321,7 @@ private fun SyncJobType.getDisplayName(): String = when (this) {
     FORM -> "Formlar"
     EXTRA_TABLE -> "Extarnal"
     STOCK -> "Stoklar"
+    CUSTOMERS_EMAIL -> "Müşteri Email"
+    CUSTOMERS_PRICE -> "Müşteri Fiyat"
+    CUSTOMERS_GROUP_PRICE -> "Müşteri Grubu Fiyatı"
 }

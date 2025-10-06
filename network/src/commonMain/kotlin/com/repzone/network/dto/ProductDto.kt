@@ -8,7 +8,7 @@ import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 @Serializable
-data class MobileProductDto(
+data class ProductDto(
     @SerialName("Id")
     val id: Int,
     @SerialName("State")
@@ -46,7 +46,7 @@ data class MobileProductDto(
     @SerialName("OrganizationIds")
     val organizationIds: String? = null,
     @SerialName("Units")
-    val units: List<ServiceProductUnitDto> = emptyList(),
+    val units: List<ProductUnitDto> = emptyList(),
     @SerialName("Color")
     val color: String? = null,
     @SerialName("BrandPhotoPath")
@@ -54,7 +54,7 @@ data class MobileProductDto(
     @SerialName("GroupPhotoPath")
     val groupPhotoPath: String? = null,
     @SerialName("Parameters")
-    val parameters: List<MobileProductParameterDto> = emptyList(),
+    val parameters: List<ProductParameterDto> = emptyList(),
     @SerialName("ModificationDateUtc")
     @Serializable(with = InstantSerializer::class)
     val modificationDateUtc: Instant? = null, // ISO 8601 format string olarak

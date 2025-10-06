@@ -10,7 +10,8 @@ import com.repzone.database.*
 import com.repzone.domain.model.*
 import com.repzone.domain.repository.*
 import com.repzone.network.dto.CustomerDto
-import com.repzone.network.dto.MobileRouteDto
+import com.repzone.network.dto.CustomerGroupDto
+import com.repzone.network.dto.RouteDto
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -34,7 +35,7 @@ val RepositoryModule = module {
     //endregion
 
     //region MobileRoute
-    single<MapperDto<SyncRouteAppointmentEntity, SyncRouteAppointmentModel, MobileRouteDto>>(named("SyncRouteAppointmentEntityDbMapper")) { SyncRouteAppointmentEntityDbMapper() }
+    single<MapperDto<SyncRouteAppointmentEntity, SyncRouteAppointmentModel, RouteDto>>(named("SyncRouteAppointmentEntityDbMapper")) { SyncRouteAppointmentEntityDbMapper() }
     //endregion MobileRoute
 
     //region Adress
@@ -133,7 +134,7 @@ val RepositoryModule = module {
     //endregion
 
     //region CustomerGroup
-    single<Mapper<SyncCustomerGroupEntity, SyncCustomerGroupModel>>(named("SyncCustomerGroupEntityDbMapper")) { SyncCustomerGroupEntityDbMapper() }
+    single<MapperDto<SyncCustomerGroupEntity, SyncCustomerGroupModel, CustomerGroupDto>>(named("SyncCustomerGroupEntityDbMapper")) { SyncCustomerGroupEntityDbMapper() }
     //endregion
 
     //region CustomerGroupProductDistribution

@@ -5,14 +5,14 @@ import com.repzone.database.ProductParameterEntityMetadata
 import com.repzone.database.SyncProductEntityMetadata
 import com.repzone.database.SyncProductUnitEntityMetadata
 import com.repzone.database.toSqlValuesString
-import com.repzone.network.dto.MobileProductDto
+import com.repzone.network.dto.ProductDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
 import com.repzone.sync.transaction.TableOperation
 import com.repzone.sync.transaction.TransactionCoordinator
 
 class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMapper,
-                                     coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<MobileProductDto>>(coordinator) {
+                                     coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<ProductDto>>(coordinator) {
     //region Field
     //endregion
 
@@ -25,7 +25,7 @@ class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMap
 
     //region Public Method
 
-    override fun buildCompositeOperation(items: List<MobileProductDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
+    override fun buildCompositeOperation(items: List<ProductDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val productEntities = items.map { dbMapper.fromDomain(it) }
         val unitEntities = items.flatMap { dto ->
             dbMapper.toUnitEntities(dto.id.toLong(), dto.units)

@@ -23,4 +23,5 @@ object IRouteApiControllerConstant {
 
 object  ICustomerApiControllerConstant {
     const val CUSTOMER_LIST_ENDPOINT = "/api/v1/Customer/List"
+    const val CUSTOMER_GROUPS_ENDPOINT = "/api/v1/Customer/Groups"
 }

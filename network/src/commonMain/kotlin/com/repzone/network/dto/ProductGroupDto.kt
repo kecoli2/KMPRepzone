@@ -8,7 +8,7 @@ import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 @Serializable
-data class ServiceProductGroupDto(
+data class ProductGroupDto(
     @SerialName("Id")
     val id: Int,
     @SerialName("State")

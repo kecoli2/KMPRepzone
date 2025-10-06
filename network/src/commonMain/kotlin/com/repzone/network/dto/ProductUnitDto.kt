@@ -4,7 +4,7 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class ServiceProductUnitDto(
+data class ProductUnitDto(
     @SerialName("Id")
     val id: Int,
     @SerialName("State")

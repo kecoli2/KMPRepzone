@@ -3,10 +3,10 @@ package com.repzone.data.mapper
 import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncRouteAppointmentEntity
 import com.repzone.domain.model.SyncRouteAppointmentModel
-import com.repzone.network.dto.MobileRouteDto
+import com.repzone.network.dto.RouteDto
 import kotlin.time.ExperimentalTime
 
-class SyncRouteAppointmentEntityDbMapper: MapperDto<SyncRouteAppointmentEntity, SyncRouteAppointmentModel, MobileRouteDto> {
+class SyncRouteAppointmentEntityDbMapper: MapperDto<SyncRouteAppointmentEntity, SyncRouteAppointmentModel, RouteDto> {
     //region Field
     //endregion
 
@@ -42,7 +42,7 @@ class SyncRouteAppointmentEntityDbMapper: MapperDto<SyncRouteAppointmentEntity, 
     }
 
     @OptIn(ExperimentalTime::class)
-    override fun fromDto(dto: MobileRouteDto): SyncRouteAppointmentEntity {
+    override fun fromDto(dto: RouteDto): SyncRouteAppointmentEntity {
         return SyncRouteAppointmentEntity(
             Id = dto.id.toLong(),
             CustomerId = dto.customerId.toLong(),

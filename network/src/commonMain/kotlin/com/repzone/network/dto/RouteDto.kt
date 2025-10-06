@@ -7,7 +7,7 @@ import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 @Serializable
-data class MobileRouteDto(
+data class RouteDto(
     override val id: Int,
     override val state: Int,
     @Serializable(with = InstantSerializer::class)

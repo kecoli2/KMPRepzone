@@ -4,7 +4,7 @@ import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncProductGroupEntity
 import com.repzone.domain.model.SyncProductGroupModel
-import com.repzone.network.dto.ServiceProductGroupDto
+import com.repzone.network.dto.ProductGroupDto
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -49,7 +49,7 @@ class SyncProductGroupEntityDbMapper: Mapper<SyncProductGroupEntity, SyncProduct
         )
     }
 
-    fun fromDto(dto: ServiceProductGroupDto): SyncProductGroupEntity {
+    fun fromDto(dto: ProductGroupDto): SyncProductGroupEntity {
         return SyncProductGroupEntity(
             Id = dto.id.toLong(),
             IconIndex = dto.iconIndex.toLong(),

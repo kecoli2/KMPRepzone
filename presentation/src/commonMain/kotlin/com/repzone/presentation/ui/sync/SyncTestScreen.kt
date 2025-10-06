@@ -52,16 +52,7 @@ import com.repzone.presentation.base.ViewModelHost
 import com.repzone.sync.model.SyncJobResult
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
-import com.repzone.sync.model.SyncJobType.COMMON
-import com.repzone.sync.model.SyncJobType.CUSTOMERS
-import com.repzone.sync.model.SyncJobType.CUSTOMERS_GROUP
-import com.repzone.sync.model.SyncJobType.EXTRA_TABLE
-import com.repzone.sync.model.SyncJobType.FORM
-import com.repzone.sync.model.SyncJobType.PRODUCTS
-import com.repzone.sync.model.SyncJobType.PRODUCTS_GROUP
-import com.repzone.sync.model.SyncJobType.ROUTE
-import com.repzone.sync.model.SyncJobType.STOCK
-import com.repzone.sync.model.SyncJobType.TABLE_REPLICATION
+import com.repzone.sync.model.SyncJobType.*
 import com.repzone.sync.model.SyncProgress
 import com.repzone.sync.model.UserRole
 import com.repzone.sync.transaction.TransactionStats
@@ -495,6 +486,7 @@ private fun SyncJobType.getIcon(): String = when (this) {
     FORM -> "📦"
     EXTRA_TABLE -> "📦"
     STOCK -> "📦"
+    else -> "📦"
 }
 
 private fun SyncJobType.getDisplayName(): String = when (this) {
@@ -508,6 +500,9 @@ private fun SyncJobType.getDisplayName(): String = when (this) {
     FORM -> "Formlar"
     EXTRA_TABLE -> "Extarnal"
     STOCK -> "Stoklar"
+    CUSTOMERS_EMAIL -> "Müşteri Email"
+    CUSTOMERS_PRICE -> "Müşteri Fiyat"
+    CUSTOMERS_GROUP_PRICE -> "Müşteri Grubu Fiyat"
 }
 
 private fun UserRole.getDisplayName(): String = when (this) {
@@ -523,12 +518,15 @@ private fun isJobApplicableForRole(jobType: SyncJobType, userRole: UserRole): Bo
         CUSTOMERS -> userRole in setOf(UserRole.SALES_REP, UserRole.MANAGER, UserRole.ADMIN)
         PRODUCTS_GROUP -> userRole in setOf(UserRole.MANAGER, UserRole.ADMIN, UserRole.SALES_REP)
         ROUTE -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
-        CUSTOMERS_GROUP -> TODO()
-        TABLE_REPLICATION -> TODO()
-        COMMON -> TODO()
-        FORM -> TODO()
-        EXTRA_TABLE -> TODO()
-        STOCK -> TODO()
+        CUSTOMERS_GROUP_PRICE -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
+        CUSTOMERS_GROUP -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
+        TABLE_REPLICATION -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
+        COMMON -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
+        FORM -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
+        EXTRA_TABLE -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
+        STOCK -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
+        CUSTOMERS_EMAIL -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
+        CUSTOMERS_PRICE -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
     }
 }
 

@@ -6,14 +6,14 @@ import com.repzone.database.SyncRouteAppointmentEntity
 import com.repzone.database.SyncRouteAppointmentEntityMetadata
 import com.repzone.database.toSqlValuesString
 import com.repzone.domain.model.SyncRouteAppointmentModel
-import com.repzone.network.dto.MobileRouteDto
+import com.repzone.network.dto.RouteDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
 import com.repzone.sync.transaction.TableOperation
 import com.repzone.sync.transaction.TransactionCoordinator
 
-class RouteDataRawSqlBulkInsertService(private val dbMapper: MapperDto<SyncRouteAppointmentEntity, SyncRouteAppointmentModel, MobileRouteDto>,
-                                       coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<MobileRouteDto>>(coordinator) {
+class RouteDataRawSqlBulkInsertService(private val dbMapper: MapperDto<SyncRouteAppointmentEntity, SyncRouteAppointmentModel, RouteDto>,
+                                       coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<RouteDto>>(coordinator) {
     //region Field
     //endregion
 
@@ -24,7 +24,7 @@ class RouteDataRawSqlBulkInsertService(private val dbMapper: MapperDto<SyncRoute
     //endregion
 
     //region Public Method
-    override fun buildCompositeOperation(items: List<MobileRouteDto>, includeClears: Boolean, useUpsert: Boolean,): CompositeOperation {
+    override fun buildCompositeOperation(items: List<RouteDto>, includeClears: Boolean, useUpsert: Boolean,): CompositeOperation {
         val routeList = items.map { dbMapper.fromDto(it) }
         return CompositeOperation(
             operations = listOf(

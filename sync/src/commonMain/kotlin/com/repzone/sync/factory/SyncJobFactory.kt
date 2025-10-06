@@ -1,14 +1,15 @@
 package com.repzone.sync.factory
 
-import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.network.dto.CustomerDto
-import com.repzone.network.dto.MobileProductDto
-import com.repzone.network.dto.MobileRouteDto
-import com.repzone.network.dto.ServiceProductGroupDto
+import com.repzone.network.dto.ProductDto
+import com.repzone.network.dto.RouteDto
+import com.repzone.network.dto.CustomerGroupDto
+import com.repzone.network.dto.ProductGroupDto
 import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.interfaces.ISyncJob
+import com.repzone.sync.job.impl.CustomerGroupSyncJob
 import com.repzone.sync.job.impl.CustomerSyncJob
 import com.repzone.sync.job.impl.ProductGroupSyncJob
 import com.repzone.sync.job.impl.ProductSyncJob
@@ -27,20 +28,23 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository) {
 
     //region Public Method
     fun createJobs(
-        productApi: ISyncApiService<List<MobileProductDto>>,
-        productBulkInsert: IBulkInsertService<List<MobileProductDto>>,
-        productGroupApi: ISyncApiService<List<ServiceProductGroupDto>>,
-        productGroupBulkInsert: IBulkInsertService<List<ServiceProductGroupDto>>,
-        routeApi: ISyncApiService<List<MobileRouteDto>>,
-        routeBulkInsert: IBulkInsertService<List<MobileRouteDto>>,
+        productApi: ISyncApiService<List<ProductDto>>,
+        productBulkInsert: IBulkInsertService<List<ProductDto>>,
+        productGroupApi: ISyncApiService<List<ProductGroupDto>>,
+        productGroupBulkInsert: IBulkInsertService<List<ProductGroupDto>>,
+        routeApi: ISyncApiService<List<RouteDto>>,
+        routeBulkInsert: IBulkInsertService<List<RouteDto>>,
         customerApi: ISyncApiService<List<CustomerDto>>,
-        customerBulkInsert: IBulkInsertService<List<CustomerDto>>
+        customerBulkInsert: IBulkInsertService<List<CustomerDto>>,
+        customerGroupApi: ISyncApiService<List<CustomerGroupDto>>,
+        customerGroupBulkInsert: IBulkInsertService<List<CustomerGroupDto>>
     ): Map<SyncJobType, ISyncJob> {
         return mapOf(
             SyncJobType.PRODUCTS to ProductSyncJob(productApi, productBulkInsert, syncModuleRepository),
             SyncJobType.PRODUCTS_GROUP to ProductGroupSyncJob(productGroupApi, productGroupBulkInsert, syncModuleRepository),
             SyncJobType.ROUTE to RouteDataSyncJob(routeApi, routeBulkInsert, syncModuleRepository),
-            SyncJobType.CUSTOMERS to CustomerSyncJob(customerApi, customerBulkInsert, syncModuleRepository)
+            SyncJobType.CUSTOMERS to CustomerSyncJob(customerApi, customerBulkInsert, syncModuleRepository),
+            SyncJobType.CUSTOMERS_GROUP to CustomerGroupSyncJob(customerGroupApi, customerGroupBulkInsert, syncModuleRepository)
         )
     }
     //endregion

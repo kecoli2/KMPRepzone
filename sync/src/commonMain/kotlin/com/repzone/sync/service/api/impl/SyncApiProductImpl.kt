@@ -1,7 +1,7 @@
 package com.repzone.sync.service.api.impl
 
 import com.repzone.domain.model.SyncModuleModel
-import com.repzone.network.dto.MobileProductDto
+import com.repzone.network.dto.ProductDto
 import com.repzone.network.http.extensions.safePost
 import com.repzone.network.http.wrapper.ApiResult
 import com.repzone.network.models.request.FilterModelRequest
@@ -10,7 +10,7 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.setBody
 
 
-class SyncApiProductImpl(client: HttpClient) : BaseSyncApiService<List<MobileProductDto>>(client) {
+class SyncApiProductImpl(client: HttpClient) : BaseSyncApiService<List<ProductDto>>(client) {
 
     //region Field
     //endregion
@@ -22,16 +22,16 @@ class SyncApiProductImpl(client: HttpClient) : BaseSyncApiService<List<MobilePro
     //endregion
 
     //region Public Method
-    override fun extractLastId(data: List<MobileProductDto>): Int {
+    override fun extractLastId(data: List<ProductDto>): Int {
         return data.lastOrNull()?.id ?: 0
     }
 
-    override fun getDataSize(data: List<MobileProductDto>): Int {
+    override fun getDataSize(data: List<ProductDto>): Int {
         return data.size
     }
 
-    override suspend fun performApiCall(model: SyncModuleModel, requestModel: FilterModelRequest?): ApiResult<List<MobileProductDto>> {
-        return client.safePost<List<MobileProductDto>>(model.requestUrl!!) {
+    override suspend fun performApiCall(model: SyncModuleModel, requestModel: FilterModelRequest?): ApiResult<List<ProductDto>> {
+        return client.safePost<List<ProductDto>>(model.requestUrl!!) {
             setBody(requestModel)
         }
     }
