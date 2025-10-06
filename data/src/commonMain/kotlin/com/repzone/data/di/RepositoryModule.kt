@@ -9,9 +9,7 @@ import com.repzone.data.util.MapperDto
 import com.repzone.database.*
 import com.repzone.domain.model.*
 import com.repzone.domain.repository.*
-import com.repzone.network.dto.CustomerDto
-import com.repzone.network.dto.CustomerGroupDto
-import com.repzone.network.dto.RouteDto
+import com.repzone.network.dto.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -98,7 +96,7 @@ val RepositoryModule = module {
     //endregion
 
     //region CrmPriceListParameter
-    single<Mapper<SyncCrmPriceListParameterEntity, SyncCrmPriceListParameterModel>>(named("SyncCrmPriceListParameterEntityDbMapper")) { SyncCrmPriceListParameterEntityDbMapper() }
+    single<MapperDto<SyncCrmPriceListParameterEntity, SyncCrmPriceListParameterModel, CrmPriceListParameterDto>>(named("SyncCrmPriceListParameterEntityDbMapper")) { SyncCrmPriceListParameterEntityDbMapper() }
     //endregion
 
     //region CustomDataDetail
@@ -130,7 +128,7 @@ val RepositoryModule = module {
     //endregion
 
     //region CustomerEmail
-    single<Mapper<SyncCustomerEmailEntity, SyncCustomerEmailModel>>(named("SyncCustomerEmailEntityDbMapper")) { SyncCustomerEmailEntityDbMapper() }
+    single<MapperDto<SyncCustomerEmailEntity, SyncCustomerEmailModel, CustomerEmailDto>>(named("SyncCustomerEmailEntityDbMapper")) { SyncCustomerEmailEntityDbMapper() }
     //endregion
 
     //region CustomerGroup

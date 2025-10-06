@@ -1,10 +1,14 @@
 package com.repzone.data.mapper
 
 import com.repzone.data.util.Mapper
+import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncCustomerEmailEntity
 import com.repzone.domain.model.SyncCustomerEmailModel
+import com.repzone.network.dto.CustomerEmailDto
+import com.repzone.network.dto.CustomerGroupDto
+import kotlin.time.ExperimentalTime
 
-class SyncCustomerEmailEntityDbMapper : Mapper<SyncCustomerEmailEntity, SyncCustomerEmailModel> {
+class SyncCustomerEmailEntityDbMapper : MapperDto<SyncCustomerEmailEntity, SyncCustomerEmailModel, CustomerEmailDto> {
     //region Field
     //endregion
 
@@ -40,6 +44,21 @@ class SyncCustomerEmailEntityDbMapper : Mapper<SyncCustomerEmailEntity, SyncCust
             RecordDateUtc = domain.recordDateUtc,
             State = domain.state,
             Title = domain.title
+        )
+    }
+
+    @OptIn(ExperimentalTime::class)
+    override fun fromDto(dto: CustomerEmailDto): SyncCustomerEmailEntity {
+        return SyncCustomerEmailEntity(
+            Id = dto.id.toLong(),
+            CompanyName = dto.companyName,
+            CustomerId = dto.customerId.toLong(),
+            Email = dto.email,
+            ModificationDateUtc = dto.modificationDateUtc?.toEpochMilliseconds(),
+            Name = dto.name,
+            RecordDateUtc = dto.recordDateUtc?.toEpochMilliseconds(),
+            State = dto.state.toLong(),
+            Title = dto.title
         )
     }
     //endregion

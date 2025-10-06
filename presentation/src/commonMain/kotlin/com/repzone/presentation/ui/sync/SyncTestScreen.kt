@@ -501,7 +501,7 @@ private fun SyncJobType.getDisplayName(): String = when (this) {
     EXTRA_TABLE -> "Extarnal"
     STOCK -> "Stoklar"
     CUSTOMERS_EMAIL -> "Müşteri Email"
-    CUSTOMERS_PRICE -> "Müşteri Fiyat"
+    CUSTOMERS_PRICE_PARAMETERS -> "Müşteri Fiyat"
     CUSTOMERS_GROUP_PRICE -> "Müşteri Grubu Fiyat"
 }
 
@@ -526,7 +526,7 @@ private fun isJobApplicableForRole(jobType: SyncJobType, userRole: UserRole): Bo
         EXTRA_TABLE -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
         STOCK -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
         CUSTOMERS_EMAIL -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
-        CUSTOMERS_PRICE -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
+        CUSTOMERS_PRICE_PARAMETERS -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
     }
 }
 

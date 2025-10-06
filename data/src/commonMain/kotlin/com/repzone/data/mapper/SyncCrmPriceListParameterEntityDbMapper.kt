@@ -1,10 +1,15 @@
 package com.repzone.data.mapper
 
-import com.repzone.data.util.Mapper
+import com.repzone.core.enums.CrmParameterEntityType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
+import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncCrmPriceListParameterEntity
 import com.repzone.domain.model.SyncCrmPriceListParameterModel
+import com.repzone.network.dto.CrmPriceListParameterDto
+import kotlin.time.ExperimentalTime
 
-class SyncCrmPriceListParameterEntityDbMapper : Mapper<SyncCrmPriceListParameterEntity, SyncCrmPriceListParameterModel> {
+class SyncCrmPriceListParameterEntityDbMapper : MapperDto<SyncCrmPriceListParameterEntity, SyncCrmPriceListParameterModel, CrmPriceListParameterDto> {
     //region Field
     //endregion
 
@@ -19,7 +24,7 @@ class SyncCrmPriceListParameterEntityDbMapper : Mapper<SyncCrmPriceListParameter
         return SyncCrmPriceListParameterModel(
             id = from.Id,
             entityId = from.EntityId,
-            entityType = from.EntityType,
+            entityType = from.EntityType?.toEnum<CrmParameterEntityType>() ?: CrmParameterEntityType.CUSTOMER,
             modificationDateUtc = from.ModificationDateUtc,
             organizationId = from.OrganizationId,
             paymentPlanId = from.PaymentPlanId,
@@ -38,7 +43,7 @@ class SyncCrmPriceListParameterEntityDbMapper : Mapper<SyncCrmPriceListParameter
         return SyncCrmPriceListParameterEntity(
             Id = domain.id,
             EntityId = domain.entityId,
-            EntityType = domain.entityType,
+            EntityType = domain.entityType.enumToLong(),
             ModificationDateUtc = domain.modificationDateUtc,
             OrganizationId = domain.organizationId,
             PaymentPlanId = domain.paymentPlanId,
@@ -50,6 +55,26 @@ class SyncCrmPriceListParameterEntityDbMapper : Mapper<SyncCrmPriceListParameter
             SalesPriceListId = domain.salesPriceListId,
             SalesReturnPriceListId = domain.salesReturnPriceListId,
             State = domain.state
+        )
+    }
+
+    @OptIn(ExperimentalTime::class)
+    override fun fromDto(dto: CrmPriceListParameterDto): SyncCrmPriceListParameterEntity {
+        return SyncCrmPriceListParameterEntity(
+            Id = dto.id.toLong(),
+            EntityId = dto.entityId?.toLong(),
+            EntityType = dto.entityType.enumToLong(),
+            ModificationDateUtc = dto.modificationDateUtc?.toEpochMilliseconds(),
+            OrganizationId = dto.organizationId?.toLong(),
+            PaymentPlanId = dto.paymentPlanId?.toLong(),
+            PricePurchaseReturnDamagedListId = dto.pricePurchaseReturnDamagedListId?.toLong(),
+            PriceSalesDamagedListId = dto.priceSalesDamagedListId?.toLong(),
+            PurchasePriceListId = dto.purchasePriceListId?.toLong(),
+            PurchaseReturnPriceListId = dto.purchaseReturnPriceListId?.toLong(),
+            RecordDateUtc = dto.recordDateUtc?.toEpochMilliseconds(),
+            SalesPriceListId = dto.salesPriceListId?.toLong(),
+            SalesReturnPriceListId = dto.salesReturnPriceListId?.toLong(),
+            State = dto.state.toLong()
         )
     }
     //endregion

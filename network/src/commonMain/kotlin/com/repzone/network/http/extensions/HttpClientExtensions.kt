@@ -8,9 +8,7 @@ import io.ktor.client.request.HttpRequestBuilder
 import io.ktor.client.request.get
 import io.ktor.client.request.post
 import io.ktor.client.statement.HttpResponse
-import io.ktor.http.ContentType
 import io.ktor.http.HttpStatusCode
-import io.ktor.http.contentType
 
 suspend inline fun <reified T> HttpClient.safePost(url: String, block: HttpRequestBuilder.() -> Unit = {}): ApiResult<T> = try {
     val response: HttpResponse = post(url) {

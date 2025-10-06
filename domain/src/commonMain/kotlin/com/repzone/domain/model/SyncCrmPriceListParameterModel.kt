@@ -1,9 +1,11 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.CrmParameterEntityType
+
 data class SyncCrmPriceListParameterModel(
   val id: Long,
   val entityId: Long?,
-  val entityType: Long?,
+  val entityType: CrmParameterEntityType,
   val modificationDateUtc: Long?,
   val organizationId: Long?,
   val paymentPlanId: Long?,
