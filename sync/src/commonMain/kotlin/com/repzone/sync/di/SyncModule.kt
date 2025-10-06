@@ -18,8 +18,10 @@ import com.repzone.sync.interfaces.ISyncManager
 import com.repzone.sync.manager.SyncManagerImpl
 import com.repzone.sync.service.api.impl.SyncApiCustomerEmailImpl
 import com.repzone.sync.service.api.impl.SyncApiCustomerGroupImpl
+import com.repzone.sync.service.api.impl.SyncApiCustomerGroupPriceParametersImpl
 import com.repzone.sync.service.api.impl.SyncApiCustomerPriceParametersImpl
 import com.repzone.sync.service.bulk.impl.CustomerEmailRawSqlBulkInsertService
+import com.repzone.sync.service.bulk.impl.CustomerGroupPriceParameterslRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerGroupRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerPriceParameterslRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerRawSqlBulkInsertService
@@ -87,11 +89,23 @@ val SyncModule = module {
         CustomerEmailRawSqlBulkInsertService(get(named("SyncCustomerEmailEntityDbMapper")), get()) }
     //region CUSTOMER EMAIL
 
-    //region CUSTOMER PRICE PARAMETERS EMAIL
+    //region CUSTOMER PRICE PARAMETERS
     single<ISyncApiService<List<CrmPriceListParameterDto>>>(named("customerPriceParametersImpl")){ SyncApiCustomerPriceParametersImpl(get()) }
     single<IBulkInsertService<List<CrmPriceListParameterDto>>>(named("customerEmailBulkInsert")){
         CustomerPriceParameterslRawSqlBulkInsertService(get(named("SyncCrmPriceListParameterEntityDbMapper")), get()) }
-    //region CUSTOMER PRICE PARAMETERS EMAIL
+    //region CUSTOMER PRICE PARAMETERS
+
+    //region CUSTOMER GROUP PRICE PARAMETERS
+    single<ISyncApiService<List<CrmPriceListParameterDto>>>(named("customerGroupPriceParametersImpl")){ SyncApiCustomerGroupPriceParametersImpl(get()) }
+    single<IBulkInsertService<List<CrmPriceListParameterDto>>>(named("customerGroupEmailBulkInsert")){
+        CustomerGroupPriceParameterslRawSqlBulkInsertService(
+            get(named("SyncCrmPriceListParameterEntityDbMapper")),
+            get()
+        )
+    }
+    //region CUSTOMER GROUP PRICE PARAMETERS
+
+
 
     //region GENERAL
     single<ISyncManager>{ SyncManagerImpl(get()) }
@@ -112,7 +126,10 @@ val SyncModule = module {
             customerEmailApi = get(named("customerEmailImpl")),
             customerEmailBulkInsert = get(named("customerEmailBulkInsert")),
             customerPriceParametersApi = get(named("customerPriceParametersImpl")),
-            customerPriceParametersBulkInsert = get(named("customerEmailBulkInsert"))
+            customerPriceParametersBulkInsert = get(named("customerEmailBulkInsert")),
+            customerGroupPriceParametersApi = get(named("customerGroupPriceParametersImpl")),
+            customerGroupPriceParametersBulkInsert = get(named("customerGroupEmailBulkInsert"))
+
         )
     }
 }

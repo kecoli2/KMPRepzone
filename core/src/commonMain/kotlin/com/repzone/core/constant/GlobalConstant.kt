@@ -26,4 +26,5 @@ object  ICustomerApiControllerConstant {
     const val CUSTOMER_GROUPS_ENDPOINT = "/api/v1/Customer/Groups"
     const val CUSTOMER_EMAIL_ENDPOINT = "/api/v1/Customer/Emails"
     const val CUSTOMER_PRICES_PARAMETERS_ENDPOINT = "/api/v1/Customer/PriceListParameters"
+    const val CUSTOMER_GROUP_PRICES_PARAMETERS_ENDPOINT = "/api/v1/Customer/PriceListParameters"
 }

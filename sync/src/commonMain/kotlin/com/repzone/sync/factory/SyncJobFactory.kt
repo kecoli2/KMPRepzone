@@ -12,6 +12,7 @@ import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.interfaces.ISyncJob
 import com.repzone.sync.job.impl.CustomerEmailSyncJob
+import com.repzone.sync.job.impl.CustomerGroupPriceParametersSyncJob
 import com.repzone.sync.job.impl.CustomerGroupSyncJob
 import com.repzone.sync.job.impl.CustomerPriceParametersSyncJob
 import com.repzone.sync.job.impl.CustomerSyncJob
@@ -45,7 +46,9 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository) {
         customerEmailApi: ISyncApiService<List<CustomerEmailDto>>,
         customerEmailBulkInsert: IBulkInsertService<List<CustomerEmailDto>>,
         customerPriceParametersApi: ISyncApiService<List<CrmPriceListParameterDto>>,
-        customerPriceParametersBulkInsert: IBulkInsertService<List<CrmPriceListParameterDto>>
+        customerPriceParametersBulkInsert: IBulkInsertService<List<CrmPriceListParameterDto>>,
+        customerGroupPriceParametersApi: ISyncApiService<List<CrmPriceListParameterDto>>,
+        customerGroupPriceParametersBulkInsert: IBulkInsertService<List<CrmPriceListParameterDto>>
     ): Map<SyncJobType, ISyncJob> {
         return mapOf(
             SyncJobType.PRODUCTS to ProductSyncJob(productApi, productBulkInsert, syncModuleRepository),
@@ -54,7 +57,12 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository) {
             SyncJobType.CUSTOMERS to CustomerSyncJob(customerApi, customerBulkInsert, syncModuleRepository),
             SyncJobType.CUSTOMERS_GROUP to CustomerGroupSyncJob(customerGroupApi, customerGroupBulkInsert, syncModuleRepository),
             SyncJobType.CUSTOMERS_EMAIL to CustomerEmailSyncJob(customerEmailApi, customerEmailBulkInsert, syncModuleRepository),
-            SyncJobType.CUSTOMERS_PRICE_PARAMETERS to CustomerPriceParametersSyncJob(customerPriceParametersApi, customerPriceParametersBulkInsert, syncModuleRepository)
+            SyncJobType.CUSTOMERS_PRICE_PARAMETERS to CustomerPriceParametersSyncJob(customerPriceParametersApi, customerPriceParametersBulkInsert, syncModuleRepository),
+            SyncJobType.CUSTOMERS_GROUP_PRICE to CustomerGroupPriceParametersSyncJob(
+                customerGroupPriceParametersApi,
+                customerGroupPriceParametersBulkInsert,
+                syncModuleRepository
+            )
         )
     }
     //endregion
