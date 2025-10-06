@@ -14,5 +14,5 @@ data class FormLogInformationModel(
   val routeAppointmentId: Long?,
   val status: Long?,
   val version: String?,
-    val visitUniqueId: String?,
+  val visitUniqueId: String?,
 )

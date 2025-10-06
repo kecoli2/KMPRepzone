@@ -144,6 +144,76 @@ tasks.register("generateDomainModels") {
     }
 }
 
+tasks.register("generateEntityMappers") {
+    group = "generation"
+    description = "Generate entity mappers from SQLDelight entities"
+
+    // SQLDelight generation'dan sonra çalışsın
+    dependsOn("generateCommonMainAppDatabaseInterface")
+
+    doLast {
+        val mapperPackage = "com.repzone.data.mapper"
+        val entityPackage = "com.repzone.database"
+        val modelPackage = "com.repzone.domain.model"
+
+        // SQLDelight'ın generate ettiği Entity'lerin yolu
+        val entityDir = file("build/generated/sqldelight/code/AppDatabase/commonMain/com/repzone/database")
+
+        // Mapper'ların yazılacağı klasör (data modülü altında)
+        val mapperDir = file("data/src/commonMain/kotlin/${mapperPackage.replace('.', '/')}")
+
+        if (!entityDir.exists()) {
+            println("❌ Entity directory not found: ${entityDir.absolutePath}")
+            println("💡 Run SQLDelight generation first!")
+            return@doLast
+        }
+
+        // Mapper klasörünü oluştur
+        mapperDir.mkdirs()
+
+        var generatedCount = 0
+
+        // Tüm Entity dosyalarını bul ve mapper oluştur
+        entityDir.walkTopDown()
+            .filter { it.isFile && it.extension == "kt" && it.name.endsWith("Entity.kt") }
+            .forEach { entityFile ->
+                println("📝 Processing: ${entityFile.name}")
+
+                // Entity içeriğini oku ve field'ları parse et
+                val entityContent = entityFile.readText()
+                val entityFields = parseEntityFields(entityContent)
+
+                // Entity ve Model isimlerini belirle
+                val entityName = entityFile.nameWithoutExtension // Örn: SyncProductEntity
+                val modelName = entityName.replace("Entity", "Model") // Örn: SyncProductModel
+                val mapperName = entityName.replace("Entity", "EntityDbMapper") // Örn: SyncProductEntityDbMapper
+
+                // Mapper içeriğini oluştur
+                val mapperContent = generateMapper(
+                    mapperName = mapperName,
+                    entityName = entityName,
+                    modelName = modelName,
+                    entityFields = entityFields,
+                    mapperPackage = mapperPackage,
+                    entityPackage = entityPackage,
+                    modelPackage = modelPackage
+                )
+
+                // Mapper dosyasını yaz
+                val mapperFileName = "$mapperName.kt"
+                val mapperFile = File(mapperDir, mapperFileName)
+
+                mapperFile.writeText(mapperContent)
+                println("   ✅ Generated: $mapperFileName")
+                generatedCount++
+            }
+
+        println("\n🎉 Successfully generated $generatedCount mapper files!")
+        println("📂 Location: ${mapperDir.absolutePath}")
+    }
+}
+
+
 sqldelight {
     databases {
         create("AppDatabase") {
@@ -292,5 +362,153 @@ fun convertEntityToModel(entityContent: String, modelPackage: String): String {
     }
 
     return result.toString()
+}
+//endregion
+
+//region GENERATOR MAPPER
+data class EntityField(
+    val name: String,        // Örn: Id
+    val modelName: String,   // Örn: id
+    val type: String,        // Örn: Long
+    val isNullable: Boolean  // Örn: true
+)
+
+fun parseEntityFields(entityContent: String): List<EntityField> {
+    val fields = mutableListOf<EntityField>()
+    val lines = entityContent.lines()
+
+    var inDataClass = false
+
+    for (line in lines) {
+        when {
+            line.trim().startsWith("public data class") || line.trim().startsWith("data class") -> {
+                inDataClass = true
+            }
+            inDataClass && (line.trim().startsWith("public val") || line.trim().startsWith("val")) -> {
+                // Field parse et: public val Id: Long?,
+                val fieldMatch = Regex("(?:public )?val ([A-Z][a-zA-Z0-9]*): ([^,)]+)").find(line)
+
+                if (fieldMatch != null) {
+                    val fieldName = fieldMatch.groupValues[1]
+                    val fieldType = fieldMatch.groupValues[2].trim()
+                    val isNullable = fieldType.endsWith("?")
+
+                    fields.add(
+                        EntityField(
+                            name = fieldName,
+                            modelName = fieldName.replaceFirstChar { it.lowercase() },
+                            type = fieldType,
+                            isNullable = isNullable
+                        )
+                    )
+                }
+            }
+            line.trim() == ")" -> {
+                inDataClass = false
+                break
+            }
+        }
+    }
+
+    return fields
+}
+
+fun generateMapper(
+    mapperName: String,
+    entityName: String,
+    modelName: String,
+    entityFields: List<EntityField>,
+    mapperPackage: String,
+    entityPackage: String,
+    modelPackage: String
+): String {
+    val result = StringBuilder()
+
+    // Package ve imports
+    result.appendLine("package $mapperPackage")
+    result.appendLine()
+    result.appendLine("import com.repzone.data.util.Mapper")
+    result.appendLine("import $entityPackage.$entityName")
+    result.appendLine("import $modelPackage.$modelName")
+    result.appendLine()
+
+    // Class declaration
+    result.appendLine("class $mapperName : Mapper<$entityName, $modelName> {")
+    result.appendLine("    //region Field")
+    result.appendLine("    //endregion")
+    result.appendLine()
+    result.appendLine("    //region Properties")
+    result.appendLine("    //endregion")
+    result.appendLine()
+    result.appendLine("    //region Constructor")
+    result.appendLine("    //endregion")
+    result.appendLine()
+    result.appendLine("    //region Public Method")
+
+    // toDomain metodu
+    result.appendLine("    override fun toDomain(from: $entityName): $modelName {")
+    result.appendLine("        return $modelName(")
+
+    entityFields.forEachIndexed { index, field ->
+        val mapping = generateFieldMapping(field, isFromEntity = true)
+        val comma = if (index < entityFields.size - 1) "," else ""
+        result.appendLine("            ${field.modelName} = $mapping$comma")
+    }
+
+    result.appendLine("        )")
+    result.appendLine("    }")
+    result.appendLine()
+
+    // fromDomain metodu
+    result.appendLine("    override fun fromDomain(domain: $modelName): $entityName {")
+    result.appendLine("        return $entityName(")
+
+    entityFields.forEachIndexed { index, field ->
+        val mapping = generateFieldMapping(field, isFromEntity = false)
+        val comma = if (index < entityFields.size - 1) "," else ""
+        result.appendLine("            ${field.name} = $mapping$comma")
+    }
+
+    result.appendLine("        )")
+    result.appendLine("    }")
+
+    result.appendLine("    //endregion")
+    result.appendLine()
+    result.appendLine("    //region Protected Method")
+    result.appendLine("    //endregion")
+    result.appendLine()
+    result.appendLine("    //region Private Method")
+    result.appendLine("    //endregion")
+    result.appendLine("}")
+
+    return result.toString()
+}
+
+fun generateFieldMapping(field: EntityField, isFromEntity: Boolean): String {
+    val baseType = field.type.removeSuffix("?")
+    val source = if (isFromEntity) "from.${field.name}" else "domain.${field.modelName}"
+
+    return when {
+        // Boolean mapping (Long <-> Boolean)
+        baseType == "Long" && (field.name.startsWith("Is") ||
+                field.name.startsWith("Close") ||
+                field.name.contains("Visible")) -> {
+            if (isFromEntity) {
+                if (field.isNullable) {
+                    "$source?.let { it != 0L }"
+                } else {
+                    "$source != 0L"
+                }
+            } else {
+                if (field.isNullable) {
+                    "$source?.let { if (it) 1L else 0L }"
+                } else {
+                    "$source.let { if (it) 1L else 0L }"
+                }
+            }
+        }
+        // Normal mapping
+        else -> source
+    }
 }
 //endregion

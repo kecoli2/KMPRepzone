@@ -1,0 +1,52 @@
+package com.repzone.data.mapper
+
+import com.repzone.data.util.Mapper
+import com.repzone.database.DynamicListHeadersEntity
+import com.repzone.domain.model.DynamicListHeadersModel
+
+class DynamicListHeadersEntityDbMapper : Mapper<DynamicListHeadersEntity, DynamicListHeadersModel> {
+    //region Field
+    //endregion
+
+    //region Properties
+    //endregion
+
+    //region Constructor
+    //endregion
+
+    //region Public Method
+    override fun toDomain(from: DynamicListHeadersEntity): DynamicListHeadersModel {
+        return DynamicListHeadersModel(
+            id = from.Id,
+            description = from.Description,
+            listType = from.ListType,
+            modificationDateUtc = from.ModificationDateUtc,
+            name = from.Name,
+            organizationId = from.OrganizationId,
+            recordDateUtc = from.RecordDateUtc,
+            shareStatus = from.ShareStatus,
+            state = from.State
+        )
+    }
+
+    override fun fromDomain(domain: DynamicListHeadersModel): DynamicListHeadersEntity {
+        return DynamicListHeadersEntity(
+            Id = domain.id,
+            Description = domain.description,
+            ListType = domain.listType,
+            ModificationDateUtc = domain.modificationDateUtc,
+            Name = domain.name,
+            OrganizationId = domain.organizationId,
+            RecordDateUtc = domain.recordDateUtc,
+            ShareStatus = domain.shareStatus,
+            State = domain.state
+        )
+    }
+    //endregion
+
+    //region Protected Method
+    //endregion
+
+    //region Private Method
+    //endregion
+}
