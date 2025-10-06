@@ -1,0 +1,14 @@
+package com.repzone.domain.model
+
+data class SyncTaskStepModel(
+  val id: Long,
+  val controlType: Long?,
+  val controlTypeDescription: String?,
+  val modificationDateUtc: Long?,
+  val needComplteThisToGoToNextStep: Long?,
+  val order: Long?,
+  val recordDateUtc: Long?,
+  val state: Long?,
+  val taskId: Long?,
+  val title: String?,
+)

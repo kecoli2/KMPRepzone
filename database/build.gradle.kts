@@ -94,6 +94,56 @@ kotlin {
     }
 }
 
+tasks.register("generateDomainModels") {
+    group = "generation"
+    description = "Generate domain models from SQLDelight entities"
+
+    // SQLDelight task'ından sonra çalışsın
+    dependsOn("generateCommonMainAppDatabaseInterface")
+
+    doLast {
+        val modelPackage = "com.repzone.domain.model"
+
+        // SQLDelight'ın generate ettiği Entity'lerin yolu
+        val entityDir = file("build/generated/sqldelight/code/AppDatabase/commonMain/com/repzone/database")
+
+        // Model'lerin yazılacağı klasör (src altında, böylece kalıcı olur)
+        val modelDir = file("src/commonMain/kotlin/${modelPackage.replace('.', '/')}")
+
+        if (!entityDir.exists()) {
+            println("❌ Entity directory not found: ${entityDir.absolutePath}")
+            println("💡 Run SQLDelight generation first!")
+            return@doLast
+        }
+
+        // Model klasörünü oluştur
+        modelDir.mkdirs()
+
+        var generatedCount = 0
+
+        // Tüm Entity dosyalarını bul ve dönüştür
+        entityDir.walkTopDown()
+            .filter { it.isFile && it.extension == "kt" && it.name.endsWith("Entity.kt") }
+            .forEach { entityFile ->
+                println("📝 Processing: ${entityFile.name}")
+
+                val entityContent = entityFile.readText()
+                val modelContent = convertEntityToModel(entityContent, modelPackage)
+
+                // Model dosya adını oluştur
+                val modelFileName = entityFile.name.replace("Entity.kt", "Model.kt")
+                val modelFile = File(modelDir, modelFileName)
+
+                modelFile.writeText(modelContent)
+                println("   ✅ Generated: $modelFileName")
+                generatedCount++
+            }
+
+        println("\n🎉 Successfully generated $generatedCount model files!")
+        println("📂 Location: ${modelDir.absolutePath}")
+    }
+}
+
 sqldelight {
     databases {
         create("AppDatabase") {
@@ -104,7 +154,7 @@ sqldelight {
     }
 }
 
-//region GENERATOR EXTENSIONS
+//region GENERATOR EXTENSIONS FOR SQLDELIGHT
 abstract class GenerateEntityExtensionsTask : DefaultTask() {
     @get:InputDirectory
     abstract val sourceDir: DirectoryProperty
@@ -188,5 +238,59 @@ abstract class GenerateEntityExtensionsTask : DefaultTask() {
 
         File(outputDir, "${className}Extensions.kt").writeText(extensionContent)
     }
+}
+//endregion
+
+//region GENERATOR MODEL CLASS
+fun convertEntityToModel(entityContent: String, modelPackage: String): String {
+    val lines = entityContent.lines()
+    val result = StringBuilder()
+
+    // Package declaration
+    result.appendLine("package $modelPackage")
+    result.appendLine()
+
+    var inDataClass = false
+
+    for (line in lines) {
+        when {
+            line.trim().startsWith("public data class") || line.trim().startsWith("data class") -> {
+                inDataClass = true
+
+                // Class adını değiştir
+                val transformedLine = line
+                    .replace("public data class", "data class")
+                    .replace("Entity(", "Model(")
+
+                result.appendLine(transformedLine)
+            }
+            inDataClass && (line.trim().startsWith("public val") || line.trim().startsWith("val")) -> {
+                // Field adının ilk harfini küçült
+                val fieldMatch = Regex("(?:public )?val ([A-Z][a-zA-Z0-9]*):").find(line)
+
+                if (fieldMatch != null) {
+                    val originalFieldName = fieldMatch.groupValues[1]
+                    val newFieldName = originalFieldName.replaceFirstChar { it.lowercase() }
+
+                    val transformedLine = line
+                        .replace("public val", "  val")
+                        .replace("val", "  val")
+                        .replace("val $originalFieldName:", "val $newFieldName:")
+                        .trimStart()
+                        .prependIndent("  ")
+
+                    result.appendLine(transformedLine)
+                } else {
+                    result.appendLine(line.replace("public val", "  val"))
+                }
+            }
+            line.trim() == ")" -> {
+                result.appendLine(line)
+                inDataClass = false
+            }
+        }
+    }
+
+    return result.toString()
 }
 //endregion

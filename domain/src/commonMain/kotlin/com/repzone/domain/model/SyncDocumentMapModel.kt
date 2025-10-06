@@ -1,0 +1,26 @@
+package com.repzone.domain.model
+
+data class SyncDocumentMapModel(
+  val id: Long,
+  val description: String?,
+  val documentHeader: String?,
+  val documentTypeGroup: Long?,
+  val ioType: Long?,
+  val isElectronicDocument: Long?,
+  val isFulfillment: Long?,
+  val lang: String?,
+  val logoPathUrl: String?,
+  val logoSelection: Long?,
+  val minMaxControl: Long?,
+  val modificationDateUtc: Long?,
+  val name: String?,
+  val note: String?,
+  val operationType: Long?,
+  val printerTemplatePath: String?,
+  val printQrCode: Long?,
+  val recordDateUtc: Long?,
+  val state: Long?,
+  val uniqueIdCaption: String?,
+  val useFinancialLogo: Long?,
+  val warehouseType: Long?,
+)

@@ -1,0 +1,27 @@
+package com.repzone.domain.model
+
+data class OrderLogInformationModel(
+  val id: Long,
+  val closedStatus: Long?,
+  val customerId: Long?,
+  val customerName: String?,
+  val customerOrganizationId: Long?,
+  val documentMapName: String?,
+  val documentTypeId: Long?,
+  val documentUniqueId: String?,
+  val isApproved: Long?,
+  val orderDate: Long?,
+  val repzoneCurrentState: Long?,
+  val repzoneDocNumber: String?,
+  val repzoneOrderId: Long?,
+  val repzoneOrderStatus: Long?,
+  val restServiceTaskDoneDate: Long?,
+  val restServiceTaskId: Long?,
+  val routeAppointmentId: Long?,
+  val sessionId: String?,
+  val state: Long?,
+  val status: Long?,
+  val totalCost: Double?,
+  val transferStatus: Long?,
+  val waitingOnRepzone: Long?,
+)
