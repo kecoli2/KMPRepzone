@@ -124,7 +124,7 @@ val SyncModule = module {
 
     //region COMMON REASONS
     single<ISyncApiService<List<EventReasonDto>>>(named("syncApiEventReasonsImpl")){ SyncApiEventReasonsImpl(get()) }
-    single<IBulkInsertService<List<EventReasonDto>>>(named("syncModulesBulkInsert")){ EventReasonsRawSqlBulkInsertService(get(named("SyncEventReasonEntityDbMapper")),get()) }
+    single<IBulkInsertService<List<EventReasonDto>>>(named("syncEventReasonBulkInsert")){ EventReasonsRawSqlBulkInsertService(get(named("SyncEventReasonEntityDbMapper")),get()) }
     //endregion COMMON REASONS
 
 
@@ -153,7 +153,7 @@ val SyncModule = module {
             apiModulesApi = get(named("syncModulesImpl")),
             modulesRawBulkInsert = get(named("syncModulesBulkInsert")),
             eventReasonsApi = get(named("syncApiEventReasonsImpl")),
-            eventReasonsRawBulkInsert = get(named("syncModulesBulkInsert"))
+            eventReasonsRawBulkInsert = get(named("syncEventReasonBulkInsert"))
 
         )
     }
