@@ -1,5 +1,6 @@
 package com.repzone.sync.service.bulk.impl
 
+import com.repzone.core.enums.CrmParameterEntityType
 import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncCrmPriceListParameterEntity
 import com.repzone.database.SyncCrmPriceListParameterEntityMetadata
@@ -24,7 +25,10 @@ class CustomerPriceParameterslRawSqlBulkInsertService(private val mapper: Mapper
 
     //region Public Method
     override fun buildCompositeOperation(items: List<CrmPriceListParameterDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
-        val parameters = items.map { mapper.fromDto(it) }
+        val parameters = items.map { it ->
+            it.entityType = CrmParameterEntityType.CUSTOMER
+            mapper.fromDto(it)
+        }
         val operation = listOf(
             TableOperation(
                 tableName = SyncCrmPriceListParameterEntityMetadata.tableName,
