@@ -6,6 +6,7 @@ import com.repzone.network.dto.CustomerEmailDto
 import com.repzone.network.dto.ProductDto
 import com.repzone.network.dto.RouteDto
 import com.repzone.network.dto.CustomerGroupDto
+import com.repzone.network.dto.PackageCustomFieldDto
 import com.repzone.network.dto.ProductGroupDto
 import com.repzone.sync.factory.SyncJobFactory
 import com.repzone.sync.service.api.impl.SyncApiCustomerImpl
@@ -20,11 +21,13 @@ import com.repzone.sync.service.api.impl.SyncApiCustomerEmailImpl
 import com.repzone.sync.service.api.impl.SyncApiCustomerGroupImpl
 import com.repzone.sync.service.api.impl.SyncApiCustomerGroupPriceParametersImpl
 import com.repzone.sync.service.api.impl.SyncApiCustomerPriceParametersImpl
+import com.repzone.sync.service.api.impl.SyncApiModulesImpl
 import com.repzone.sync.service.bulk.impl.CustomerEmailRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerGroupPriceParameterslRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerGroupRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerPriceParameterslRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerRawSqlBulkInsertService
+import com.repzone.sync.service.bulk.impl.ModulesRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.ProductGroupRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.ProductRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.RouteDataRawSqlBulkInsertService
@@ -104,7 +107,17 @@ val SyncModule = module {
         )
     }
     //region CUSTOMER GROUP PRICE PARAMETERS
+    single<ISyncApiService<List<PackageCustomFieldDto>>>(named("syncModulesImpl")){ SyncApiModulesImpl(get()) }
+    single<IBulkInsertService<List<PackageCustomFieldDto>>>(named("syncModulesBulkInsert")){
+        ModulesRawSqlBulkInsertService(
+            get(named("SyncPackageCustomFieldEntityDbMapper")),
+            get(named("SyncPackageCustomFieldProductEntityDbMapper")),
+            get()
+        )
+    }
+    //region CUSTOM FIELD
 
+    //endregion CUSTOM FIELD
 
 
     //region GENERAL
@@ -128,8 +141,8 @@ val SyncModule = module {
             customerPriceParametersApi = get(named("customerPriceParametersImpl")),
             customerPriceParametersBulkInsert = get(named("customerEmailBulkInsert")),
             customerGroupPriceParametersApi = get(named("customerGroupPriceParametersImpl")),
-            customerGroupPriceParametersBulkInsert = get(named("customerGroupEmailBulkInsert"))
-
-        )
+            customerGroupPriceParametersBulkInsert = get(named("customerGroupEmailBulkInsert")),
+            apiModulesApi = get(named("syncModulesImpl")),
+            modulesRawBulkInsert = get(named("syncModulesBulkInsert")))
     }
 }

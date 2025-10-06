@@ -45,7 +45,8 @@ class CustomerRawSqlBulkInsertService(private val mapper: CustomerEntityDbMapper
                 values = addresstEntity.map { it.toSqlValuesString() },
                 recordCount = addresstEntity.size,
                 useUpsert = useUpsert,
-                includeClears = includeClears
+                includeClears = includeClears,
+                includeOtherTableCount = false
             )
         )
 

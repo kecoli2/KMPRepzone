@@ -237,8 +237,9 @@ class TransactionCoordinator(
                         buildBulkInsertSqlFromTableOp(tableOp)
                     }
                     executeRawSql(sql)
-
-                    recordCount += tableOp.recordCount
+                    if(tableOp.includeOtherTableCount){
+                        recordCount += tableOp.recordCount
+                    }
                 }
 
                 recordCount

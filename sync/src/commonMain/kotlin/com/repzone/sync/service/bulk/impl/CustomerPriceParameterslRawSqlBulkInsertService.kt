@@ -12,7 +12,8 @@ import com.repzone.sync.transaction.CompositeOperation
 import com.repzone.sync.transaction.TableOperation
 import com.repzone.sync.transaction.TransactionCoordinator
 
-class CustomerPriceParameterslRawSqlBulkInsertService(private val mapper: MapperDto<SyncCrmPriceListParameterEntity, SyncCrmPriceListParameterModel, CrmPriceListParameterDto>,
+class CustomerPriceParameterslRawSqlBulkInsertService(
+    private val mapper: MapperDto<SyncCrmPriceListParameterEntity, SyncCrmPriceListParameterModel, CrmPriceListParameterDto>,
     coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<CrmPriceListParameterDto>>(coordinator) {
     //region Field
     //endregion

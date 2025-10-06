@@ -10,6 +10,7 @@ import com.repzone.sync.interfaces.ISyncApiService
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.serialization.SerializationException
 
 abstract class BaseSyncApiService<TDto : Any>(val client: HttpClient) : ISyncApiService<TDto> {
     protected abstract fun extractLastId(data: TDto): Int
@@ -50,8 +51,15 @@ abstract class BaseSyncApiService<TDto : Any>(val client: HttpClient) : ISyncApi
                         }
                     }
                 }
-            } catch (ex: Exception) {
+            }
+            catch (ex: SerializationException){
+                println("Serialization Error: ${ex.message}")
+                println("Stack trace:")
+                ex.printStackTrace()
+            }
+            catch (ex: Exception) {
                 emit(ApiResult.Error(ex.toApiException()))
+                ex.printStackTrace()
                 hasMore = false
             }
         }

@@ -7,5 +7,6 @@ data class TableOperation(
     val values: List<String>,
     val recordCount: Int,
     val useUpsert: Boolean = false,
-    val includeClears: Boolean = false
+    val includeClears: Boolean = false,
+    val includeOtherTableCount: Boolean = true
 )

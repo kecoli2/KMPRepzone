@@ -482,7 +482,7 @@ private fun SyncJobType.getIcon(): String = when (this) {
     ROUTE -> "📦"
     CUSTOMERS_GROUP -> "📦"
     TABLE_REPLICATION -> "📦"
-    COMMON -> "📦"
+    COMMON_MODULES -> "📦"
     FORM -> "📦"
     EXTRA_TABLE -> "📦"
     STOCK -> "📦"
@@ -496,7 +496,7 @@ private fun SyncJobType.getDisplayName(): String = when (this) {
     ROUTE -> "Rotalar"
     CUSTOMERS_GROUP -> "Müşteri Grupları"
     TABLE_REPLICATION -> "Replikasyon"
-    COMMON -> "Genel Görev"
+    COMMON_MODULES -> "Custom Field"
     FORM -> "Formlar"
     EXTRA_TABLE -> "Extarnal"
     STOCK -> "Stoklar"
@@ -521,7 +521,7 @@ private fun isJobApplicableForRole(jobType: SyncJobType, userRole: UserRole): Bo
         CUSTOMERS_GROUP_PRICE -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
         CUSTOMERS_GROUP -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
         TABLE_REPLICATION -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
-        COMMON -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
+        COMMON_MODULES -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
         FORM -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
         EXTRA_TABLE -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
         STOCK -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)

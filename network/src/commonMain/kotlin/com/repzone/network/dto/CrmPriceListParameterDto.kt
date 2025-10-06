@@ -15,6 +15,7 @@ data class CrmPriceListParameterDto(
     val modificationDateUtc: Instant? = null,
     @Serializable(with = InstantSerializer::class)
     val recordDateUtc: Instant? = null,
+    @Serializable(with = CrmParameterEntityType.Companion.Serializer::class)
     var entityType: CrmParameterEntityType,
     val entityId: Int? = null,
     val paymentPlanId: Int? = null,

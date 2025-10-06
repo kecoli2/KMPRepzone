@@ -1,10 +1,13 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
+import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncPackageCustomFieldEntity
 import com.repzone.domain.model.SyncPackageCustomFieldModel
+import com.repzone.network.dto.PackageCustomFieldDto
 
-class SyncPackageCustomFieldEntityDbMapper : Mapper<SyncPackageCustomFieldEntity, SyncPackageCustomFieldModel> {
+class SyncPackageCustomFieldEntityDbMapper : MapperDto<SyncPackageCustomFieldEntity, SyncPackageCustomFieldModel, PackageCustomFieldDto> {
     //region Field
     //endregion
 
@@ -36,6 +39,18 @@ class SyncPackageCustomFieldEntityDbMapper : Mapper<SyncPackageCustomFieldEntity
             Name = domain.name,
             PackageId = domain.packageId,
             PackageName = domain.packageName
+        )
+    }
+
+    override fun fromDto(dto: PackageCustomFieldDto): SyncPackageCustomFieldEntity {
+        return SyncPackageCustomFieldEntity(
+            Id = dto.id.toLong(),
+            Description = dto.description,
+            ImageUrl = dto.imageUrl,
+            IsActive = dto.isActive.toLong(),
+            Name = dto.name,
+            PackageId = dto.packageId?.toLong(),
+            PackageName = dto.packageName
         )
     }
     //endregion

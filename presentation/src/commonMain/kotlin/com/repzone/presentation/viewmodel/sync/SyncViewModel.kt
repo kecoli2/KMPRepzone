@@ -317,7 +317,7 @@ private fun SyncJobType.getDisplayName(): String = when (this) {
     ROUTE -> "Rotalar"
     CUSTOMERS_GROUP -> "Müşteri Grupları"
     TABLE_REPLICATION -> "Replikasyon"
-    COMMON -> "Genel Görev"
+    COMMON_MODULES -> "Genel Görev"
     FORM -> "Formlar"
     EXTRA_TABLE -> "Extarnal"
     STOCK -> "Stoklar"

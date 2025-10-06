@@ -1,10 +1,15 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
+import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncPackageCustomFieldProductEntity
 import com.repzone.domain.model.SyncPackageCustomFieldProductModel
+import com.repzone.network.dto.PackageCustomFieldProductDto
+import kotlin.time.ExperimentalTime
 
-class SyncPackageCustomFieldProductEntityDbMapper : Mapper<SyncPackageCustomFieldProductEntity, SyncPackageCustomFieldProductModel> {
+class SyncPackageCustomFieldProductEntityDbMapper : MapperDto<SyncPackageCustomFieldProductEntity, SyncPackageCustomFieldProductModel, PackageCustomFieldProductDto> {
     //region Field
     //endregion
 
@@ -60,6 +65,31 @@ class SyncPackageCustomFieldProductEntityDbMapper : Mapper<SyncPackageCustomFiel
             ProductId = domain.productId,
             StringMax = domain.stringMax,
             Value = domain.value
+        )
+    }
+
+    @OptIn(ExperimentalTime::class)
+    override fun fromDto(dto: PackageCustomFieldProductDto): SyncPackageCustomFieldProductEntity {
+        return SyncPackageCustomFieldProductEntity(
+            Id = dto.id?.toLong() ?: 0,
+            DataType = dto.dataType?.enumToLong(),
+            DateMax = dto.dateMax?.toEpochMilliseconds(),
+            DateMin = dto.dateMin?.toEpochMilliseconds(),
+            DecimalMax = dto.decimalMax,
+            DecimalMin = dto.decimalMin,
+            DefaultValue = dto.defaultValue,
+            Description = dto.description,
+            FieldName = dto.fieldName,
+            IntegerMax = dto.integerMax?.toLong(),
+            IntegerMin = dto.integerMin?.toLong(),
+            ItemList = dto.itemList,
+            Mandatory = dto.mandatory?.toLong(),
+            Order = dto.order?.toLong(),
+            PackageId = dto.packageId?.toLong(),
+            PackageName = dto.packageName,
+            ProductId = dto.productId?.toLong(),
+            StringMax = dto.stringMax?.toLong(),
+            Value = dto.value
         )
     }
     //endregion

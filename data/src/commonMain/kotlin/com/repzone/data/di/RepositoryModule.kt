@@ -296,11 +296,11 @@ val RepositoryModule = module {
     //endregion
 
     //region PackageCustomField
-    single<Mapper<SyncPackageCustomFieldEntity, SyncPackageCustomFieldModel>>(named("SyncPackageCustomFieldEntityDbMapper")) { SyncPackageCustomFieldEntityDbMapper() }
+    single<MapperDto<SyncPackageCustomFieldEntity, SyncPackageCustomFieldModel, PackageCustomFieldDto>>(named("SyncPackageCustomFieldEntityDbMapper")) { SyncPackageCustomFieldEntityDbMapper() }
     //endregion
 
     //region PackageCustomFieldProduct
-    single<Mapper<SyncPackageCustomFieldProductEntity, SyncPackageCustomFieldProductModel>>(named("SyncPackageCustomFieldProductEntityDbMapper")) { SyncPackageCustomFieldProductEntityDbMapper() }
+    single<MapperDto<SyncPackageCustomFieldProductEntity, SyncPackageCustomFieldProductModel, PackageCustomFieldProductDto>>(named("SyncPackageCustomFieldProductEntityDbMapper")) { SyncPackageCustomFieldProductEntityDbMapper() }
     //endregion
 
     //region PaymentPlan
