@@ -213,6 +213,74 @@ tasks.register("generateEntityMappers") {
     }
 }
 
+tasks.register("generateMapperDI") {
+    group = "generation"
+    description = "Generate Koin DI definitions for entity mappers"
+
+    // SQLDelight generation'dan sonra çalışsın
+    dependsOn("generateCommonMainAppDatabaseInterface")
+
+    doLast {
+        val diPackage = "com.repzone.di"
+        val mapperPackage = "com.repzone.data.mapper"
+        val entityPackage = "com.repzone.database"
+        val modelPackage = "com.repzone.domain.model"
+
+        // SQLDelight'ın generate ettiği Entity'lerin yolu
+        val entityDir = file("build/generated/sqldelight/code/AppDatabase/commonMain/com/repzone/database")
+
+        // DI dosyasının yazılacağı klasör (data modülü altında)
+        val diDir = file("data/src/commonMain/kotlin/${diPackage.replace('.', '/')}")
+
+        if (!entityDir.exists()) {
+            println("❌ Entity directory not found: ${entityDir.absolutePath}")
+            println("💡 Run SQLDelight generation first!")
+            return@doLast
+        }
+
+        // DI klasörünü oluştur
+        diDir.mkdirs()
+
+        val diDefinitions = mutableListOf<DIDefinition>()
+
+        // Tüm Entity dosyalarını bul ve DI definition oluştur
+        entityDir.walkTopDown()
+            .filter { it.isFile && it.extension == "kt" && it.name.endsWith("Entity.kt") }
+            .forEach { entityFile ->
+                val entityName = entityFile.nameWithoutExtension // Örn: SyncProductEntity
+                val modelName = entityName.replace("Entity", "Model")
+                val mapperName = entityName.replace("Entity", "EntityDbMapper")
+
+                // Region adı için base name al (Sync prefix'ini kaldır)
+                val regionName = entityName.removePrefix("Sync").removeSuffix("Entity")
+
+                diDefinitions.add(
+                    DIDefinition(
+                        regionName = regionName,
+                        mapperName = mapperName,
+                        entityName = entityName,
+                        modelName = modelName
+                    )
+                )
+            }
+
+        // DI dosyasını oluştur
+        val diContent = generateDIFile(
+            diDefinitions = diDefinitions,
+            diPackage = diPackage,
+            mapperPackage = mapperPackage,
+            entityPackage = entityPackage,
+            modelPackage = modelPackage
+        )
+
+        val diFile = File(diDir, "MapperModule.kt")
+        diFile.writeText(diContent)
+
+        println("✅ Generated: MapperModule.kt with ${diDefinitions.size} definitions")
+        println("📂 Location: ${diFile.absolutePath}")
+    }
+}
+
 
 sqldelight {
     databases {
@@ -510,5 +578,68 @@ fun generateFieldMapping(field: EntityField, isFromEntity: Boolean): String {
         // Normal mapping
         else -> source
     }
+}
+//endregion
+
+//region GENERATOR DI MAPPER
+data class DIDefinition(
+    val regionName: String,      // Örn: Product
+    val mapperName: String,      // Örn: SyncProductEntityDbMapper
+    val entityName: String,      // Örn: SyncProductEntity
+    val modelName: String        // Örn: SyncProductModel
+)
+
+fun generateDIFile(
+    diDefinitions: List<DIDefinition>,
+    diPackage: String,
+    mapperPackage: String,
+    entityPackage: String,
+    modelPackage: String
+): String {
+    val result = StringBuilder()
+
+    // Package declaration
+    result.appendLine("package $diPackage")
+    result.appendLine()
+
+    // Imports
+    result.appendLine("import com.repzone.data.util.Mapper")
+    result.appendLine("import org.koin.core.qualifier.named")
+    result.appendLine("import org.koin.dsl.module")
+    result.appendLine()
+
+    // Import all mappers
+    diDefinitions.forEach { def ->
+        result.appendLine("import $mapperPackage.${def.mapperName}")
+    }
+    result.appendLine()
+
+    // Import all entities
+    diDefinitions.forEach { def ->
+        result.appendLine("import $entityPackage.${def.entityName}")
+    }
+    result.appendLine()
+
+    // Import all models
+    diDefinitions.forEach { def ->
+        result.appendLine("import $modelPackage.${def.modelName}")
+    }
+    result.appendLine()
+
+    // Module definition
+    result.appendLine("val mapperModule = module {")
+    result.appendLine()
+
+    // Her mapper için region block
+    diDefinitions.sortedBy { it.regionName }.forEach { def ->
+        result.appendLine("    //region ${def.regionName}")
+        result.appendLine("    single<Mapper<${def.entityName}, ${def.modelName}>>(named(\"${def.mapperName}\")) { ${def.mapperName}() }")
+        result.appendLine("    //endregion")
+        result.appendLine()
+    }
+
+    result.appendLine("}")
+
+    return result.toString()
 }
 //endregion
