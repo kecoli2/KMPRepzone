@@ -325,4 +325,5 @@ private fun SyncJobType.getDisplayName(): String = when (this) {
     CUSTOMERS_PRICE_PARAMETERS -> "Müşteri Fiyat"
     CUSTOMERS_GROUP_PRICE -> "Müşteri Grubu Fiyatı"
     COMMON_MODULES_REASONS -> "Genel Görev Reasons"
+    COMMON_DOCUMENT_MAPS -> "Document Görevi"
 }

@@ -6,6 +6,7 @@ import com.repzone.network.dto.CustomerEmailDto
 import com.repzone.network.dto.ProductDto
 import com.repzone.network.dto.RouteDto
 import com.repzone.network.dto.CustomerGroupDto
+import com.repzone.network.dto.DocumentMapModelDto
 import com.repzone.network.dto.EventReasonDto
 import com.repzone.network.dto.PackageCustomFieldDto
 import com.repzone.network.dto.ProductGroupDto
@@ -22,6 +23,7 @@ import com.repzone.sync.service.api.impl.SyncApiCustomerEmailImpl
 import com.repzone.sync.service.api.impl.SyncApiCustomerGroupImpl
 import com.repzone.sync.service.api.impl.SyncApiCustomerGroupPriceParametersImpl
 import com.repzone.sync.service.api.impl.SyncApiCustomerPriceParametersImpl
+import com.repzone.sync.service.api.impl.SyncApiDocumentMapsImpl
 import com.repzone.sync.service.api.impl.SyncApiEventReasonsImpl
 import com.repzone.sync.service.api.impl.SyncApiModulesImpl
 import com.repzone.sync.service.bulk.impl.CustomerEmailRawSqlBulkInsertService
@@ -29,6 +31,7 @@ import com.repzone.sync.service.bulk.impl.CustomerGroupPriceParameterslRawSqlBul
 import com.repzone.sync.service.bulk.impl.CustomerGroupRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerPriceParameterslRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerRawSqlBulkInsertService
+import com.repzone.sync.service.bulk.impl.DocumentMapsRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.EventReasonsRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.ModulesRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.ProductGroupRawSqlBulkInsertService
@@ -127,6 +130,17 @@ val SyncModule = module {
     single<IBulkInsertService<List<EventReasonDto>>>(named("syncEventReasonBulkInsert")){ EventReasonsRawSqlBulkInsertService(get(named("SyncEventReasonEntityDbMapper")),get()) }
     //endregion COMMON REASONS
 
+    //region COMMON DOCUMENT
+    single<ISyncApiService<List<DocumentMapModelDto>>>(named("syncApiDocumentMapsImpl")) { SyncApiDocumentMapsImpl(get()) }
+    single<IBulkInsertService<List<DocumentMapModelDto>>>(named("syncDocumentMapsRawSqlBulkInsertService")){
+        DocumentMapsRawSqlBulkInsertService(
+            get(named("SyncDocumentMapEntityDbMapper")),
+            get(),
+            get(),
+            get())
+    }
+    //endregion COMMON DOCUMENT
+
 
     //region GENERAL
     single<ISyncManager>{ SyncManagerImpl(get()) }
@@ -153,8 +167,10 @@ val SyncModule = module {
             apiModulesApi = get(named("syncModulesImpl")),
             modulesRawBulkInsert = get(named("syncModulesBulkInsert")),
             eventReasonsApi = get(named("syncApiEventReasonsImpl")),
-            eventReasonsRawBulkInsert = get(named("syncEventReasonBulkInsert"))
+            eventReasonsRawBulkInsert = get(named("syncEventReasonBulkInsert")),
+            documentMapApi = get(named("syncApiDocumentMapsImpl")),
+            documentMapBulkInsert = get(named("syncDocumentMapsRawSqlBulkInsertService"))
 
-        )
+            )
     }
 }

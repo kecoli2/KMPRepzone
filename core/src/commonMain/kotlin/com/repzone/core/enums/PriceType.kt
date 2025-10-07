@@ -13,7 +13,6 @@ enum class PriceType {
     SALES,
     RETURN,
     DAMAGERETURN;
-
     companion object {
         object Serializer : KSerializer<PriceType> {
             override val descriptor = PrimitiveSerialDescriptor("PriceType", PrimitiveKind.INT)

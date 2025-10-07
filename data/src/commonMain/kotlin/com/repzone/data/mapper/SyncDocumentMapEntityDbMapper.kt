@@ -1,10 +1,14 @@
 package com.repzone.data.mapper
 
-import com.repzone.data.util.Mapper
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toLong
+import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncDocumentMapEntity
 import com.repzone.domain.model.SyncDocumentMapModel
+import com.repzone.network.dto.DocumentMapModelDto
+import kotlin.time.ExperimentalTime
 
-class SyncDocumentMapEntityDbMapper : Mapper<SyncDocumentMapEntity, SyncDocumentMapModel> {
+class SyncDocumentMapEntityDbMapper : MapperDto<SyncDocumentMapEntity, SyncDocumentMapModel, DocumentMapModelDto> {
     //region Field
     //endregion
 
@@ -66,6 +70,34 @@ class SyncDocumentMapEntityDbMapper : Mapper<SyncDocumentMapEntity, SyncDocument
             UniqueIdCaption = domain.uniqueIdCaption,
             UseFinancialLogo = domain.useFinancialLogo,
             WarehouseType = domain.warehouseType
+        )
+    }
+
+    @OptIn(ExperimentalTime::class)
+    override fun fromDto(dto: DocumentMapModelDto): SyncDocumentMapEntity {
+        return SyncDocumentMapEntity(
+            Id = dto.id.toLong(),
+            Description = dto.description,
+            DocumentHeader = null,
+            DocumentTypeGroup = dto.documentTypeGroup?.enumToLong(),
+            IoType = dto.ioType?.enumToLong(),
+            IsElectronicDocument = dto.isElectronicDocument.toLong(),
+            IsFulfillment = null,
+            Lang = null,
+            LogoPathUrl = null,
+            LogoSelection = null,
+            MinMaxControl = dto.minMaxControl.toLong(),
+            ModificationDateUtc = dto.modificationDateUtc?.toEpochMilliseconds(),
+            Name = dto.name,
+            Note = null,
+            OperationType = dto.operationType?.enumToLong(),
+            PrinterTemplatePath = null,
+            PrintQrCode = null,
+            RecordDateUtc = dto.recordDateUtc?.toEpochMilliseconds(),
+            State = dto.state.toLong(),
+            UniqueIdCaption = null,
+            UseFinancialLogo = null,
+            WarehouseType = dto.warehouseType?.enumToLong()
         )
     }
     //endregion

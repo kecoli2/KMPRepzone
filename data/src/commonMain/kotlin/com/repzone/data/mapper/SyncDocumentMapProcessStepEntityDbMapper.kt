@@ -1,10 +1,13 @@
 package com.repzone.data.mapper
 
-import com.repzone.data.util.Mapper
+
+import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncDocumentMapProcessStepEntity
 import com.repzone.domain.model.SyncDocumentMapProcessStepModel
+import com.repzone.network.dto.DocumentMapProcessStepDto
 
-class SyncDocumentMapProcessStepEntityDbMapper : Mapper<SyncDocumentMapProcessStepEntity, SyncDocumentMapProcessStepModel> {
+class SyncDocumentMapProcessStepEntityDbMapper :
+    MapperDto<SyncDocumentMapProcessStepEntity, SyncDocumentMapProcessStepModel, DocumentMapProcessStepDto> {
     //region Field
     //endregion
 
@@ -34,6 +37,28 @@ class SyncDocumentMapProcessStepEntityDbMapper : Mapper<SyncDocumentMapProcessSt
             ProcessId = domain.processId,
             State = domain.state,
             StepOrder = domain.stepOrder
+        )
+    }
+
+    override fun fromDto(dto: DocumentMapProcessStepDto): SyncDocumentMapProcessStepEntity {
+        return SyncDocumentMapProcessStepEntity(
+            Id = dto.id.toLong(),
+            Name = dto.name,
+            ObjectName = dto.objectName,
+            ProcessId = null,
+            State = dto.state.toLong(),
+            StepOrder = dto.stepOrder?.toLong()
+        )
+    }
+
+    fun fromDto(dto: DocumentMapProcessStepDto, processId: Int?): SyncDocumentMapProcessStepEntity {
+        return SyncDocumentMapProcessStepEntity(
+            Id = dto.id.toLong(),
+            Name = dto.name,
+            ObjectName = dto.objectName,
+            ProcessId = processId?.toLong(),
+            State = dto.state.toLong(),
+            StepOrder = dto.stepOrder?.toLong()
         )
     }
     //endregion

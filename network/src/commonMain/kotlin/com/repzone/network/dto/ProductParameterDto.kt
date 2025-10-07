@@ -16,17 +16,4 @@ data class ProductParameterDto(
 
     @SerialName("Color")
     val color: String? = null
-) {
-    companion object {
-        fun create(product: ProductDto): List<ProductParameterDto> {
-            return product.parameters.map { model ->
-                ProductParameterDto(
-                    id = model.id,
-                    productId = product.id,
-                    order = model.order,
-                    color = model.color
-                )
-            }
-        }
-    }
-}
+)

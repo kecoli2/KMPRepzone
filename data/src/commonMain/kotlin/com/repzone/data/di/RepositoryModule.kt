@@ -160,7 +160,7 @@ val RepositoryModule = module {
     //endregion
 
     //region DocumentMap
-    single<Mapper<SyncDocumentMapEntity, SyncDocumentMapModel>>(named("SyncDocumentMapEntityDbMapper")) { SyncDocumentMapEntityDbMapper() }
+    single<MapperDto<SyncDocumentMapEntity, SyncDocumentMapModel, DocumentMapModelDto>>(named("SyncDocumentMapEntityDbMapper")) { SyncDocumentMapEntityDbMapper() }
     //endregion
 
     //region DocumentMapDocNumberInformation
@@ -168,11 +168,13 @@ val RepositoryModule = module {
     //endregion
 
     //region DocumentMapProcess
-    single<Mapper<SyncDocumentMapProcessEntity, SyncDocumentMapProcessModel>>(named("SyncDocumentMapProcessEntityDbMapper")) { SyncDocumentMapProcessEntityDbMapper() }
+    single<MapperDto<SyncDocumentMapProcessEntity, SyncDocumentMapProcessModel, DocumentMapProcessDto>>(named("SyncDocumentMapProcessEntityDbMapper")) { SyncDocumentMapProcessEntityDbMapper() }
+    single{ SyncDocumentMapProcessEntityDbMapper() }
     //endregion
 
     //region DocumentMapProcessStep
-    single<Mapper<SyncDocumentMapProcessStepEntity, SyncDocumentMapProcessStepModel>>(named("SyncDocumentMapProcessStepEntityDbMapper")) { SyncDocumentMapProcessStepEntityDbMapper() }
+    single<MapperDto<SyncDocumentMapProcessStepEntity, SyncDocumentMapProcessStepModel, DocumentMapProcessStepDto>>(named("SyncDocumentMapProcessStepEntityDbMapper")) { SyncDocumentMapProcessStepEntityDbMapper() }
+    single { SyncDocumentMapProcessStepEntityDbMapper() }
     //endregion
 
     //region DocumentOrganization

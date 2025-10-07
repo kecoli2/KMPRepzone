@@ -7,6 +7,7 @@ import com.repzone.network.dto.CustomerEmailDto
 import com.repzone.network.dto.ProductDto
 import com.repzone.network.dto.RouteDto
 import com.repzone.network.dto.CustomerGroupDto
+import com.repzone.network.dto.DocumentMapModelDto
 import com.repzone.network.dto.EventReasonDto
 import com.repzone.network.dto.PackageCustomFieldDto
 import com.repzone.network.dto.ProductGroupDto
@@ -18,6 +19,7 @@ import com.repzone.sync.job.impl.CustomerGroupPriceParametersSyncJob
 import com.repzone.sync.job.impl.CustomerGroupSyncJob
 import com.repzone.sync.job.impl.CustomerPriceParametersSyncJob
 import com.repzone.sync.job.impl.CustomerSyncJob
+import com.repzone.sync.job.impl.DocumentMapsSyncJob
 import com.repzone.sync.job.impl.EventReasonsSyncJob
 import com.repzone.sync.job.impl.PakageCustomFieldSyncJob
 import com.repzone.sync.job.impl.ProductGroupSyncJob
@@ -56,7 +58,9 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository) {
         apiModulesApi: ISyncApiService<List<PackageCustomFieldDto>>,
         modulesRawBulkInsert: IBulkInsertService<List<PackageCustomFieldDto>>,
         eventReasonsApi: ISyncApiService<List<EventReasonDto>>,
-        eventReasonsRawBulkInsert: IBulkInsertService<List<EventReasonDto>>
+        eventReasonsRawBulkInsert: IBulkInsertService<List<EventReasonDto>>,
+        documentMapApi: ISyncApiService<List<DocumentMapModelDto>>,
+        documentMapBulkInsert: IBulkInsertService<List<DocumentMapModelDto>>
 
     ): Map<SyncJobType, ISyncJob> {
         return mapOf(
@@ -69,8 +73,9 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository) {
             SyncJobType.CUSTOMERS_PRICE_PARAMETERS to CustomerPriceParametersSyncJob(customerPriceParametersApi, customerPriceParametersBulkInsert, syncModuleRepository),
             SyncJobType.CUSTOMERS_GROUP_PRICE to CustomerGroupPriceParametersSyncJob(customerGroupPriceParametersApi, customerGroupPriceParametersBulkInsert, syncModuleRepository),
             SyncJobType.COMMON_MODULES to PakageCustomFieldSyncJob(apiModulesApi, modulesRawBulkInsert, syncModuleRepository),
-            SyncJobType.COMMON_MODULES_REASONS to EventReasonsSyncJob(eventReasonsApi,
-                eventReasonsRawBulkInsert, syncModuleRepository)
+            SyncJobType.COMMON_MODULES_REASONS to EventReasonsSyncJob(eventReasonsApi, eventReasonsRawBulkInsert, syncModuleRepository),
+            SyncJobType.COMMON_DOCUMENT_MAPS to DocumentMapsSyncJob(documentMapApi,
+                documentMapBulkInsert, syncModuleRepository)
 
         )
     }
