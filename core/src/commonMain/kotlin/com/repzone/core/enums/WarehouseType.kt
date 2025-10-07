@@ -6,11 +6,17 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
+
 enum class WarehouseType {
     MAIN,
     RETURN,
-    DAMAGERETURN;
+    DAMAGERETURN,
+    EMPTY,
+    EMPTY2;
 
+    /*
+    TODO("EMPTY2 LERI DUZENLE")
+     */
     companion object {
         object Serializer : KSerializer<WarehouseType> {
             override val descriptor = PrimitiveSerialDescriptor("WarehouseType", PrimitiveKind.INT)

@@ -16,8 +16,13 @@ enum class SalesOperationType {
     COLLECTIONDEBIT6, //tahsilat borç
     COLLECTIONCREDIT7, //tahsilat alacak
     SALESDAMAGEDRETURN8, // Satis  hasarli iade
-    PURCHASEDAMAGEDRETURN; // Alis  hasarli iade
+    PURCHASEDAMAGEDRETURN, // Alis  hasarli iade
+    EMPTY,
+    EMPTY2;
 
+    /*
+    TODO("ENUMLARI DUZELT")
+     */
     companion object {
         object Serializer : KSerializer<SalesOperationType> {
             override val descriptor = PrimitiveSerialDescriptor("SalesOperationType", PrimitiveKind.INT)

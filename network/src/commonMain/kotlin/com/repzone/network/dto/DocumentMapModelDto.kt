@@ -17,6 +17,7 @@ data class DocumentMapModelDto(
     val recordDateUtc: Instant? = null,
     val name: String? = null,
     val description: String? = null,
+    @Serializable(with = IoType.Companion.Serializer::class)
     val ioType: IoType? = null,
     val isElectronicDocument: Boolean,
     @Serializable(with = DocumentTypeGroup.Companion.Serializer::class)
