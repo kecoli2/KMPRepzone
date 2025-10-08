@@ -9,6 +9,8 @@ import com.repzone.network.models.request.LoginRequest
 import com.repzone.network.models.response.LoginResponse
 import com.repzone.network.models.response.RefreshTokenResponse
 import com.repzone.presentation.base.*
+import com.repzone.presentation.viewmodel.sync.SyncTestViewModel.Event
+import com.repzone.sync.model.SyncJobType
 import kotlinx.coroutines.delay
 import kotlin.time.Clock
 import kotlin.uuid.ExperimentalUuidApi
@@ -22,6 +24,11 @@ class LoginScreenViewModel(
     companion object {
         private const val DEBUG_DELAY = 3000L // Test için 3 saniye
         private const val MIN_LOADING_TIME = 1500L // Minimum loading süresi
+    }
+
+    sealed class Event {
+        data object Success : Event()
+        data object ForgotPassword : Event()
     }
 
     @OptIn(ExperimentalUuidApi::class)

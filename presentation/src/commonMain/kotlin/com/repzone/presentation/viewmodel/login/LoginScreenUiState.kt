@@ -14,5 +14,5 @@ data class LoginScreenUiState(
         return copy(uiFrame = newUiFrame)
     }
     val isFormValid: Boolean get() = username.isNotBlank() && password.isNotBlank()
-    val canSubmit: Boolean get() = isFormValid && !uiFrame.isLoading
+    val canSubmit: Boolean get() = isFormValid && !uiFrame.isLoading && !isLoginSuccessful
 }

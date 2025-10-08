@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
     alias(libs.plugins.androidLint) apply false
+    alias(libs.plugins.kotlinSerialization) apply false
 }
 
 val tmpDir = if (System.getProperty("os.name").toLowerCase().contains("windows")) {

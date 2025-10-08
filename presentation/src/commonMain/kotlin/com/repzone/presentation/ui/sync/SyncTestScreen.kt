@@ -63,7 +63,8 @@ import com.repzone.sync.transaction.TransactionStats
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SyncTestScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onBackClick: () -> Boolean
 ) {
     ViewModelHost<SyncTestViewModel> { viewModel ->
         val state by viewModel.state.collectAsState()

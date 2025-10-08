@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.androidLint)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -55,6 +56,8 @@ kotlin {
                 implementation(libs.koin.compose)
                 implementation(libs.compose.components.resources)
                 implementation(compose.materialIconsExtended)
+                implementation(libs.navigation.compose)
+                implementation(libs.kotlinx.serialization.json)
 
                 implementation(project(":core"))
                 implementation(project(":domain"))

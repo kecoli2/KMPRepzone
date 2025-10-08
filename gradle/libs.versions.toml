@@ -51,6 +51,7 @@ firebase-crash    = "3.0.6"
 playServicesLocation = "21.3.0"
 
 mokoResources = "0.25.0"
+navigation = "2.9.0"
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -116,6 +117,7 @@ compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = 
 compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version = "1.7.8" }
+navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation" }
 
 
 

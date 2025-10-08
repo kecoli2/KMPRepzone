@@ -12,6 +12,7 @@ import com.repzone.database.di.DatabaseModule
 import com.repzone.firebase.di.FirebaseMockAndroidModule
 import com.repzone.mobile.di.AndroidDIModulePreview
 import com.repzone.mobile.thema.AppTheme
+import com.repzone.navigation.AppRouter
 import com.repzone.network.di.NetworkModule
 import com.repzone.presentation.di.PresentationModule
 import com.repzone.presentation.viewmodel.sync.SyncTestScreen
@@ -26,7 +27,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             AppTheme {
-                SyncTestScreen()
+                AppRouter()
             }
 
             //App()
@@ -37,7 +38,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 @Preview
 fun AppAndroidPreview() {
-    startKoin {
+  /*  startKoin {
          androidContext(RepzoneApplication()) // Yerine gerçek context kullanın
             modules(
             DatabaseModule,
@@ -49,7 +50,7 @@ fun AppAndroidPreview() {
         )
     }
     loadKoinModules(FirebaseMockAndroidModule)
-    AppTheme { SyncTestScreen() }
+    AppTheme { SyncTestScreen() }*/
 }
 
 

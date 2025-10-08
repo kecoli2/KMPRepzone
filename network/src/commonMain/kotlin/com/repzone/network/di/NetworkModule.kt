@@ -10,8 +10,8 @@ import org.koin.dsl.module
 
 val NetworkModule = module {
     // ortak config
-    //single { NetworkConfig(baseUrl = "https://repzoneprodapi-dev-slot-a.azurewebsites.net") }
-    single { NetworkConfig(baseUrl = "https://repzone-mobile-api.azurewebsites.net/api") }
+    single { NetworkConfig(baseUrl = "https://repzoneprodapi-dev-slot-a.azurewebsites.net") }
+    //single { NetworkConfig(baseUrl = "https://repzone-mobile-api.azurewebsites.net/api") }
 
     // Platform motoru (Android/iOS ayrı modülde sağlanır)
     //single<HttpClientEngine> { provideEngine() }

@@ -16,7 +16,10 @@ import com.repzone.presentation.viewmodel.login.LoginScreenViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen() = ViewModelHost<LoginScreenViewModel>() { viewModel ->
+fun LoginScreen(
+    onLoginSuccess: () -> Unit,
+    onForgotPasswordClick: (email: String?) -> Unit
+) = ViewModelHost<LoginScreenViewModel>() { viewModel ->
     val state by viewModel.state.collectAsState()
     var isPasswordVisible by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -24,7 +27,7 @@ fun LoginScreen() = ViewModelHost<LoginScreenViewModel>() { viewModel ->
     // Success handling
     LaunchedEffect(state.isLoginSuccessful) {
         if (state.isLoginSuccessful) {
-            // Navigate to main screen
+            onLoginSuccess()
         }
     }
 

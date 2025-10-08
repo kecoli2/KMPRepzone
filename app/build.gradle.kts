@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.googleServices)      // google-services.json için
     alias(libs.plugins.firebaseCrashlytics) // Crashlytics Gradle plugin
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -61,6 +62,8 @@ kotlin {
             implementation(libs.ktor.client.core)
             /// Shared Project Implementation
             implementation(project(":core"))
+            implementation(project(":presentation"))
+            implementation(project(":presentationlegacy"))
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -72,6 +75,7 @@ kotlin {
             implementation(project(":presentation"))
             implementation(project(":sync"))
             implementation(project(":domain"))
+            implementation(project(":presentationlegacy"))
         }
     }
 }
