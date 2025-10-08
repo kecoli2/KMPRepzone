@@ -65,6 +65,14 @@ kotlin {
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+            implementation(project(":core"))
+            implementation(project(":data"))
+            implementation(project(":database"))
+            implementation(project(":firebase"))
+            implementation(project(":network"))
+            implementation(project(":presentation"))
+            implementation(project(":sync"))
+            implementation(project(":domain"))
         }
     }
 }
@@ -106,7 +114,40 @@ dependencies {
     implementation(project(":firebase"))
     implementation(project(":presentation"))
     implementation(project(":presentationlegacy"))
+    implementation(project(":database"))
     debugImplementation(compose.uiTooling)
     implementation(compose.preview)
 }
 
+tasks.register("assembleXCFramework") {
+    group = "build"
+    description = "Assembles an XCFramework from all iOS targets."
+    dependsOn(
+        "linkDebugFrameworkIosArm64",
+        "linkDebugFrameworkIosSimulatorArm64"
+    )
+    doLast {
+        val buildDir = buildDir.absolutePath
+        val frameworkDirArm64 = "$buildDir/bin/iosArm64/debugFramework/Mobile.framework"
+        val frameworkDirSimArm64 = "$buildDir/bin/iosSimulatorArm64/debugFramework/Mobile.framework"
+        val outputDir = "$buildDir/xcf"
+        exec {
+            commandLine(
+                "xcodebuild", "-create-xcframework",
+                "-framework", frameworkDirArm64,
+                "-framework", frameworkDirSimArm64,
+                "-output", "$outputDir/Mobile.xcframework"
+            )
+        }
+        println("XCFramework created at $outputDir/Mobile.xcframework")
+    }
+}
+
+val xcodeFrameworksDir = rootProject.file("../iosApp/Frameworks")
+
+tasks.register<Copy>("copyXCFrameworkToXcode") {
+    dependsOn("assembleXCFramework")
+    from(buildDir.resolve("XCFrameworks/release"))
+    into(xcodeFrameworksDir)
+    include("Mobile.xcframework/**")
+}

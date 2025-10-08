@@ -1,10 +1,11 @@
 package com.repzone.firebase.manager
 
 import com.repzone.core.interfaces.IFireBaseRealtimeDatabase
+import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.flow.callbackFlow
 
-class FireBaseRealtimeDatabaseImp: IFireBaseRealtimeDatabase {
+class FireBaseRealtimeDatabaseImp : IFireBaseRealtimeDatabase {
     //region Field
     //TODO:
     //private val db = Database.database()
@@ -18,16 +19,14 @@ class FireBaseRealtimeDatabaseImp: IFireBaseRealtimeDatabase {
 
     //region Public Method
     override suspend fun set(path: String, value: String?) {
-        suspendCancellableCoroutine<Unit> { cont ->
-            /*db.referenceWithPath(path).setValue(value) { err, _ ->
-                if (err != null) cont.resumeWith(Result.failure(NSErrorException(err)))
-                else cont.resume(Unit) {}
-            }*/
-        }
+        // iOS için gerçek implementasyon yoksa boş bırakılabilir
     }
 
     override fun observe(path: String): Flow<String> {
-        TODO("Not yet implemented")
+        return callbackFlow {
+            trySend("iOS Fake Value 1.1")
+            awaitClose { }
+        }
     }
 
     /*override fun observe(path: String) = kotlinx.coroutines.flow.callbackFlow<String> {
