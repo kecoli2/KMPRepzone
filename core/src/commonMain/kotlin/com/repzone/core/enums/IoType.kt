@@ -10,7 +10,6 @@ enum class IoType {
     EMPTY,
     INPUT,
     OUTPUT;
-
     companion object {
         object Serializer : KSerializer<IoType> {
             override val descriptor = PrimitiveSerialDescriptor("IoType", PrimitiveKind.INT)
