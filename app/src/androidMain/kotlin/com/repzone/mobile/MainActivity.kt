@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
 @Preview
 fun AppAndroidPreview() {
     startKoin {
-         androidContext(PlatformApplication()) // Yerine gerçek context kullanın
+         androidContext(RepzoneApplication()) // Yerine gerçek context kullanın
             modules(
             DatabaseModule,
             DatabaseAndroidModule, AndroidDIModulePreview,

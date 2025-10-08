@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
@@ -80,6 +82,63 @@ kotlin {
                 // KMP dependencies declared in commonMain.
             }
         }
+    }
+}
+
+// BuildConfig generation
+val useNewUI: Boolean = project.findProperty("use_new_ui")?.toString()?.toBoolean() ?: true
+val appVersion: String = project.findProperty("application-versionname")?.toString() ?: "1.0.0"
+val isDebug: Boolean = project.findProperty("debug")?.toString()?.toBoolean() ?: true
+
+val generateBuildConfig = tasks.register("generateBuildConfig") {
+    val outputDir = file("src/commonMain/kotlin/com/repzone/core/config")
+    val outputFile = File(outputDir, "BuildConfig.kt")
+
+    outputs.file(outputFile)
+
+    doLast {
+        outputDir.mkdirs()
+
+        outputFile.writeText("""
+            package com.repzone.core.config
+            
+            /**
+             * Otomatik generate
+             * ELLE DUZELTMEYINIZ
+             *              
+             */
+            object BuildConfig {
+                const val USE_NEW_UI: Boolean = $useNewUI
+                const val IS_DEBUG: Boolean = $isDebug
+                const val APP_VERSION: String = "$appVersion"
+                
+                val activeUIModule: UIModule
+                    get() = if (USE_NEW_UI) UIModule.NEW else UIModule.LEGACY
+                
+                fun isUIModuleActive(module: UIModule): Boolean {
+                    return activeUIModule == module
+                }
+            }
+            
+            enum class UIModule {
+                NEW,
+                LEGACY
+            }
+        """.trimIndent())
+
+        println("✅ BuildConfig generated: USE_NEW_UI=$useNewUI")
+    }
+}
+
+// KMP'de doğru task isimleri
+tasks.withType<KotlinCompile>().configureEach {
+    dependsOn(generateBuildConfig)
+}
+
+// Android-specific task varsa
+tasks.configureEach {
+    if (name.contains("compile") && name.contains("Kotlin")) {
+        dependsOn(generateBuildConfig)
     }
 }
 

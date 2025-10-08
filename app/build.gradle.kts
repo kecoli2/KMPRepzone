@@ -1,4 +1,3 @@
-import com.android.build.api.dsl.androidLibrary
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -94,8 +93,11 @@ android {
         }
     }
     buildTypes {
+        getByName("debug") {
+
+        }
         getByName("release") {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
         }
     }
     compileOptions {
@@ -112,8 +114,11 @@ dependencies {
     implementation(project(":data"))
     implementation(project(":sync"))
     implementation(project(":firebase"))
+
+    // UI modülleri - build variant'a göre
     implementation(project(":presentation"))
     implementation(project(":presentationlegacy"))
+
     implementation(project(":database"))
     debugImplementation(compose.uiTooling)
     implementation(compose.preview)
