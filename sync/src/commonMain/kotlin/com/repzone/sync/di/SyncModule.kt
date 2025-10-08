@@ -7,6 +7,7 @@ import com.repzone.network.dto.ProductDto
 import com.repzone.network.dto.RouteDto
 import com.repzone.network.dto.CustomerGroupDto
 import com.repzone.network.dto.DocumentMapModelDto
+import com.repzone.network.dto.DynamicPageReportDto
 import com.repzone.network.dto.EventReasonDto
 import com.repzone.network.dto.PackageCustomFieldDto
 import com.repzone.network.dto.ProductGroupDto
@@ -24,6 +25,7 @@ import com.repzone.sync.service.api.impl.SyncApiCustomerGroupImpl
 import com.repzone.sync.service.api.impl.SyncApiCustomerGroupPriceParametersImpl
 import com.repzone.sync.service.api.impl.SyncApiCustomerPriceParametersImpl
 import com.repzone.sync.service.api.impl.SyncApiDocumentMapsImpl
+import com.repzone.sync.service.api.impl.SyncApiDynamicPageReportImpl
 import com.repzone.sync.service.api.impl.SyncApiEventReasonsImpl
 import com.repzone.sync.service.api.impl.SyncApiModulesImpl
 import com.repzone.sync.service.bulk.impl.CustomerEmailRawSqlBulkInsertService
@@ -32,6 +34,7 @@ import com.repzone.sync.service.bulk.impl.CustomerGroupRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerPriceParameterslRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.DocumentMapsRawSqlBulkInsertService
+import com.repzone.sync.service.bulk.impl.DynamicPageReportRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.EventReasonsRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.ModulesRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.ProductGroupRawSqlBulkInsertService
@@ -141,6 +144,19 @@ val SyncModule = module {
     }
     //endregion COMMON DOCUMENT
 
+    //region COMMON DYNAMIC PAGES
+    single<ISyncApiService<List<DynamicPageReportDto>>>(named("syncApiDynamicPageReportImpl")) {
+        SyncApiDynamicPageReportImpl(
+            get()
+        )
+    }
+
+    single<IBulkInsertService<List<DynamicPageReportDto>>>(named("syncDynamicPageReportRawSqlBulkInsertService")){
+        DynamicPageReportRawSqlBulkInsertService(get(named("SyncDynamicPageReportEntityDbMapper")),get())
+    }
+
+    //endregion COMMON DYNAMIC PAGES
+
 
     //region GENERAL
     single<ISyncManager>{ SyncManagerImpl(get()) }
@@ -169,8 +185,8 @@ val SyncModule = module {
             eventReasonsApi = get(named("syncApiEventReasonsImpl")),
             eventReasonsRawBulkInsert = get(named("syncEventReasonBulkInsert")),
             documentMapApi = get(named("syncApiDocumentMapsImpl")),
-            documentMapBulkInsert = get(named("syncDocumentMapsRawSqlBulkInsertService"))
-
-            )
+            documentMapBulkInsert = get(named("syncDocumentMapsRawSqlBulkInsertService")),
+            dynamicPageReportApi = get(named("syncApiDynamicPageReportImpl")),
+            dynamicPageReportBulkInsert = get(named("syncDynamicPageReportRawSqlBulkInsertService")))
     }
 }

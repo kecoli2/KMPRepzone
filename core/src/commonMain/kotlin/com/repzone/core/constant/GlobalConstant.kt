@@ -33,5 +33,6 @@ object ICommonApiControllerConstant {
     const val COMMON_APP_MODULES_ENDPOINT = "/api/App/Modules"
     const val COMMON_APP_MODULES_REASONS_ENDPOINT = "/api/v1/Misc/EventReasons"
     const val COMMON_APP_DOCUMENT_MAPS = "/api/Document/Maps"
+    const val COMMON_APP_DYNAMIC_PAGE = "/api/v1/Misc/DynamicPages"
 
 }

@@ -206,7 +206,7 @@ val RepositoryModule = module {
     //endregion
 
     //region DynamicPageReport
-    single<Mapper<SyncDynamicPageReportEntity, SyncDynamicPageReportModel>>(named("SyncDynamicPageReportEntityDbMapper")) { SyncDynamicPageReportEntityDbMapper() }
+    single<MapperDto<SyncDynamicPageReportEntity, SyncDynamicPageReportModel, DynamicPageReportDto>>(named("SyncDynamicPageReportEntityDbMapper")) { SyncDynamicPageReportEntityDbMapper() }
     //endregion
 
     //region EagleEyeLogInformation

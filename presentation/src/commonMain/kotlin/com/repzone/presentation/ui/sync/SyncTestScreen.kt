@@ -505,6 +505,7 @@ private fun SyncJobType.getDisplayName(): String = when (this) {
     CUSTOMERS_GROUP_PRICE -> "Müşteri Grubu Fiyat"
     COMMON_MODULES_REASONS -> "Custom Field Reasons"
     COMMON_DOCUMENT_MAPS -> "Document Maps"
+    COMMON_DYNAMIC_PAGES -> "Dynamic Report Pages"
 }
 
 private fun UserRole.getDisplayName(): String = when (this) {
@@ -531,6 +532,7 @@ private fun isJobApplicableForRole(jobType: SyncJobType, userRole: UserRole): Bo
         CUSTOMERS_PRICE_PARAMETERS -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
         COMMON_MODULES_REASONS -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
         COMMON_DOCUMENT_MAPS -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
+        COMMON_DYNAMIC_PAGES ->  userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
     }
 }
 
