@@ -1,7 +1,6 @@
 package com.repzone.presentationlegacy.ui
 
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -47,7 +46,7 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun TestScreen() = ViewModelHost<TestScreenViewModel> { vm ->
+fun TestScreenLegacy() = ViewModelHost<TestScreenViewModel> { vm ->
     var showContent by remember { mutableStateOf(false) }
     var showGpsContent by remember { mutableStateOf(false) }
     var gpsData by remember { mutableStateOf<GeoPoint?>(null) }
@@ -80,7 +79,7 @@ fun TestScreen() = ViewModelHost<TestScreenViewModel> { vm ->
         AnimatedVisibility(visible = showGpsContent) {
             Text("${gpsData?.latitude}, ${gpsData?.longitude}")
         }
-        PermissionsSection()
+        PermissionsSectionLegacy()
         PrinterSection()
     }
 }

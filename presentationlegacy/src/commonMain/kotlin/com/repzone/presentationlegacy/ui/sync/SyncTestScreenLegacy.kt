@@ -63,7 +63,7 @@ import com.repzone.sync.transaction.TransactionStats
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SyncTestScreen(
+fun SyncTestScreenLegacy(
     modifier: Modifier = Modifier
 ) {
     ViewModelHost<SyncTestViewModel> { viewModel ->

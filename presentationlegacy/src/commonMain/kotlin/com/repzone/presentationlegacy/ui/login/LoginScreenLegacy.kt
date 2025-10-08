@@ -16,7 +16,7 @@ import com.repzone.presentationlegacy.viewmodel.login.LoginScreenViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen() = ViewModelHost<LoginScreenViewModel>() { viewModel ->
+fun LoginScreenLegacy() = ViewModelHost<LoginScreenViewModel>() { viewModel ->
     val state by viewModel.state.collectAsState()
     var isPasswordVisible by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()

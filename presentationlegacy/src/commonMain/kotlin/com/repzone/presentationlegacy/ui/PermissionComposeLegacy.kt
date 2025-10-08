@@ -17,7 +17,7 @@ expect fun rememberPermissionManager(): PermissionManager
 
 // 🔧 UI’den çağırmak için küçük bir yardımcı composable (örnek)
 @Composable
-fun PermissionsSection() {
+fun PermissionsSectionLegacy() {
     val pm = rememberPermissionManager()
     val scope = rememberCoroutineScope()
 
