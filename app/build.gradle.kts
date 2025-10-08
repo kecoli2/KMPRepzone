@@ -105,6 +105,7 @@ dependencies {
     implementation(project(":sync"))
     implementation(project(":firebase"))
     implementation(project(":presentation"))
+    implementation(project(":presentationlegacy"))
     debugImplementation(compose.uiTooling)
     implementation(compose.preview)
 }
