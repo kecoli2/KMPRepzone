@@ -48,7 +48,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.repzone.presentation.base.ViewModelHost
+import com.repzone.presentationlegacy.base.ViewModelHost
+import com.repzone.presentationlegacy.viewmodel.sync.SyncTestViewModel
 import com.repzone.sync.model.SyncJobResult
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
