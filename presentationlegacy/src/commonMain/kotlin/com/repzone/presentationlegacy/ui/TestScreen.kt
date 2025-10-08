@@ -33,12 +33,12 @@ import androidx.compose.ui.unit.dp
 import com.repzone.core.generated.resources.hello
 import com.repzone.core.interfaces.ILocationService
 import com.repzone.core.model.GeoPoint
+import com.repzone.core.printers.PrintOptions
+import com.repzone.core.printers.Transport
+import com.repzone.core.printers.ZebraPrinterManager
+import com.repzone.core.printers.ZebraResult
 import com.repzone.core.util.PermissionStatus
 import com.repzone.presentationlegacy.base.ViewModelHost
-import com.repzone.presentationlegacy.printers.PrintOptions
-import com.repzone.presentationlegacy.printers.Transport
-import com.repzone.presentationlegacy.printers.ZebraPrinterManager
-import com.repzone.presentationlegacy.printers.ZebraResult
 import com.repzone.presentationlegacy.viewmodel.TestScreenViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi

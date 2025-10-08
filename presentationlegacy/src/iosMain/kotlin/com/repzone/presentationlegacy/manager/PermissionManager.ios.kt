@@ -1,4 +1,4 @@
-package com.repzone.presentationlegacy.permissions
+package com.repzone.presentationlegacy.manager
 
 import com.repzone.core.util.PermissionStatus
 import kotlinx.cinterop.*

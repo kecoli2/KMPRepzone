@@ -68,7 +68,6 @@ kotlin {
         androidMain {
             dependencies {
                 //LIBS IMPORT
-                implementation(files("libs/ZSDK_ANDROID_API.jar"))
                 implementation(libs.androidx.activity.compose)
 
             }
