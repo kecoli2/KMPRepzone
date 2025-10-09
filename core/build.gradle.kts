@@ -87,20 +87,24 @@ kotlin {
 }
 
 // BuildConfig generation
-val useNewUI: Boolean = providers.gradleProperty("USE_NEW_UI").getOrElse("true").toBoolean()
+val uiModuleName: String = providers.gradleProperty("ACTIVE_UI_MODULE").getOrElse("UIModule.NEW")
 val appVersion: String = libs.versions.application.versionname.get()
 val isDebug: Boolean = providers.gradleProperty("DEBUG").getOrElse("false").toBoolean()
 val defaultThemeColor: String = providers.gradleProperty("DEFAULT_THEME").getOrElse("orange")
+val v1Endpoint: String = providers.gradleProperty("V1_ENDPOINT").getOrElse("HTT")
+val v2Endpoint: String = providers.gradleProperty("V2_ENDPOINT").getOrElse("HTTPS")
 
 val generateBuildConfig = tasks.register("generateBuildConfig") {
     val outputDir = file("src/commonMain/kotlin/com/repzone/core/config")
     val outputFile = File(outputDir, "BuildConfig.kt")
     outputs.file(outputFile)
 
-    inputs.property("useNewUI", useNewUI)
+    inputs.property("uiModuleName", uiModuleName)
     inputs.property("isDebug", isDebug)
     inputs.property("appVersion", appVersion)
     inputs.property("defaultThemeColor", defaultThemeColor)
+    inputs.property("v1Endpoint", v1Endpoint)
+    inputs.property("v2Endpoint", v2Endpoint)
 
     doLast {
         outputDir.mkdirs()
@@ -114,16 +118,18 @@ val generateBuildConfig = tasks.register("generateBuildConfig") {
              *              
              */
             object BuildConfig {
-                const val USE_NEW_UI: Boolean = $useNewUI
+                private val uiModule: UIModule = $uiModuleName
+                const val endpointV1: String = "$v1Endpoint"
+                const val endpointV2: String = "$v2Endpoint"
                 const val IS_DEBUG: Boolean = $isDebug
                 const val APP_VERSION: String = "$appVersion"
                 const val THEME_NAME: String = "$defaultThemeColor"
                 
                 val activeUIModule: UIModule
-                    get() = if (USE_NEW_UI) UIModule.NEW else UIModule.LEGACY
+                    get() = uiModule
                 
                 fun isUIModuleActive(module: UIModule): Boolean {
-                    return activeUIModule == module
+                    return uiModule == module
                 }
             }
             

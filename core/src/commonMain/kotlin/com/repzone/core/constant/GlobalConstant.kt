@@ -39,3 +39,10 @@ object ICommonApiControllerConstant {
 object IFormApiControllerConstant {
     const val FORM_DEFINATION_ENDPOINT = "/api/v1/Form/List"
 }
+
+object NetWorkModuleConstant{
+    const val HTTP_CLIENT_V1 = "httpClientV1"
+    const val HTTP_CLIENT_V2 = "httpClientV2"
+    const val HTTP_CLIENT_CONFIG_V1 = "httpClientV1Config"
+    const val HTTP_CLIENT_CONFIG_V2 = "httpClientV2Config"
+}

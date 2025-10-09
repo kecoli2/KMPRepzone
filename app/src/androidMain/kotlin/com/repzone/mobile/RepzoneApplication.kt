@@ -13,7 +13,6 @@ import com.repzone.firebase.di.FirebaseAndroidModule
 import com.repzone.mobile.di.AndroidDIModule
 import com.repzone.network.di.NetworkModule
 import com.repzone.network.di.PlatformNetworkModule
-import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.sync.di.SyncModule
 import com.repzone.sync.transaction.TransactionCoordinator
 import org.koin.android.ext.android.inject
@@ -81,7 +80,7 @@ class RepzoneApplication: Application() {
             }
 
             UIModule.LEGACY -> {
-                PresentationModuleLegacy
+                com.repzone.presentation.legacy.di.PresentationModuleLegacy
             }
         }
     }
