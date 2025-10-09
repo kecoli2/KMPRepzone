@@ -63,7 +63,7 @@ kotlin {
             /// Shared Project Implementation
             implementation(project(":core"))
             implementation(project(":presentation"))
-            implementation(project(":presentationlegacy"))
+            implementation(project(":presentation-legacy"))
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -75,7 +75,7 @@ kotlin {
             implementation(project(":presentation"))
             implementation(project(":sync"))
             implementation(project(":domain"))
-            implementation(project(":presentationlegacy"))
+            implementation(project(":presentation-legacy"))
         }
     }
 }
@@ -112,6 +112,7 @@ android {
 
 dependencies {
     implementation(project(":core"))
+    implementation(project(":core-ui"))
     implementation(project(":database"))
     implementation(project(":network"))
     implementation(project(":domain"))
@@ -121,7 +122,7 @@ dependencies {
 
     // UI modülleri - build variant'a göre
     implementation(project(":presentation"))
-    implementation(project(":presentationlegacy"))
+    implementation(project(":presentation-legacy"))
 
     implementation(project(":database"))
     debugImplementation(compose.uiTooling)

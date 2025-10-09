@@ -1,4 +1,4 @@
-package com.repzone.presentation.ui
+package com.repzone.presentation.legacy.ui
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.repzone.core.generated.resources.Res
 import com.repzone.core.generated.resources.hello
 import com.repzone.core.interfaces.ILocationService
 import com.repzone.core.model.GeoPoint
@@ -38,7 +39,7 @@ import com.repzone.core.printers.ZebraPrinterManager
 import com.repzone.core.printers.ZebraResult
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.util.PermissionStatus
-import com.repzone.presentation.viewmodel.TestScreenViewModel
+import com.repzone.presentation.legacy.viewmodel.TestScreenViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import org.jetbrains.compose.resources.stringResource
@@ -46,7 +47,7 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalResourceApi::class)
 @Composable
-fun TestScreen() = ViewModelHost<TestScreenViewModel> { vm ->
+fun TestScreenLegacy() = ViewModelHost<TestScreenViewModel> { vm ->
     var showContent by remember { mutableStateOf(false) }
     var showGpsContent by remember { mutableStateOf(false) }
     var gpsData by remember { mutableStateOf<GeoPoint?>(null) }
@@ -57,7 +58,7 @@ fun TestScreen() = ViewModelHost<TestScreenViewModel> { vm ->
 
     Column(modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer).safeContentPadding().fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally,    ) {
         Text("Son değer: $latest")
-        Text(stringResource(com.repzone.core.generated.resources.Res.string.hello))
+        Text(stringResource(Res.string.hello))
         Button(onClick = {
             showContent = !showContent
             scope.launch {
@@ -79,7 +80,7 @@ fun TestScreen() = ViewModelHost<TestScreenViewModel> { vm ->
         AnimatedVisibility(visible = showGpsContent) {
             Text("${gpsData?.latitude}, ${gpsData?.longitude}")
         }
-        PermissionsSection()
+        PermissionsSectionLegacy()
         PrinterSection()
     }
 }

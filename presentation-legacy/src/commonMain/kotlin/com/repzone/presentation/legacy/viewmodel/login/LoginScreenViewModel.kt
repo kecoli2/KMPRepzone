@@ -1,4 +1,4 @@
-package com.repzone.presentation.viewmodel.login
+package com.repzone.presentation.legacy.viewmodel.login
 
 import com.repzone.core.interfaces.IPreferencesManager
 import com.repzone.core.model.UiFrame
@@ -23,11 +23,6 @@ class LoginScreenViewModel(
     companion object {
         private const val DEBUG_DELAY = 3000L // Test için 3 saniye
         private const val MIN_LOADING_TIME = 1500L // Minimum loading süresi
-    }
-
-    sealed class Event {
-        data object Success : Event()
-        data object ForgotPassword : Event()
     }
 
     @OptIn(ExperimentalUuidApi::class)

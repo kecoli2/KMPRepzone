@@ -1,4 +1,4 @@
-package com.repzone.presentation.viewmodel.sync
+package com.repzone.presentation.legacy.viewmodel.sync
 
 import com.repzone.core.model.HasUiFrame
 import com.repzone.core.model.UiFrame

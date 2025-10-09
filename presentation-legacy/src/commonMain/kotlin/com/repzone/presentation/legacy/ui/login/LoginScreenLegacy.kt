@@ -1,4 +1,4 @@
-package com.repzone.presentation.ui.login
+package com.repzone.presentation.legacy.ui.login
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -12,14 +12,11 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.repzone.core.ui.base.ViewModelHost
-import com.repzone.presentation.viewmodel.login.LoginScreenViewModel
+import com.repzone.presentation.legacy.viewmodel.login.LoginScreenViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginScreen(
-    onLoginSuccess: () -> Unit,
-    onForgotPasswordClick: (email: String?) -> Unit
-) = ViewModelHost<LoginScreenViewModel>() { viewModel ->
+fun LoginScreenLegacy() = ViewModelHost<LoginScreenViewModel>() { viewModel ->
     val state by viewModel.state.collectAsState()
     var isPasswordVisible by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
@@ -27,7 +24,7 @@ fun LoginScreen(
     // Success handling
     LaunchedEffect(state.isLoginSuccessful) {
         if (state.isLoginSuccessful) {
-            onLoginSuccess()
+            // Navigate to main screen
         }
     }
 

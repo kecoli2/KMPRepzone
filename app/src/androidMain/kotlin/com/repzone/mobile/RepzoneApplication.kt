@@ -3,6 +3,7 @@ package com.repzone.mobile
 import android.app.Application
 import com.repzone.core.config.BuildConfig
 import com.repzone.core.config.UIModule
+import com.repzone.core.ui.base.initializeSmartViewModelStore
 import com.repzone.data.di.RepositoryModule
 import com.repzone.database.di.DatabaseAndroidModule
 import com.repzone.database.di.DatabaseModule
@@ -10,6 +11,7 @@ import com.repzone.firebase.di.FirebaseAndroidModule
 import com.repzone.mobile.di.AndroidDIModule
 import com.repzone.network.di.NetworkModule
 import com.repzone.network.di.PlatformNetworkModule
+import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.sync.di.SyncModule
 import com.repzone.sync.transaction.TransactionCoordinator
 import org.koin.android.ext.android.inject
@@ -55,7 +57,7 @@ class RepzoneApplication: Application() {
             )
         }
         loadKoinModules(FirebaseAndroidModule)
-        this.initializeSmartViewModelStore()
+        this.initializeSmartViewModel()
     }
     //endregion
 
@@ -75,21 +77,13 @@ class RepzoneApplication: Application() {
             }
 
             UIModule.LEGACY -> {
-                com.repzone.presentationlegacy.di.PresentationModuleLegacy
+                PresentationModuleLegacy
             }
         }
     }
 
-    private fun initializeSmartViewModelStore() {
-        when (BuildConfig.activeUIModule) {
-            UIModule.NEW -> {
-                com.repzone.presentation.base.initializeSmartViewModelStore()
-            }
-
-            UIModule.LEGACY -> {
-                com.repzone.presentationlegacy.base.initializeSmartViewModelStore()
-            }
-        }
+    private fun initializeSmartViewModel() {
+        initializeSmartViewModelStore()
         //endregion
     }
 }

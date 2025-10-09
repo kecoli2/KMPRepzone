@@ -13,7 +13,7 @@ kotlin {
     // which platforms this KMP module supports.
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
     androidLibrary {
-        namespace = "${providers.gradleProperty("APP_NAMESPACE_BASE").get()}." + providers.gradleProperty("APP_NAMESPACE_PRESENTATION").get()
+        namespace = "${providers.gradleProperty("APP_NAMESPACE_BASE").get()}." + providers.gradleProperty("APP_NAMESPACE_PRESENTATION_LEGACY").get()
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
@@ -31,7 +31,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = providers.gradleProperty("APP_NAMESPACE_IOS_PRESENTATION").getOrElse("PresentationKit")
+            baseName = providers.gradleProperty("APP_NAMESPACE_IOS_PRESENTATION_LEGACY").getOrElse("PresentationLegacyKit")
         }
     }
 
@@ -44,6 +44,9 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
+
+                // Add KMP dependencies here
+
                 // Compose
                 implementation(libs.compose.runtime)
                 implementation(libs.compose.foundation)
@@ -53,7 +56,6 @@ kotlin {
                 implementation(libs.koin.compose)
                 implementation(libs.compose.components.resources)
                 implementation(compose.materialIconsExtended)
-                implementation(libs.navigation.compose)
                 implementation(libs.kotlinx.serialization.json)
 
                 implementation(project(":core"))

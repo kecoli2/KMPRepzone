@@ -1,4 +1,4 @@
-package com.repzone.presentation.viewmodel
+package com.repzone.presentation.legacy.viewmodel
 
 import com.repzone.core.interfaces.IFireBaseRealtimeDatabase
 import com.repzone.core.interfaces.ILocationService
