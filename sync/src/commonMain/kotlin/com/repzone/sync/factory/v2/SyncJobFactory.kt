@@ -1,35 +1,15 @@
-package com.repzone.sync.factory
+package com.repzone.sync.factory.v2
 
 import com.repzone.domain.repository.ISyncModuleRepository
-import com.repzone.network.dto.CrmPriceListParameterDto
-import com.repzone.network.dto.CustomerDto
-import com.repzone.network.dto.CustomerEmailDto
-import com.repzone.network.dto.ProductDto
-import com.repzone.network.dto.RouteDto
-import com.repzone.network.dto.CustomerGroupDto
-import com.repzone.network.dto.DocumentMapModelDto
-import com.repzone.network.dto.DynamicPageReportDto
-import com.repzone.network.dto.EventReasonDto
-import com.repzone.network.dto.PackageCustomFieldDto
-import com.repzone.network.dto.ProductGroupDto
+import com.repzone.network.dto.*
 import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
+import com.repzone.sync.interfaces.ISyncFactory
 import com.repzone.sync.interfaces.ISyncJob
-import com.repzone.sync.job.impl.CustomerEmailSyncJob
-import com.repzone.sync.job.impl.CustomerGroupPriceParametersSyncJob
-import com.repzone.sync.job.impl.CustomerGroupSyncJob
-import com.repzone.sync.job.impl.CustomerPriceParametersSyncJob
-import com.repzone.sync.job.impl.CustomerSyncJob
-import com.repzone.sync.job.impl.DocumentMapsSyncJob
-import com.repzone.sync.job.impl.DynamicPageReportSyncJob
-import com.repzone.sync.job.impl.EventReasonsSyncJob
-import com.repzone.sync.job.impl.PakageCustomFieldSyncJob
-import com.repzone.sync.job.impl.ProductGroupSyncJob
-import com.repzone.sync.job.impl.ProductSyncJob
-import com.repzone.sync.job.impl.RouteDataSyncJob
+import com.repzone.sync.job.impl.*
 import com.repzone.sync.model.SyncJobType
 
-class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository) {
+class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): ISyncFactory {
     //region Field
     //endregion
 
@@ -40,7 +20,7 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository) {
     //endregion
 
     //region Public Method
-    fun createJobs(
+    override fun createJobs(
         productApi: ISyncApiService<List<ProductDto>>,
         productBulkInsert: IBulkInsertService<List<ProductDto>>,
         productGroupApi: ISyncApiService<List<ProductGroupDto>>,
@@ -65,7 +45,6 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository) {
         documentMapBulkInsert: IBulkInsertService<List<DocumentMapModelDto>>,
         dynamicPageReportApi: ISyncApiService<List<DynamicPageReportDto>>,
         dynamicPageReportBulkInsert: IBulkInsertService<List<DynamicPageReportDto>>
-
     ): Map<SyncJobType, ISyncJob> {
         return mapOf(
             SyncJobType.PRODUCTS to ProductSyncJob(productApi, productBulkInsert, syncModuleRepository),
@@ -79,9 +58,7 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository) {
             SyncJobType.COMMON_MODULES to PakageCustomFieldSyncJob(apiModulesApi, modulesRawBulkInsert, syncModuleRepository),
             SyncJobType.COMMON_MODULES_REASONS to EventReasonsSyncJob(eventReasonsApi, eventReasonsRawBulkInsert, syncModuleRepository),
             SyncJobType.COMMON_DOCUMENT_MAPS to DocumentMapsSyncJob(documentMapApi, documentMapBulkInsert, syncModuleRepository),
-            SyncJobType.COMMON_DYNAMIC_PAGES to DynamicPageReportSyncJob(dynamicPageReportApi,
-                dynamicPageReportBulkInsert, syncModuleRepository)
-        )
+            SyncJobType.COMMON_DYNAMIC_PAGES to DynamicPageReportSyncJob(dynamicPageReportApi,dynamicPageReportBulkInsert, syncModuleRepository))
     }
     //endregion
 

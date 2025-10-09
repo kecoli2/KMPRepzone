@@ -1,6 +1,6 @@
 package com.repzone.presentation.legacy.di
 
-import com.repzone.core.constant.NetWorkModuleConstant
+import com.repzone.core.constant.VersionModuleConstant
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
 import com.repzone.presentation.legacy.viewmodel.TestScreenViewModel
@@ -12,6 +12,6 @@ import org.koin.dsl.module
 val PresentationModuleLegacy = module {
     single<IPresentationConfig> { LegacyThemeConfig() }
     factory { TestScreenViewModel(get(), get()) }   // her ekranda yeni instance
-    factory { LoginScreenViewModel(get(named(NetWorkModuleConstant.V1_VERSION)), get()) }
+    factory { LoginScreenViewModel(get(named(VersionModuleConstant.V1_VERSION)), get()) }
     factory { SyncTestViewModel(get(), get()) }
 }

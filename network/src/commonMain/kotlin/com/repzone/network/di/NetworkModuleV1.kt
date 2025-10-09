@@ -2,6 +2,7 @@ package com.repzone.network.di
 
 import com.repzone.core.config.BuildConfig
 import com.repzone.core.constant.NetWorkModuleConstant
+import com.repzone.core.constant.VersionModuleConstant
 import com.repzone.network.api.ITokenApiController
 import com.repzone.network.http.HttpClientFactory
 import com.repzone.network.http.NetworkConfig
@@ -25,5 +26,5 @@ internal val NetworkModuleV1 = module {
         ).create()
     }
 
-    factory<ITokenApiController>(named(NetWorkModuleConstant.V1_VERSION)) { TokenApiControllerImpl(get(named(NetWorkModuleConstant.HTTP_CLIENT_V1))) }
+    factory<ITokenApiController>(named(VersionModuleConstant.V1_VERSION)) { TokenApiControllerImpl(get(named(NetWorkModuleConstant.HTTP_CLIENT_V1))) }
 }

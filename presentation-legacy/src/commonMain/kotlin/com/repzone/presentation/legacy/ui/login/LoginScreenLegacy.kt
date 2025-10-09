@@ -43,7 +43,9 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
             label = { Text("Kullanıcı Adı") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
-            enabled = state.uiFrame.isInteractionEnabled
+            enabled = state.uiFrame.isInteractionEnabled,
+            shape = MaterialTheme.shapes.extraLarge,
+
         )
 
         Spacer(modifier = Modifier.height(16.dp))
