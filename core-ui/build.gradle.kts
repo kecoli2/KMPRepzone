@@ -13,10 +13,11 @@ kotlin {
     // which platforms this KMP module supports.
     // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
     androidLibrary {
-        namespace = "${providers.gradleProperty("APP_NAMESPACE_BASE").get()}." + providers.gradleProperty("APP_NAMESPACE_PRESENTATION").get()
+        namespace = "${providers.gradleProperty("APP_NAMESPACE_BASE").get()}." + providers.gradleProperty("APP_NAMESPACE_CORE_UI").get()
         compileSdk = libs.versions.android.compileSdk.get().toInt()
         minSdk = libs.versions.android.minSdk.get().toInt()
     }
+
 
     // For iOS targets, this is also where you should
     // configure native binary output. For more information, see:
@@ -31,7 +32,7 @@ kotlin {
         iosSimulatorArm64()
     ).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = providers.gradleProperty("APP_NAMESPACE_IOS_PRESENTATION").getOrElse("PresentationKit")
+            baseName = providers.gradleProperty("APP_NAMESPACE_IOS_CORE_UI").getOrElse("CoreUiKit")
         }
     }
 
@@ -57,19 +58,12 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
 
                 implementation(project(":core"))
-                implementation(project(":domain"))
-                implementation(project(":firebase"))
-                implementation(project(":network"))
-                implementation(project(":sync"))
-
             }
         }
 
         androidMain {
             dependencies {
-                //LIBS IMPORT
                 implementation(libs.androidx.activity.compose)
-
             }
         }
 
@@ -83,5 +77,4 @@ kotlin {
             }
         }
     }
-
 }
