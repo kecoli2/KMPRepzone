@@ -12,6 +12,6 @@ import org.koin.dsl.module
 val PresentationModuleLegacy = module {
     single<IPresentationConfig> { LegacyThemeConfig() }
     factory { TestScreenViewModel(get(), get()) }   // her ekranda yeni instance
-    factory { LoginScreenViewModel(get(named(NetWorkModuleConstant.HTTP_CLIENT_V2)), get()) }
+    factory { LoginScreenViewModel(get(named(NetWorkModuleConstant.V1_VERSION)), get()) }
     factory { SyncTestViewModel(get(), get()) }
 }

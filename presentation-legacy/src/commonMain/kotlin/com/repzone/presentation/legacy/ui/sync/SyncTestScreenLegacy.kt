@@ -63,9 +63,7 @@ import com.repzone.sync.transaction.TransactionStats
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SyncTestScreenLegacy(
-    modifier: Modifier = Modifier
-) {
+fun SyncTestScreenLegacy(modifier: Modifier = Modifier) {
     ViewModelHost<SyncTestViewModel> { viewModel ->
         val state by viewModel.state.collectAsState()
         val snackbarHostState = remember { SnackbarHostState() }

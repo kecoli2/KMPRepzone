@@ -57,6 +57,7 @@ kotlin {
                 implementation(libs.compose.components.resources)
                 implementation(compose.materialIconsExtended)
                 implementation(libs.kotlinx.serialization.json)
+                implementation(libs.navigation.compose)
 
                 implementation(project(":core"))
                 implementation(project(":core-ui"))

@@ -1,4 +1,4 @@
-package com.repzone.presentation.viewmodel.sync
+package com.repzone.presentation.ui.sync
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -49,6 +49,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.repzone.core.ui.base.ViewModelHost
+import com.repzone.presentation.viewmodel.sync.SyncTestViewModel
 import com.repzone.sync.model.SyncJobResult
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType

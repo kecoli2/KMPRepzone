@@ -1,5 +1,6 @@
 package com.repzone.presentation.di
 
+import com.repzone.core.constant.NetWorkModuleConstant
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.presentation.theme.PresentationThemeConfig
 import com.repzone.presentation.viewmodel.*
@@ -11,6 +12,6 @@ import org.koin.dsl.module
 val PresentationModule = module {
     single<IPresentationConfig> { PresentationThemeConfig() }
     factory { TestScreenViewModel(get(), get()) }   // her ekranda yeni instance
-    factory { LoginScreenViewModel(get(named("v1")), get()) }
+    factory { LoginScreenViewModel(get(named(NetWorkModuleConstant.V2_VERSION)), get()) }
     factory { SyncTestViewModel(get(), get()) }
 }

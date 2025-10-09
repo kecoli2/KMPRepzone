@@ -3,6 +3,7 @@ package com.repzone.navigation
 import androidx.compose.runtime.Composable
 import com.repzone.core.config.BuildConfig
 import com.repzone.core.config.UIModule
+import com.repzone.presentation.legacy.navigation.LegacyNavHost
 import com.repzone.presentation.navigation.MainNavHost
 import com.repzone.presentation.navigation.Screen
 
@@ -18,8 +19,7 @@ fun AppRouter() {
             MainNavHost()
         }
         UIModule.LEGACY -> {
-            // Legacy UI navigation
-            //LegacyUINavigation()
+            LegacyNavHost()
         }
     }
 }

@@ -6,7 +6,7 @@ package com.repzone.core.config
  *              
  */
 object BuildConfig {
-    private val uiModule: UIModule = UIModule.NEW
+    private val uiModule: UIModule = UIModule.LEGACY
     const val endpointV1: String = "https://repzoneprodapi.azurewebsites.net"
     const val endpointV2: String = "https://repzone-mobile-api.azurewebsites.net"
     const val IS_DEBUG: Boolean = false

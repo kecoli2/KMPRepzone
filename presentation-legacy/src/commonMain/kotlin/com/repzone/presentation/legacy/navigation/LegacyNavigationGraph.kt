@@ -1,19 +1,24 @@
 package com.repzone.presentation.legacy.navigation
 
-//region Field
-//endregion
+import kotlinx.serialization.Serializable
 
-//region Properties
-//endregion
+sealed interface LegacyScreen {
 
-//region Constructor
-//endregion
+    // ============ GRAPH ROUTES ============
+    @Serializable
+    data object AuthGraph : LegacyScreen
 
-//region Public Method
-//endregion
+    @Serializable
+    data object MainGraph : LegacyScreen
 
-//region Protected Method
-//endregion
+    // ============ AUTH SCREENS ============
+    @Serializable
+    data object Login : LegacyScreen
 
-//region Private Method
-//endregion
+    @Serializable
+    data class ForgotPassword(val email: String? = null) : LegacyScreen
+
+    // ============ MAIN SCREENS ============
+    @Serializable
+    data object Sync : LegacyScreen
+}

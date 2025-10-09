@@ -12,7 +12,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.repzone.presentation.ui.login.LoginScreen
-import com.repzone.presentation.viewmodel.sync.SyncTestScreen
+import com.repzone.presentation.ui.sync.SyncTestScreen
 
 @Composable
 fun MainNavHost(modifier: Modifier = Modifier, navController: NavHostController = rememberNavController()) {
