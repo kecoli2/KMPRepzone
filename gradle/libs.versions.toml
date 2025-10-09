@@ -6,8 +6,6 @@ android-minSdk = "24"
 android-targetSdk = "35"
 application-version = "1"
 application-versionname = "1.0"
-debug = "true"
-use_new_ui = "true"
 
 # Core libs
 kotlinx-coroutines = "1.10.2"

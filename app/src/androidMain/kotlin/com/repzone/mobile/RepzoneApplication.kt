@@ -88,6 +88,6 @@ class RepzoneApplication: Application() {
 
     private fun initializeSmartViewModel() {
         initializeSmartViewModelStore()
-        //endregion
     }
+    //endregion
 }

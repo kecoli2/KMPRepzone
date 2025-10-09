@@ -3,6 +3,7 @@ package com.repzone.presentation.legacy.theme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
+import com.repzone.core.config.BuildConfig
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.manager.theme.common.ColorSchemeVariant
 
@@ -27,7 +28,7 @@ class LegacyThemeConfig : IPresentationConfig {
         )
     }
 
-    override fun getDefaultColorSchemeId(): String = "green"
+    override fun getDefaultColorSchemeId(): String = BuildConfig.THEME_NAME
     //endregion
 
     //region Protected Method

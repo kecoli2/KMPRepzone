@@ -3,6 +3,7 @@ package com.repzone.presentation.theme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
+import com.repzone.core.config.BuildConfig
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.manager.theme.DefaultShapes
 import com.repzone.core.ui.manager.theme.DefaultTypography
@@ -31,7 +32,7 @@ class PresentationThemeConfig : IPresentationConfig {
         )
     }
 
-    override fun getDefaultColorSchemeId(): String = "orange"
+    override fun getDefaultColorSchemeId(): String = BuildConfig.THEME_NAME
 
     //endregion
 

@@ -5,33 +5,35 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.tooling.preview.Preview
-import com.repzone.data.di.RepositoryModule
-import com.repzone.database.di.DatabaseAndroidModule
-import com.repzone.database.di.DatabaseModule
-import com.repzone.firebase.di.FirebaseMockAndroidModule
-import com.repzone.mobile.di.AndroidDIModulePreview
-import com.repzone.mobile.thema.AppTheme
+import com.repzone.core.ui.config.IPresentationConfig
+import com.repzone.core.ui.manager.theme.AppTheme
+import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.navigation.AppRouter
-import com.repzone.network.di.NetworkModule
-import com.repzone.presentation.di.PresentationModule
-import com.repzone.presentation.viewmodel.sync.SyncTestScreen
-import com.repzone.sync.di.SyncModule
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.GlobalContext.startKoin
-import org.koin.core.context.loadKoinModules
+import com.repzone.presentation.theme.PresentationThemeConfig
+import org.koin.compose.koinInject
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
-            AppTheme {
-                AppRouter()
-            }
-
-            //App()
+            AppContent()
         }
+    }
+}
+
+@Composable
+private fun AppContent() {
+    // DI'dan inject et
+    val themeManager: ThemeManager = koinInject()
+    val themeConfig: IPresentationConfig = koinInject()  // Modern için
+
+    themeManager.initialize(themeConfig)
+
+    AppTheme(themeManager = themeManager) {
+        AppRouter()
     }
 }
 

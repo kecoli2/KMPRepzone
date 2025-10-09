@@ -1,3 +1,5 @@
+import java.util.Locale
+
 plugins {
     // this is necessary to avoid the plugins to be loaded multiple times
     // in each subproject's classloader
@@ -11,7 +13,7 @@ plugins {
     alias(libs.plugins.kotlinSerialization) apply false
 }
 
-val tmpDir = if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+val tmpDir = if (System.getProperty("os.name").lowercase(Locale.getDefault()).contains("windows")) {
     "C:/Temp"
 } else {
     "/tmp"

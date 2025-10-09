@@ -87,15 +87,20 @@ kotlin {
 }
 
 // BuildConfig generation
-val useNewUI: Boolean = project.findProperty("use_new_ui")?.toString()?.toBoolean() ?: true
-val appVersion: String = project.findProperty("application-versionname")?.toString() ?: "1.0.0"
-val isDebug: Boolean = project.findProperty("debug")?.toString()?.toBoolean() ?: true
+val useNewUI: Boolean = providers.gradleProperty("USE_NEW_UI").getOrElse("true").toBoolean()
+val appVersion: String = libs.versions.application.versionname.get()
+val isDebug: Boolean = providers.gradleProperty("DEBUG").getOrElse("false").toBoolean()
+val defaultThemeColor: String = providers.gradleProperty("DEFAULT_THEME").getOrElse("orange")
 
 val generateBuildConfig = tasks.register("generateBuildConfig") {
     val outputDir = file("src/commonMain/kotlin/com/repzone/core/config")
     val outputFile = File(outputDir, "BuildConfig.kt")
-
     outputs.file(outputFile)
+
+    inputs.property("useNewUI", useNewUI)
+    inputs.property("isDebug", isDebug)
+    inputs.property("appVersion", appVersion)
+    inputs.property("defaultThemeColor", defaultThemeColor)
 
     doLast {
         outputDir.mkdirs()
@@ -112,6 +117,7 @@ val generateBuildConfig = tasks.register("generateBuildConfig") {
                 const val USE_NEW_UI: Boolean = $useNewUI
                 const val IS_DEBUG: Boolean = $isDebug
                 const val APP_VERSION: String = "$appVersion"
+                const val THEME_NAME: String = "$defaultThemeColor"
                 
                 val activeUIModule: UIModule
                     get() = if (USE_NEW_UI) UIModule.NEW else UIModule.LEGACY
@@ -126,8 +132,6 @@ val generateBuildConfig = tasks.register("generateBuildConfig") {
                 LEGACY
             }
         """.trimIndent())
-
-        println("✅ BuildConfig generated: USE_NEW_UI=$useNewUI")
     }
 }
 
