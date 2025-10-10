@@ -58,6 +58,7 @@ kotlin {
                 implementation(libs.koin.compose)
                 implementation(libs.navigation.compose)
                 implementation(libs.kotlinx.serialization.json)
+                implementation(compose.components.resources)
 
                 implementation(project(":core"))
                 implementation(project(":core-ui"))

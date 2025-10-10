@@ -11,9 +11,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.repzone.core.generated.resources.Res
+import com.repzone.core.generated.resources.hello
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.presentation.legacy.viewmodel.login.LoginScreenViewModel
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenViewModel>() { viewModel ->
@@ -101,7 +104,7 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
                 }
             } else {
                 /*Text(stringResource(moko))*/
-                Text("Giriş")
+                Text(stringResource(Res.string.hello))
             }
         }
 

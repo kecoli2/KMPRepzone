@@ -60,6 +60,12 @@ kotlin {
     }
 }
 
+compose.resources {
+    publicResClass = true
+    packageOfResClass = "com.repzone.core.generated.resources"
+    generateResClass = always
+}
+
 //region BuildConfig generation
 val uiModuleName: String = providers.gradleProperty("ACTIVE_UI_MODULE").getOrElse("UIModule.NEW")
 val appVersion: String = libs.versions.application.versionname.get()
