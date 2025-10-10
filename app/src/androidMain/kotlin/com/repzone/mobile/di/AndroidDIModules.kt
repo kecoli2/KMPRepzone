@@ -12,11 +12,9 @@ import org.koin.dsl.module
 val AndroidDIModule = module {
     single<ILocationService> { LocationServiceAndroid(app = get()) }
     single<IPreferencesManager>{ AndroidPreferencesManager(context = get()) }
-    single<ITokenProvider> { TokenProviderImpl(get(), get()) }
 }
 
 val AndroidDIModulePreview = module {
     single<ILocationService> { LocationServiceAndroid(app = get()) }
     single<IPreferencesManager>{ AndroidPreferencesManagerPreview() }
-    single<ITokenProvider> { TokenProviderImpl(get(), get()) }
 }
