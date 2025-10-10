@@ -1,6 +1,7 @@
 package com.repzone.core.ui.config
 
 import androidx.compose.runtime.Composable
+import com.repzone.core.config.ThemeType
 import com.repzone.core.ui.manager.theme.common.ColorSchemeVariant
 
 interface IPresentationConfig {
@@ -22,5 +23,5 @@ interface IPresentationConfig {
     /**
      * Default renk şeması ID'si
      */
-    fun getDefaultColorSchemeId(): String
+    fun getDefaultColorSchemeId(): ThemeType
 }

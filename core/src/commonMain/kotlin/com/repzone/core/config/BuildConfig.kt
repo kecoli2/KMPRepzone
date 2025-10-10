@@ -7,11 +7,10 @@ package com.repzone.core.config
  */
 object BuildConfig {
     private val uiModule: UIModule = UIModule.LEGACY
-    const val endpointV1: String = "https://repzoneprodapi.azurewebsites.net"
-    const val endpointV2: String = "https://repzone-mobile-api.azurewebsites.net"
+    const val apiEndpoint: String = "https://repzoneprodapi.azurewebsites.net"                
     const val IS_DEBUG: Boolean = false
     const val APP_VERSION: String = "1.0"
-    const val THEME_NAME: String = "red"
+    val THEME_NAME: ThemeType = ThemeType.DEFAULT
     
     val activeUIModule: UIModule
         get() = uiModule
@@ -24,4 +23,13 @@ object BuildConfig {
 enum class UIModule {
     NEW,
     LEGACY
+}
+
+enum class ThemeType{
+    DEFAULT,
+    RED,
+    BLUE,
+    YELLOW,
+    GREEN,
+    PURPLE
 }

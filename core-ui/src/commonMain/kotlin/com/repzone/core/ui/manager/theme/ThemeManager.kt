@@ -1,5 +1,6 @@
 package com.repzone.core.ui.manager.theme
 
+import com.repzone.core.config.ThemeType
 import com.repzone.core.enums.ThemeMode
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.manager.theme.common.ColorSchemeVariant
@@ -17,8 +18,8 @@ class ThemeManager {
     private val _themeMode = MutableStateFlow(ThemeMode.SYSTEM)
     val themeMode: StateFlow<ThemeMode> = _themeMode.asStateFlow()
 
-    private val _currentColorSchemeId = MutableStateFlow<String?>(null)
-    val currentColorSchemeId: StateFlow<String?> = _currentColorSchemeId.asStateFlow()
+    private val _currentColorSchemeId = MutableStateFlow<ThemeType?>(null)
+    val currentColorSchemeId: StateFlow<ThemeType?> = _currentColorSchemeId.asStateFlow()
 
     // Aktif presentation config (build time'da set edilir)
     private var activePresentationConfig: IPresentationConfig? = null
@@ -33,24 +34,17 @@ class ThemeManager {
         // Default renk şemasını set et
         val defaultSchemeId = config.getDefaultColorSchemeId()
         _currentColorSchemeId.value = defaultSchemeId
-
-        println("✅ [ThemeManager] Initialized with module: ${config.moduleId}")
-        println("   Available schemes: ${config.provideColorSchemes().joinToString { it.name }}")
-        println("   Default scheme: $defaultSchemeId")
     }
 
     /**
      * Renk şemasını değiştir
      */
-    fun setColorScheme(schemeId: String) {
+    fun setColorScheme(themeType: ThemeType) {
         val config = activePresentationConfig ?: return
         val schemes = config.provideColorSchemes()
 
-        if (schemes.any { it.id == schemeId }) {
-            _currentColorSchemeId.value = schemeId
-            println("🎨 [ThemeManager] Color scheme changed to: $schemeId")
-        } else {
-            println("⚠️ [ThemeManager] Color scheme not found: $schemeId")
+        if (schemes.any { it.id == themeType }) {
+            _currentColorSchemeId.value = themeType
         }
     }
 
@@ -76,7 +70,6 @@ class ThemeManager {
      */
     fun setThemeMode(mode: ThemeMode) {
         _themeMode.value = mode
-        println("🌓 [ThemeManager] Theme mode: $mode")
     }
 
     /**

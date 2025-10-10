@@ -41,15 +41,6 @@ object IFormApiControllerConstant {
 }
 
 object VersionModuleConstant {
-    const val V1_VERSION = "v1_version"
-    const val V2_VERSION = "v2_version"
-}
-
-object NetWorkModuleConstant{
-    const val HTTP_CLIENT_V1 = "httpClientV1"
-    const val HTTP_CLIENT_V2 = "httpClientV2"
-    const val HTTP_CLIENT_CONFIG_V1 = "httpClientV1Config"
-    const val HTTP_CLIENT_CONFIG_V2 = "httpClientV2Config"
-    const val HTTP_CLIENT_ENGINE_V1 = "httpClientEngineV1Config"
-    const val HTTP_CLIENT_ENGINE_V2 = "httpClientEngineV2Config"
+    const val LEGACY_VERSION = "LegacyVersion"
+    const val NEW_VERSION = "NewVersion"
 }

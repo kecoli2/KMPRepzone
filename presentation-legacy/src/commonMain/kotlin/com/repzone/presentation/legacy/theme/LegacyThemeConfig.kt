@@ -3,7 +3,7 @@ package com.repzone.presentation.legacy.theme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
-import com.repzone.core.config.BuildConfig
+import com.repzone.core.config.ThemeType
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.manager.theme.common.ColorSchemeVariant
 
@@ -28,7 +28,7 @@ class LegacyThemeConfig : IPresentationConfig {
         )
     }
 
-    override fun getDefaultColorSchemeId(): String = BuildConfig.THEME_NAME
+    override fun getDefaultColorSchemeId(): ThemeType = ThemeType.DEFAULT
     //endregion
 
     //region Protected Method
@@ -36,7 +36,7 @@ class LegacyThemeConfig : IPresentationConfig {
 
     //region Private Method
     private fun createGreenScheme() = ColorSchemeVariant(
-        id = "green",
+        id = ThemeType.DEFAULT,
         name = "Yeşil Tema",
         lightColorScheme = lightColorScheme(
             primary = Color(0xFF006E1C),
@@ -53,7 +53,7 @@ class LegacyThemeConfig : IPresentationConfig {
     )
 
     private fun createPurpleScheme() = ColorSchemeVariant(
-        id = "purple",
+        id = ThemeType.PURPLE,
         name = "Mor Tema",
         lightColorScheme = lightColorScheme(
             primary = Color(0xFF6A4FA5),

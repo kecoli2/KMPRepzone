@@ -2,7 +2,7 @@ package com.repzone.sync.di
 
 import com.repzone.core.config.BuildConfig
 import com.repzone.core.config.UIModule
-import com.repzone.sync.factory.v2.SyncJobFactory
+import com.repzone.sync.factory.newversion.SyncJobFactory
 import com.repzone.sync.interfaces.ISyncFactory
 import com.repzone.sync.interfaces.ISyncManager
 import com.repzone.sync.manager.SyncManagerImpl
@@ -17,12 +17,13 @@ val SyncModule = module {
     includes(
         when(BuildConfig.activeUIModule){
             UIModule.NEW -> {
-                SyncModuleV2
+                SyncModuleNew
             }
             UIModule.LEGACY -> {
-                SyncModuleV1
+                SyncModuleLegacy
             }
-        })
+        }
+    )
 
     //region GENERAL
     single<ISyncManager>{ SyncManagerImpl(get()) }

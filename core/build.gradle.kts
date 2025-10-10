@@ -90,9 +90,8 @@ kotlin {
 val uiModuleName: String = providers.gradleProperty("ACTIVE_UI_MODULE").getOrElse("UIModule.NEW")
 val appVersion: String = libs.versions.application.versionname.get()
 val isDebug: Boolean = providers.gradleProperty("DEBUG").getOrElse("false").toBoolean()
-val defaultThemeColor: String = providers.gradleProperty("DEFAULT_THEME").getOrElse("orange")
-val v1Endpoint: String = providers.gradleProperty("V1_ENDPOINT").getOrElse("HTT")
-val v2Endpoint: String = providers.gradleProperty("V2_ENDPOINT").getOrElse("HTTPS")
+val defaultThemeColor: String = providers.gradleProperty("DEFAULT_THEME").getOrElse("ThemeType.DEFAULT")
+val apiEndpoint: String = providers.gradleProperty("API_ENDPOINT").getOrElse("")
 
 val generateBuildConfig = tasks.register("generateBuildConfig") {
     val outputDir = file("src/commonMain/kotlin/com/repzone/core/config")
@@ -103,8 +102,7 @@ val generateBuildConfig = tasks.register("generateBuildConfig") {
     inputs.property("isDebug", isDebug)
     inputs.property("appVersion", appVersion)
     inputs.property("defaultThemeColor", defaultThemeColor)
-    inputs.property("v1Endpoint", v1Endpoint)
-    inputs.property("v2Endpoint", v2Endpoint)
+    inputs.property("apiEndpoint", apiEndpoint)
 
     doLast {
         outputDir.mkdirs()
@@ -119,11 +117,10 @@ val generateBuildConfig = tasks.register("generateBuildConfig") {
              */
             object BuildConfig {
                 private val uiModule: UIModule = $uiModuleName
-                const val endpointV1: String = "$v1Endpoint"
-                const val endpointV2: String = "$v2Endpoint"
+                const val apiEndpoint: String = "$apiEndpoint"                
                 const val IS_DEBUG: Boolean = $isDebug
                 const val APP_VERSION: String = "$appVersion"
-                const val THEME_NAME: String = "$defaultThemeColor"
+                val THEME_NAME: ThemeType = $defaultThemeColor
                 
                 val activeUIModule: UIModule
                     get() = uiModule
@@ -136,6 +133,15 @@ val generateBuildConfig = tasks.register("generateBuildConfig") {
             enum class UIModule {
                 NEW,
                 LEGACY
+            }
+            
+            enum class ThemeType{
+                DEFAULT,
+                RED,
+                BLUE,
+                YELLOW,
+                GREEN,
+                PURPLE
             }
         """.trimIndent())
     }

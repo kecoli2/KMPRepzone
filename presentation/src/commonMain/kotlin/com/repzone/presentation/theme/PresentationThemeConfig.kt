@@ -3,7 +3,7 @@ package com.repzone.presentation.theme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
-import com.repzone.core.config.BuildConfig
+import com.repzone.core.config.ThemeType
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.manager.theme.DefaultShapes
 import com.repzone.core.ui.manager.theme.DefaultTypography
@@ -32,7 +32,7 @@ class PresentationThemeConfig : IPresentationConfig {
         )
     }
 
-    override fun getDefaultColorSchemeId(): String = BuildConfig.THEME_NAME
+    override fun getDefaultColorSchemeId(): ThemeType = ThemeType.DEFAULT
 
     //endregion
 
@@ -41,7 +41,7 @@ class PresentationThemeConfig : IPresentationConfig {
 
     //region Private Method
     private fun createOrangeScheme() = ColorSchemeVariant(
-        id = "orange",
+        id = ThemeType.DEFAULT,
         name = "Turuncu Tema",
         lightColorScheme = lightColorScheme(
             primary = Color(0xFFFF6B35),
@@ -71,7 +71,7 @@ class PresentationThemeConfig : IPresentationConfig {
         shapes = DefaultShapes
     )
     private fun createRedScheme() = ColorSchemeVariant(
-        id = "red",
+        id = ThemeType.RED,
         name = "Kırmızı Tema",
         lightColorScheme = lightColorScheme(
             primary = Color(0xFFDC143C),
@@ -87,7 +87,7 @@ class PresentationThemeConfig : IPresentationConfig {
         )
     )
     private fun createYellowScheme() = ColorSchemeVariant(
-        id = "yellow",
+        id = ThemeType.YELLOW,
         name = "Sarı Tema",
         lightColorScheme = lightColorScheme(
             primary = Color(0xFFFFC107),
@@ -103,7 +103,7 @@ class PresentationThemeConfig : IPresentationConfig {
         )
     )
     private fun createBlueScheme() = ColorSchemeVariant(
-        id = "blue",
+        id = ThemeType.BLUE,
         name = "Mavi Tema",
         lightColorScheme = lightColorScheme(
             primary = Color(0xFF0061A4),
