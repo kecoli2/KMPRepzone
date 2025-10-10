@@ -1,11 +1,6 @@
 package com.repzone.core.config
 
 import com.repzone.core.enums.*
-/**
- * Otomatik generate
- * ELLE DUZELTMEYINIZ
- *              
- */
 object BuildConfig {
     private val uiModule: UIModule = UIModule.LEGACY
     const val apiEndpoint: String = "https://repzoneprodapi.azurewebsites.net"                

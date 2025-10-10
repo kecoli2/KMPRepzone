@@ -10,10 +10,6 @@ plugins {
 }
 
 kotlin {
-
-    // Target declarations - add or remove as needed below. These define
-    // which platforms this KMP module supports.
-    // See: https://kotlinlang.org/docs/multiplatform-discover-project.html#targets
     androidLibrary {
         namespace = "${providers.gradleProperty("APP_NAMESPACE_BASE").get()}." + providers.gradleProperty("APP_NAMESPACE_CORE").get()
         compileSdk = libs.versions.android.compileSdk.get().toInt()
@@ -26,18 +22,12 @@ kotlin {
         }
     }
 
+
     androidLibrary {
         androidResources.enable = true
         experimentalProperties["android.experimental.kmp.enableAndroidResources"] = true
     }
 
-    // For iOS targets, this is also where you should
-    // configure native binary output. For more information, see:
-    // https://kotlinlang.org/docs/multiplatform-build-native-binaries.html#build-xcframeworks
-
-    // A step-by-step guide on how to include this library in an XCode
-    // project can be found here:
-    // https://developer.android.com/kotlin/multiplatform/migrate
     listOf(
         iosX64(),
         iosArm64(),
@@ -47,46 +37,30 @@ kotlin {
             baseName = providers.gradleProperty("APP_NAMESPACE_IOS_CORE").getOrElse("CoreKit")
         }
     }
-    // Source set declarations.
-    // Declaring a target automatically creates a source set with the same name. By default, the
-    // Kotlin Gradle Plugin creates additional source sets that depend on each other, since it is
-    // common to share sources between related targets.
-    // See: https://kotlinlang.org/docs/multiplatform-hierarchy.html
+
     sourceSets {
-        commonMain {
-            dependencies {
-                implementation(libs.compose.runtime)
-                implementation(libs.kotlin.stdlib)
-                implementation(libs.kotlinx.serialization.json)
-                implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.kotlinx.datetime)
-                implementation(libs.koin.core)
-                // Add KMP dependencies here
+        commonMain.dependencies {
+            implementation(libs.compose.runtime)
+            implementation(libs.kotlin.stdlib)
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.datetime)
+            implementation(libs.koin.core)
+            implementation(compose.components.resources)
 
-                //Compose Resources
-                implementation(libs.compose.components.resources)
-            }
-        }
-        androidMain {
-            dependencies {
-                //LIBS IMPORT
-                implementation(files("libs/ZSDK_ANDROID_API.jar"))
-            }
         }
 
-        iosMain {
-            dependencies {
-                // Add iOS-specific dependencies here. This a source set created by Kotlin Gradle
-                // Plugin (KGP) that each specific iOS target (e.g., iosX64) depends on as
-                // part of KMP’s default source set hierarchy. Note that this source set depends
-                // on common by default and will correctly pull the iOS artifacts of any
-                // KMP dependencies declared in commonMain.
-            }
+        androidMain.dependencies {
+            implementation(files("libs/ZSDK_ANDROID_API.jar"))
+        }
+
+        iosMain.dependencies {
+            // iOS dependencies
         }
     }
 }
 
-// BuildConfig generation
+//region BuildConfig generation
 val uiModuleName: String = providers.gradleProperty("ACTIVE_UI_MODULE").getOrElse("UIModule.NEW")
 val appVersion: String = libs.versions.application.versionname.get()
 val isDebug: Boolean = providers.gradleProperty("DEBUG").getOrElse("false").toBoolean()
@@ -106,16 +80,10 @@ val generateBuildConfig = tasks.register("generateBuildConfig") {
 
     doLast {
         outputDir.mkdirs()
-
         outputFile.writeText("""
             package com.repzone.core.config
             
             import com.repzone.core.enums.*
-            /**
-             * Otomatik generate
-             * ELLE DUZELTMEYINIZ
-             *              
-             */
             object BuildConfig {
                 private val uiModule: UIModule = $uiModuleName
                 const val apiEndpoint: String = "$apiEndpoint"                
@@ -134,20 +102,13 @@ val generateBuildConfig = tasks.register("generateBuildConfig") {
     }
 }
 
-// KMP'de doğru task isimleri
 tasks.withType<KotlinCompile>().configureEach {
     dependsOn(generateBuildConfig)
 }
 
-// Android-specific task varsa
 tasks.configureEach {
     if (name.contains("compile") && name.contains("Kotlin")) {
         dependsOn(generateBuildConfig)
     }
 }
-
-compose.resources {
-    publicResClass = true
-    packageOfResClass = "com.repzone.core.generated.resources"
-    generateResClass = always
-}
+//endregion

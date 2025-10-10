@@ -29,7 +29,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.repzone.core.generated.resources.hello
 import com.repzone.core.interfaces.ILocationService
 import com.repzone.core.model.GeoPoint
 import com.repzone.core.printers.PrintOptions
@@ -40,11 +39,8 @@ import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.util.PermissionStatus
 import com.repzone.presentation.viewmodel.TestScreenViewModel
 import kotlinx.coroutines.launch
-import org.jetbrains.compose.resources.ExperimentalResourceApi
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 
-@OptIn(ExperimentalResourceApi::class)
 @Composable
 fun TestScreen() = ViewModelHost<TestScreenViewModel> { vm ->
     var showContent by remember { mutableStateOf(false) }
@@ -57,7 +53,7 @@ fun TestScreen() = ViewModelHost<TestScreenViewModel> { vm ->
 
     Column(modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer).safeContentPadding().fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally,    ) {
         Text("Son değer: $latest")
-        Text(stringResource(com.repzone.core.generated.resources.Res.string.hello))
+        Text("HELLO")
         Button(onClick = {
             showContent = !showContent
             scope.launch {

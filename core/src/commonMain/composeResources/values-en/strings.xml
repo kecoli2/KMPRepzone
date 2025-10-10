@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<resources>
-    <string name="app_name">Demo App</string>
-    <string name="hello">Hello</string>
-    <string name="greet_name">Hello, %1$s!</string>
-    <string name="logout">Log out</string>
-</resources>

@@ -54,7 +54,6 @@ kotlin {
 
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
-                implementation(libs.compose.components.resources)
                 implementation(compose.materialIconsExtended)
                 implementation(libs.navigation.compose)
                 implementation(libs.kotlinx.serialization.json)

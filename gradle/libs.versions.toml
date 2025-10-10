@@ -35,7 +35,6 @@ koin = "4.1.1"
 # AndroidX Compose (Android host)
 androidx-activity = "1.11.0"
 androidx-appcompat = "1.7.1"
-compose = "2025.10.00"
 
 
 # Firebase
@@ -46,7 +45,6 @@ firebase-crash    = "3.0.6"
 # Google Play Services
 playServicesLocation = "21.3.0"
 
-mokoResources = "0.25.0"
 navigation = "2.9.0"
 
 [plugins]
@@ -61,7 +59,6 @@ sqldelight = { id = "app.cash.sqldelight", version.ref = "sqldelight" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "google-services" }
 firebaseCrashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crash" }
-
 
 [libraries]
 # KotlinX
@@ -107,13 +104,9 @@ androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle
 compose-runtime     = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeMultiplatform" }
 compose-foundation  = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "composeMultiplatform" }
 compose-material3   = { module = "org.jetbrains.compose.material3:material3", version.ref = "composeMultiplatform" }
-#compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose" }
-compose-components-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
 compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version = "1.7.8" }
 navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "navigation" }
-
-
 
 # Kotlin
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }

@@ -19,7 +19,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.repzone.core.generated.resources.hello
 import com.repzone.core.interfaces.IFireBaseRealtimeDatabase
 import com.repzone.core.interfaces.IFirebaseCrashService
 import com.repzone.core.interfaces.ILocationService
@@ -53,7 +52,7 @@ fun App() {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text("Son değer: $latest")
-            Text(stringResource(com.repzone.core.generated.resources.Res.string.hello))
+            Text("trsdt")
             Button(onClick = {
                 showContent = !showContent
                 scope.launch {

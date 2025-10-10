@@ -12,7 +12,6 @@ plugins {
     alias(libs.plugins.androidLint) apply false
     alias(libs.plugins.kotlinSerialization) apply false
 }
-
 val tmpDir = if (System.getProperty("os.name").lowercase(Locale.getDefault()).contains("windows")) {
     "C:/Temp"
 } else {
