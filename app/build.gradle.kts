@@ -47,7 +47,7 @@ kotlin {
 
         }
         commonMain.dependencies {
-            implementation(project.dependencies.platform(libs.compose.bom))
+            //implementation(project.dependencies.platform(libs.compose.bom))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)

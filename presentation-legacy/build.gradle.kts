@@ -48,16 +48,17 @@ kotlin {
                 // Add KMP dependencies here
 
                 // Compose
-                implementation(libs.compose.runtime)
-                implementation(libs.compose.foundation)
-                implementation(libs.compose.material3)
+                implementation(compose.runtime)
+                implementation(compose.foundation)
+                implementation(compose.material3)
+                implementation(compose.ui)
+                implementation(compose.materialIconsExtended)
+                implementation(compose.components.resources)
 
                 implementation(libs.koin.core)
                 implementation(libs.koin.compose)
-                implementation(libs.compose.components.resources)
-                implementation(compose.materialIconsExtended)
-                implementation(libs.kotlinx.serialization.json)
                 implementation(libs.navigation.compose)
+                implementation(libs.kotlinx.serialization.json)
 
                 implementation(project(":core"))
                 implementation(project(":core-ui"))
