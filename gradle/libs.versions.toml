@@ -18,8 +18,6 @@ agp = "8.13.0"
 junit = "4.13.2"
 kotlin = "2.2.20"
 kotlinStdlib = "2.2.20"
-runner = "1.7.0"
-core = "1.7.0"
 
 # KMP UI
 composeMultiplatform = "1.9.0"
@@ -118,9 +116,6 @@ navigation-compose = { module = "org.jetbrains.androidx.navigation:navigation-co
 
 
 # Kotlin
-kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
-kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
-junit = { module = "junit:junit", version.ref = "junit" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlinStdlib" }
 
 # Firebase (Android host – BOM ile)
