@@ -1,6 +1,7 @@
 package com.repzone.sync.job.impl.newversion
 
 import com.repzone.core.constant.ICommonApiControllerConstant
+import com.repzone.core.enums.UIModule
 import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.network.dto.DynamicPageReportDto
 import com.repzone.network.models.request.FilterModelRequest
@@ -18,6 +19,7 @@ class DynamicPageReportSyncJob(apiService: ISyncApiService<List<DynamicPageRepor
     override val allowedRoles = setOf(UserRole.SALES_REP, UserRole.MERGE_STAFF, UserRole.MANAGER, UserRole.ADMIN)
     override val jobType = SyncJobType.COMMON_DYNAMIC_PAGES
     override val defaultRequestEndPoint= ICommonApiControllerConstant.COMMON_APP_DYNAMIC_PAGE
+    override val moduleType = UIModule.NEW
     //endregion
 
     //region Properties

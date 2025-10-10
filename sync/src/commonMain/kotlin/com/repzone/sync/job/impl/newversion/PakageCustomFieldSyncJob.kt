@@ -1,6 +1,7 @@
 package com.repzone.sync.job.impl.newversion
 
 import com.repzone.core.constant.ICommonApiControllerConstant
+import com.repzone.core.enums.UIModule
 import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.network.dto.PackageCustomFieldDto
 import com.repzone.network.models.request.FilterModelRequest
@@ -17,6 +18,7 @@ class PakageCustomFieldSyncJob(apiService: ISyncApiService<List<PackageCustomFie
     override val allowedRoles = setOf(UserRole.SALES_REP, UserRole.MERGE_STAFF, UserRole.MANAGER, UserRole.ADMIN)
     override val jobType = SyncJobType.COMMON_MODULES
     override val defaultRequestEndPoint = ICommonApiControllerConstant.COMMON_APP_MODULES_ENDPOINT
+    override val moduleType = UIModule.NEW
     //endregion
 
     //region Properties

@@ -4,14 +4,15 @@ CREATE TABLE SyncModuleEntity (
     RequestUrl    TEXT    NOT NULL,
     RequestFilter TEXT,
     LastSyncDate  INTEGER,
-    RequestType INTEGER
+    RequestType INTEGER,
+    ModuleType INTEGER
 );
 
 selectAllSyncModuleEntity:
 SELECT * FROM SyncModuleEntity;
 
 selectBySyncModuleEntitySyncType:
-SELECT * FROM SyncModuleEntity WHERE SyncType = ?;
+SELECT * FROM SyncModuleEntity WHERE SyncType = ? AND ModuleType = ?;
 
 insertSyncModuleEntity:
 INSERT INTO SyncModuleEntity
@@ -26,7 +27,7 @@ UPDATE SyncModuleEntity SET
     RequestUrl = ?,
     RequestFilter = ?,
     LastSyncDate = ?
-WHERE SyncType = ?;
+WHERE SyncType = ? AND ModuleType = ?;
 
 deleteSyncModuleEntity:
-DELETE FROM SyncModuleEntity WHERE SyncType = ?;
+DELETE FROM SyncModuleEntity WHERE SyncType = ? AND ModuleType = ?;

@@ -110,6 +110,7 @@ val generateBuildConfig = tasks.register("generateBuildConfig") {
         outputFile.writeText("""
             package com.repzone.core.config
             
+            import com.repzone.core.enums.*
             /**
              * Otomatik generate
              * ELLE DUZELTMEYINIZ
@@ -128,21 +129,7 @@ val generateBuildConfig = tasks.register("generateBuildConfig") {
                 fun isUIModuleActive(module: UIModule): Boolean {
                     return uiModule == module
                 }
-            }
-            
-            enum class UIModule {
-                NEW,
-                LEGACY
-            }
-            
-            enum class ThemeType{
-                DEFAULT,
-                RED,
-                BLUE,
-                YELLOW,
-                GREEN,
-                PURPLE
-            }
+            }                       
         """.trimIndent())
     }
 }

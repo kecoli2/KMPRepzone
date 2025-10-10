@@ -1,6 +1,7 @@
 package com.repzone.sync.job.impl.newversion
 
 import com.repzone.core.constant.IProductApiControllerConstant
+import com.repzone.core.enums.UIModule
 import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.network.dto.ProductDto
 import com.repzone.sync.interfaces.IBulkInsertService
@@ -17,6 +18,7 @@ class ProductSyncJob(apiService: ISyncApiService<List<ProductDto>>, bulkInsertSe
     override val jobType = SyncJobType.PRODUCTS
     override val defaultRequestEndPoint = IProductApiControllerConstant.PRODUCT_LIST_ENDPOINT
     override val fetchingMessage = "Fetching products..."
+    override val moduleType = UIModule.NEW
     //endregion
 
     //region Properties

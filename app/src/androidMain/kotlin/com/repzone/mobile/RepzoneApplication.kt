@@ -2,8 +2,8 @@ package com.repzone.mobile
 
 import android.app.Application
 import com.repzone.core.config.BuildConfig
-import com.repzone.core.config.UIModule
 import com.repzone.core.di.CoreModule
+import com.repzone.core.enums.UIModule
 import com.repzone.core.ui.base.initializeSmartViewModelStore
 import com.repzone.core.ui.di.CoreUiModule
 import com.repzone.data.di.RepositoryModule

@@ -1,5 +1,7 @@
 package com.repzone.sync.job.base
 
+import com.repzone.core.enums.UIModule
+import com.repzone.core.util.extensions.enumToLong
 import com.repzone.core.util.toJson
 import com.repzone.core.util.toModel
 import com.repzone.domain.model.RequestType
@@ -46,6 +48,7 @@ abstract class BasePaginatedSyncJob<TDto : Any>(
     //region Abstract Properties
     abstract override val jobType: SyncJobType
     protected abstract val defaultRequestEndPoint: String
+    abstract override val moduleType: UIModule
     //endregion
 
     //region Configurable Properties
@@ -74,7 +77,7 @@ abstract class BasePaginatedSyncJob<TDto : Any>(
         return try {
             updateStatus(SyncJobStatus.Running)
 
-            syncModuleModel = syncModuleRepository.getById(jobType.ordinal.toLong())
+            syncModuleModel = syncModuleRepository.getById(jobType.ordinal.toLong(), moduleType)
             if (syncModuleModel == null) {
                 requestFilter = onPreExecuteFilterModel(FilterModelRequest())
                 syncModuleModel = SyncModuleModel(

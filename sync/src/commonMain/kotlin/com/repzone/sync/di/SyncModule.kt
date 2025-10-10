@@ -1,7 +1,7 @@
 package com.repzone.sync.di
 
 import com.repzone.core.config.BuildConfig
-import com.repzone.core.config.UIModule
+import com.repzone.core.enums.UIModule
 import com.repzone.sync.factory.newversion.SyncJobFactory
 import com.repzone.sync.interfaces.ISyncFactory
 import com.repzone.sync.interfaces.ISyncManager

@@ -1,6 +1,7 @@
 package com.repzone.sync.job.impl.newversion
 
 import com.repzone.core.constant.ICustomerApiControllerConstant
+import com.repzone.core.enums.UIModule
 import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.network.dto.CustomerGroupDto
 import com.repzone.network.models.request.FilterModelRequest
@@ -18,6 +19,7 @@ class CustomerGroupSyncJob(api: ISyncApiService<List<CustomerGroupDto>>,
     override val allowedRoles = setOf(UserRole.ADMIN, UserRole.SALES_REP)
     override val jobType = SyncJobType.CUSTOMERS_GROUP
     override val defaultRequestEndPoint = ICustomerApiControllerConstant.CUSTOMER_GROUPS_ENDPOINT
+    override val moduleType = UIModule.NEW
     //endregion
 
     //region Properties

@@ -1,5 +1,6 @@
 package com.repzone.core.config
 
+import com.repzone.core.enums.*
 /**
  * Otomatik generate
  * ELLE DUZELTMEYINIZ
@@ -18,18 +19,4 @@ object BuildConfig {
     fun isUIModuleActive(module: UIModule): Boolean {
         return uiModule == module
     }
-}
-
-enum class UIModule {
-    NEW,
-    LEGACY
-}
-
-enum class ThemeType{
-    DEFAULT,
-    RED,
-    BLUE,
-    YELLOW,
-    GREEN,
-    PURPLE
-}
+}                       

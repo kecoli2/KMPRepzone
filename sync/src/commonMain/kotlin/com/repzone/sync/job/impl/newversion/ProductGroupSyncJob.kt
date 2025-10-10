@@ -1,6 +1,7 @@
 package com.repzone.sync.job.impl.newversion
 
 import com.repzone.core.constant.IProductApiControllerConstant
+import com.repzone.core.enums.UIModule
 import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.network.dto.ProductGroupDto
 import com.repzone.sync.interfaces.IBulkInsertService
@@ -17,6 +18,7 @@ class ProductGroupSyncJob(apiService: ISyncApiService<List<ProductGroupDto>>,
     override val allowedRoles = setOf(UserRole.SALES_REP, UserRole.MANAGER, UserRole.ADMIN)
     override val jobType = SyncJobType.PRODUCTS_GROUP
     override val defaultRequestEndPoint = IProductApiControllerConstant.PRODUCT_GROUP_LIST_ENDPOINT
+    override val moduleType = UIModule.NEW
     //endregion
 
     //region Properties

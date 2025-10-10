@@ -1,5 +1,6 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.UIModule
 import com.repzone.core.util.extensions.enumToLong
 import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
@@ -34,7 +35,8 @@ class SyncModuleEntityDbMapper: Mapper<SyncModuleEntity, SyncModuleModel> {
             RequestUrl = domain.requestUrl!!,
             RequestFilter = domain.requestFilter,
             LastSyncDate = domain.lastSyncDate,
-            RequestType = domain.requestType?.enumToLong()
+            RequestType = domain.requestType?.enumToLong(),
+            ModuleType = domain.moduleType?.enumToLong() ?: UIModule.NEW.enumToLong()
         )
     }
     //endregion

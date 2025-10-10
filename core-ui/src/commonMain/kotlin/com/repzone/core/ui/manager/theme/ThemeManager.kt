@@ -1,7 +1,7 @@
 package com.repzone.core.ui.manager.theme
 
-import com.repzone.core.config.ThemeType
 import com.repzone.core.enums.ThemeMode
+import com.repzone.core.enums.ThemeType
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.manager.theme.common.ColorSchemeVariant
 import kotlinx.coroutines.flow.MutableStateFlow

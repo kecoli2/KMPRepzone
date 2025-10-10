@@ -1,6 +1,7 @@
 package com.repzone.sync.job.impl.newversion
 
 import com.repzone.core.constant.ICustomerApiControllerConstant
+import com.repzone.core.enums.UIModule
 import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.network.dto.CrmPriceListParameterDto
 import com.repzone.network.models.request.FilterModelRequest
@@ -18,6 +19,7 @@ class CustomerGroupPriceParametersSyncJob(apiService: ISyncApiService<List<CrmPr
     override val allowedRoles = setOf(UserRole.SALES_REP, UserRole.MERGE_STAFF, UserRole.MANAGER, UserRole.ADMIN)
     override val jobType = SyncJobType.CUSTOMERS_GROUP_PRICE
     override val defaultRequestEndPoint = ICustomerApiControllerConstant.CUSTOMER_GROUP_PRICES_PARAMETERS_ENDPOINT
+    override val moduleType = UIModule.NEW
     //endregion
 
     //region Properties

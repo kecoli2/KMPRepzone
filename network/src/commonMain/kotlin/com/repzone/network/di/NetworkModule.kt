@@ -1,6 +1,6 @@
 package com.repzone.network.di
 import com.repzone.core.config.BuildConfig
-import com.repzone.core.config.UIModule
+import com.repzone.core.enums.UIModule
 import com.repzone.core.interfaces.ITokenProvider
 import com.repzone.network.http.HttpClientFactory
 import com.repzone.network.http.NetworkConfig

@@ -3,7 +3,7 @@ package com.repzone.presentation.theme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
-import com.repzone.core.config.ThemeType
+import com.repzone.core.enums.ThemeType
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.manager.theme.DefaultShapes
 import com.repzone.core.ui.manager.theme.DefaultTypography

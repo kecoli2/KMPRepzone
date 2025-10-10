@@ -1,6 +1,7 @@
 package com.repzone.sync.job.impl.newversion
 
 import com.repzone.core.constant.IRouteApiControllerConstant
+import com.repzone.core.enums.UIModule
 import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.network.dto.RouteDto
 import com.repzone.network.models.request.FilterModelRequest
@@ -18,6 +19,7 @@ class RouteDataSyncJob(apiService: ISyncApiService<List<RouteDto>>,
     override val allowedRoles = setOf(UserRole.SALES_REP, UserRole.MANAGER, UserRole.ADMIN)
     override val jobType = SyncJobType.ROUTE
     override val defaultRequestEndPoint = IRouteApiControllerConstant.ROUTE_LIST_ENDPOINT
+    override val moduleType = UIModule.NEW
     //endregion
 
     //region Properties
