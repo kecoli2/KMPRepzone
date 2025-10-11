@@ -4,16 +4,11 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.repzone.core.generated.resources.Res
-import com.repzone.core.generated.resources.logout
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
-import com.repzone.core.util.extensions.stringResourceOr
 import com.repzone.data.di.RepositoryModule
 import com.repzone.database.di.DatabaseAndroidModule
 import com.repzone.database.di.DatabaseModule
@@ -27,7 +22,6 @@ import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
 import com.repzone.sync.di.SyncModule
-import org.jetbrains.compose.resources.stringResource
 import org.koin.android.ext.koin.androidContext
 import org.koin.compose.koinInject
 import org.koin.core.context.GlobalContext.startKoin
@@ -38,7 +32,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
-            AppContent()
+            AppRouter()
         }
     }
 }

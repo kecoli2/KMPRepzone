@@ -60,10 +60,11 @@ kotlin {
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
             implementation(libs.ktor.client.core)
+
             /// Shared Project Implementation
-            implementation(project(":core"))
-            implementation(project(":presentation"))
-            implementation(project(":presentation-legacy"))
+            implementation(projects.core)
+            implementation(projects.presentation)
+            implementation(projects.presentationLegacy)
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
@@ -126,9 +127,9 @@ dependencies {
 
     implementation(project(":database"))
     debugImplementation(compose.uiTooling)
-    implementation(compose.preview)
 }
 
+//region IOS Gradle Task
 tasks.register("assembleXCFramework") {
     group = "build"
     description = "Assembles an XCFramework from all iOS targets."
@@ -152,7 +153,6 @@ tasks.register("assembleXCFramework") {
         println("XCFramework created at $outputDir/Mobile.xcframework")
     }
 }
-
 val xcodeFrameworksDir = rootProject.file("../iosApp/Frameworks")
 
 tasks.register<Copy>("copyXCFrameworkToXcode") {
@@ -161,3 +161,4 @@ tasks.register<Copy>("copyXCFrameworkToXcode") {
     into(xcodeFrameworksDir)
     include("Mobile.xcframework/**")
 }
+//endregion IOS Gradle Task

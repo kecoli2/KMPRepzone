@@ -13,16 +13,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.repzone.core.generated.resources.Res
-import com.repzone.core.generated.resources.hello
-import com.repzone.core.generated.resources.img_login_background
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.util.extensions.painterResourceOr
-import com.repzone.core.util.extensions.stringResourceOr
 import com.repzone.presentation.legacy.viewmodel.login.LoginScreenViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.hello
+import repzonemobile.core.generated.resources.img_login_background
 
 @Composable
 fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenViewModel>() { viewModel ->
@@ -40,7 +39,7 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
 
         Image(
-            painter = painterResourceOr(Res.drawable.img_login_background),
+            painter = painterResource(Res.drawable.img_login_background),
             contentDescription = null,
             modifier = Modifier.matchParentSize(),
             contentScale = ContentScale.Crop
@@ -48,7 +47,7 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .matchParentSize()
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
@@ -57,11 +56,17 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
             OutlinedTextField(
                 value = state.username, // ✅ ViewModel'den geliyor
                 onValueChange = viewModel::updateUsername, // ✅ ViewModel'i güncelliyor
-                label = { Text("Kullanıcı Adı") },
+                label = { Text("Kullanıcı Adı", color = Color.White) },
+                placeholder = { Text("Adınızı girin", color = Color.White.copy(alpha = 0.6f)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = state.uiFrame.isInteractionEnabled,
                 shape = MaterialTheme.shapes.extraLarge,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White.copy(alpha = 0.1f),
+                    unfocusedContainerColor = Color.White.copy(alpha = 0.1f),
+                    disabledContainerColor = Color.White.copy(alpha = 0.1f),
+                )
 
                 )
 
@@ -118,7 +123,7 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
                     }
                 } else {
                     /*Text(stringResource(moko))*/
-                    Text(stringResourceOr(Res.string.hello))
+                    Text(stringResource(Res.string.hello))
                 }
             }
 
