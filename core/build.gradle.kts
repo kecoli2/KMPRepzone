@@ -47,7 +47,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
             implementation(libs.koin.core)
             implementation(compose.components.resources)
-
+            implementation(compose.ui)
         }
 
         androidMain.dependencies {

@@ -13,6 +13,7 @@ import com.repzone.core.generated.resources.logout
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
+import com.repzone.core.util.extensions.stringResourceOr
 import com.repzone.data.di.RepositoryModule
 import com.repzone.database.di.DatabaseAndroidModule
 import com.repzone.database.di.DatabaseModule
@@ -78,8 +79,9 @@ fun AppAndroidPreview() {
 
     themeManager.initialize(themeConfig)
     AppTheme(themeManager) {
+        LoginScreenLegacy {
 
-        Text(stringResource(Res.string.logout))
+        }
 
     }
 }
