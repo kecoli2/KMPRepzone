@@ -7,6 +7,11 @@ import com.repzone.database.AppDatabase
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class DatabaseDriverFactory(private val context: Context) {
-    actual fun create(): SqlDriver =
-        AndroidSqliteDriver(schema = AppDatabase.Schema, context = context, name = "app.db")
+    actual fun createDriver(userId: Int): SqlDriver {
+        return AndroidSqliteDriver(schema = AppDatabase.Schema, context = context, name = "repzone_$userId.db")
+    }
+
+    actual fun deleteDatabase(userId: Int) {
+        context.deleteDatabase("repzone_$userId.db")
+    }
 }

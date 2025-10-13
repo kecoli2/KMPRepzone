@@ -8,4 +8,8 @@ interface IPreferencesManager {
     fun getExpiresAtEpochSeconds():Long?
     fun getRefreshToken(): String?
     fun setRefreshToken(token: String?)
+
+    fun setUserSessions(value: String?)
+
+    fun getUserSessions(): String?
 }

@@ -52,6 +52,18 @@ class AndroidPreferencesManager(private val context: Context) : IPreferencesMana
             prefs.edit { putString(PreferencesConstant.REFRESH_TOKEN, token) }
         }
     }
+
+    override fun setUserSessions(value: String?) {
+        if(value == null){
+            prefs.edit { remove(PreferencesConstant.USER_SESSIONS) }
+        }else{
+            prefs.edit { putString(PreferencesConstant.USER_SESSIONS, value) }
+        }
+    }
+
+    override fun getUserSessions(): String? {
+        return prefs.getString(PreferencesConstant.USER_SESSIONS, null)
+    }
     //endregion
 
     //region Protected Method

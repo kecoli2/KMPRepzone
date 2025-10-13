@@ -1,9 +1,8 @@
 package com.repzone.sync.job.base
 
 import com.repzone.core.enums.UIModule
-import com.repzone.core.util.extensions.enumToLong
-import com.repzone.core.util.toJson
-import com.repzone.core.util.toModel
+import com.repzone.core.util.extensions.toJson
+import com.repzone.core.util.extensions.jsonToModel
 import com.repzone.domain.model.RequestType
 import com.repzone.domain.model.SyncModuleModel
 import com.repzone.domain.repository.ISyncModuleRepository
@@ -90,7 +89,7 @@ abstract class BasePaginatedSyncJob<TDto : Any>(
             } else {
                 requestFilter?.fetchOnlyActive = syncModuleModel?.lastSyncDate != null
                 requestFilter = onPreExecuteFilterModel(
-                    syncModuleModel!!.requestFilter!!.toModel<FilterModelRequest>()!!
+                    syncModuleModel!!.requestFilter!!.jsonToModel<FilterModelRequest>()!!
                 )
             }
 

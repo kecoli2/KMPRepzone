@@ -1,7 +1,8 @@
-package com.repzone.core.util
+package com.repzone.core.util.extensions
 
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
 
 /**
  * JSON parsing için yapılandırılmış Json instance
@@ -37,7 +38,7 @@ val prettyJsonParser = Json {
  * val user = jsonString.toModel<User>()
  * ```
  */
-inline fun <reified T> String.toModel(): T? {
+inline fun <reified T> String.jsonToModel(): T? {
     return try {
         jsonParser.decodeFromString<T>(this)
     } catch (e: SerializationException) {
@@ -68,7 +69,7 @@ inline fun <reified T> String.toModel(): T? {
  * }
  * ```
  */
-inline fun <reified T> String.toModelOrThrow(): T {
+inline fun <reified T> String.jsonToModelOrThrow(): T {
     return jsonParser.decodeFromString(this)
 }
 
@@ -85,8 +86,8 @@ inline fun <reified T> String.toModelOrThrow(): T {
  * val user = jsonString.toModelOrDefault(User(name = "Unknown"))
  * ```
  */
-inline fun <reified T> String.toModelOrDefault(default: T): T {
-    return toModel() ?: default
+inline fun <reified T> String.jsonToModelOrDefault(default: T): T {
+    return jsonToModel() ?: default
 }
 
 /**
@@ -104,7 +105,7 @@ inline fun <reified T> String.toModelOrDefault(default: T): T {
  * }
  * ```
  */
-inline fun <reified T> String.toModelOrElse(onError: (Exception) -> T): T {
+inline fun <reified T> String.jsonToModelOrElse(onError: (Exception) -> T): T {
     return try {
         jsonParser.decodeFromString(this)
     } catch (e: Exception) {
@@ -138,7 +139,7 @@ fun String.isValidJson(): Boolean {
  * val users = jsonArray.toModelList<User>()
  * ```
  */
-inline fun <reified T> String.toModelList(): List<T>? {
+inline fun <reified T> String.jsonToModelList(): List<T>? {
     return try {
         jsonParser.decodeFromString<List<T>>(this)
     } catch (e: Exception) {
@@ -165,7 +166,7 @@ inline fun <reified T> String.toModelList(): List<T>? {
  */
 inline fun <reified T> T.toJson(): String? {
     return try {
-        jsonParser.encodeToString(kotlinx.serialization.serializer(), this)
+        jsonParser.encodeToString(serializer(), this)
     } catch (e: SerializationException) {
         println("JSON Serialization Error: ${e.message}")
         null
@@ -183,7 +184,7 @@ inline fun <reified T> T.toJson(): String? {
  * @throws SerializationException Serialization hatası durumunda
  */
 inline fun <reified T> T.toJsonOrThrow(): String {
-    return jsonParser.encodeToString(kotlinx.serialization.serializer(), this)
+    return jsonParser.encodeToString(serializer(), this)
 }
 
 /**
@@ -204,7 +205,7 @@ inline fun <reified T> T.toJsonOrThrow(): String {
  */
 inline fun <reified T> T.toPrettyJson(): String? {
     return try {
-        prettyJsonParser.encodeToString(kotlinx.serialization.serializer(), this)
+        prettyJsonParser.encodeToString(serializer(), this)
     } catch (e: Exception) {
         println("JSON Pretty Print Error: ${e.message}")
         null
@@ -233,7 +234,7 @@ inline fun <reified T> T.toJsonOrDefault(default: String = "{}"): String {
  */
 inline fun <reified T> T.toJsonOrElse(onError: (Exception) -> String): String {
     return try {
-        jsonParser.encodeToString(kotlinx.serialization.serializer(), this)
+        jsonParser.encodeToString(serializer(), this)
     } catch (e: Exception) {
         onError(e)
     }
@@ -253,7 +254,7 @@ inline fun <reified T> T.toJsonOrElse(onError: (Exception) -> String): String {
  */
 inline fun <reified T> List<T>.toJsonArray(): String? {
     return try {
-        jsonParser.encodeToString(kotlinx.serialization.serializer(), this)
+        jsonParser.encodeToString(serializer(), this)
     } catch (e: Exception) {
         println("JSON Array Serialization Error: ${e.message}")
         null
@@ -265,7 +266,7 @@ inline fun <reified T> List<T>.toJsonArray(): String? {
  */
 inline fun <reified T> List<T>.toPrettyJsonArray(): String? {
     return try {
-        prettyJsonParser.encodeToString(kotlinx.serialization.serializer(), this)
+        prettyJsonParser.encodeToString(serializer(), this)
     } catch (e: Exception) {
         println("JSON Array Pretty Print Error: ${e.message}")
         null

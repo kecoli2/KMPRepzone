@@ -24,9 +24,6 @@ class TokenApiControllerImpl(private val client: HttpClient): ITokenApiControlle
     //endregion
 
     //region Public Method
-/*    override suspend fun pushToken(token: String): Result<Unit> {
-        client.post("/orders") { setBody(order) }.body<Unit>()
-    }*/
 
     override suspend fun pushToken(tokenRequest: LoginRequest): ApiResult<LoginResponse> {
         return try{

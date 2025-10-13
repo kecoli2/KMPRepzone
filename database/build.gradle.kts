@@ -30,6 +30,9 @@ kotlin {
                 implementation(libs.sqldelight.runtime)
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.koin.core)
+
+                //Project Dependcy
+                implementation(projects.core)
             }
         }
 

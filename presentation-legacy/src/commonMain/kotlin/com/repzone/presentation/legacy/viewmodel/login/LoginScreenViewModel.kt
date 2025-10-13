@@ -2,10 +2,13 @@ package com.repzone.presentation.legacy.viewmodel.login
 
 import com.repzone.core.interfaces.IPreferencesManager
 import com.repzone.core.model.UiFrame
+import com.repzone.core.model.UserSessionModel
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.core.ui.base.clearError
 import com.repzone.core.ui.base.hasError
 import com.repzone.core.ui.base.setError
+import com.repzone.core.util.extensions.toJson
+import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.network.api.ITokenApiController
 import com.repzone.network.http.wrapper.ApiException
 import com.repzone.network.http.wrapper.ApiResult
@@ -17,7 +20,8 @@ import kotlin.uuid.Uuid
 
 class LoginScreenViewModel(
     private val tokenApiController: ITokenApiController,
-    private val isharedPreferences: IPreferencesManager
+    private val isharedPreferences: IPreferencesManager,
+    private val iDatabaseManager: IDatabaseManager
 ) : BaseViewModel<LoginScreenUiState, Nothing>(LoginScreenUiState()) {
 
     companion object {
@@ -44,7 +48,6 @@ class LoginScreenViewModel(
         }
 
         try {
-
             // Progress simulation
             updateLoadingMessage("Sunucuya bağlanılıyor...")
             delay(800)
@@ -100,7 +103,16 @@ class LoginScreenViewModel(
                 delay(500) // Success mesajını göster
                 // Token'ı kaydet
                 isharedPreferences.setToken(response.data.tokenResponse?.accessToken)
-
+                val activeSessions = UserSessionModel(
+                    userId = response.data.userId,
+                    firstName = response.data.firstName,
+                    lastName = response.data.lastName,
+                    phone = response.data.phone,
+                    email = response.data.email,
+                    profileImageUrl = response.data.profileImageUrl
+                )
+                isharedPreferences.setUserSessions(activeSessions.toJson())
+                iDatabaseManager.switchUser(response.data.userId)
                 // Success state
                 updateState { currentState ->
                     currentState.copy(

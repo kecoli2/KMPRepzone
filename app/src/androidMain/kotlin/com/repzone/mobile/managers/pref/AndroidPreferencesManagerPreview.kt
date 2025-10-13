@@ -43,4 +43,12 @@ class AndroidPreferencesManagerPreview: IPreferencesManager {
     override fun setRefreshToken(token: String?) {
         TODO("Not yet implemented")
     }
+
+    override fun setUserSessions(value: String?) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getUserSessions(): String? {
+        TODO("Not yet implemented")
+    }
 }

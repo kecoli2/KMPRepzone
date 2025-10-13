@@ -1,7 +1,7 @@
 package com.repzone.sync.service.api.base
 
 import com.repzone.core.util.extensions.toDateString
-import com.repzone.core.util.toModel
+import com.repzone.core.util.extensions.jsonToModel
 import com.repzone.domain.model.SyncModuleModel
 import com.repzone.network.http.extensions.toApiException
 import com.repzone.network.http.wrapper.ApiResult
@@ -21,7 +21,7 @@ abstract class BaseSyncApiService<TDto : Any>(val client: HttpClient) : ISyncApi
     }
 
     override suspend fun fetchPage(model: SyncModuleModel, pageSize: Int): Flow<ApiResult<TDto>> = flow {
-        val requestModel = model.requestFilter?.toModel<FilterModelRequest>()
+        val requestModel = model.requestFilter?.jsonToModel<FilterModelRequest>()
         var hasMore = true
 
         setupRequestFilter(model, requestModel)

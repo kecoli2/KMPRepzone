@@ -2,8 +2,10 @@ package com.repzone.network.di
 import com.repzone.core.config.BuildConfig
 import com.repzone.core.enums.UIModule
 import com.repzone.core.interfaces.ITokenProvider
+import com.repzone.network.api.ITokenApiController
 import com.repzone.network.http.HttpClientFactory
 import com.repzone.network.http.NetworkConfig
+import com.repzone.network.http.impl.TokenApiControllerImpl
 import com.repzone.network.http.impl.TokenProviderImpl
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
@@ -22,14 +24,5 @@ val NetworkModule = module {
         ).create()
     }
 
-    includes(
-        when(BuildConfig.activeUIModule){
-            UIModule.NEW -> {
-                NetworkModuleNew
-            }
-            UIModule.LEGACY -> {
-                NetworkModuleLegacy
-            }
-        }
-    )
+    factory<ITokenApiController> { TokenApiControllerImpl(get()) }
 }

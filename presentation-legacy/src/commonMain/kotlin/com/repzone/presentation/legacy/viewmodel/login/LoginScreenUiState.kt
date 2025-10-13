@@ -7,8 +7,8 @@ data class LoginScreenUiState(
     override val uiFrame: UiFrame = UiFrame(),
     val isLoginSuccessful: Boolean = false,
     val loadingMessage: String = "Giriş yapılıyor...",
-    val username: String = "",
-    val password: String = "") : HasUiFrame {
+    val username: String = "trdemouser6@rep.zone",
+    val password: String = "Le4g7H") : HasUiFrame {
 
     override fun copyWithUiFrame(newUiFrame: UiFrame): LoginScreenUiState {
         return copy(uiFrame = newUiFrame)

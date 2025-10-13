@@ -6,7 +6,9 @@ import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.interfaces.ISyncFactory
 import com.repzone.sync.interfaces.ISyncJob
-import com.repzone.sync.job.impl.newversion.*
+import com.repzone.sync.job.impl.CustomerGroupPriceParametersSyncJob
+import com.repzone.sync.job.impl.CustomerGroupSyncJob
+import com.repzone.sync.job.impl.*
 import com.repzone.sync.model.SyncJobType
 
 class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): ISyncFactory {
@@ -55,10 +57,18 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
             SyncJobType.PRODUCTS_GROUP to ProductGroupSyncJob(productGroupApi, productGroupBulkInsert, syncModuleRepository),
             SyncJobType.ROUTE to RouteDataSyncJob(routeApi, routeBulkInsert, syncModuleRepository),
             SyncJobType.CUSTOMERS to CustomerSyncJob(customerApi, customerBulkInsert, syncModuleRepository),
-            SyncJobType.CUSTOMERS_GROUP to CustomerGroupSyncJob(customerGroupApi, customerGroupBulkInsert, syncModuleRepository),
+            SyncJobType.CUSTOMERS_GROUP to CustomerGroupSyncJob(
+                customerGroupApi,
+                customerGroupBulkInsert,
+                syncModuleRepository
+            ),
             SyncJobType.CUSTOMERS_EMAIL to CustomerEmailSyncJob(customerEmailApi, customerEmailBulkInsert, syncModuleRepository),
             SyncJobType.CUSTOMERS_PRICE_PARAMETERS to CustomerPriceParametersSyncJob(customerPriceParametersApi, customerPriceParametersBulkInsert, syncModuleRepository),
-            SyncJobType.CUSTOMERS_GROUP_PRICE to CustomerGroupPriceParametersSyncJob(customerGroupPriceParametersApi, customerGroupPriceParametersBulkInsert, syncModuleRepository),
+            SyncJobType.CUSTOMERS_GROUP_PRICE to CustomerGroupPriceParametersSyncJob(
+                customerGroupPriceParametersApi,
+                customerGroupPriceParametersBulkInsert,
+                syncModuleRepository
+            ),
             SyncJobType.COMMON_MODULES to PakageCustomFieldSyncJob(apiModulesApi, modulesRawBulkInsert, syncModuleRepository),
             SyncJobType.COMMON_MODULES_REASONS to EventReasonsSyncJob(eventReasonsApi, eventReasonsRawBulkInsert, syncModuleRepository),
             SyncJobType.COMMON_DOCUMENT_MAPS to DocumentMapsSyncJob(documentMapApi, documentMapBulkInsert, syncModuleRepository),

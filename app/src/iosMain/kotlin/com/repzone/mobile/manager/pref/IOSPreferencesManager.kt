@@ -51,6 +51,18 @@ class IOSPreferencesManager: IPreferencesManager {
             prefs.setObject(token, PreferencesConstant.REFRESH_TOKEN)
         }
     }
+
+    override fun setUserSessions(value: String?) {
+        if(value == null){
+            prefs.removeObjectForKey(PreferencesConstant.USER_SESSIONS)
+        }else{
+            prefs.setObject(value, PreferencesConstant.USER_SESSIONS)
+        }
+    }
+
+    override fun getUserSessions(): String? {
+        return prefs.stringForKey(PreferencesConstant.USER_SESSIONS)
+    }
     //endregion
 
     //region Protected Method
