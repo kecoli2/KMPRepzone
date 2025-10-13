@@ -112,20 +112,31 @@ android {
 }
 
 dependencies {
-    implementation(project(":core"))
-    implementation(project(":core-ui"))
-    implementation(project(":database"))
-    implementation(project(":network"))
-    implementation(project(":domain"))
-    implementation(project(":data"))
-    implementation(project(":sync"))
-    implementation(project(":firebase"))
+    implementation(projects.core)
+    implementation(projects.coreUi)
+    implementation(projects.database)
+    implementation(projects.network)
+    implementation(projects.domain)
+    implementation(projects.data)
+    implementation(projects.sync)
+    implementation(projects.firebase)
 
     // UI modülleri - build variant'a göre
-    implementation(project(":presentation"))
-    implementation(project(":presentation-legacy"))
-
-    implementation(project(":database"))
+    val isDebugMode = providers.gradleProperty("DEBUG").getOrElse("false").toBoolean()
+    val activeUiModule = providers.gradleProperty("ACTIVE_UI_MODULE").get()
+    if(isDebugMode){
+        implementation(projects.presentation)
+        implementation(projects.presentationLegacy)
+    }else{
+        when(activeUiModule){
+            "UIModule.LEGACY" -> {
+                implementation(projects.presentationLegacy)
+            }
+            "UIModule.NEW" -> {
+                implementation(projects.presentation)
+            }
+        }
+    }
     debugImplementation(compose.uiTooling)
 }
 
