@@ -56,7 +56,6 @@ kotlin {
                 implementation(projects.core)
                 implementation(projects.coreUi)
                 implementation(projects.domain)
-                implementation(projects.firebase)
                 implementation(projects.network)
                 implementation(projects.sync)
             }

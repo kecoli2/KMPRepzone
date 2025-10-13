@@ -46,7 +46,7 @@ kotlin {
         }
 
         iosMain.dependencies {
-            // iOS dependencies
+
         }
     }
 }

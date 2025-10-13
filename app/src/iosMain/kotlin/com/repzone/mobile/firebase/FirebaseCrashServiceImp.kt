@@ -1,7 +1,7 @@
-package com.repzone.firebase.manager
+package com.repzone.mobile.firebase
 
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.repzone.core.interfaces.IFirebaseCrashService
+import platform.Foundation.NSLog
 
 class FirebaseCrashServiceImp: IFirebaseCrashService {
     //region Field
@@ -14,12 +14,17 @@ class FirebaseCrashServiceImp: IFirebaseCrashService {
     //endregion
 
     //region Public Method
+
+    //TODO( SwiftPM ile platform özelinde eklenmesi gerekmektedir. )
     override fun log(message: String) {
-        FirebaseCrashlytics.getInstance().log(message)
+        NSLog(message)
+        //FIRCrashlytics.crashlytics().log(message)
     }
 
+    //TODO( SwiftPM ile platform özelinde eklenmesi gerekmektedir. )
     override fun record(throwable: Throwable) {
-        FirebaseCrashlytics.getInstance().recordException(throwable)
+        //TODO("Not yet implemented")
+        //FIRCrashlytics.crashlytics().record(error = e)
     }
     //endregion
 

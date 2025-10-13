@@ -6,9 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
-import com.repzone.core.config.BuildConfig
-import com.repzone.core.di.CoreModule
-import com.repzone.core.enums.UIModule
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.di.CoreUiModule
 import com.repzone.core.ui.manager.theme.AppTheme
@@ -16,14 +13,11 @@ import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.data.di.RepositoryModule
 import com.repzone.database.di.DatabaseAndroidModule
 import com.repzone.database.di.DatabaseModule
-import com.repzone.firebase.di.FirebaseAndroidModule
-import com.repzone.firebase.di.FirebaseMockAndroidModule
-import com.repzone.mobile.di.AndroidDIModule
 import com.repzone.mobile.di.AndroidDIModulePreview
+import com.repzone.mobile.di.FirebaseMockAndroidModule
 import com.repzone.navigation.AppRouter
 import com.repzone.network.di.NetworkModule
 import com.repzone.network.di.PlatformNetworkModule
-import com.repzone.presentation.di.PresentationModule
 import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
@@ -32,8 +26,6 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.compose.koinInject
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.context.loadKoinModules
-import org.koin.core.module.Module
-import org.koin.dsl.module
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

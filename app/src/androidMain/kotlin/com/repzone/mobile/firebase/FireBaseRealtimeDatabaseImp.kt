@@ -1,6 +1,9 @@
-package com.repzone.firebase.manager
+package com.repzone.mobile.firebase
 
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.repzone.core.interfaces.IFireBaseRealtimeDatabase
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
@@ -23,11 +26,11 @@ class FireBaseRealtimeDatabaseImp(private val db: FirebaseDatabase = FirebaseDat
 
     override fun observe(path: String) = callbackFlow {
         val ref = db.getReference(path)
-        val listener = object : com.google.firebase.database.ValueEventListener {
-            override fun onDataChange(s: com.google.firebase.database.DataSnapshot) {
+        val listener = object : ValueEventListener {
+            override fun onDataChange(s: DataSnapshot) {
                 trySend(s.getValue(String::class.java) ?: "")
             }
-            override fun onCancelled(e: com.google.firebase.database.DatabaseError) {
+            override fun onCancelled(e: DatabaseError) {
                 close(e.toException())
             }
         }

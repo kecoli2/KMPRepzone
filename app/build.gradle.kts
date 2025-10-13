@@ -41,13 +41,15 @@ kotlin {
             implementation(libs.play.services.location)
             implementation(libs.kotlinx.coroutines.play.services)
             implementation(libs.compose.ui.tooling.preview)
-          /*  androidLibrary {
-                experimentalProperties["android.experimental.kmp.enableAndroidResources"] = true
-            }*/
+
+            //Firebase
+            implementation(project.dependencies.platform(libs.firebase.bom))
+            implementation(libs.firebase.crashlytics.ktx)
+            implementation(libs.firebase.messaging.ktx)
+            implementation(libs.firebase.database.ktx)
 
         }
         commonMain.dependencies {
-            //implementation(project.dependencies.platform(libs.compose.bom))
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material3)
@@ -68,15 +70,14 @@ kotlin {
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
-            implementation(project(":core"))
-            implementation(project(":data"))
-            implementation(project(":database"))
-            implementation(project(":firebase"))
-            implementation(project(":network"))
-            implementation(project(":presentation"))
-            implementation(project(":sync"))
-            implementation(project(":domain"))
-            implementation(project(":presentation-legacy"))
+            implementation(projects.core)
+            implementation(projects.data)
+            implementation(projects.database)
+            implementation(projects.network)
+            implementation(projects.presentation)
+            implementation(projects.sync)
+            implementation(projects.domain)
+            implementation(projects.presentationLegacy)
         }
     }
 }
@@ -119,7 +120,6 @@ dependencies {
     implementation(projects.domain)
     implementation(projects.data)
     implementation(projects.sync)
-    implementation(projects.firebase)
 
     // UI modülleri - build variant'a göre
     val isDebugMode = providers.gradleProperty("DEBUG").getOrElse("false").toBoolean()

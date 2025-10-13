@@ -1,4 +1,4 @@
-package com.repzone.firebase.manager
+package com.repzone.mobile.firebase
 
 import com.repzone.core.interfaces.IFirebasePushService
 import com.google.firebase.messaging.FirebaseMessaging
