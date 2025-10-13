@@ -778,4 +778,23 @@
     <string name="username">Kullanıcı Adı</string>
     <string name="show">Göster</string>
     <string name="hidden">Gizle</string>
+    <string name="month_january">Ocak</string>
+    <string name="month_february">Şubat</string>
+    <string name="month_march">Mart</string>
+    <string name="month_april">Nisan</string>
+    <string name="month_may">Mayıs</string>
+    <string name="month_june">Haziran</string>
+    <string name="month_july">Temmuz</string>
+    <string name="month_august">Ağustos</string>
+    <string name="month_september">Eylül</string>
+    <string name="month_october">Ekim</string>
+    <string name="month_november">Kasım</string>
+    <string name="month_december">Aralık</string>
+    <string name="time_just_now">Az önce</string>
+    <string name="time_minutes_ago">%1$d dk önce</string>
+    <string name="time_hours_ago">%1$d sa önce</string>
+    <string name="time_days_ago">%1$d gün önce</string>
+    <string name="time_weeks_ago">%1$d hafta önce</string>
+    <string name="time_months_ago">%1$d ay önce</string>
+    <string name="time_years_ago">%1$d yıl önce</string>
 </resources>

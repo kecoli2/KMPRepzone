@@ -16,6 +16,9 @@ import androidx.compose.ui.unit.dp
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.util.extensions.fromResource
+import com.repzone.core.util.extensions.now
+import com.repzone.core.util.extensions.toRelativeTimeString
+import com.repzone.core.util.extensions.toUserFriendly
 import com.repzone.presentation.legacy.viewmodel.login.LoginScreenViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -40,7 +43,7 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
     // Success handling
     LaunchedEffect(state.isLoginSuccessful) {
         if (state.isLoginSuccessful) {
-            //onLoginSuccess()
+            onLoginSuccess()
         }
     }
 

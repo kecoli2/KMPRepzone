@@ -2,9 +2,12 @@
 
 package com.repzone.core.util.extensions
 
+import androidx.compose.runtime.Composable
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.toLocalDateTime
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.*
 import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -50,12 +53,22 @@ fun Long.toShortDateTime(timeZone: TimeZone = TimeZone.currentSystemDefault()): 
             "${local.hour.toString().padStart(2, '0')}:${local.minute.toString().padStart(2, '0')}"
 }
 
+@Composable
 fun Long.toUserFriendly(timeZone: TimeZone = TimeZone.currentSystemDefault()): String {
     val local = Instant.fromEpochMilliseconds(this).toLocalDateTime(timeZone)
     val monthName = when (local.month.number) {
-        1 -> "January"; 2 -> "February"; 3 -> "March"; 4 -> "April"
-        5 -> "May"; 6 -> "June"; 7 -> "July"; 8 -> "August"
-        9 -> "September"; 10 -> "October"; 11 -> "November"; 12 -> "December"
+        1 -> Res.string.month_january.fromResource();
+        2 -> Res.string.month_february.fromResource()
+        3 -> Res.string.month_march.fromResource()
+        4 -> Res.string.month_april.fromResource()
+        5 -> Res.string.month_may.fromResource()
+        6 -> Res.string.month_june.fromResource()
+        7 -> Res.string.month_july.fromResource()
+        8 -> Res.string.month_august.fromResource()
+        9 -> Res.string.month_september.fromResource()
+        10 -> Res.string.month_october.fromResource()
+        11 -> Res.string.month_november.fromResource()
+        12 -> Res.string.month_december.fromResource()
         else -> ""
     }
     return "${local.day} $monthName ${local.year}, " +
@@ -120,19 +133,20 @@ fun Long.toDateString(
 // Relative Time (Ago) Extensions
 // ============================================
 
+@Composable
 fun Long.toRelativeTimeString(): String {
     val now = Clock.System.now()
     val instant = Instant.fromEpochMilliseconds(this)
     val duration = now - instant
 
     return when {
-        duration.inWholeSeconds < 60 -> "Just now"
-        duration.inWholeMinutes < 60 -> "${duration.inWholeMinutes}m ago"
-        duration.inWholeHours   < 24 -> "${duration.inWholeHours}h ago"
-        duration.inWholeDays    < 7  -> "${duration.inWholeDays}d ago"
-        duration.inWholeDays    < 30 -> "${duration.inWholeDays / 7}w ago"
-        duration.inWholeDays    < 365 -> "${duration.inWholeDays / 30}mo ago"
-        else -> "${duration.inWholeDays / 365}y ago"
+        duration.inWholeSeconds < 60 -> Res.string.time_just_now.fromResource()
+        duration.inWholeMinutes < 60 -> Res.string.time_minutes_ago.fromResource(duration.inWholeMinutes)
+        duration.inWholeHours   < 24 -> Res.string.time_hours_ago.fromResource(duration.inWholeHours)
+        duration.inWholeDays    < 7  -> Res.string.time_days_ago.fromResource(duration.inWholeDays)
+        duration.inWholeDays    < 30 -> Res.string.time_weeks_ago.fromResource(duration.inWholeDays)
+        duration.inWholeDays    < 365 -> Res.string.time_months_ago.fromResource(duration.inWholeDays)
+        else -> Res.string.time_years_ago.fromResource(duration.inWholeDays / 365)
     }
 }
 
@@ -172,6 +186,7 @@ fun Long?.toIso8601StringOrNull(): String? = this?.toIso8601String()
 fun Long?.toIso8601StringOrDefault(default: String = ""): String =
     this?.toIso8601String() ?: default
 
+@Composable
 fun Long?.toUserFriendlyOrEmpty(timeZone: TimeZone = TimeZone.currentSystemDefault()): String =
     this?.toUserFriendly(timeZone) ?: ""
 
