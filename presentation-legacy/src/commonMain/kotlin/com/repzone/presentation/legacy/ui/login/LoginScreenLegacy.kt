@@ -1,4 +1,5 @@
 package com.repzone.presentation.legacy.ui.login
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -23,7 +24,7 @@ import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.hello
-import repzonemobile.core.generated.resources.img_login_background
+import repzonemobile.presentation_legacy.generated.resources.img_login_background
 
 @Composable
 fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenViewModel>() { viewModel ->
@@ -40,9 +41,8 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
     }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
-
         Image(
-            painter = painterResource(Res.drawable.img_login_background),
+            painter = painterResource(repzonemobile.presentation_legacy.generated.resources.Res.drawable.img_login_background),
             contentDescription = null,
             modifier = Modifier.matchParentSize(),
             contentScale = ContentScale.Crop
