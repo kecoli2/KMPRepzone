@@ -154,9 +154,7 @@ inline fun <reified VM : BaseViewModel<*, *>> ViewModelHost(
 
 /** Alternative ViewModelHost without parameters */
 @Composable
-inline fun <reified VM : BaseViewModel<*, *>> ViewModelHost(
-    noinline content: @Composable (VM) -> Unit
-) {
+inline fun <reified VM : BaseViewModel<*, *>> ViewModelHost( noinline content: @Composable (VM) -> Unit) {
     val key = VM::class.simpleName ?: "default"
     ViewModelHost<VM>(key = key, content = content)
 }

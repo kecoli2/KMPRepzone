@@ -14,11 +14,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.repzone.core.ui.base.ViewModelHost
+import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.util.extensions.painterResourceOr
 import com.repzone.presentation.legacy.viewmodel.login.LoginScreenViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.jetbrains.compose.resources.stringResource
+import org.koin.compose.koinInject
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.hello
 import repzonemobile.core.generated.resources.img_login_background
@@ -28,6 +30,7 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
     val state by viewModel.state.collectAsState()
     var isPasswordVisible by remember { mutableStateOf(false) }
     val scope = rememberCoroutineScope()
+    val themeManager: ThemeManager = koinInject()
 
     // Success handling
     LaunchedEffect(state.isLoginSuccessful) {
@@ -84,8 +87,8 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
                     focusedContainerColor = Color.White.copy(alpha = 0.1f),
                     unfocusedContainerColor = Color.White.copy(alpha = 0.1f),
                     disabledContainerColor = Color.White.copy(alpha = 0.1f),
-                    focusedTextColor = Color.White,
-                    unfocusedTextColor = Color.White
+                    focusedTextColor = themeManager.getCurrentColorScheme().colorPalet.white,
+                    unfocusedTextColor = themeManager.getCurrentColorScheme().colorPalet.white
                 ),
                 enabled = state.uiFrame.isInteractionEnabled,
                 visualTransformation = if (isPasswordVisible) {

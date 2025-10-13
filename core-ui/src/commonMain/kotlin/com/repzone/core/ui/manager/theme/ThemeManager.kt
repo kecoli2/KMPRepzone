@@ -51,11 +51,11 @@ class ThemeManager {
     /**
      * Aktif renk şemasını getir
      */
-    fun getCurrentColorScheme(): ColorSchemeVariant? {
-        val config = activePresentationConfig ?: return null
-        val schemeId = _currentColorSchemeId.value ?: return null
+    fun getCurrentColorScheme(): ColorSchemeVariant {
+        val config = activePresentationConfig!!
+        val schemeId = _currentColorSchemeId.value
 
-        return config.provideColorSchemes().find { it.id == schemeId }
+        return config.provideColorSchemes().find { it.id == schemeId }!!
     }
 
     /**

@@ -24,9 +24,9 @@ fun AppTheme(themeManager: ThemeManager , content: @Composable () -> Unit) {
     val colorSchemeVariant = themeManager.getCurrentColorScheme()!!
 
     val colorScheme =  if (isDarkTheme) {
-            colorSchemeVariant.darkColorScheme as ColorScheme
+            colorSchemeVariant.colorPalet.darkColorScheme()
         } else {
-            colorSchemeVariant.lightColorScheme as ColorScheme
+            colorSchemeVariant.colorPalet.lightColorScheme()
         }
 
 
