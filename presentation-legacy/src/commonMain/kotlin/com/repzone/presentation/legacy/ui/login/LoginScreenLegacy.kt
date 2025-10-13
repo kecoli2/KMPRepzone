@@ -40,7 +40,7 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
     // Success handling
     LaunchedEffect(state.isLoginSuccessful) {
         if (state.isLoginSuccessful) {
-            onLoginSuccess()
+            //onLoginSuccess()
         }
     }
 

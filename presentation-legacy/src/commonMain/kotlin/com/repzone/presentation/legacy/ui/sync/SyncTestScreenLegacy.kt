@@ -25,12 +25,15 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
@@ -379,8 +382,11 @@ private fun JobTestCard(
 
             if (status is SyncJobStatus.Progress) {
                 LinearProgressIndicator(
-                    progress = progressPercentage / 100f,
-                    modifier = Modifier.fillMaxWidth()
+                progress = { progressPercentage / 100f },
+                modifier = Modifier.fillMaxWidth(),
+                color = ProgressIndicatorDefaults.linearColor,
+                trackColor = ProgressIndicatorDefaults.linearTrackColor,
+                strokeCap = ProgressIndicatorDefaults.LinearStrokeCap,
                 )
                 Text(
                     text = "${status.current}/${status.total} - ${progressPercentage}%",
@@ -452,7 +458,7 @@ private fun PerformanceTestCard(
             }
 
             if (jobHistory.isNotEmpty()) {
-                Divider()
+                HorizontalDivider(Modifier, DividerDefaults.Thickness, DividerDefaults.color)
                 Text("Son 5 İşlem:", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.Bold)
                 jobHistory.takeLast(5).forEach { result ->
                     Text(
