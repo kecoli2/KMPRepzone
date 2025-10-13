@@ -1,7 +1,6 @@
 package com.repzone.presentation.legacy.ui.login
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
@@ -16,14 +15,19 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.manager.theme.ThemeManager
-import com.repzone.core.util.extensions.painterResourceOr
+import com.repzone.core.util.extensions.fromResource
 import com.repzone.presentation.legacy.viewmodel.login.LoginScreenViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.koinInject
 import repzonemobile.core.generated.resources.Res
-import repzonemobile.core.generated.resources.hello
+import repzonemobile.core.generated.resources.hidden
+import repzonemobile.core.generated.resources.loginenterpassword
+import repzonemobile.core.generated.resources.loginenterusername
+import repzonemobile.core.generated.resources.loginloginbutton
+import repzonemobile.core.generated.resources.password
+import repzonemobile.core.generated.resources.show
+import repzonemobile.core.generated.resources.username
 import repzonemobile.presentation_legacy.generated.resources.img_login_background
 
 @Composable
@@ -36,7 +40,7 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
     // Success handling
     LaunchedEffect(state.isLoginSuccessful) {
         if (state.isLoginSuccessful) {
-            // Navigate to main screen
+            onLoginSuccess()
         }
     }
 
@@ -59,8 +63,8 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
             OutlinedTextField(
                 value = state.username,
                 onValueChange = viewModel::updateUsername,
-                label = { Text("Kullanıcı Adı", color = Color.White) },
-                placeholder = { Text("Adınızı girin", color = Color.White.copy(alpha = 0.6f)) },
+                label = { Text(Res.string.username.fromResource(), color = Color.White) },
+                placeholder = { Text(Res.string.loginenterusername.fromResource(), color = Color.White.copy(alpha = 0.6f)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 enabled = state.uiFrame.isInteractionEnabled,
@@ -78,8 +82,8 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
             OutlinedTextField(
                 value = state.password,
                 onValueChange = viewModel::updatePassword,
-                label = { Text("Şifre", color = Color.White) },
-                placeholder = { Text("Şifrenizi girin", color = Color.White.copy(alpha = 0.6f)) },
+                label = { Text(Res.string.password.fromResource(), color = Color.White) },
+                placeholder = { Text(Res.string.loginenterpassword.fromResource(), color = Color.White.copy(alpha = 0.6f)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
                 shape = MaterialTheme.shapes.extraLarge,
@@ -103,7 +107,7 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
                         enabled = state.uiFrame.isInteractionEnabled
                     ) {
                         Text(
-                            text = if (isPasswordVisible) "Gizle" else "Göster",
+                            text = if (isPasswordVisible) Res.string.hidden.fromResource() else Res.string.show.fromResource(),
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
@@ -137,8 +141,7 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
                         Text(state.loadingMessage)
                     }
                 } else {
-                    /*Text(stringResource(moko))*/
-                    Text(stringResource(Res.string.hello))
+                    Text(Res.string.loginloginbutton.fromResource())
                 }
             }
 
