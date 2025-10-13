@@ -111,8 +111,6 @@ tasks.register("generateDomainModels") {
         val modelDir = file("src/commonMain/kotlin/${modelPackage.replace('.', '/')}")
 
         if (!entityDir.exists()) {
-            println("❌ Entity directory not found: ${entityDir.absolutePath}")
-            println("💡 Run SQLDelight generation first!")
             return@doLast
         }
 
@@ -125,8 +123,6 @@ tasks.register("generateDomainModels") {
         entityDir.walkTopDown()
             .filter { it.isFile && it.extension == "kt" && it.name.endsWith("Entity.kt") }
             .forEach { entityFile ->
-                println("📝 Processing: ${entityFile.name}")
-
                 val entityContent = entityFile.readText()
                 val modelContent = convertEntityToModel(entityContent, modelPackage)
 
@@ -135,12 +131,8 @@ tasks.register("generateDomainModels") {
                 val modelFile = File(modelDir, modelFileName)
 
                 modelFile.writeText(modelContent)
-                println("   ✅ Generated: $modelFileName")
                 generatedCount++
             }
-
-        println("\n🎉 Successfully generated $generatedCount model files!")
-        println("📂 Location: ${modelDir.absolutePath}")
     }
 }
 
@@ -163,8 +155,6 @@ tasks.register("generateEntityMappers") {
         val mapperDir = file("data/src/commonMain/kotlin/${mapperPackage.replace('.', '/')}")
 
         if (!entityDir.exists()) {
-            println("❌ Entity directory not found: ${entityDir.absolutePath}")
-            println("💡 Run SQLDelight generation first!")
             return@doLast
         }
 
@@ -177,8 +167,6 @@ tasks.register("generateEntityMappers") {
         entityDir.walkTopDown()
             .filter { it.isFile && it.extension == "kt" && it.name.endsWith("Entity.kt") }
             .forEach { entityFile ->
-                println("📝 Processing: ${entityFile.name}")
-
                 // Entity içeriğini oku ve field'ları parse et
                 val entityContent = entityFile.readText()
                 val entityFields = parseEntityFields(entityContent)
@@ -204,12 +192,8 @@ tasks.register("generateEntityMappers") {
                 val mapperFile = File(mapperDir, mapperFileName)
 
                 mapperFile.writeText(mapperContent)
-                println("   ✅ Generated: $mapperFileName")
                 generatedCount++
             }
-
-        println("\n🎉 Successfully generated $generatedCount mapper files!")
-        println("📂 Location: ${mapperDir.absolutePath}")
     }
 }
 
@@ -233,8 +217,6 @@ tasks.register("generateMapperDI") {
         val diDir = file("data/src/commonMain/kotlin/${diPackage.replace('.', '/')}")
 
         if (!entityDir.exists()) {
-            println("❌ Entity directory not found: ${entityDir.absolutePath}")
-            println("💡 Run SQLDelight generation first!")
             return@doLast
         }
 
@@ -275,9 +257,6 @@ tasks.register("generateMapperDI") {
 
         val diFile = File(diDir, "MapperModule.kt")
         diFile.writeText(diContent)
-
-        println("✅ Generated: MapperModule.kt with ${diDefinitions.size} definitions")
-        println("📂 Location: ${diFile.absolutePath}")
     }
 }
 

@@ -38,8 +38,8 @@ androidx-appcompat = "1.7.1"
 
 
 # Firebase
-firebase-bom      = "34.3.0"
-google-services   = "4.4.3"
+firebase-bom      = "34.4.0"
+google-services   = "4.4.4"
 firebase-crash    = "3.0.6"
 
 # Google Play Services

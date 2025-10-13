@@ -21,21 +21,17 @@ fun AppTheme(themeManager: ThemeManager , content: @Composable () -> Unit) {
     }
 
     // Aktif renk şemasını al
-    val colorSchemeVariant = themeManager.getCurrentColorScheme()
+    val colorSchemeVariant = themeManager.getCurrentColorScheme()!!
 
-    val colorScheme = if (colorSchemeVariant != null) {
-        if (isDarkTheme) {
+    val colorScheme =  if (isDarkTheme) {
             colorSchemeVariant.darkColorScheme as ColorScheme
         } else {
             colorSchemeVariant.lightColorScheme as ColorScheme
         }
-    } else {
-        // Fallback
-        if (isDarkTheme) DefaultDarkColorScheme else DefaultLightColorScheme
-    }
 
-    val typography = (colorSchemeVariant?.typography as? Typography) ?: DefaultTypography
-    val shapes = (colorSchemeVariant?.shapes as? Shapes) ?: DefaultShapes
+
+    val typography = (colorSchemeVariant.typography as? Typography) ?: DefaultTypography
+    val shapes = (colorSchemeVariant.shapes as? Shapes) ?: DefaultShapes
 
     MaterialTheme(
         colorScheme = colorScheme,

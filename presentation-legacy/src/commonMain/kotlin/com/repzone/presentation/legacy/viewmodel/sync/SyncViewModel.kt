@@ -115,7 +115,6 @@ class SyncTestViewModel(
 
     override fun onStart() {
         super.onStart()
-        println("🚀 SyncTestViewModel started")
         // İlk stats yükle
         scope.launch {
             try {

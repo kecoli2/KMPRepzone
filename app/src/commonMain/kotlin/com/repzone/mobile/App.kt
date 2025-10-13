@@ -192,7 +192,7 @@ fun PrinterSection(modifier: Modifier = Modifier) {
                     // 3) Yazdır
                     val res = zebra.printZpl(sampleZpl, opts)
                     resultText = when (res) {
-                        is ZebraResult.Success -> "Yazdırma başarılı ✅"
+                        is ZebraResult.Success -> "Yazdırma başarılı"
                         is ZebraResult.NotSupported -> "Desteklenmiyor: ${res.reason}"
                         is ZebraResult.Failure -> "Hata: ${res.message}"
                     }

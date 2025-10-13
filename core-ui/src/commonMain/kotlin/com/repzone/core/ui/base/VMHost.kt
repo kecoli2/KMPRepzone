@@ -42,14 +42,10 @@ object SmartViewModelStore {
     // Composition active/inactive tracking
     fun markCompositionActive(key: String) {
         activeCompositions.add(key)
-        println("Composition ACTIVE: $key")
-        println("Active compositions: ${activeCompositions.joinToString(", ")}")
     }
 
     fun markCompositionInactive(key: String) {
         activeCompositions.remove(key)
-        println("Composition INACTIVE: $key")
-        println("Active compositions: ${activeCompositions.joinToString(", ")}")
     }
 
     // Smart cleanup - sadece inactive ViewModel'leri temizle
@@ -66,7 +62,6 @@ object SmartViewModelStore {
         }
 
         if (toRemove.isNotEmpty()) {
-            println("Smart cleanup removing: ${toRemove.keys}")
             toRemove.forEach { (key, entry) ->
                 println("Disposing inactive ViewModel: $key")
                 entry.viewModel.onDispose()

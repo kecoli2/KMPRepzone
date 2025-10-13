@@ -11,7 +11,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.time.Clock
+import kotlin.time.Clock.*
 import kotlin.time.ExperimentalTime
 
 /**
@@ -114,7 +114,7 @@ class TransactionCoordinator(
      */
     @OptIn(ExperimentalTime::class)
     private suspend fun processOperation(operation: DatabaseOperation) {
-        val startTime = Clock.System.now().toEpochMilliseconds()
+        val startTime = System.now().toEpochMilliseconds()
 
         // Stats update
         statsMutex.withLock {
@@ -140,7 +140,7 @@ class TransactionCoordinator(
                 operation.recordCount
             }
 
-            val duration = Clock.System.now().toEpochMilliseconds() - startTime
+            val duration = System.now().toEpochMilliseconds() - startTime
 
             // Stats update
             statsMutex.withLock {
@@ -159,7 +159,7 @@ class TransactionCoordinator(
             resultChannels[operation.id]?.send(successResult)
 
         } catch (e: Exception) {
-            val duration = Clock.System.now().toEpochMilliseconds() - startTime
+            val duration = System.now().toEpochMilliseconds() - startTime
 
             // Stats update
             statsMutex.withLock {
@@ -213,7 +213,7 @@ class TransactionCoordinator(
 
     @OptIn(ExperimentalTime::class)
     private suspend fun processCompositeOperation(compositeOp: CompositeOperation) {
-        val startTime = Clock.System.now().toEpochMilliseconds()
+        val startTime = System.now().toEpochMilliseconds()
 
         statsMutex.withLock {
             totalOperations++
@@ -245,7 +245,7 @@ class TransactionCoordinator(
                 recordCount
             }
 
-            val duration = Clock.System.now().toEpochMilliseconds() - startTime
+            val duration = System.now().toEpochMilliseconds() - startTime
 
             statsMutex.withLock {
                 successfulOperations++
@@ -256,13 +256,10 @@ class TransactionCoordinator(
                 duration = duration,
                 operationId = compositeOp.id
             )
-
-            println("✅ Composite operation completed: ${compositeOp.description} - $totalRecords records in ${duration}ms")
-
             compositeResultChannels[compositeOp.id]?.send(successResult)
 
         } catch (e: Exception) {
-            val duration = Clock.System.now().toEpochMilliseconds() - startTime
+            val duration = System.now().toEpochMilliseconds() - startTime
 
             statsMutex.withLock {
                 failedOperations++

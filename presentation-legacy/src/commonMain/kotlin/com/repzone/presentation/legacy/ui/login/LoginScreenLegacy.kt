@@ -54,8 +54,8 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
         ) {
 
             OutlinedTextField(
-                value = state.username, // ✅ ViewModel'den geliyor
-                onValueChange = viewModel::updateUsername, // ✅ ViewModel'i güncelliyor
+                value = state.username,
+                onValueChange = viewModel::updateUsername,
                 label = { Text("Kullanıcı Adı", color = Color.White) },
                 placeholder = { Text("Adınızı girin", color = Color.White.copy(alpha = 0.6f)) },
                 modifier = Modifier.fillMaxWidth(),
@@ -66,18 +66,27 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
                     focusedContainerColor = Color.White.copy(alpha = 0.1f),
                     unfocusedContainerColor = Color.White.copy(alpha = 0.1f),
                     disabledContainerColor = Color.White.copy(alpha = 0.1f),
-                )
-
-                )
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White
+                ))
 
             Spacer(modifier = Modifier.height(16.dp))
 
             OutlinedTextField(
-                value = state.password, // ✅ ViewModel'den geliyor
-                onValueChange = viewModel::updatePassword, // ✅ ViewModel'i güncelliyor
-                label = { Text("Şifre") },
+                value = state.password,
+                onValueChange = viewModel::updatePassword,
+                label = { Text("Şifre", color = Color.White) },
+                placeholder = { Text("Şifrenizi girin", color = Color.White.copy(alpha = 0.6f)) },
                 modifier = Modifier.fillMaxWidth(),
                 singleLine = true,
+                shape = MaterialTheme.shapes.extraLarge,
+                colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White.copy(alpha = 0.1f),
+                    unfocusedContainerColor = Color.White.copy(alpha = 0.1f),
+                    disabledContainerColor = Color.White.copy(alpha = 0.1f),
+                    focusedTextColor = Color.White,
+                    unfocusedTextColor = Color.White
+                ),
                 enabled = state.uiFrame.isInteractionEnabled,
                 visualTransformation = if (isPasswordVisible) {
                     VisualTransformation.None
@@ -107,7 +116,10 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
                     }
                 },
                 modifier = Modifier.fillMaxWidth(),
-                enabled = state.canSubmit
+                enabled = state.canSubmit,
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = MaterialTheme.colorScheme.primary,
+                )
             ) {
                 if (state.uiFrame.isLoading) {
                     Row(

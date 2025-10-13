@@ -41,8 +41,8 @@ fun LoginScreen(
     ) {
 
         OutlinedTextField(
-            value = state.username, // ✅ ViewModel'den geliyor
-            onValueChange = viewModel::updateUsername, // ✅ ViewModel'i güncelliyor
+            value = state.username,
+            onValueChange = viewModel::updateUsername,
             label = { Text("Kullanıcı Adı") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
@@ -52,8 +52,8 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = state.password, // ✅ ViewModel'den geliyor
-            onValueChange = viewModel::updatePassword, // ✅ ViewModel'i güncelliyor
+            value = state.password,
+            onValueChange = viewModel::updatePassword,
             label = { Text("Şifre") },
             modifier = Modifier.fillMaxWidth(),
             singleLine = true,
