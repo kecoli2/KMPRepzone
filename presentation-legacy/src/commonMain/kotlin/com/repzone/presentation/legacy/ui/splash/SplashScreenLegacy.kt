@@ -18,15 +18,14 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -35,18 +34,37 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.keepScreenOn
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.repzone.core.ui.base.ViewModelHost
+import com.repzone.presentation.legacy.navigation.LegacyScreen
+import com.repzone.presentation.legacy.navigation.LocalNavController
 import com.repzone.presentation.legacy.viewmodel.splash.SplashScreenViewModel
 import org.jetbrains.compose.resources.painterResource
 import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_min
 import repzonemobile.presentation_legacy.generated.resources.img_login_background
 
 @Composable
-fun SplashScreenLegacy() = ViewModelHost<SplashScreenViewModel>(){ viewModel ->
+fun SplashScreenLegacy(onControllSucces: () -> Unit) = ViewModelHost<SplashScreenViewModel>{ viewModel ->
     val state by viewModel.state.collectAsState()
+    val navController = LocalNavController.current
+
+    LaunchedEffect(Unit){
+        viewModel.events.collect{ event ->
+            when (event){
+                is SplashScreenViewModel.Event.ControllSucces -> {
+                    onControllSucces()
+                }
+                is SplashScreenViewModel.Event.NavigateToLogin -> {
+                    navController.navigate(LegacyScreen.Login){
+                        popUpTo(LegacyScreen.Splash){
+                            inclusive = true
+                        }
+                    }
+                }
+            }
+        }
+    }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center){
         Image(

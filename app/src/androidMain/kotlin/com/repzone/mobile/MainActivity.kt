@@ -80,7 +80,11 @@ fun AppAndroidPreview() {
 
         }*/
 
-        SplashScreenLegacy()
+        SplashScreenLegacy(
+            onControllSucces = {
+
+            }
+        )
 
     }
 }

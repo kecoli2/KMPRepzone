@@ -5,9 +5,12 @@ import com.repzone.core.model.UiFrame
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.StringResource
 
 
@@ -19,8 +22,9 @@ open class BaseViewModel<S : Any, E : Any>(initialState: S) {
     protected val _state = MutableStateFlow(initialState)
     val state: StateFlow<S> = _state
 
-    /** Tek seferlik UI etkileri (snackbar, nav vb.) için opsiyonel */
-    open val effect: Flow<E>? = null
+    // Event channel için
+    private val _events = Channel<E>(Channel.BUFFERED)
+    val events: Flow<E> = _events.receiveAsFlow()
     //endregion
 
     //region Public Methods
@@ -33,6 +37,7 @@ open class BaseViewModel<S : Any, E : Any>(initialState: S) {
     /** Ekrandan ayrılırken: tüm işler iptal → referanslar serbest (GC) */
     open fun onDispose() {
         job.cancel()
+        _events.close()
     }
     //endregion
 
@@ -41,7 +46,6 @@ open class BaseViewModel<S : Any, E : Any>(initialState: S) {
         _state.value = block(_state.value)
     }
 
-    // Public accessor for extensions (internal to avoid external access)
     internal inline fun updateStateInternal(block: (S) -> S) {
         println("DEBUG BaseViewModel: updateStateInternal called")
         val oldState = _state.value
@@ -49,6 +53,22 @@ open class BaseViewModel<S : Any, E : Any>(initialState: S) {
         println("DEBUG BaseViewModel: old state: $oldState")
         println("DEBUG BaseViewModel: new state: $newState")
         _state.value = newState
+    }
+
+    /**
+     * Event gönderir (navigation, toast, dialog vb. tek seferlik aksiyonlar için)
+     */
+    protected fun sendEvent(event: E) {
+        scope.launch {
+            _events.send(event)
+        }
+    }
+
+    /**
+     * Event gönderir (suspend fonksiyon versiyonu)
+     */
+    protected suspend fun emitEvent(event: E) {
+        _events.send(event)
     }
     //endregion
 }
