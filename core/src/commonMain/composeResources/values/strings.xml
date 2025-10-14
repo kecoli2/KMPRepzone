@@ -797,4 +797,16 @@
     <string name="time_weeks_ago">%1$d w ago</string>
     <string name="time_months_ago">%1$d mo ago</string>
     <string name="time_years_ago">%1$d y ago</string>
+    <string name="login_issue">Username and password cannot be empty</string>
+    <string name="checking_credentials">Checking user credentials...</string>
+    <string name="connecting_server">Connecting to server...</string>
+    <string name="authenticating">Authenticating...</string>
+    <string name="creating_session">Creating session...</string>
+    <string name="unexpected_error">Unexpected error: %1$s</string>
+    <string name="login_successful">Login successful!</string>
+    <string name="logging_in">Logging in...</string>
+    <string name="invalid_credentials">Invalid username or password</string>
+    <string name="check_internet">Check your internet connection</string>
+    <string name="server_error">Server error, please try again later</string>
+    <string name="unknown_error">Unknown error: %1$s</string>
 </resources>

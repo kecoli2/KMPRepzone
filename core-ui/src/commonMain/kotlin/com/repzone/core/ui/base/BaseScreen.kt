@@ -15,8 +15,8 @@ fun BaseScreen(
 ) {
     when {
         frame.isLoading -> LinearProgressIndicator(modifier)
-        frame.error != null -> Text(
-            frame.error!!,
+        frame.getError() != null -> Text(
+            frame.getError()!!,
             color = MaterialTheme.colorScheme.error,
             modifier = modifier
         )

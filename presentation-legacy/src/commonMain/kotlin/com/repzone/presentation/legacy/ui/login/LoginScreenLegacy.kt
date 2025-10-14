@@ -18,6 +18,7 @@ import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.util.extensions.fromResource
 import com.repzone.presentation.legacy.viewmodel.login.LoginScreenViewModel
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.StringResource
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import repzonemobile.core.generated.resources.Res
@@ -138,18 +139,19 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
                             color = MaterialTheme.colorScheme.onPrimary,
                             strokeWidth = 2.dp
                         )
-                        Text(state.loadingMessage)
                     }
+                    Text(modifier = Modifier.padding(start = 2.dp), text = (state.loadingMessage as StringResource).fromResource())
                 } else {
-                    Text(Res.string.loginloginbutton.fromResource())
+                    Text(text = Res.string.loginloginbutton.fromResource())
                 }
             }
 
             // Error display
-            state.uiFrame.error?.let { error ->
+            state.uiFrame.getError()?.let { error ->
                 Spacer(modifier = Modifier.height(16.dp))
                 Text(
                     text = error,
+                    maxLines = 5,
                     color = MaterialTheme.colorScheme.error,
                     style = MaterialTheme.typography.bodyMedium
                 )

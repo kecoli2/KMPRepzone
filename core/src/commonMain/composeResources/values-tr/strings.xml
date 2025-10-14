@@ -797,4 +797,16 @@
     <string name="time_weeks_ago">%1$d hafta önce</string>
     <string name="time_months_ago">%1$d ay önce</string>
     <string name="time_years_ago">%1$d yıl önce</string>
+    <string name="login_issue">Kullanıcı adı ve şifre boş bırakılamaz</string>
+    <string name="checking_credentials">Kullanıcı bilgileri kontrol ediliyor...</string>
+    <string name="connecting_server">Sunucuya bağlanılıyor...</string>
+    <string name="authenticating">Kimlik doğrulanıyor...</string>
+    <string name="creating_session">Oturum oluşturuluyor...</string>
+    <string name="unexpected_error">Beklenmeyen hata: %1$s</string>
+    <string name="login_successful">Giriş başarılı!</string>
+    <string name="logging_in">Giriş yapılıyor...</string>
+    <string name="invalid_credentials">Kullanıcı adı veya şifre hatalı</string>
+    <string name="check_internet">İnternet bağlantısı kontrol edin</string>
+    <string name="server_error">Sunucu hatası, lütfen daha sonra tekrar deneyin</string>
+    <string name="unknown_error">Bilinmeyen hata: %1$s</string>
 </resources>

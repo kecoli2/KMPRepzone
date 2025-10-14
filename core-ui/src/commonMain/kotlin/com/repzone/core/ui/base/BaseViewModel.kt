@@ -8,6 +8,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import org.jetbrains.compose.resources.StringResource
 
 
 open class BaseViewModel<S : Any, E : Any>(initialState: S) {
@@ -63,7 +64,8 @@ fun <S> BaseViewModel<S, *>.setLoading(isLoading: Boolean)
         currentState.copyWithUiFrame(
             currentState.uiFrame.copy(
                 isLoading = isLoading,
-                error = if (isLoading) null else currentState.uiFrame.error
+                error = if (isLoading) null else currentState.uiFrame.error,
+                errorStringRes = if (isLoading) null else currentState.uiFrame.errorStringRes
             )
         ) as S
     }
@@ -84,12 +86,38 @@ fun <S> BaseViewModel<S, *>.setError(error: String?)
     }
 }
 
+fun <S> BaseViewModel<S, *>.setErrorStringResource(error: StringResource?)
+        where S : Any, S : HasUiFrame {
+    updateStateInternal { currentState ->
+        currentState.copyWithUiFrame(
+            currentState.uiFrame.copy(
+                isLoading = false,
+                errorStringRes = error
+            )
+        ) as S
+    }
+}
+
+fun <S> BaseViewModel<S, *>.setErrorStringResource(error: StringResource?, formatArgs: List<Any?> = emptyList())
+        where S : Any, S : HasUiFrame {
+    updateStateInternal { currentState ->
+        currentState.copyWithUiFrame(
+            currentState.uiFrame.copy(
+                isLoading = false,
+                errorStringRes = error,
+                formatArgs = formatArgs
+            )
+        ) as S
+    }
+}
+
 /**
  * Error'ı temizler
  */
 fun <S> BaseViewModel<S, *>.clearError()
         where S : Any, S : HasUiFrame {
     setError(null)
+    setErrorStringResource(null, emptyList())
 }
 
 /**
@@ -115,15 +143,19 @@ fun <S> BaseViewModel<S, *>.isLoading(): Boolean
  */
 fun <S> BaseViewModel<S, *>.hasError(): Boolean
         where S : Any, S : HasUiFrame {
-    return state.value.uiFrame.error != null
+    return state.value.uiFrame.error != null || state.value.uiFrame.errorStringRes != null
 }
 
 /**
  * Mevcut error mesajını döner
  */
-fun <S> BaseViewModel<S, *>.getCurrentError(): String?
+fun <S> BaseViewModel<S, *>.getCurrentError(): Any?
         where S : Any, S : HasUiFrame {
-    return state.value.uiFrame.error
+    if(state.value.uiFrame.error != null){
+        return state.value.uiFrame.error
+    }else{
+        return state.value.uiFrame.errorStringRes
+    }
 }
 
 //endregion
@@ -134,13 +166,13 @@ fun <S> BaseViewModel<S, *>.getCurrentError(): String?
  * UiFrame için yardımcı extension'lar
  */
 fun UiFrame.withLoading(isLoading: Boolean = true): UiFrame =
-    copy(isLoading = isLoading, error = if (isLoading) null else error)
+    copy(isLoading = isLoading, error = if (isLoading) null else error, errorStringRes = if (isLoading) null else errorStringRes)
 
 fun UiFrame.withError(error: String?): UiFrame =
     copy(isLoading = false, error = error)
 
 fun UiFrame.reset(): UiFrame = UiFrame()
 
-val UiFrame.isSuccess: Boolean get() = !isLoading && error == null
+val UiFrame.isSuccess: Boolean get() = !isLoading && error == null && errorStringRes == null
 
 //endregion

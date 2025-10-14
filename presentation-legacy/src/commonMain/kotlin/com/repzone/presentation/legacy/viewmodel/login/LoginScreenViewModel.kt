@@ -6,7 +6,7 @@ import com.repzone.core.model.UserSessionModel
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.core.ui.base.clearError
 import com.repzone.core.ui.base.hasError
-import com.repzone.core.ui.base.setError
+import com.repzone.core.ui.base.setErrorStringResource
 import com.repzone.core.util.extensions.toJson
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.network.api.ITokenApiController
@@ -15,6 +15,17 @@ import com.repzone.network.http.wrapper.ApiResult
 import com.repzone.network.models.request.LoginRequest
 import com.repzone.network.models.response.LoginResponse
 import kotlinx.coroutines.delay
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.authenticating
+import repzonemobile.core.generated.resources.check_internet
+import repzonemobile.core.generated.resources.checking_credentials
+import repzonemobile.core.generated.resources.creating_session
+import repzonemobile.core.generated.resources.invalid_credentials
+import repzonemobile.core.generated.resources.logging_in
+import repzonemobile.core.generated.resources.login_issue
+import repzonemobile.core.generated.resources.login_successful
+import repzonemobile.core.generated.resources.server_error
+import repzonemobile.core.generated.resources.unknown_error
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
@@ -23,36 +34,39 @@ class LoginScreenViewModel(
     private val isharedPreferences: IPreferencesManager,
     private val iDatabaseManager: IDatabaseManager
 ) : BaseViewModel<LoginScreenUiState, Nothing>(LoginScreenUiState()) {
+    //region Field
+    //endregion
 
-    companion object {
-        private const val DEBUG_DELAY = 3000L // Test için 3 saniye
-        private const val MIN_LOADING_TIME = 1500L // Minimum loading süresi
-    }
+    //region Properties
+    //endregion
 
+    //region Constructor
+    //endregion
+
+    //region Public Method
     @OptIn(ExperimentalUuidApi::class)
     suspend fun login(email: String, password: String) {
         // Validation
         if (email.isBlank() || password.isBlank()) {
-            setError("Kullanıcı adı ve şifre alanları boş olamaz")
+            setErrorStringResource(Res.string.login_issue)
             return
         }
 
-        // Loading başlat ve username/password'ı state'e kaydet
         updateState { currentState ->
             currentState.copy(
                 username = email,
                 password = password,
                 uiFrame = currentState.uiFrame.copy(isLoading = true, error = null),
-                loadingMessage = "Kullanıcı bilgileri kontrol ediliyor..."
+                loadingMessage = Res.string.checking_credentials
             )
         }
 
         try {
             // Progress simulation
-            updateLoadingMessage("Sunucuya bağlanılıyor...")
+            updateLoadingMessage(Res.string.checking_credentials)
             delay(800)
 
-            updateLoadingMessage("Kimlik doğrulanıyor...")
+            updateLoadingMessage(Res.string.authenticating)
             delay(700)
 
             val request = LoginRequest(
@@ -61,23 +75,23 @@ class LoginScreenViewModel(
                 uniqueId = Uuid.random().toString(),
             )
 
-            updateLoadingMessage("Oturum oluşturuluyor...")
+            updateLoadingMessage(Res.string.creating_session)
             val response = tokenApiController.pushToken(request)
 
             handleLoginResponse(response)
 
         } catch (e: Exception) {
-            setError("Beklenmeyen hata: ${e.message}")
+            setErrorStringResource(Res.string.unknown_error,listOf(e.message))
         }
     }
     fun updateUsername(username: String) {
         updateState { it.copy(username = username) }
-        if (hasError()) clearError() // Clear error when user starts typing
+        if (hasError()) clearError()
     }
 
     fun updatePassword(password: String) {
         updateState { it.copy(password = password) }
-        if (hasError()) clearError() // Clear error when user starts typing
+        if (hasError()) clearError()
     }
 
     fun clearLoginError() {
@@ -89,8 +103,13 @@ class LoginScreenViewModel(
             LoginScreenUiState() // Reset to initial state
         }
     }
+    //endregion
 
-    private fun updateLoadingMessage(message: String) {
+    //region Protected Method
+    //endregion
+
+    //region Private Method
+    private fun updateLoadingMessage(message: Any) {
         updateState { currentState ->
             currentState.copy(loadingMessage = message)
         }
@@ -99,7 +118,7 @@ class LoginScreenViewModel(
     private suspend fun handleLoginResponse(response: ApiResult<LoginResponse>) {
         when (response) {
             is ApiResult.Success -> {
-                updateLoadingMessage("Giriş başarılı!")
+                updateLoadingMessage(Res.string.login_successful)
                 delay(500) // Success mesajını göster
                 // Token'ı kaydet
                 isharedPreferences.setToken(response.data.tokenResponse?.accessToken)
@@ -118,12 +137,12 @@ class LoginScreenViewModel(
                     currentState.copy(
                         uiFrame = UiFrame(), // Reset UiFrame
                         isLoginSuccessful = true,
-                        loadingMessage = "Giriş yapılıyor..."
+                        loadingMessage = Res.string.logging_in
                     )
                 }
             }
             is ApiResult.Error -> {
-                setError(getErrorMessage(response.exception))
+                prepareErrorMessage(response.exception)
             }
             is ApiResult.Loading -> {
                 // Already loading
@@ -131,11 +150,26 @@ class LoginScreenViewModel(
         }
     }
 
-    private fun getErrorMessage(exception: ApiException): String = when (exception) {
-        is ApiException.Unauthorized -> "Kullanıcı adı veya şifre hatalı"
-        is ApiException.NetworkError -> "İnternet bağlantısı kontrol edin"
-        is ApiException.ValidationError -> exception.errors.joinToString(", ")
-        is ApiException.ServerError -> "Sunucu hatası, lütfen daha sonra tekrar deneyin"
-        is ApiException.UnknownError -> "Bilinmeyen hata: ${exception.originalMessage ?: "Bilinmeyen hata"}"
+    private fun prepareErrorMessage(exception: ApiException) {
+        when (exception){
+            is ApiException.Unauthorized ->{
+                setErrorStringResource(Res.string.invalid_credentials)
+            }
+            is ApiException.NetworkError ->{
+                setErrorStringResource(Res.string.check_internet)
+            }
+            is ApiException.ServerError ->{
+                setErrorStringResource(Res.string.server_error)
+            }
+            is ApiException.UnknownError ->{
+                setErrorStringResource(Res.string.unknown_error, listOf(exception.originalMessage))
+            }
+
+            is ApiException.ValidationError -> {
+                setErrorStringResource(Res.string.unknown_error, listOf(exception.errors.joinToString(", ")))
+            }
+        }
+
     }
+    //endregion
 }
