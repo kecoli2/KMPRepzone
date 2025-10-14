@@ -1,14 +1,10 @@
 package com.repzone.presentation.legacy.ui
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.KeyboardOptions
@@ -19,66 +15,20 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.repzone.core.interfaces.ILocationService
-import com.repzone.core.model.GeoPoint
 import com.repzone.core.printers.PrintOptions
 import com.repzone.core.printers.Transport
 import com.repzone.core.printers.ZebraPrinterManager
 import com.repzone.core.printers.ZebraResult
-import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.util.PermissionStatus
-import com.repzone.presentation.legacy.viewmodel.TestScreenViewModel
 import kotlinx.coroutines.launch
-import org.koin.compose.koinInject
-
-@Composable
-fun TestScreenLegacy() = ViewModelHost<TestScreenViewModel> { vm ->
-    var showContent by remember { mutableStateOf(false) }
-    var showGpsContent by remember { mutableStateOf(false) }
-    var gpsData by remember { mutableStateOf<GeoPoint?>(null) }
-    val gpsService = koinInject<ILocationService>()
-    val scope = rememberCoroutineScope()
-    val latest by remember(vm.iFireBaseRealtimeDatabase) { vm.iFireBaseRealtimeDatabase.observe("Test") }
-        .collectAsState(initial = "Henüz yok")
-
-    Column(modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer).safeContentPadding().fillMaxSize(),horizontalAlignment = Alignment.CenterHorizontally,    ) {
-        Text("Son değer: $latest")
-        Text("HELLO")
-        Button(onClick = {
-            showContent = !showContent
-            scope.launch {
-                vm.iFireBaseRealtimeDatabase.set(path = "Test", value = "dsadsda")
-            }
-        }) {
-            Text("Click me! deneme22")
-        }
-        Button(onClick = {
-            scope.launch {
-                gpsData = gpsService.getCurrentLocation()
-                gpsData?.let {
-                    showGpsContent = true
-                }
-            }
-        }){
-            Text("GPS Al")
-        }
-        AnimatedVisibility(visible = showGpsContent) {
-            Text("${gpsData?.latitude}, ${gpsData?.longitude}")
-        }
-        PermissionsSectionLegacy()
-        PrinterSection()
-    }
-}
 
 @Composable
 fun PrinterSection(modifier: Modifier = Modifier) {

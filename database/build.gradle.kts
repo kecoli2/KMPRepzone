@@ -1,16 +1,15 @@
+import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
-    alias(libs.plugins.androidKotlinMultiplatformLibrary)
-    alias(libs.plugins.androidLint)
+    alias(libs.plugins.androidLibrary)
     alias(libs.plugins.sqldelight)
 }
 
 kotlin {
-    androidLibrary {
-        namespace = "${providers.gradleProperty("APP_NAMESPACE_BASE").get()}." + providers.gradleProperty("APP_NAMESPACE_DATABASE").get()
-        compileSdk = libs.versions.android.compileSdk.get().toInt()
-        minSdk = libs.versions.android.minSdk.get().toInt()
-    }
+    androidTarget()
 
     listOf(
         iosX64(),
@@ -50,7 +49,6 @@ kotlin {
         }
     }
 
-
     tasks.register<GenerateEntityExtensionsTask>("generateEntityExtensions") {
         // SQLDelight generated path
         sourceDir.set(layout.buildDirectory.dir("generated/sqldelight/code/AppDatabase/commonMain/com/repzone/database"))
@@ -60,12 +58,33 @@ kotlin {
         dependsOn("generateCommonMainAppDatabaseInterface")
     }
 
-    kotlin.sourceSets.commonMain {
+    sourceSets.commonMain {
         kotlin.srcDir(layout.buildDirectory.dir("generated/extensions"))
     }
 
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {
         dependsOn("generateEntityExtensions")
+    }
+}
+
+// Android target için JVM 21 ayarı
+tasks.withType<KotlinCompile>().configureEach {
+    kotlinOptions {
+        jvmTarget = "21"
+    }
+}
+
+android {
+    namespace = "${providers.gradleProperty("APP_NAMESPACE_BASE").get()}." + providers.gradleProperty("APP_NAMESPACE_DATABASE").get()
+    compileSdk = libs.versions.android.compileSdk.get().toInt()
+
+    defaultConfig {
+        minSdk = libs.versions.android.minSdk.get().toInt()
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 }
 
@@ -103,8 +122,6 @@ tasks.register("generateDomainModels") {
         // Model klasörünü oluştur
         modelDir.mkdirs()
 
-        var generatedCount = 0
-
         // Tüm Entity dosyalarını bul ve dönüştür
         entityDir.walkTopDown()
             .filter { it.isFile && it.extension == "kt" && it.name.endsWith("Entity.kt") }
@@ -117,7 +134,6 @@ tasks.register("generateDomainModels") {
                 val modelFile = File(modelDir, modelFileName)
 
                 modelFile.writeText(modelContent)
-                generatedCount++
             }
     }
 }
@@ -146,8 +162,6 @@ tasks.register("generateEntityMappers") {
 
         // Mapper klasörünü oluştur
         mapperDir.mkdirs()
-
-        var generatedCount = 0
 
         // Tüm Entity dosyalarını bul ve mapper oluştur
         entityDir.walkTopDown()
@@ -178,7 +192,6 @@ tasks.register("generateEntityMappers") {
                 val mapperFile = File(mapperDir, mapperFileName)
 
                 mapperFile.writeText(mapperContent)
-                generatedCount++
             }
     }
 }
@@ -278,7 +291,7 @@ abstract class GenerateEntityExtensionsTask : DefaultTask() {
         val packageName = content.substringAfter("package ").substringBefore("\n").trim()
 
         // Field'ları tip bilgisi ile parse et
-        val fieldPattern = """val (\w+):\s*([^,\)]+?)(?:\s*[,\)]|$)""".toRegex()
+        val fieldPattern = """val (\w+):\s*([^,\)]+?)(?:\s*[,\)]|${'$'})""".toRegex()
         val fields = fieldPattern.findAll(content).map { matchResult ->
             val name = matchResult.groupValues[1]
             val type = matchResult.groupValues[2].trim()

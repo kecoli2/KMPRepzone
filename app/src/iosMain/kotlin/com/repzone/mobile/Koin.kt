@@ -1,8 +1,9 @@
 package com.repzone.mobile
 
+import com.repzone.mobile.di.FirebaseIosModule
 import org.koin.core.context.startKoin
 import com.repzone.mobile.di.IosDIModule
-import com.repzone.firebase.di.FirebaseIosModule
+
 
 fun initKoin() {
     startKoin {
