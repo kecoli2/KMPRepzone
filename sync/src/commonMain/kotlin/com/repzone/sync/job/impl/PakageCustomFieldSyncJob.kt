@@ -10,6 +10,11 @@ import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
 import com.repzone.core.enums.UserRole
+import com.repzone.core.model.ResourceUI
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.job_complate_fetched
+import repzonemobile.core.generated.resources.job_complate_saved
+import repzonemobile.core.generated.resources.job_module
 
 class PakageCustomFieldSyncJob(apiService: ISyncApiService<List<PackageCustomFieldDto>>,
                                bulkInsertService: IBulkInsertService<List<PackageCustomFieldDto>>, syncModuleRepository: ISyncModuleRepository,
@@ -28,12 +33,18 @@ class PakageCustomFieldSyncJob(apiService: ISyncApiService<List<PackageCustomFie
     //endregion
 
     //region Public Method
-    override fun getFetchedMessage(count: Int): String {
-        return "Fetched $count custom fields..."
+    override fun getFetchedMessage(count: Int): ResourceUI {
+        return ResourceUI(
+            res = Res.string.job_complate_fetched,
+            args = listOf(count, Res.string.job_module)
+        )
     }
 
-    override fun getCompletedMessage(count: Int): String {
-        return "$count product custom fields saved..."
+    override fun getCompletedMessage(count: Int): ResourceUI {
+        return ResourceUI(
+            res = Res.string.job_complate_saved,
+            args = listOf(count, Res.string.job_module)
+        )
     }
 
     override fun extractLastId(dtoData: List<PackageCustomFieldDto>): Long {

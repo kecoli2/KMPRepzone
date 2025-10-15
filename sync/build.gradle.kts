@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.kotlinSerialization)
     alias(libs.plugins.sqldelight)
+    alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.composeMultiplatform)
 }
 
 kotlin {
@@ -28,6 +30,8 @@ kotlin {
                 implementation(libs.koin.core)
                 implementation(libs.ktor.client.core)
                 implementation(libs.kotlinx.serialization.json)
+                implementation(compose.runtime)
+                implementation(compose.components.resources)
 
                 // Project Dependcy
                 implementation(projects.core)
@@ -40,7 +44,6 @@ kotlin {
     }
 }
 
-// Android target için JVM 21 ayarı
 tasks.withType<KotlinCompile>().configureEach {
     kotlinOptions {
         jvmTarget = "21"

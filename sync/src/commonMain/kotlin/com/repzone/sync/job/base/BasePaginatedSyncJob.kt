@@ -15,11 +15,14 @@ import com.repzone.sync.model.SyncJobResult
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
 import com.repzone.core.enums.UserRole
+import com.repzone.core.model.ResourceUI
 import com.repzone.sync.util.SyncConstant
 import io.ktor.util.date.getTimeMillis
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.job_email
 import kotlin.coroutines.cancellation.CancellationException
 
 abstract class BasePaginatedSyncJob<TDto : Any>(
@@ -52,10 +55,10 @@ abstract class BasePaginatedSyncJob<TDto : Any>(
 
     //region Configurable Properties
     open val defaultTakeCount: Int = SyncConstant.TAKEN_COUNT
-    open val fetchingMessage: String = "Fetching data..."
+    open val fetchingMessage: ResourceUI = ResourceUI(Res.string.job_email)
 
-    protected open fun getFetchedMessage(count: Int): String = "Fetched $count items..."
-    protected open fun getCompletedMessage(count: Int): String = "$count items saved..."
+    protected open fun getFetchedMessage(count: Int): ResourceUI = ResourceUI(res = Res.string.job_email, args = listOf(count))
+    protected open fun getCompletedMessage(count: Int): ResourceUI = ResourceUI(res = Res.string.job_email, args = listOf(count))
     //endregion
 
     //region Abstract Methods
@@ -97,7 +100,7 @@ abstract class BasePaginatedSyncJob<TDto : Any>(
             val endTime = getTimeMillis()
             val duration = endTime - startTime
 
-            val successStatus = SyncJobStatus.Success(recordsProcessed, duration)
+            val successStatus = SyncJobStatus.Success(recordsProcessed, getCompletedMessage(recordsProcessed) ,duration)
             updateStatus(successStatus)
             syncModuleModel?.requestFilter = requestFilter.toJson()
             syncModuleModel?.lastSyncDate = endTime
@@ -154,8 +157,8 @@ abstract class BasePaginatedSyncJob<TDto : Any>(
         }
     }
 
-    protected fun updateProgress(current: Int, total: Int, message: String? = null) {
-        updateStatus(SyncJobStatus.Progress(current, total, message))
+    protected fun updateProgress(current: Int, total: Int, resourceUI: ResourceUI) {
+        updateStatus(SyncJobStatus.Progress(current, total, resourceUI))
     }
 
     protected fun updateStatus(status: SyncJobStatus) {

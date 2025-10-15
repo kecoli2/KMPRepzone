@@ -1,5 +1,7 @@
 package com.repzone.sync.service.bulk.impl
 
+import com.repzone.core.model.ResourceUI
+import com.repzone.core.util.extensions.fromResource
 import com.repzone.data.util.MapperDto
 
 import com.repzone.database.SyncRouteAppointmentEntity
@@ -11,6 +13,9 @@ import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
 import com.repzone.sync.transaction.TableOperation
 import com.repzone.sync.transaction.TransactionCoordinator
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.job_complate_template_desc
+import repzonemobile.core.generated.resources.job_rota
 
 class RouteDataRawSqlBulkInsertService(private val dbMapper: MapperDto<SyncRouteAppointmentEntity, SyncRouteAppointmentModel, RouteDto>,
                                        coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<RouteDto>>(coordinator) {
@@ -38,7 +43,10 @@ class RouteDataRawSqlBulkInsertService(private val dbMapper: MapperDto<SyncRoute
                     includeClears = includeClears
                 )
             ),
-            description = "Route Data Fetch..."
+            description = ResourceUI(
+                res = Res.string.job_complate_template_desc,
+                args = listOf(Res.string.job_rota)
+            )
         )
     }
     //endregion

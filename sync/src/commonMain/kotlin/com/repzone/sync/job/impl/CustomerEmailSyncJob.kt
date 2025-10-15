@@ -10,6 +10,11 @@ import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
 import com.repzone.core.enums.UserRole
+import com.repzone.core.model.ResourceUI
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.job_complate_fetched
+import repzonemobile.core.generated.resources.job_complate_saved
+import repzonemobile.core.generated.resources.job_email
 
 class CustomerEmailSyncJob(apiService: ISyncApiService<List<CustomerEmailDto>>,
                            bulkinsertService: IBulkInsertService<List<CustomerEmailDto>>,
@@ -29,12 +34,18 @@ class CustomerEmailSyncJob(apiService: ISyncApiService<List<CustomerEmailDto>>,
     //endregion
 
     //region Public Method
-    override fun getFetchedMessage(count: Int): String {
-        return "Fetched $count customer email..."
+    override fun getFetchedMessage(count: Int): ResourceUI {
+        return ResourceUI(
+            res = Res.string.job_complate_fetched,
+            args = listOf(count, Res.string.job_email)
+        )
     }
 
-    override fun getCompletedMessage(count: Int): String {
-        return "$count product customer email saved..."
+    override fun getCompletedMessage(count: Int): ResourceUI {
+        return ResourceUI(
+            res = Res.string.job_complate_saved,
+            args = listOf(count, Res.string.job_email)
+        )
     }
 
     override fun extractLastId(dtoData: List<CustomerEmailDto>): Long {

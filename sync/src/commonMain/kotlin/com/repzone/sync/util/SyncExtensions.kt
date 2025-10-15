@@ -1,5 +1,6 @@
 package com.repzone.sync.util
 
+import androidx.compose.runtime.Composable
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.core.enums.UserRole
 
@@ -16,10 +17,11 @@ fun SyncJobStatus.getProgressPercentage(): Int = when (this) {
     is SyncJobStatus.Failed -> 0
 }
 
+@Composable
 fun SyncJobStatus.getDisplayMessage(): String = when (this) {
     is SyncJobStatus.Idle -> "Bekliyor"
     is SyncJobStatus.Running -> "Çalışıyor..."
-    is SyncJobStatus.Progress -> message ?: "$current/$total işlendi"
+    is SyncJobStatus.Progress -> resourceUi?.getMessage() ?: "$current/$total işlendi"
     is SyncJobStatus.Success -> "$recordCount kayıt işlendi (${duration}ms)"
     is SyncJobStatus.Failed -> "Hata: $error"
 }

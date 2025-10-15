@@ -809,4 +809,19 @@
     <string name="check_internet">İnternet bağlantısı kontrol edin</string>
     <string name="server_error">Sunucu hatası, lütfen daha sonra tekrar deneyin</string>
     <string name="unknown_error">Bilinmeyen hata: %1$s</string>
+    <string name="job_email">Müşteri Email leri</string>
+    <string name="job_customer_price">Müşteri Grup Fiyatları</string>
+    <string name="job_customer_group">Müşteri Grupları</string>
+    <string name="job_customer_price_parameter">Müşteri Fiyatları ve Parametreleri</string>
+    <string name="job_customer">Müşteriler</string>
+    <string name="job_document_map">Döküman ve Haritalar</string>
+    <string name="job_dynamic_report">Dinamik Raporlar</string>
+    <string name="job_dynamic_event_reasons">Etkinlikler</string>
+    <string name="job_module">Moduller</string>
+    <string name="job_product_group">Ürün Grupları</string>
+    <string name="job_product_parameters">Ürün ve Parametreleri</string>
+    <string name="job_rota">Rotalar Senkron</string>
+    <string name="job_complate_template_desc">Tüm %1$s Senkron Edildi.</string>
+    <string name="job_complate_fetched">%1$d tane %2$s alındı.</string>
+    <string name="job_complate_saved">%1$d tane %2$s kayıt edildi.</string>
 </resources>

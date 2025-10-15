@@ -1,5 +1,7 @@
 package com.repzone.sync.service.bulk.impl
 
+import com.repzone.core.model.ResourceUI
+import com.repzone.core.util.extensions.fromResource
 import com.repzone.data.mapper.ProductEntityDtoDbMapper
 import com.repzone.database.ProductParameterEntityMetadata
 import com.repzone.database.SyncProductEntityMetadata
@@ -10,6 +12,9 @@ import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
 import com.repzone.sync.transaction.TableOperation
 import com.repzone.sync.transaction.TransactionCoordinator
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.job_complate_template_desc
+import repzonemobile.core.generated.resources.job_product_parameters
 
 class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMapper,
                                      coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<ProductDto>>(coordinator) {
@@ -69,7 +74,10 @@ class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMap
 
         val compositeOperation = CompositeOperation(
             operations = operations,
-            description = "Tüm Product Sync yapıldı Unity,Parameters,Product"
+            description = ResourceUI(
+                res = Res.string.job_complate_template_desc,
+                args = listOf(Res.string.job_product_parameters)
+            )
         )
 
         return compositeOperation

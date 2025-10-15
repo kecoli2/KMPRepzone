@@ -10,6 +10,11 @@ import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
 import com.repzone.core.enums.UserRole
+import com.repzone.core.model.ResourceUI
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.job_complate_fetched
+import repzonemobile.core.generated.resources.job_complate_saved
+import repzonemobile.core.generated.resources.job_product_parameters
 
 class ProductSyncJob(apiService: ISyncApiService<List<ProductDto>>, bulkInsertService: IBulkInsertService<List<ProductDto>>, syncModuleRepository: ISyncModuleRepository)
     : BasePaginatedSyncJob<List<ProductDto>>(apiService, bulkInsertService, syncModuleRepository) {
@@ -18,7 +23,6 @@ class ProductSyncJob(apiService: ISyncApiService<List<ProductDto>>, bulkInsertSe
     override val allowedRoles = setOf(UserRole.SALES_REP)
     override val jobType = SyncJobType.PRODUCTS
     override val defaultRequestEndPoint = IProductApiControllerConstant.PRODUCT_LIST_ENDPOINT
-    override val fetchingMessage = "Fetching products..."
     override val moduleType = UIModule.NEW
     //endregion
 
@@ -29,8 +33,19 @@ class ProductSyncJob(apiService: ISyncApiService<List<ProductDto>>, bulkInsertSe
     //endregion
 
     //region Public Method
-    override fun getFetchedMessage(count: Int) = "Fetched $count products..."
-    override fun getCompletedMessage(count: Int) = "$count products saved..."
+    override fun getFetchedMessage(count: Int): ResourceUI {
+        return ResourceUI(
+            res = Res.string.job_complate_fetched,
+            args = listOf(count, Res.string.job_product_parameters)
+        )
+    }
+
+    override fun getCompletedMessage(count: Int): ResourceUI {
+        return ResourceUI(
+            res = Res.string.job_complate_saved,
+            args = listOf(count, Res.string.job_product_parameters)
+        )
+    }
 
     override fun extractLastId(dtoData: List<ProductDto>): Long {
         return dtoData.lastOrNull()?.id?.toLong() ?: 0L

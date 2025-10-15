@@ -544,6 +544,7 @@ private fun SyncJobStatus.getProgressPercentage(): Int = when (this) {
     is SyncJobStatus.Failed -> 0
 }
 
+@Composable
 private fun SyncJobStatus.getDisplayMessage(isApplicable: Boolean, userRole: UserRole): String {
     if (!isApplicable) {
         return "❌ ${userRole.getDisplayName()} rolü için geçerli değil"
@@ -552,8 +553,8 @@ private fun SyncJobStatus.getDisplayMessage(isApplicable: Boolean, userRole: Use
     return when (this) {
         is SyncJobStatus.Idle -> "⏳ Bekliyor"
         is SyncJobStatus.Running -> "⚡ Çalışıyor..."
-        is SyncJobStatus.Progress -> "📊 ${message ?: "$current/$total işlendi"}"
-        is SyncJobStatus.Success -> "✅ $recordCount kayıt işlendi (${duration}ms)"
+        is SyncJobStatus.Progress -> "📊 ${resourceUi?.getMessage() ?: "$current/$total işlendi"}"
+        is SyncJobStatus.Success -> "✅ ${resourceUi?.getMessage()} ${duration}ms)"
         is SyncJobStatus.Failed -> "❌ Hata: $error"
     }
 }

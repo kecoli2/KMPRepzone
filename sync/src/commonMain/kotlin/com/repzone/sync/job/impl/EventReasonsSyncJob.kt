@@ -10,6 +10,11 @@ import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
 import com.repzone.core.enums.UserRole
+import com.repzone.core.model.ResourceUI
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.job_complate_fetched
+import repzonemobile.core.generated.resources.job_complate_saved
+import repzonemobile.core.generated.resources.job_dynamic_event_reasons
 
 class EventReasonsSyncJob(apiService: ISyncApiService<List<EventReasonDto>>, bulkinsertService: IBulkInsertService<List<EventReasonDto>>,
                           syncModuleRepository: ISyncModuleRepository)
@@ -28,6 +33,20 @@ class EventReasonsSyncJob(apiService: ISyncApiService<List<EventReasonDto>>, bul
     //endregion
 
     //region Public Method
+    override fun getFetchedMessage(count: Int): ResourceUI {
+        return ResourceUI(
+            res = Res.string.job_complate_fetched,
+            args = listOf(count, Res.string.job_dynamic_event_reasons)
+        )
+    }
+
+    override fun getCompletedMessage(count: Int): ResourceUI {
+        return ResourceUI(
+            res = Res.string.job_complate_saved,
+            args = listOf(count, Res.string.job_dynamic_event_reasons)
+        )
+    }
+
     override fun extractLastId(dtoData: List<EventReasonDto>): Long {
         return dtoData.lastOrNull()?.id?.toLong() ?: 0
     }

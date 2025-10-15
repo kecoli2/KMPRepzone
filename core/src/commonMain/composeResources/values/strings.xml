@@ -809,4 +809,20 @@
     <string name="check_internet">Check your internet connection</string>
     <string name="server_error">Server error, please try again later</string>
     <string name="unknown_error">Unknown error: %1$s</string>
+    <string name="job_email">Customer Emails</string>
+    <string name="job_customer_price">Customer Group Prices</string>
+    <string name="job_customer_group">Customer Groups</string>
+    <string name="job_customer_price_parameter">Customer Prices and Parameters</string>
+    <string name="job_customer">Customers</string>
+    <string name="job_document_map">Documents and Maps</string>
+    <string name="job_dynamic_report">Dynamic Reports</string>
+    <string name="job_dynamic_event_reasons">Events</string>
+    <string name="job_module">Modules</string>
+    <string name="job_product_group">Product Groups</string>
+    <string name="job_product_parameters">Products and Parameters</string>
+    <string name="job_rota">Routes</string>
+    <string name="job_complate_template_desc">All %1$s Have Been Synchronized.</string>
+    <string name="job_complate_fetched">%1$d %2$s Have Been Retrieved.</string>
+    <string name="job_complate_saved">%1$d %2$s Have Been Saved.</string>
+
 </resources>

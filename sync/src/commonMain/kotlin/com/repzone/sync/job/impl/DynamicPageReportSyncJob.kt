@@ -10,6 +10,11 @@ import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
 import com.repzone.core.enums.UserRole
+import com.repzone.core.model.ResourceUI
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.job_complate_fetched
+import repzonemobile.core.generated.resources.job_complate_saved
+import repzonemobile.core.generated.resources.job_dynamic_report
 
 class DynamicPageReportSyncJob(apiService: ISyncApiService<List<DynamicPageReportDto>>,
                                bulkInsertService: IBulkInsertService<List<DynamicPageReportDto>>,
@@ -29,12 +34,18 @@ class DynamicPageReportSyncJob(apiService: ISyncApiService<List<DynamicPageRepor
     //endregion
 
     //region Public Method
-    override fun getFetchedMessage(count: Int): String {
-        return "Fetched $count dynamic page reports..."
+    override fun getFetchedMessage(count: Int): ResourceUI {
+        return ResourceUI(
+            res = Res.string.job_complate_fetched,
+            args = listOf(count, Res.string.job_dynamic_report)
+        )
     }
 
-    override fun getCompletedMessage(count: Int): String {
-        return "$count dynamic page reports saved..."
+    override fun getCompletedMessage(count: Int): ResourceUI {
+        return ResourceUI(
+            res = Res.string.job_complate_saved,
+            args = listOf(count, Res.string.job_dynamic_report)
+        )
     }
 
     override fun extractLastId(dtoData: List<DynamicPageReportDto>): Long {

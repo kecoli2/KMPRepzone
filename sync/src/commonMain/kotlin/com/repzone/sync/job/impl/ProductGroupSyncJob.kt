@@ -9,6 +9,11 @@ import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
 import com.repzone.core.enums.UserRole
+import com.repzone.core.model.ResourceUI
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.job_complate_fetched
+import repzonemobile.core.generated.resources.job_complate_saved
+import repzonemobile.core.generated.resources.job_product_group
 
 class ProductGroupSyncJob(apiService: ISyncApiService<List<ProductGroupDto>>,
                           bulkInsertService: IBulkInsertService<List<ProductGroupDto>>,
@@ -29,12 +34,18 @@ class ProductGroupSyncJob(apiService: ISyncApiService<List<ProductGroupDto>>,
 
     //region Public Method
 
-    override fun getFetchedMessage(count: Int): String {
-        return "Fetched $count product group..."
+    override fun getFetchedMessage(count: Int): ResourceUI {
+        return ResourceUI(
+            res = Res.string.job_complate_fetched,
+            args = listOf(count, Res.string.job_product_group)
+        )
     }
 
-    override fun getCompletedMessage(count: Int): String {
-        return "$count product group saved..."
+    override fun getCompletedMessage(count: Int): ResourceUI {
+        return ResourceUI(
+            res = Res.string.job_complate_saved,
+            args = listOf(count, Res.string.job_product_group)
+        )
     }
 
     override fun extractLastId(dtoData: List<ProductGroupDto>): Long {

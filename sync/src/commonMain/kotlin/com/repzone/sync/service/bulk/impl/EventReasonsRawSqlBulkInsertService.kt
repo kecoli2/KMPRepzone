@@ -1,5 +1,7 @@
 package com.repzone.sync.service.bulk.impl
 
+import com.repzone.core.model.ResourceUI
+import com.repzone.core.util.extensions.fromResource
 import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncEventReasonEntity
 import com.repzone.database.SyncEventReasonEntityMetadata
@@ -10,6 +12,9 @@ import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
 import com.repzone.sync.transaction.TableOperation
 import com.repzone.sync.transaction.TransactionCoordinator
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.job_complate_template_desc
+import repzonemobile.core.generated.resources.job_module
 
 class EventReasonsRawSqlBulkInsertService(private val mapper: MapperDto<SyncEventReasonEntity, SyncEventReasonModel, EventReasonDto>,
     coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<EventReasonDto>>(coordinator) {
@@ -39,7 +44,10 @@ class EventReasonsRawSqlBulkInsertService(private val mapper: MapperDto<SyncEven
 
         return CompositeOperation(
             operations = operations,
-            description = "Event Reasons Sync Yapıldı"
+            description = ResourceUI(
+                res = Res.string.job_complate_template_desc,
+                args = listOf(Res.string.job_module)
+            )
         )
     }
     //endregion
