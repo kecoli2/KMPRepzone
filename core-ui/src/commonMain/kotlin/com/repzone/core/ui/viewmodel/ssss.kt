@@ -1,8 +1,6 @@
-package com.repzone.presentation.viewmodel.splash
+package com.repzone.core.ui.viewmodel
 
-import com.repzone.core.ui.base.BaseViewModel
-
-class SplashScreenViewModel {
+class ssss {
     //region Field
     //endregion
 

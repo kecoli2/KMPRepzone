@@ -41,7 +41,10 @@ kotlin {
                 implementation(compose.materialIconsExtended)
                 implementation(libs.navigation.compose)
                 implementation(libs.kotlinx.serialization.json)
+
+                //PROJECT
                 implementation(projects.core)
+                implementation(projects.network)
             }
         }
 

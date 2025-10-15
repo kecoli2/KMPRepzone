@@ -1,4 +1,4 @@
-package com.repzone.presentation.legacy.ui.splash
+package com.repzone.core.ui.ui.splash
 
 import com.repzone.core.model.HasUiFrame
 import com.repzone.core.model.UiFrame

@@ -4,7 +4,7 @@ import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
 import com.repzone.presentation.legacy.viewmodel.login.LoginScreenViewModel
-import com.repzone.presentation.legacy.viewmodel.splash.SplashScreenViewModel
+import com.repzone.core.ui.viewmodel.splash.SplashScreenViewModel
 import com.repzone.presentation.legacy.viewmodel.sync.SyncTestViewModel
 import org.koin.dsl.module
 

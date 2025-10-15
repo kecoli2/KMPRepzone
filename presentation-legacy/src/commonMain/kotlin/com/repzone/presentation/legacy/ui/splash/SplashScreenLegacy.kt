@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.presentation.legacy.navigation.LegacyScreen
 import com.repzone.presentation.legacy.navigation.LocalNavController
-import com.repzone.presentation.legacy.viewmodel.splash.SplashScreenViewModel
+import com.repzone.core.ui.viewmodel.splash.SplashScreenViewModel
 import org.jetbrains.compose.resources.painterResource
 import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_min
 import repzonemobile.presentation_legacy.generated.resources.img_login_background

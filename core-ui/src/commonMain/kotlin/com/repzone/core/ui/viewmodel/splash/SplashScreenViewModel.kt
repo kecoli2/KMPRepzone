@@ -1,19 +1,13 @@
-package com.repzone.presentation.legacy.viewmodel.splash
+package com.repzone.core.ui.viewmodel.splash
 
 import com.repzone.core.interfaces.IUserSession
-import com.repzone.core.model.RepresentativeMobileIdentityModel
-import com.repzone.core.model.UiFrame
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.core.ui.base.setError
+import com.repzone.core.ui.ui.splash.SplashScreenUiState
 import com.repzone.network.api.ITokenApiController
-import com.repzone.network.http.extensions.toApiException
-import com.repzone.network.http.wrapper.ApiException
 import com.repzone.network.http.wrapper.ApiResult
-import com.repzone.network.models.response.LoginResponse
-import com.repzone.presentation.legacy.ui.splash.SplashScreenUiState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-
 
 class SplashScreenViewModel(private val tokenController: ITokenApiController,
                             private val userSession: IUserSession,):
@@ -86,9 +80,10 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
                             userSession.save()
                             _nextOprerations.remove(SplashScreenOperation.CHECK_TOKEN)
                             nextOperation()
+                        }else{
+                            _nextOprerations.clear()
+                            sendEvent(Event.NavigateToLogin)
                         }
-                        _nextOprerations.clear()
-                        sendEvent(Event.NavigateToLogin)
                     }
                     is ApiResult.Error -> {
                         setError(responseInfo.exception.message)
