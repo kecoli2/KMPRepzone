@@ -58,7 +58,7 @@ import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
 import com.repzone.sync.model.SyncJobType.*
 import com.repzone.sync.model.SyncProgress
-import com.repzone.sync.model.UserRole
+import com.repzone.core.enums.UserRole
 import com.repzone.sync.transaction.TransactionStats
 
 /**
@@ -515,29 +515,27 @@ private fun SyncJobType.getDisplayName(): String = when (this) {
 
 private fun UserRole.getDisplayName(): String = when (this) {
     UserRole.SALES_REP -> "Satış Temsilcisi"
-    UserRole.MERGE_STAFF -> "Merge Elemanı"
-    UserRole.MANAGER -> "Müdür"
-    UserRole.ADMIN -> "Sistem Yöneticisi"
+    UserRole.DISTRIBUTION -> "Dağıtıcı Elemanı"
 }
 
 private fun isJobApplicableForRole(jobType: SyncJobType, userRole: UserRole): Boolean {
     return when (jobType) {
-        PRODUCTS -> userRole in setOf(UserRole.MERGE_STAFF, UserRole.MANAGER, UserRole.ADMIN)
-        CUSTOMERS -> userRole in setOf(UserRole.SALES_REP, UserRole.MANAGER, UserRole.ADMIN)
-        PRODUCTS_GROUP -> userRole in setOf(UserRole.MANAGER, UserRole.ADMIN, UserRole.SALES_REP)
-        ROUTE -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
-        CUSTOMERS_GROUP_PRICE -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
-        CUSTOMERS_GROUP -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
-        TABLE_REPLICATION -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
-        COMMON_MODULES -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
-        FORM -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
-        EXTRA_TABLE -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
-        STOCK -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
-        CUSTOMERS_EMAIL -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
-        CUSTOMERS_PRICE_PARAMETERS -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
-        COMMON_MODULES_REASONS -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
-        COMMON_DOCUMENT_MAPS -> userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
-        COMMON_DYNAMIC_PAGES ->  userRole in setOf(UserRole.ADMIN, UserRole.SALES_REP)
+        PRODUCTS -> userRole in setOf(UserRole.SALES_REP)
+        CUSTOMERS -> userRole in setOf(UserRole.SALES_REP)
+        PRODUCTS_GROUP -> userRole in setOf(UserRole.SALES_REP)
+        ROUTE -> userRole in setOf(UserRole.SALES_REP)
+        CUSTOMERS_GROUP_PRICE -> userRole in setOf(UserRole.SALES_REP)
+        CUSTOMERS_GROUP -> userRole in setOf(UserRole.SALES_REP)
+        TABLE_REPLICATION -> userRole in setOf(UserRole.SALES_REP)
+        COMMON_MODULES -> userRole in setOf(UserRole.SALES_REP)
+        FORM -> userRole in setOf(UserRole.SALES_REP)
+        EXTRA_TABLE -> userRole in setOf(UserRole.SALES_REP)
+        STOCK -> userRole in setOf(UserRole.SALES_REP)
+        CUSTOMERS_EMAIL -> userRole in setOf(UserRole.SALES_REP)
+        CUSTOMERS_PRICE_PARAMETERS -> userRole in setOf(UserRole.SALES_REP)
+        COMMON_MODULES_REASONS -> userRole in setOf(UserRole.SALES_REP)
+        COMMON_DOCUMENT_MAPS -> userRole in setOf(UserRole.SALES_REP)
+        COMMON_DYNAMIC_PAGES ->  userRole in setOf(UserRole.SALES_REP)
     }
 }
 
@@ -551,7 +549,7 @@ private fun SyncJobStatus.getProgressPercentage(): Int = when (this) {
 
 private fun SyncJobStatus.getDisplayMessage(isApplicable: Boolean, userRole: UserRole): String {
     if (!isApplicable) {
-        return "❌ ${userRole.getDisplayName()} rolü için geçerli değil"
+        return "${userRole.getDisplayName()} rolü için geçerli değil"
     }
 
     return when (this) {

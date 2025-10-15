@@ -9,14 +9,14 @@ import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
-import com.repzone.sync.model.UserRole
+import com.repzone.core.enums.UserRole
 
 class RouteDataSyncJob(apiService: ISyncApiService<List<RouteDto>>,
                        bulkInsertService: IBulkInsertService<List<RouteDto>>,
                        syncModuleRepository: ISyncModuleRepository,
 ): BasePaginatedSyncJob<List<RouteDto>>(apiService, bulkInsertService, syncModuleRepository) {
     //region Field
-    override val allowedRoles = setOf(UserRole.SALES_REP, UserRole.MANAGER, UserRole.ADMIN)
+    override val allowedRoles = setOf(UserRole.SALES_REP)
     override val jobType = SyncJobType.ROUTE
     override val defaultRequestEndPoint = IRouteApiControllerConstant.ROUTE_LIST_ENDPOINT
     override val moduleType = UIModule.NEW

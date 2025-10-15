@@ -1,13 +1,11 @@
 package com.repzone.sync.util
 
 import com.repzone.sync.model.SyncJobStatus
-import com.repzone.sync.model.UserRole
+import com.repzone.core.enums.UserRole
 
 fun UserRole.getDisplayName(): String = when (this) {
     UserRole.SALES_REP -> "Satış Temsilcisi"
-    UserRole.MERGE_STAFF -> "Merge Elemanı"
-    UserRole.MANAGER -> "Müdür"
-    UserRole.ADMIN -> "Sistem Yöneticisi"
+    UserRole.DISTRIBUTION -> "Dağıtım Elemanı"
 }
 
 fun SyncJobStatus.getProgressPercentage(): Int = when (this) {

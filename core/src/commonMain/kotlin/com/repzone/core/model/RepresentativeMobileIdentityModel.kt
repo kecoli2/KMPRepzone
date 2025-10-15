@@ -1,6 +1,7 @@
 package com.repzone.core.model
 
 import com.repzone.core.enums.CustomerOrRepresentativeOrganizationSelection
+import com.repzone.core.enums.UserRole
 import com.repzone.core.util.InstantSerializer
 import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
@@ -13,8 +14,8 @@ data class RepresentativeMobileIdentityModel(
     val userId: Int,
     val currency: String,
     val currencyDecimalDigits: Int? = null,
-    val code: String? = null, // Represent Code
-    val groupId: Int? = null, // Represent GroupId
+    val code: String? = null,
+    val groupId: Int? = null,
     val groupName: String? = null,
     val tenantId: Int,
     val tenantName: String? = null,
@@ -27,8 +28,8 @@ data class RepresentativeMobileIdentityModel(
     val phone: String? = null,
     val photoPath: String? = null,
     val headerLogoPath: String? = null,
-    val tagsRaw: String? = null, // comma separated tags
-    val notificationTagsRaw: String? = null, // can be empty, comma separated
+    val tagsRaw: String? = null,
+    val notificationTagsRaw: String? = null,
     val tokenType: String? = null,
     val tokenCode: String? = null,
     val state: Int,
@@ -40,8 +41,9 @@ data class RepresentativeMobileIdentityModel(
     val trackEndTime: Instant? = null,
     val trackDays: String? = null,
     val hasHotSellingAuthority: Boolean,
-    val warehouseId: Int? = null, // vehicle warehouse
-    val role: Int,
+    val warehouseId: Int? = null,
+    @Serializable(with = UserRole.Companion.Serializer::class)
+    val role: UserRole,
     val activationKey: String? = null,
     val activationPassword: String? = null,
     val identityTenantId: Int,

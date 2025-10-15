@@ -9,13 +9,13 @@ import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
-import com.repzone.sync.model.UserRole
+import com.repzone.core.enums.UserRole
 
 class PakageCustomFieldSyncJob(apiService: ISyncApiService<List<PackageCustomFieldDto>>,
                                bulkInsertService: IBulkInsertService<List<PackageCustomFieldDto>>, syncModuleRepository: ISyncModuleRepository,
 ): BasePaginatedSyncJob<List<PackageCustomFieldDto>>(apiService, bulkInsertService, syncModuleRepository) {
     //region Field
-    override val allowedRoles = setOf(UserRole.SALES_REP, UserRole.MERGE_STAFF, UserRole.MANAGER, UserRole.ADMIN)
+    override val allowedRoles = setOf(UserRole.SALES_REP)
     override val jobType = SyncJobType.COMMON_MODULES
     override val defaultRequestEndPoint = ICommonApiControllerConstant.COMMON_APP_MODULES_ENDPOINT
     override val moduleType = UIModule.NEW

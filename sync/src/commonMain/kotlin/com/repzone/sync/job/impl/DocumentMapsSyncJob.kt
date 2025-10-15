@@ -9,14 +9,14 @@ import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
-import com.repzone.sync.model.UserRole
+import com.repzone.core.enums.UserRole
 
 class DocumentMapsSyncJob(apiService: ISyncApiService<List<DocumentMapModelDto>>,
                           bulkInsertService: IBulkInsertService<List<DocumentMapModelDto>>,
                           syncModuleRepository: ISyncModuleRepository,
 ): BasePaginatedSyncJob<List<DocumentMapModelDto>>(apiService, bulkInsertService, syncModuleRepository){
     //region Field
-    override val allowedRoles = setOf(UserRole.SALES_REP, UserRole.MERGE_STAFF, UserRole.MANAGER, UserRole.ADMIN)
+    override val allowedRoles = setOf(UserRole.SALES_REP)
     override val jobType = SyncJobType.COMMON_DOCUMENT_MAPS
     override val defaultRequestEndPoint = ICommonApiControllerConstant.COMMON_APP_DOCUMENT_MAPS
     override val moduleType = UIModule.NEW

@@ -9,13 +9,13 @@ import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
-import com.repzone.sync.model.UserRole
+import com.repzone.core.enums.UserRole
 
 class ProductSyncJob(apiService: ISyncApiService<List<ProductDto>>, bulkInsertService: IBulkInsertService<List<ProductDto>>, syncModuleRepository: ISyncModuleRepository)
     : BasePaginatedSyncJob<List<ProductDto>>(apiService, bulkInsertService, syncModuleRepository) {
 
     //region Field
-    override val allowedRoles = setOf(UserRole.SALES_REP, UserRole.MANAGER, UserRole.ADMIN)
+    override val allowedRoles = setOf(UserRole.SALES_REP)
     override val jobType = SyncJobType.PRODUCTS
     override val defaultRequestEndPoint = IProductApiControllerConstant.PRODUCT_LIST_ENDPOINT
     override val fetchingMessage = "Fetching products..."

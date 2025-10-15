@@ -11,5 +11,5 @@ val PresentationModule = module {
     single<IPresentationConfig> { PresentationThemeConfig(get()) }
     factory { TestScreenViewModel(get(), get()) }   // her ekranda yeni instance
     factory { LoginScreenViewModel(get(), get()) }
-    factory { SyncTestViewModel(get(), get()) }
+    factory { SyncTestViewModel(get(), get(), get()) }
 }

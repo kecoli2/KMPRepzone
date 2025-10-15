@@ -6,7 +6,7 @@ import com.repzone.sync.model.SyncJobResult
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
 import com.repzone.sync.model.SyncProgress
-import com.repzone.sync.model.UserRole
+import com.repzone.core.enums.UserRole
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

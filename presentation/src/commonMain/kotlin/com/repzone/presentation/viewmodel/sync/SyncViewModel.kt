@@ -9,7 +9,8 @@ import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
 import com.repzone.sync.model.SyncJobType.*
 import com.repzone.sync.model.SyncProgress
-import com.repzone.sync.model.UserRole
+import com.repzone.core.enums.UserRole
+import com.repzone.core.interfaces.IUserSession
 import com.repzone.sync.transaction.TransactionCoordinator
 import com.repzone.sync.transaction.TransactionStats
 import kotlinx.coroutines.delay
@@ -19,10 +20,7 @@ import kotlinx.coroutines.launch
 /**
  * Sync Test ViewModel - BaseViewModel pattern kullanır
  */
-class SyncTestViewModel(
-    private val syncManager: ISyncManager,
-    private val transactionCoordinator: TransactionCoordinator
-) : BaseViewModel<SyncTestViewModel.State, SyncTestViewModel.Event>(
+class SyncTestViewModel(private val syncManager: ISyncManager, private val transactionCoordinator: TransactionCoordinator, private val usersession: IUserSession) : BaseViewModel<SyncTestViewModel.State, SyncTestViewModel.Event>(
     initialState = State()
 ) {
 
@@ -137,7 +135,7 @@ class SyncTestViewModel(
     }
 
     private fun getCurrentUserRole(): UserRole {
-        return UserRole.ADMIN
+        return usersession.getActiveSession()?.identity?.role ?: UserRole.SALES_REP
     }
 
     /**
@@ -304,9 +302,7 @@ class SyncTestViewModel(
 // Extension functions
 private fun UserRole.getDisplayName(): String = when (this) {
     UserRole.SALES_REP -> "Satış Temsilcisi"
-    UserRole.MERGE_STAFF -> "Merge Elemanı"
-    UserRole.MANAGER -> "Müdür"
-    UserRole.ADMIN -> "Sistem Yöneticisi"
+    UserRole.DISTRIBUTION -> "Dağıtıcı Elemanı"
 }
 
 private fun SyncJobType.getDisplayName(): String = when (this) {

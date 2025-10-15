@@ -11,6 +11,6 @@ import org.koin.dsl.module
 val PresentationModuleLegacy = module {
     single<IPresentationConfig> { LegacyThemeConfig(get()) }
     factory { LoginScreenViewModel(get(), get(),get<IDatabaseManager>()) }
-    factory { SyncTestViewModel(get(), get()) }
+    factory { SyncTestViewModel(get(), get(), get()) }
     factory { SplashScreenViewModel(get(), get()) }
 }

@@ -14,7 +14,7 @@ import com.repzone.sync.interfaces.ISyncJob
 import com.repzone.sync.model.SyncJobResult
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
-import com.repzone.sync.model.UserRole
+import com.repzone.core.enums.UserRole
 import com.repzone.sync.util.SyncConstant
 import io.ktor.util.date.getTimeMillis
 import kotlinx.coroutines.flow.MutableStateFlow

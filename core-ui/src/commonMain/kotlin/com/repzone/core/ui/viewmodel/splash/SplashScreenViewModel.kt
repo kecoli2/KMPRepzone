@@ -36,7 +36,6 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
     //endregion
 
     //region Private Method
-
     private suspend fun nextOperation(){
         val key = _nextOprerations.firstNotNullOfOrNull { it.key }
         if(key == null){
@@ -60,7 +59,6 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
         _nextOprerations.put(SplashScreenOperation.REGISTER_SMS_SERVICE, null)
         _nextOprerations.put(SplashScreenOperation.REGISTER_NOTIFICATION_SERVICE, null)
     }
-
     private suspend fun checkToken(){
         try {
 
@@ -98,12 +96,10 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
             setError(ex.message)
         }
     }
-
     private suspend fun registerSmsService(){
         _nextOprerations.remove(SplashScreenOperation.REGISTER_SMS_SERVICE)
         nextOperation()
     }
-
     private suspend fun registerNotificationService(){
         _nextOprerations.remove(SplashScreenOperation.REGISTER_NOTIFICATION_SERVICE)
         nextOperation()

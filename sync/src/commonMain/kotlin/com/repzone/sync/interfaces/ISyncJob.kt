@@ -1,6 +1,7 @@
 package com.repzone.sync.interfaces
 
 import com.repzone.core.enums.UIModule
+import com.repzone.core.enums.UserRole
 import com.repzone.sync.model.SyncJobResult
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
@@ -13,5 +14,5 @@ interface ISyncJob {
 
     suspend fun execute(): SyncJobResult
     suspend fun cancel()
-    fun isApplicableForRole(userRole: com.repzone.sync.model.UserRole): Boolean
+    fun isApplicableForRole(userRole: UserRole): Boolean
 }

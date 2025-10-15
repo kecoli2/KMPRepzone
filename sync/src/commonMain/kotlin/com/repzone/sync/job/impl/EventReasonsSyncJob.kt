@@ -9,13 +9,13 @@ import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
-import com.repzone.sync.model.UserRole
+import com.repzone.core.enums.UserRole
 
 class EventReasonsSyncJob(apiService: ISyncApiService<List<EventReasonDto>>, bulkinsertService: IBulkInsertService<List<EventReasonDto>>,
                           syncModuleRepository: ISyncModuleRepository)
     : BasePaginatedSyncJob<List<EventReasonDto>>(apiService, bulkinsertService, syncModuleRepository){
     //region Field
-    override val allowedRoles = setOf(UserRole.SALES_REP, UserRole.MERGE_STAFF, UserRole.MANAGER, UserRole.ADMIN)
+    override val allowedRoles = setOf(UserRole.SALES_REP)
     override val jobType = SyncJobType.COMMON_MODULES_REASONS
     override val defaultRequestEndPoint = ICommonApiControllerConstant.COMMON_APP_MODULES_REASONS_ENDPOINT
     override val moduleType = UIModule.NEW

@@ -9,14 +9,14 @@ import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
-import com.repzone.sync.model.UserRole
+import com.repzone.core.enums.UserRole
 
 class DynamicPageReportSyncJob(apiService: ISyncApiService<List<DynamicPageReportDto>>,
                                bulkInsertService: IBulkInsertService<List<DynamicPageReportDto>>,
                                syncModuleRepository: ISyncModuleRepository,
 ): BasePaginatedSyncJob<List<DynamicPageReportDto>>(apiService, bulkInsertService, syncModuleRepository) {
     //region Field
-    override val allowedRoles = setOf(UserRole.SALES_REP, UserRole.MERGE_STAFF, UserRole.MANAGER, UserRole.ADMIN)
+    override val allowedRoles = setOf(UserRole.SALES_REP)
     override val jobType = SyncJobType.COMMON_DYNAMIC_PAGES
     override val defaultRequestEndPoint= ICommonApiControllerConstant.COMMON_APP_DYNAMIC_PAGE
     override val moduleType = UIModule.NEW
