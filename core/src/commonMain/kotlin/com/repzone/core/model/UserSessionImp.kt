@@ -3,6 +3,7 @@ package com.repzone.core.model
 import com.repzone.core.interfaces.IPreferencesManager
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.util.extensions.jsonToModel
+import com.repzone.core.util.extensions.toJson
 
 class UserSessionImp(private val preferences: IPreferencesManager): IUserSession {
     //region Field
@@ -31,6 +32,10 @@ class UserSessionImp(private val preferences: IPreferencesManager): IUserSession
 
     override fun loadActiveSession() {
         activeSessionModel = preferences.getUserSessions()?.jsonToModel<UserSessionModel>()
+    }
+
+    override fun save() {
+        preferences.setUserSessions(activeSessionModel?.toJson())
     }
     //endregion
 

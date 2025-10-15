@@ -17,7 +17,7 @@ class AndroidPreferencesManager(private val context: Context) : IPreferencesMana
     //endregion
 
     //region Public Method
-    override fun getToken(): String? {
+    /*override fun getToken(): String? {
         return prefs.getString(PreferencesConstant.TOKEN, null)
     }
 
@@ -51,18 +51,26 @@ class AndroidPreferencesManager(private val context: Context) : IPreferencesMana
         }else{
             prefs.edit { putString(PreferencesConstant.REFRESH_TOKEN, token) }
         }
-    }
+    }*/
 
     override fun setUserSessions(value: String?) {
         if(value == null){
-            prefs.edit { remove(PreferencesConstant.USER_SESSIONS) }
+            prefs.edit { remove("${PreferencesConstant.USER_SESSIONS}_${getActiveUserCode()}") }
         }else{
-            prefs.edit { putString(PreferencesConstant.USER_SESSIONS, value) }
+            prefs.edit { putString("${PreferencesConstant.USER_SESSIONS}_${getActiveUserCode()}", value) }
         }
     }
 
     override fun getUserSessions(): String? {
-        return prefs.getString(PreferencesConstant.USER_SESSIONS, null)
+        return prefs.getString("${PreferencesConstant.USER_SESSIONS}_${getActiveUserCode()}", null)
+    }
+
+    override fun setActiveUserCode(value: Int) {
+        prefs.edit { putInt(PreferencesConstant.ACTIVE_USER_CODE, value) }
+    }
+
+    override fun getActiveUserCode(): Int {
+        return prefs.getInt(PreferencesConstant.ACTIVE_USER_CODE, 0)
     }
     //endregion
 

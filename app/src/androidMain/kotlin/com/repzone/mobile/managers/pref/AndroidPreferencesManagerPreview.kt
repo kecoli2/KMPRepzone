@@ -20,35 +20,19 @@ class AndroidPreferencesManagerPreview: IPreferencesManager {
 
     //region Private Method
     //endregion
-    override fun getToken(): String? {
-        TODO("Not yet implemented")
-    }
-
-    override fun setToken(token: String?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun setExpiresAtEpochSeconds(expiresAtEpochSeconds: Long?) {
-        TODO("Not yet implemented")
-    }
-
-    override fun getExpiresAtEpochSeconds(): Long? {
-        TODO("Not yet implemented")
-    }
-
-    override fun getRefreshToken(): String? {
-        TODO("Not yet implemented")
-    }
-
-    override fun setRefreshToken(token: String?) {
-        TODO("Not yet implemented")
-    }
-
     override fun setUserSessions(value: String?) {
         TODO("Not yet implemented")
     }
 
     override fun getUserSessions(): String? {
+        TODO("Not yet implemented")
+    }
+
+    override fun setActiveUserCode(value: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun getActiveUserCode(): Int {
         TODO("Not yet implemented")
     }
 }

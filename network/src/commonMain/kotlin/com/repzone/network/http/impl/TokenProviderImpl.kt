@@ -1,12 +1,12 @@
 package com.repzone.network.http.impl
 
-import com.repzone.core.interfaces.IPreferencesManager
 import com.repzone.core.interfaces.ITokenProvider
+import com.repzone.core.interfaces.IUserSession
 import kotlin.time.ExperimentalTime
 
 
 @OptIn(ExperimentalTime::class)
-class TokenProviderImpl(private val iPreferencesManager: IPreferencesManager) :
+class TokenProviderImpl(private val userSession: IUserSession) :
     ITokenProvider {
     //region Field
     //endregion
@@ -19,13 +19,14 @@ class TokenProviderImpl(private val iPreferencesManager: IPreferencesManager) :
 
     //region Public Method
     override fun getToken(): String? {
-        return iPreferencesManager.getToken()
+        return userSession.getActiveSession()?.token
     }
 
     override suspend fun setToken(token: String, expiresAtEpochSeconds: Long?, refreshToken: String?) {
-        iPreferencesManager.setToken(token)
-        iPreferencesManager.setExpiresAtEpochSeconds(expiresAtEpochSeconds)
-        iPreferencesManager.setRefreshToken(refreshToken)
+        userSession.getActiveSession()?.token = token
+        userSession.getActiveSession()?.expiresAtEpochSeconds = expiresAtEpochSeconds
+        userSession.getActiveSession()?.refreshToken = refreshToken
+        userSession.save()
     }
 
     override suspend fun refreshToken(): Boolean {
@@ -60,9 +61,10 @@ class TokenProviderImpl(private val iPreferencesManager: IPreferencesManager) :
     }
 
     override suspend fun clear() {
-        iPreferencesManager.setToken(null)
-        iPreferencesManager.setRefreshToken(null)
-        iPreferencesManager.setExpiresAtEpochSeconds(null)
+        userSession.getActiveSession()?.token = null
+        userSession.getActiveSession()?.expiresAtEpochSeconds = null
+        userSession.getActiveSession()?.refreshToken = null
+        userSession.save()
     }
     //endregion
 

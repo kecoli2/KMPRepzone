@@ -121,14 +121,15 @@ class LoginScreenViewModel(
                 updateLoadingMessage(Res.string.login_successful)
                 delay(500) // Success mesajını göster
                 // Token'ı kaydet
-                isharedPreferences.setToken(response.data.tokenResponse?.accessToken)
+                isharedPreferences.setActiveUserCode(response.data.userId)
                 val activeSessions = UserSessionModel(
                     userId = response.data.userId,
                     firstName = response.data.firstName,
                     lastName = response.data.lastName,
                     phone = response.data.phone,
                     email = response.data.email,
-                    profileImageUrl = response.data.profileImageUrl
+                    profileImageUrl = response.data.profileImageUrl,
+                    token = response.data.tokenResponse?.accessToken
                 )
                 isharedPreferences.setUserSessions(activeSessions.toJson())
                 iDatabaseManager.switchUser(response.data.userId)

@@ -56,7 +56,7 @@ fun LegacyNavHost(modifier: Modifier = Modifier, navController: NavHostControlle
                             // Main graph'a git
                             navController.navigate(LegacyScreen.Login) {
                                 popUpTo(LegacyScreen.AuthGraph) {
-                                    inclusive = false 
+                                    inclusive = false
                                 }
                             }
                         }

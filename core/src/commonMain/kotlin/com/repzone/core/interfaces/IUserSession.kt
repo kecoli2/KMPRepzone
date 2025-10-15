@@ -6,4 +6,5 @@ interface IUserSession {
     fun clearSession()
     fun getActiveSession(): UserSessionModel? = null
     fun loadActiveSession()
+    fun save()
 }

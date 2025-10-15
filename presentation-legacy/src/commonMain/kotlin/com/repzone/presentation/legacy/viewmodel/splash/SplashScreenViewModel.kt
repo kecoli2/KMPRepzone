@@ -34,17 +34,6 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
             delay(3000)
             sendEvent(Event.ControllSucces)
             return@launch
-            try {
-                if(sharedPreferences.getToken().isNullOrEmpty()){
-                    sendEvent(Event.ControllSucces)
-                    return@launch
-                }else{
-                    sendEvent(Event.NavigateToLogin)
-                    return@launch
-                }
-            }catch (ex: Exception){
-                setError(ex.message)
-            }
         }
     }
     //endregion

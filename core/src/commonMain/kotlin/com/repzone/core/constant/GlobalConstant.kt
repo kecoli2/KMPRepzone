@@ -5,6 +5,7 @@ object PreferencesConstant {
     const val TOKEN = "Token_Pref"
     const val TOKEN_EXPIRES_AT = "TOKEN_EXPIRES_AT"
     const val REFRESH_TOKEN = "REFRESH_TOKEN"
+    const val ACTIVE_USER_CODE = "ACTIVE_USER_CODE"
 }
 
 

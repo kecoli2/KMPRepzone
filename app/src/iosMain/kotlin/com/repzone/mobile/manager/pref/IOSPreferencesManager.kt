@@ -16,52 +16,24 @@ class IOSPreferencesManager: IPreferencesManager {
     //endregion
 
     //region Public Method
-    override fun getToken(): String? {
-        return prefs.stringForKey(PreferencesConstant.TOKEN)
-    }
-
-    override fun setToken(token: String?) {
-        if (token == null) {
-            prefs.removeObjectForKey(PreferencesConstant.TOKEN)
-        }else{
-            prefs.setObject(token, PreferencesConstant.TOKEN)
-        }
-    }
-
-    override fun setExpiresAtEpochSeconds(expiresAtEpochSeconds: Long?) {
-        if(expiresAtEpochSeconds == null){
-            prefs.removeObjectForKey(PreferencesConstant.TOKEN_EXPIRES_AT)
-        }else{
-            prefs.setInteger(expiresAtEpochSeconds, PreferencesConstant.TOKEN_EXPIRES_AT)
-        }
-    }
-
-    override fun getExpiresAtEpochSeconds(): Long? {
-        return prefs.integerForKey(PreferencesConstant.TOKEN_EXPIRES_AT)
-    }
-
-    override fun getRefreshToken(): String? {
-        return prefs.stringForKey(PreferencesConstant.REFRESH_TOKEN)
-    }
-
-    override fun setRefreshToken(token: String?) {
-        if (token == null) {
-            prefs.removeObjectForKey(PreferencesConstant.REFRESH_TOKEN)
-        }else{
-            prefs.setObject(token, PreferencesConstant.REFRESH_TOKEN)
-        }
-    }
-
     override fun setUserSessions(value: String?) {
         if(value == null){
-            prefs.removeObjectForKey(PreferencesConstant.USER_SESSIONS)
+            prefs.removeObjectForKey("${PreferencesConstant.USER_SESSIONS}_${getActiveUserCode()}")
         }else{
-            prefs.setObject(value, PreferencesConstant.USER_SESSIONS)
+            prefs.setObject(value, "${PreferencesConstant.USER_SESSIONS}_${getActiveUserCode()}")
         }
     }
 
     override fun getUserSessions(): String? {
         return prefs.stringForKey(PreferencesConstant.USER_SESSIONS)
+    }
+
+    override fun setActiveUserCode(value: Int) {
+        prefs.setInteger(value.toLong(), PreferencesConstant.ACTIVE_USER_CODE)
+    }
+
+    override fun getActiveUserCode(): Int {
+        return prefs.integerForKey(PreferencesConstant.ACTIVE_USER_CODE).toInt()
     }
     //endregion
 

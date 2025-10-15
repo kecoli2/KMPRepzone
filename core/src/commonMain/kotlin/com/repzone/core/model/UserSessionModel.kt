@@ -9,5 +9,9 @@ data class UserSessionModel(
     val lastName: String? = null,
     val phone: String? = null,
     val email: String? = null,
-    val profileImageUrl: String? = null
+    val profileImageUrl: String? = null,
+    var token: String? = null,
+    var refreshToken: String? = null,
+    var expiresAtEpochSeconds: Long? = null,
+
 )
