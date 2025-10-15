@@ -53,9 +53,6 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
             SplashScreenOperation.REGISTER_NOTIFICATION_SERVICE -> {
                 registerNotificationService()
             }
-            else -> {
-
-            }
         }
     }
     private fun prepareNextOperation(){
