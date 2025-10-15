@@ -1,10 +1,11 @@
 package com.repzone.presentation.theme
 
 import com.repzone.core.enums.ThemeType
+import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.manager.theme.common.ColorSchemeVariant
 
-class PresentationThemeConfig : IPresentationConfig {
+class PresentationThemeConfig(private val userSession: IUserSession? = null) : IPresentationConfig {
 
     //region Field
     override val moduleId = "presentation"
@@ -22,7 +23,9 @@ class PresentationThemeConfig : IPresentationConfig {
         return listOf()
     }
 
-    override fun getDefaultColorSchemeId(): ThemeType = ThemeType.DEFAULT
+    override fun getDefaultColorSchemeId(): ThemeType {
+        return userSession?.getActiveSession()?.themeId ?: ThemeType.DEFAULT
+    }
 
     //endregion
 

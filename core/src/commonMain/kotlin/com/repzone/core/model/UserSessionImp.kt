@@ -23,11 +23,10 @@ class UserSessionImp(private val preferences: IPreferencesManager): IUserSession
 
     override fun getActiveSession(): UserSessionModel? {
         if(activeSessionModel == null){
-            val sss = preferences.getUserSessions()?.jsonToModel<UserSessionModel>()
-            return sss
-        }else{
-            error("No active session")
+            activeSessionModel = preferences.getUserSessions()?.jsonToModel<UserSessionModel>()
+            return activeSessionModel
         }
+        return activeSessionModel
     }
 
     override fun loadActiveSession() {

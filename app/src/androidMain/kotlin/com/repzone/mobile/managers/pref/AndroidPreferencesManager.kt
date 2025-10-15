@@ -55,9 +55,9 @@ class AndroidPreferencesManager(private val context: Context) : IPreferencesMana
 
     override fun setUserSessions(value: String?) {
         if(value == null){
-            prefs.edit { remove("${PreferencesConstant.USER_SESSIONS}_${getActiveUserCode()}") }
+            prefs.edit { remove("${PreferencesConstant.USER_SESSIONS}_${getActiveUserCode()}").apply() }
         }else{
-            prefs.edit { putString("${PreferencesConstant.USER_SESSIONS}_${getActiveUserCode()}", value) }
+            prefs.edit { putString("${PreferencesConstant.USER_SESSIONS}_${getActiveUserCode()}", value).apply() }
         }
     }
 
@@ -66,7 +66,7 @@ class AndroidPreferencesManager(private val context: Context) : IPreferencesMana
     }
 
     override fun setActiveUserCode(value: Int) {
-        prefs.edit { putInt(PreferencesConstant.ACTIVE_USER_CODE, value) }
+        prefs.edit { putInt(PreferencesConstant.ACTIVE_USER_CODE, value).apply() }
     }
 
     override fun getActiveUserCode(): Int {

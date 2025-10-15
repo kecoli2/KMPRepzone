@@ -118,7 +118,7 @@ fun <S> BaseViewModel<S, *>.setErrorStringResource(error: StringResource?)
     }
 }
 
-fun <S> BaseViewModel<S, *>.setErrorStringResource(error: StringResource?, formatArgs: List<Any?> = emptyList())
+fun <S> BaseViewModel<S, *>.setErrorStringResource(error: StringResource?, formatArgs: List<Any> = emptyList())
         where S : Any, S : HasUiFrame {
     updateStateInternal { currentState ->
         currentState.copyWithUiFrame(

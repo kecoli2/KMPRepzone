@@ -54,10 +54,8 @@ fun LegacyNavHost(modifier: Modifier = Modifier, navController: NavHostControlle
                     SplashScreenLegacy(
                         onControllSucces = {
                             // Main graph'a git
-                            navController.navigate(LegacyScreen.Login) {
-                                popUpTo(LegacyScreen.AuthGraph) {
-                                    inclusive = false
-                                }
+                            navController.navigate(LegacyScreen.MainGraph) {
+                                popUpTo<LegacyScreen.AuthGraph> { inclusive = false }
                             }
                         }
                     )

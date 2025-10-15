@@ -4,10 +4,11 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.ui.graphics.Color
 import com.repzone.core.enums.ThemeType
+import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.manager.theme.common.ColorSchemeVariant
 
-class LegacyThemeConfig : IPresentationConfig {
+class LegacyThemeConfig(private val userSession: IUserSession? = null) : IPresentationConfig {
 
     //region Field
     override val moduleId = "presentation_legacy"
@@ -27,7 +28,9 @@ class LegacyThemeConfig : IPresentationConfig {
         )
     }
 
-    override fun getDefaultColorSchemeId(): ThemeType = ThemeType.DEFAULT
+    override fun getDefaultColorSchemeId(): ThemeType {
+        return userSession?.getActiveSession()?.themeId ?: ThemeType.DEFAULT
+    }
     //endregion
 
     //region Protected Method

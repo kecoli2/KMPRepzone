@@ -1,5 +1,6 @@
 package com.repzone.network.api
 
+import com.repzone.core.model.RepresentativeMobileIdentityModel
 import com.repzone.network.http.wrapper.ApiResult
 import com.repzone.network.models.request.LoginRequest
 import com.repzone.network.models.request.RefreshTokenRequest
@@ -9,4 +10,6 @@ import com.repzone.network.models.response.RefreshTokenResponse
 interface ITokenApiController {
     suspend fun pushToken(tokenRequest: LoginRequest): ApiResult<LoginResponse>
     suspend fun refreshToken(tokenRequest: RefreshTokenRequest): ApiResult<RefreshTokenResponse>
+
+    suspend fun verifyIdentity(tokenType: String, tokenCode: String): ApiResult<RepresentativeMobileIdentityModel>
 }

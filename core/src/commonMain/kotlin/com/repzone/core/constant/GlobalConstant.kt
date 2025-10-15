@@ -11,6 +11,7 @@ object PreferencesConstant {
 
 object ITokenApiControllerConstant {
     const val TOKEN_ENDPOINT = "/api/Auth/Login"
+    const val TOKEN_INFO = "api/Auth/Info"
 }
 
 object IProductApiControllerConstant {

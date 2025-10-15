@@ -81,7 +81,7 @@ class LoginScreenViewModel(
             handleLoginResponse(response)
 
         } catch (e: Exception) {
-            setErrorStringResource(Res.string.unknown_error,listOf(e.message))
+            setErrorStringResource(Res.string.unknown_error, listOf(e.message) as List<Any>)
         }
     }
     fun updateUsername(username: String) {
@@ -129,7 +129,8 @@ class LoginScreenViewModel(
                     phone = response.data.phone,
                     email = response.data.email,
                     profileImageUrl = response.data.profileImageUrl,
-                    token = response.data.tokenResponse?.accessToken
+                    token = response.data.tokenResponse?.accessToken,
+                    tokenType = response.data.tokenResponse?.tokenType ?: "bearer"
                 )
                 isharedPreferences.setUserSessions(activeSessions.toJson())
                 iDatabaseManager.switchUser(response.data.userId)
@@ -163,7 +164,9 @@ class LoginScreenViewModel(
                 setErrorStringResource(Res.string.server_error)
             }
             is ApiException.UnknownError ->{
-                setErrorStringResource(Res.string.unknown_error, listOf(exception.originalMessage))
+                setErrorStringResource(Res.string.unknown_error,
+                    listOf(exception.originalMessage) as List<Any>
+                )
             }
 
             is ApiException.ValidationError -> {

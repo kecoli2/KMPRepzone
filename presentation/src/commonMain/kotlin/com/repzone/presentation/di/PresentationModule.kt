@@ -8,7 +8,7 @@ import com.repzone.presentation.viewmodel.sync.SyncTestViewModel
 import org.koin.dsl.module
 
 val PresentationModule = module {
-    single<IPresentationConfig> { PresentationThemeConfig() }
+    single<IPresentationConfig> { PresentationThemeConfig(get()) }
     factory { TestScreenViewModel(get(), get()) }   // her ekranda yeni instance
     factory { LoginScreenViewModel(get(), get()) }
     factory { SyncTestViewModel(get(), get()) }
