@@ -824,4 +824,7 @@
     <string name="job_complate_template_desc">Tüm %1$s Senkron Edildi.</string>
     <string name="job_complate_fetched">%1$d tane %2$s alındı.</string>
     <string name="job_complate_saved">%1$d tane %2$s kayıt edildi.</string>
+    <string name="running">Çalışıyor</string>
+    <string name="waiting">Bekliyor</string>
+    <string name="sync_complete">Senkronizasyon tamamlandı...</string>
 </resources>

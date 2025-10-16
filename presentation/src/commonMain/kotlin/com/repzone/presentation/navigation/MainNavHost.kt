@@ -13,7 +13,6 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.repzone.presentation.ui.login.LoginScreen
-import com.repzone.presentation.ui.sync.SyncTestScreen
 
 @Composable
 fun MainNavHost(modifier: Modifier = Modifier, navController: NavHostController = rememberNavController()) {
@@ -76,9 +75,9 @@ fun MainNavHost(modifier: Modifier = Modifier, navController: NavHostController 
 
             // ============ MAIN APP GRAPH ============
             navigation<Screen.MainGraph>(startDestination = Screen.Sync) {
-                composable<Screen.Sync> {
+                /*composable<Screen.Sync> {
                     SyncTestScreen(onBackClick = { navController.navigateUp() })
-                }
+                }*/
             }
         }
     }

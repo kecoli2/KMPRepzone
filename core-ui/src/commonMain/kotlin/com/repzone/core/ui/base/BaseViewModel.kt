@@ -17,7 +17,7 @@ import org.jetbrains.compose.resources.StringResource
 open class BaseViewModel<S : Any, E : Any>(initialState: S) {
     //region Fields
     private val job = SupervisorJob()
-    protected val scope = CoroutineScope(job + Dispatchers.Default)
+    val scope = CoroutineScope(job + Dispatchers.Default)
 
     protected val _state = MutableStateFlow(initialState)
     val state: StateFlow<S> = _state

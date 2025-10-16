@@ -5,6 +5,7 @@ import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
 import com.repzone.presentation.legacy.viewmodel.login.LoginScreenViewModel
 import com.repzone.core.ui.viewmodel.splash.SplashScreenViewModel
+import com.repzone.core.ui.viewmodel.sync.SyncViewModel
 import com.repzone.presentation.legacy.viewmodel.sync.SyncTestViewModel
 import org.koin.dsl.module
 
@@ -13,4 +14,5 @@ val PresentationModuleLegacy = module {
     factory { LoginScreenViewModel(get(), get(),get<IDatabaseManager>()) }
     factory { SyncTestViewModel(get(), get(), get()) }
     factory { SplashScreenViewModel(get(), get()) }
+    factory { SyncViewModel(get(),get(),get()) }
 }

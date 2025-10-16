@@ -23,11 +23,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -37,9 +43,11 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.repzone.core.ui.base.ViewModelHost
+import com.repzone.core.ui.ui.rememberPermissionManager
 import com.repzone.presentation.legacy.navigation.LegacyScreen
 import com.repzone.presentation.legacy.navigation.LocalNavController
 import com.repzone.core.ui.viewmodel.splash.SplashScreenViewModel
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_min
 import repzonemobile.presentation_legacy.generated.resources.img_login_background
@@ -48,6 +56,14 @@ import repzonemobile.presentation_legacy.generated.resources.img_login_backgroun
 fun SplashScreenLegacy(onControllSucces: () -> Unit) = ViewModelHost<SplashScreenViewModel>{ viewModel ->
     val state by viewModel.state.collectAsState()
     val navController = LocalNavController.current
+    val pm = rememberPermissionManager()
+    var showTempDeniedDialog by remember { mutableStateOf(false) }
+    var showPermDeniedDialog by remember { mutableStateOf(false) }
+
+    LaunchedEffect("request-permissions-on-splash") {
+        // ViewModel tarafındaki kuyruğu tetikleyecek izin kontrolü:
+        viewModel.checkPermissionsAndProceed(pm)
+    }
 
     LaunchedEffect(Unit){
         viewModel.events.collect{ event ->
@@ -61,6 +77,13 @@ fun SplashScreenLegacy(onControllSucces: () -> Unit) = ViewModelHost<SplashScree
                             inclusive = true
                         }
                     }
+                }
+
+                SplashScreenViewModel.Event.PermissionDeniedPermanent -> {
+                    showPermDeniedDialog  = true
+                }
+                SplashScreenViewModel.Event.PermissionDeniedTemporary -> {
+                    showTempDeniedDialog = true
                 }
             }
         }
@@ -93,6 +116,45 @@ fun SplashScreenLegacy(onControllSucces: () -> Unit) = ViewModelHost<SplashScree
             Spacer(modifier = Modifier.weight(1f))
             DotsLoadingIndicator()
             Spacer(modifier = Modifier.weight(1f))
+        }
+
+        // GEÇİCİ RED (Tekrar Dene)
+        if (showTempDeniedDialog) {
+            AlertDialog(
+                onDismissRequest = { showTempDeniedDialog = false },
+                title = { Text("İzin Gerekli") },
+                text  = { Text("Bazı izinler verilmedi. Devam edebilmek için tekrar denemek ister misiniz?") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showTempDeniedDialog = false
+                        // Tekrar sırayla dene:
+                        // pm zaten burada (rememberPermissionManager)
+                        // VM fonksiyonunu tekrar çağırıyoruz:
+                        viewModel.scope.launch { viewModel.checkPermissionsAndProceed(pm) }
+                    }) { Text("Tekrar Dene") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showTempDeniedDialog = false }) { Text("Vazgeç") }
+                }
+            )
+        }
+
+        // KALICI RED (Ayarlar’a Git)
+        if (showPermDeniedDialog) {
+            AlertDialog(
+                onDismissRequest = { showPermDeniedDialog = false },
+                title = { Text("İzinler Engellendi") },
+                text  = { Text("İzinler kalıcı olarak reddedilmiş görünüyor. Lütfen Ayarlar’dan izinleri açın.") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        showPermDeniedDialog = false
+                        pm.openAppSettings() // PermissionManager içine platform-spesifik ayarlar açma
+                    }) { Text("Ayarlar’a Git") }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showPermDeniedDialog = false }) { Text("Kapat") }
+                }
+            )
         }
     }
 }

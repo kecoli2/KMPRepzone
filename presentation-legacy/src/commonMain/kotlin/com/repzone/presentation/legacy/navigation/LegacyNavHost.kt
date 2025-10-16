@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
 import com.repzone.presentation.legacy.ui.splash.SplashScreenLegacy
+import com.repzone.presentation.legacy.ui.sync.SyncScreenLegacy
 import com.repzone.presentation.legacy.ui.sync.SyncTestScreenLegacy
 
 @Composable
@@ -85,7 +86,15 @@ fun LegacyNavHost(modifier: Modifier = Modifier, navController: NavHostControlle
          // ============ MAIN APP GRAPH ============
          navigation<LegacyScreen.MainGraph>(startDestination = LegacyScreen.Sync) {
                 composable<LegacyScreen.Sync> {
-                    SyncTestScreenLegacy()
+                    SyncScreenLegacy(
+                        onSyncCompleted = {
+                            // Main graph'a git
+                            /*navController.navigate(LegacyScreen.MainGraph) {
+                                popUpTo<LegacyScreen.AuthGraph> { inclusive = true }
+                            }*/
+                        }
+
+                    )
                 }
             }
         }

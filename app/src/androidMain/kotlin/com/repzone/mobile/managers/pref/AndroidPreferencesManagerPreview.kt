@@ -21,18 +21,18 @@ class AndroidPreferencesManagerPreview: IPreferencesManager {
     //region Private Method
     //endregion
     override fun setUserSessions(value: String?) {
-        TODO("Not yet implemented")
+
     }
 
     override fun getUserSessions(): String? {
-        TODO("Not yet implemented")
+        return null
     }
 
     override fun setActiveUserCode(value: Int) {
-        TODO("Not yet implemented")
+
     }
 
     override fun getActiveUserCode(): Int {
-        TODO("Not yet implemented")
+        return 0
     }
 }

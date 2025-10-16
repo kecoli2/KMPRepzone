@@ -13,7 +13,9 @@ import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.data.di.RepositoryModule
 import com.repzone.database.di.DatabaseAndroidModule
+import com.repzone.database.di.DatabaseAndroidPreviewModule
 import com.repzone.database.di.DatabaseModule
+import com.repzone.database.di.DatabaseModulePreview
 import com.repzone.mobile.di.AndroidDIModulePreview
 import com.repzone.mobile.di.FirebaseMockAndroidModule
 import com.repzone.navigation.AppRouter
@@ -23,6 +25,7 @@ import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
 import com.repzone.presentation.legacy.ui.splash.SplashScreenLegacy
+import com.repzone.presentation.legacy.ui.sync.SyncScreenLegacy
 import com.repzone.sync.di.SyncModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.compose.koinInject
@@ -49,6 +52,7 @@ private fun AppContent() {
     themeManager.initialize(themeConfig)
 
     AppTheme(themeManager = themeManager) {
+        //AppAndroidPreview()
         AppRouter()
     }
 }
@@ -62,8 +66,8 @@ fun AppAndroidPreview() {
          androidContext(RepzoneApplication()) // Yerine gerçek context kullanın
             modules(
                 CoreModule,
-            DatabaseModule,
-            DatabaseAndroidModule,
+                DatabaseModulePreview,
+                DatabaseAndroidPreviewModule,
             AndroidDIModulePreview,
             PlatformNetworkModule,
             NetworkModule, CoreUiModule,
@@ -76,16 +80,9 @@ fun AppAndroidPreview() {
     val themeManager : ThemeManager = koinInject()
     themeManager.initialize(LegacyThemeConfig())
     AppTheme(themeManager) {
-        /*LoginScreenLegacy {
+        SyncScreenLegacy(onSyncCompleted = {
 
-        }*/
-
-        SplashScreenLegacy(
-            onControllSucces = {
-
-            }
-        )
-
+        })
     }
 }
 

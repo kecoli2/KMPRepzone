@@ -1,5 +1,6 @@
 package com.repzone.database.di
 
+import app.cash.sqldelight.db.SqlDriver
 import com.repzone.database.AppDatabase
 import com.repzone.database.impl.DatabaseManagerImpl
 import com.repzone.database.interfaces.IDatabaseManager
@@ -20,6 +21,15 @@ val DatabaseModule = module {
             get<IDatabaseManager>().getSqlDriver()
         }
     }
+
+    // Queryler
+    single { get<AppDatabase>().syncCustomerEntityQueries }
+    single { get<AppDatabase>().syncProductEntityQueries }
+    single { get<AppDatabase>().syncModuleEntityQueries }
+}
+
+val DatabaseModulePreview = module {
+    single { AppDatabase(get<SqlDriver>()) }
 
     // Queryler
     single { get<AppDatabase>().syncCustomerEntityQueries }

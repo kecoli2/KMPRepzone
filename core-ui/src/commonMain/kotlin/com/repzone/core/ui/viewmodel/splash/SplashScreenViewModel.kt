@@ -3,7 +3,9 @@ package com.repzone.core.ui.viewmodel.splash
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.core.ui.base.setError
+import com.repzone.core.ui.manager.permissions.PermissionManager
 import com.repzone.core.ui.ui.splash.SplashScreenUiState
+import com.repzone.core.util.PermissionStatus
 import com.repzone.network.api.ITokenApiController
 import com.repzone.network.http.wrapper.ApiResult
 import kotlinx.coroutines.delay
@@ -30,6 +32,29 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
     //endregion
 
     //region Public Method
+    suspend fun checkPermissionsAndProceed(pm: PermissionManager) {
+        val bt   = pm.ensureBluetooth()
+        val notif= if (bt == PermissionStatus.Granted) pm.ensureNotifications() else PermissionStatus.Denied(true)
+        val gps  = if (bt == PermissionStatus.Granted && notif == PermissionStatus.Granted)
+            pm.ensureLocation() else PermissionStatus.Denied(true)
+
+        val allOk = (bt == PermissionStatus.Granted && notif == PermissionStatus.Granted && gps == PermissionStatus.Granted)
+        if (allOk) {
+            _nextOprerations.remove(SplashScreenOperation.CEHCK_PERMISSION)
+            nextOperation()
+            return
+        }
+
+        // 🔍 Kalıcı reddedilme kontrolü (PermissionStatus tipine göre)
+        val statuses = listOf(bt, notif, gps)
+        val anyPermanent = statuses.any { it == PermissionStatus.Denied(true) }
+
+        if (anyPermanent) {
+            sendEvent(Event.PermissionDeniedPermanent)
+        } else {
+            sendEvent(Event.PermissionDeniedTemporary)
+        }
+    }
     //endregion
 
     //region Protected Method
@@ -52,9 +77,14 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
             SplashScreenOperation.REGISTER_NOTIFICATION_SERVICE -> {
                 registerNotificationService()
             }
+
+            SplashScreenOperation.CEHCK_PERMISSION -> {
+
+            }
         }
     }
     private fun prepareNextOperation(){
+        _nextOprerations.put(SplashScreenOperation.CEHCK_PERMISSION, null)
         _nextOprerations.put(SplashScreenOperation.CHECK_TOKEN, null)
         _nextOprerations.put(SplashScreenOperation.REGISTER_SMS_SERVICE, null)
         _nextOprerations.put(SplashScreenOperation.REGISTER_NOTIFICATION_SERVICE, null)
@@ -110,11 +140,16 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
      sealed class Event {
         object ControllSucces: Event()
         object NavigateToLogin: Event()
+
+        object PermissionDeniedTemporary: Event()
+        object PermissionDeniedPermanent : Event()
+
      }
     //endregion Event
 
     //region Enums
     private enum class SplashScreenOperation{
+        CEHCK_PERMISSION,
         CHECK_TOKEN,
         REGISTER_SMS_SERVICE,
         REGISTER_NOTIFICATION_SERVICE
