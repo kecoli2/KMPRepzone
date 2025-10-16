@@ -11,11 +11,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
 import com.repzone.presentation.legacy.ui.splash.SplashScreenLegacy
 import com.repzone.presentation.legacy.ui.sync.SyncScreenLegacy
-import com.repzone.presentation.legacy.ui.sync.SyncTestScreenLegacy
 
 @Composable
 fun LegacyNavHost(modifier: Modifier = Modifier, navController: NavHostController = rememberNavController()) {
@@ -61,7 +59,6 @@ fun LegacyNavHost(modifier: Modifier = Modifier, navController: NavHostControlle
                         }
                     )
                 }
-
                 composable<LegacyScreen.Login> {
                     LoginScreenLegacy(
                         onLoginSuccess = {
@@ -71,15 +68,6 @@ fun LegacyNavHost(modifier: Modifier = Modifier, navController: NavHostControlle
                             }
                         }
                     )
-                }
-
-                composable<LegacyScreen.ForgotPassword> {
-                    val args = it.toRoute<LegacyScreen.ForgotPassword>()
-                    /* ForgotPasswordScreen(
-                         initialEmail = args.email,
-                         onBackClick = { navController.navigateUp() },
-                         onResetSuccess = { navController.navigateUp() }
-                     )*/
                 }
             }
 

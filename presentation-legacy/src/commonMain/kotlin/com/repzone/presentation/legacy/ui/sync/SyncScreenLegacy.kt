@@ -22,12 +22,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import com.repzone.core.ui.base.ViewModelHost
+import com.repzone.core.ui.platform.HandleBackPress
 import com.repzone.core.ui.viewmodel.sync.SyncViewModel
 import com.repzone.core.util.extensions.fromResource
 import com.repzone.sync.model.SyncJobStatus
@@ -41,6 +43,7 @@ import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_mi
 import repzonemobile.presentation_legacy.generated.resources.img_login_background
 
 
+@OptIn(ExperimentalComposeUiApi::class)
 @Composable
 fun SyncScreenLegacy(onSyncCompleted: () -> Unit) = ViewModelHost<SyncViewModel> { viewModel ->
     val state by viewModel.state.collectAsState()
@@ -57,6 +60,10 @@ fun SyncScreenLegacy(onSyncCompleted: () -> Unit) = ViewModelHost<SyncViewModel>
                 onSyncCompleted()
             }
         }
+    }
+
+    HandleBackPress {
+
     }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {

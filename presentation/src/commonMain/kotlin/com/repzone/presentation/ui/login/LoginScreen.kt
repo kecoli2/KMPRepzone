@@ -12,6 +12,7 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.repzone.core.ui.base.ViewModelHost
+import com.repzone.core.ui.platform.HandleBackPress
 import com.repzone.presentation.viewmodel.login.LoginScreenViewModel
 import kotlinx.coroutines.launch
 
@@ -29,6 +30,10 @@ fun LoginScreen(
         if (state.isLoginSuccessful) {
             onLoginSuccess()
         }
+    }
+
+    HandleBackPress {
+        
     }
 
     Column(
