@@ -8,11 +8,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.toRoute
-import com.repzone.presentation.ui.login.LoginScreen
 
 @Composable
 fun MainNavHost(modifier: Modifier = Modifier, navController: NavHostController = rememberNavController()) {
@@ -49,7 +46,7 @@ fun MainNavHost(modifier: Modifier = Modifier, navController: NavHostController 
 
             // ============ AUTH GRAPH ============
             navigation<Screen.AuthGraph>(startDestination = Screen.Login) {
-                composable<Screen.Login> {
+               /* composable<Screen.Login> {
                     LoginScreen(
                         onLoginSuccess = {
                             // Main graph'a git
@@ -65,12 +62,12 @@ fun MainNavHost(modifier: Modifier = Modifier, navController: NavHostController 
 
                 composable<Screen.ForgotPassword> {
                     val args = it.toRoute<Screen.ForgotPassword>()
-                    /* ForgotPasswordScreen(
+                    *//* ForgotPasswordScreen(
                          initialEmail = args.email,
                          onBackClick = { navController.navigateUp() },
                          onResetSuccess = { navController.navigateUp() }
-                     )*/
-                }
+                     )*//*
+                }*/
             }
 
             // ============ MAIN APP GRAPH ============
