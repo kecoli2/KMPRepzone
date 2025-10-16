@@ -34,15 +34,6 @@ class LoginScreenViewModel(
     private val isharedPreferences: IPreferencesManager,
     private val iDatabaseManager: IDatabaseManager
 ) : BaseViewModel<LoginScreenUiState, Nothing>(LoginScreenUiState()) {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     @OptIn(ExperimentalUuidApi::class)
     suspend fun login(email: String, password: String) {

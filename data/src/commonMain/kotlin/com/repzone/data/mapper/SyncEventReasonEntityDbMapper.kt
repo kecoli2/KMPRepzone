@@ -8,15 +8,6 @@ import com.repzone.network.dto.EventReasonDto
 import kotlin.time.ExperimentalTime
 
 class SyncEventReasonEntityDbMapper : MapperDto<SyncEventReasonEntity, SyncEventReasonModel, EventReasonDto> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncEventReasonEntity): SyncEventReasonModel {
         return SyncEventReasonModel(
@@ -56,9 +47,4 @@ class SyncEventReasonEntityDbMapper : MapperDto<SyncEventReasonEntity, SyncEvent
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

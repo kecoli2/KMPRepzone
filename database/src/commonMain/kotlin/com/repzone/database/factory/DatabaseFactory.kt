@@ -36,9 +36,4 @@ class DatabaseFactory(private val driverFactory: DatabaseDriverFactory) {
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

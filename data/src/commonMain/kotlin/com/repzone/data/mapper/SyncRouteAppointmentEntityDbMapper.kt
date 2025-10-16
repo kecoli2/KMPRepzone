@@ -7,15 +7,6 @@ import com.repzone.network.dto.RouteDto
 import kotlin.time.ExperimentalTime
 
 class SyncRouteAppointmentEntityDbMapper: MapperDto<SyncRouteAppointmentEntity, SyncRouteAppointmentModel, RouteDto> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncRouteAppointmentEntity): SyncRouteAppointmentModel {
         return SyncRouteAppointmentModel(
@@ -57,9 +48,4 @@ class SyncRouteAppointmentEntityDbMapper: MapperDto<SyncRouteAppointmentEntity, 
 
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

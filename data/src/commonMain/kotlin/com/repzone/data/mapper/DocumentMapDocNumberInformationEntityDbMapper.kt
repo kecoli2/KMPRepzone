@@ -5,15 +5,6 @@ import com.repzone.database.DocumentMapDocNumberInformationEntity
 import com.repzone.domain.model.DocumentMapDocNumberInformationModel
 
 class DocumentMapDocNumberInformationEntityDbMapper : Mapper<DocumentMapDocNumberInformationEntity, DocumentMapDocNumberInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: DocumentMapDocNumberInformationEntity): DocumentMapDocNumberInformationModel {
         return DocumentMapDocNumberInformationModel(
@@ -40,9 +31,4 @@ class DocumentMapDocNumberInformationEntityDbMapper : Mapper<DocumentMapDocNumbe
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

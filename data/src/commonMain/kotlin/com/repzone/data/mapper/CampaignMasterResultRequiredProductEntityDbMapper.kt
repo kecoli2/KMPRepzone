@@ -5,15 +5,6 @@ import com.repzone.database.CampaignMasterResultRequiredProductEntity
 import com.repzone.domain.model.CampaignMasterResultRequiredProductModel
 
 class CampaignMasterResultRequiredProductEntityDbMapper : Mapper<CampaignMasterResultRequiredProductEntity, CampaignMasterResultRequiredProductModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: CampaignMasterResultRequiredProductEntity): CampaignMasterResultRequiredProductModel {
         return CampaignMasterResultRequiredProductModel(
@@ -40,9 +31,4 @@ class CampaignMasterResultRequiredProductEntityDbMapper : Mapper<CampaignMasterR
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

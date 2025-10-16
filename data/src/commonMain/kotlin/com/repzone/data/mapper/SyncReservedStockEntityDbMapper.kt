@@ -5,15 +5,6 @@ import com.repzone.database.SyncReservedStockEntity
 import com.repzone.domain.model.SyncReservedStockModel
 
 class SyncReservedStockEntityDbMapper : Mapper<SyncReservedStockEntity, SyncReservedStockModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncReservedStockEntity): SyncReservedStockModel {
         return SyncReservedStockModel(
@@ -36,9 +27,4 @@ class SyncReservedStockEntityDbMapper : Mapper<SyncReservedStockEntity, SyncRese
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

@@ -24,6 +24,7 @@ import com.repzone.network.di.PlatformNetworkModule
 import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
+import com.repzone.presentation.legacy.ui.rotalist.RotaScreenLegacy
 import com.repzone.presentation.legacy.ui.splash.SplashScreenLegacy
 import com.repzone.presentation.legacy.ui.sync.SyncScreenLegacy
 import com.repzone.sync.di.SyncModule
@@ -52,8 +53,8 @@ private fun AppContent() {
     themeManager.initialize(themeConfig)
 
     AppTheme(themeManager = themeManager) {
-        //AppAndroidPreview()
-        AppRouter()
+        AppAndroidPreview()
+        //AppRouter()
     }
 }
 
@@ -80,9 +81,7 @@ fun AppAndroidPreview() {
     val themeManager : ThemeManager = koinInject()
     themeManager.initialize(LegacyThemeConfig())
     AppTheme(themeManager) {
-        SyncScreenLegacy(onSyncCompleted = {
-
-        })
+        RotaScreenLegacy()
     }
 }
 

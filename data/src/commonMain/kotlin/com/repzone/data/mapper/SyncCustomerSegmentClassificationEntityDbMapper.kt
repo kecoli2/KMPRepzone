@@ -5,15 +5,6 @@ import com.repzone.database.SyncCustomerSegmentClassificationEntity
 import com.repzone.domain.model.SyncCustomerSegmentClassificationModel
 
 class SyncCustomerSegmentClassificationEntityDbMapper : Mapper<SyncCustomerSegmentClassificationEntity, SyncCustomerSegmentClassificationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncCustomerSegmentClassificationEntity): SyncCustomerSegmentClassificationModel {
         return SyncCustomerSegmentClassificationModel(
@@ -44,9 +35,4 @@ class SyncCustomerSegmentClassificationEntityDbMapper : Mapper<SyncCustomerSegme
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

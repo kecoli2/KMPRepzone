@@ -5,15 +5,6 @@ import com.repzone.database.SyncCampaignDynamicListOrganizationsEntity
 import com.repzone.domain.model.SyncCampaignDynamicListOrganizationsModel
 
 class SyncCampaignDynamicListOrganizationsEntityDbMapper : Mapper<SyncCampaignDynamicListOrganizationsEntity, SyncCampaignDynamicListOrganizationsModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncCampaignDynamicListOrganizationsEntity): SyncCampaignDynamicListOrganizationsModel {
         return SyncCampaignDynamicListOrganizationsModel(
@@ -42,9 +33,4 @@ class SyncCampaignDynamicListOrganizationsEntityDbMapper : Mapper<SyncCampaignDy
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

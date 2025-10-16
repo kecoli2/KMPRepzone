@@ -5,15 +5,6 @@ import com.repzone.database.SyncStepAttributeEntity
 import com.repzone.domain.model.SyncStepAttributeModel
 
 class SyncStepAttributeEntityDbMapper : Mapper<SyncStepAttributeEntity, SyncStepAttributeModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncStepAttributeEntity): SyncStepAttributeModel {
         return SyncStepAttributeModel(
@@ -40,9 +31,4 @@ class SyncStepAttributeEntityDbMapper : Mapper<SyncStepAttributeEntity, SyncStep
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

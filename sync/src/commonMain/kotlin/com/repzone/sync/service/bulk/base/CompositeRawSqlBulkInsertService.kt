@@ -7,15 +7,6 @@ import com.repzone.sync.transaction.TransactionCoordinator
 
 abstract class CompositeRawSqlBulkInsertService<T>(private val coordinator: TransactionCoordinator) : IBulkInsertService<T> {
 
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override suspend fun insertBatch(items: T): Int {
         if(items as List<Any?> == emptyList<Any?>())

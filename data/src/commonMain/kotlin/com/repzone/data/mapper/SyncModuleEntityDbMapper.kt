@@ -9,15 +9,6 @@ import com.repzone.domain.model.RequestType
 import com.repzone.domain.model.SyncModuleModel
 
 class SyncModuleEntityDbMapper: Mapper<SyncModuleEntity, SyncModuleModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncModuleEntity): SyncModuleModel {
         return SyncModuleModel(
@@ -41,10 +32,5 @@ class SyncModuleEntityDbMapper: Mapper<SyncModuleEntity, SyncModuleModel> {
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 
 }

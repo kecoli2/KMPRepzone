@@ -84,9 +84,4 @@ class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMap
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

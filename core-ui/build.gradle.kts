@@ -31,21 +31,25 @@ kotlin {
         commonMain {
             dependencies {
                 implementation(libs.kotlin.stdlib)
+                implementation(libs.koin.core)
+                implementation(libs.koin.compose)
+                implementation(libs.navigation.compose)
+                implementation(libs.kotlinx.serialization.json)
+                //Compose
                 implementation(compose.runtime)
                 implementation(compose.foundation)
                 implementation(compose.material3)
                 implementation(compose.ui)
-                implementation(libs.koin.core)
-                implementation(libs.koin.compose)
                 implementation(compose.components.resources)
                 implementation(compose.materialIconsExtended)
-                implementation(libs.navigation.compose)
-                implementation(libs.kotlinx.serialization.json)
 
                 //PROJECT
                 implementation(projects.core)
                 implementation(projects.network)
                 implementation(projects.sync)
+                implementation(projects.domain)
+                implementation(projects.network)
+                implementation(projects.database)
             }
         }
 

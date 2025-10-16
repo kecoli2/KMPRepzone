@@ -5,15 +5,6 @@ import com.repzone.database.AppSettingEntity
 import com.repzone.domain.model.AppSettingModel
 
 class AppSettingEntityDbMapper : Mapper<AppSettingEntity, AppSettingModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: AppSettingEntity): AppSettingModel {
         return AppSettingModel(
@@ -32,9 +23,4 @@ class AppSettingEntityDbMapper : Mapper<AppSettingEntity, AppSettingModel> {
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

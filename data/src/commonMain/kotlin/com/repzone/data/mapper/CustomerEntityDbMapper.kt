@@ -15,15 +15,6 @@ import com.repzone.network.dto.CustomerDto
 import com.repzone.network.dto.MobileAddressDto
 
 class CustomerEntityDbMapper: MapperDto<SyncCustomerEntity, SyncCustomerModel, CustomerDto> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncCustomerEntity): SyncCustomerModel {
       return SyncCustomerModel(
@@ -165,10 +156,5 @@ class CustomerEntityDbMapper: MapperDto<SyncCustomerEntity, SyncCustomerModel, C
 
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 
 }

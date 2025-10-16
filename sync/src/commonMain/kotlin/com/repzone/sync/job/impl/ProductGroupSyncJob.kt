@@ -57,9 +57,4 @@ class ProductGroupSyncJob(apiService: ISyncApiService<List<ProductGroupDto>>,
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

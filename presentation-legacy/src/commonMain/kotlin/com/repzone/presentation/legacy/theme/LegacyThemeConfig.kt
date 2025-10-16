@@ -33,9 +33,4 @@ class LegacyThemeConfig(private val userSession: IUserSession? = null) : IPresen
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

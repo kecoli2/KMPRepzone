@@ -38,9 +38,4 @@ class FireBaseRealtimeDatabaseImp : IFireBaseRealtimeDatabase {
     }*/
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

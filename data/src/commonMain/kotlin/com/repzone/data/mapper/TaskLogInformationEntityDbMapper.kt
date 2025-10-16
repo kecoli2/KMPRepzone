@@ -5,15 +5,6 @@ import com.repzone.database.TaskLogInformationEntity
 import com.repzone.domain.model.TaskLogInformationModel
 
 class TaskLogInformationEntityDbMapper : Mapper<TaskLogInformationEntity, TaskLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: TaskLogInformationEntity): TaskLogInformationModel {
         return TaskLogInformationModel(
@@ -56,9 +47,4 @@ class TaskLogInformationEntityDbMapper : Mapper<TaskLogInformationEntity, TaskLo
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

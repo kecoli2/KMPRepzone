@@ -12,15 +12,6 @@ import io.ktor.client.request.setBody
 
 class SyncApiProductImpl(client: HttpClient) : BaseSyncApiService<List<ProductDto>>(client) {
 
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun extractLastId(data: List<ProductDto>): Int {
         return data.lastOrNull()?.id ?: 0
@@ -37,9 +28,4 @@ class SyncApiProductImpl(client: HttpClient) : BaseSyncApiService<List<ProductDt
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

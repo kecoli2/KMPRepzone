@@ -10,15 +10,6 @@ import com.repzone.network.dto.CrmPriceListParameterDto
 import kotlin.time.ExperimentalTime
 
 class SyncCrmPriceListParameterEntityDbMapper : MapperDto<SyncCrmPriceListParameterEntity, SyncCrmPriceListParameterModel, CrmPriceListParameterDto> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncCrmPriceListParameterEntity): SyncCrmPriceListParameterModel {
         return SyncCrmPriceListParameterModel(
@@ -79,9 +70,4 @@ class SyncCrmPriceListParameterEntityDbMapper : MapperDto<SyncCrmPriceListParame
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

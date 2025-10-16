@@ -8,15 +8,6 @@ import com.repzone.domain.repository.IProductRepository
 class ProductRepositoryImpl(private val mapper: ProductEntityDbMapper,
                             private val queries: SyncProductEntityQueries
 ): IProductRepository {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override suspend fun deleteById(id: Long) {
         queries.deleteSyncProductEntity(id)
@@ -36,9 +27,4 @@ class ProductRepositoryImpl(private val mapper: ProductEntityDbMapper,
 
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

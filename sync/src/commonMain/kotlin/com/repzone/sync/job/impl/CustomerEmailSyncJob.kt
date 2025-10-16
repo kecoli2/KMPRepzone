@@ -62,9 +62,4 @@ class CustomerEmailSyncJob(apiService: ISyncApiService<List<CustomerEmailDto>>,
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

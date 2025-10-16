@@ -5,15 +5,6 @@ import com.repzone.database.InvoicePrintContentLogInformationEntity
 import com.repzone.domain.model.InvoicePrintContentLogInformationModel
 
 class InvoicePrintContentLogInformationEntityDbMapper : Mapper<InvoicePrintContentLogInformationEntity, InvoicePrintContentLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: InvoicePrintContentLogInformationEntity): InvoicePrintContentLogInformationModel {
         return InvoicePrintContentLogInformationModel(
@@ -32,9 +23,4 @@ class InvoicePrintContentLogInformationEntityDbMapper : Mapper<InvoicePrintConte
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

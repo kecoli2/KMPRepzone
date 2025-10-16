@@ -80,9 +80,4 @@ class LocationServiceAndroid(private val app: Application): ILocationService {
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

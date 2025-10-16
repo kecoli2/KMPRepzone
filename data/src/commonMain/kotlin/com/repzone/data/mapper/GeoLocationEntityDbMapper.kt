@@ -5,15 +5,6 @@ import com.repzone.database.GeoLocationEntity
 import com.repzone.domain.model.GeoLocationModel
 
 class GeoLocationEntityDbMapper : Mapper<GeoLocationEntity, GeoLocationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: GeoLocationEntity): GeoLocationModel {
         return GeoLocationModel(
@@ -54,9 +45,4 @@ class GeoLocationEntityDbMapper : Mapper<GeoLocationEntity, GeoLocationModel> {
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

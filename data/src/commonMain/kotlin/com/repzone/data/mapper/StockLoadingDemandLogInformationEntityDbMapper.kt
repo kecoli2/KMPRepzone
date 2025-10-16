@@ -5,15 +5,6 @@ import com.repzone.database.StockLoadingDemandLogInformationEntity
 import com.repzone.domain.model.StockLoadingDemandLogInformationModel
 
 class StockLoadingDemandLogInformationEntityDbMapper : Mapper<StockLoadingDemandLogInformationEntity, StockLoadingDemandLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: StockLoadingDemandLogInformationEntity): StockLoadingDemandLogInformationModel {
         return StockLoadingDemandLogInformationModel(
@@ -36,9 +27,4 @@ class StockLoadingDemandLogInformationEntityDbMapper : Mapper<StockLoadingDemand
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

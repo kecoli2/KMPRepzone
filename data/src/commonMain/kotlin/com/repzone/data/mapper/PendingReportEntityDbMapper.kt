@@ -5,15 +5,6 @@ import com.repzone.database.PendingReportEntity
 import com.repzone.domain.model.PendingReportModel
 
 class PendingReportEntityDbMapper : Mapper<PendingReportEntity, PendingReportModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: PendingReportEntity): PendingReportModel {
         return PendingReportModel(
@@ -30,9 +21,4 @@ class PendingReportEntityDbMapper : Mapper<PendingReportEntity, PendingReportMod
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

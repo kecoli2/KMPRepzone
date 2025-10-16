@@ -5,15 +5,6 @@ import com.repzone.database.VisitActivityLogInformationEntity
 import com.repzone.domain.model.VisitActivityLogInformationModel
 
 class VisitActivityLogInformationEntityDbMapper : Mapper<VisitActivityLogInformationEntity, VisitActivityLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: VisitActivityLogInformationEntity): VisitActivityLogInformationModel {
         return VisitActivityLogInformationModel(
@@ -36,9 +27,4 @@ class VisitActivityLogInformationEntityDbMapper : Mapper<VisitActivityLogInforma
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

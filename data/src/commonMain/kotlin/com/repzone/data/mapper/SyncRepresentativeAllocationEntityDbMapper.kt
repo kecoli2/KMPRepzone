@@ -5,15 +5,6 @@ import com.repzone.database.SyncRepresentativeAllocationEntity
 import com.repzone.domain.model.SyncRepresentativeAllocationModel
 
 class SyncRepresentativeAllocationEntityDbMapper : Mapper<SyncRepresentativeAllocationEntity, SyncRepresentativeAllocationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncRepresentativeAllocationEntity): SyncRepresentativeAllocationModel {
         return SyncRepresentativeAllocationModel(
@@ -48,9 +39,4 @@ class SyncRepresentativeAllocationEntityDbMapper : Mapper<SyncRepresentativeAllo
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

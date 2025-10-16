@@ -9,15 +9,6 @@ import com.repzone.network.dto.CustomerGroupDto
 import kotlin.time.ExperimentalTime
 
 class SyncCustomerEmailEntityDbMapper : MapperDto<SyncCustomerEmailEntity, SyncCustomerEmailModel, CustomerEmailDto> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncCustomerEmailEntity): SyncCustomerEmailModel {
         return SyncCustomerEmailModel(
@@ -63,9 +54,4 @@ class SyncCustomerEmailEntityDbMapper : MapperDto<SyncCustomerEmailEntity, SyncC
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

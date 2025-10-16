@@ -5,15 +5,6 @@ import com.repzone.database.CrashLogInformationEntity
 import com.repzone.domain.model.CrashLogInformationModel
 
 class CrashLogInformationEntityDbMapper : Mapper<CrashLogInformationEntity, CrashLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: CrashLogInformationEntity): CrashLogInformationModel {
         return CrashLogInformationModel(
@@ -34,9 +25,4 @@ class CrashLogInformationEntityDbMapper : Mapper<CrashLogInformationEntity, Cras
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

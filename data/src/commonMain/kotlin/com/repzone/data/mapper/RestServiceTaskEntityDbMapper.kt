@@ -5,15 +5,6 @@ import com.repzone.database.RestServiceTaskEntity
 import com.repzone.domain.model.RestServiceTaskModel
 
 class RestServiceTaskEntityDbMapper : Mapper<RestServiceTaskEntity, RestServiceTaskModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: RestServiceTaskEntity): RestServiceTaskModel {
         return RestServiceTaskModel(
@@ -46,9 +37,4 @@ class RestServiceTaskEntityDbMapper : Mapper<RestServiceTaskEntity, RestServiceT
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

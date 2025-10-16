@@ -5,15 +5,6 @@ import com.repzone.database.PaymentTransactionLogInformationEntity
 import com.repzone.domain.model.PaymentTransactionLogInformationModel
 
 class PaymentTransactionLogInformationEntityDbMapper : Mapper<PaymentTransactionLogInformationEntity, PaymentTransactionLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: PaymentTransactionLogInformationEntity): PaymentTransactionLogInformationModel {
         return PaymentTransactionLogInformationModel(
@@ -40,9 +31,4 @@ class PaymentTransactionLogInformationEntityDbMapper : Mapper<PaymentTransaction
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

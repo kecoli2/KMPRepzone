@@ -74,9 +74,4 @@ class AndroidPreferencesManager(private val context: Context) : IPreferencesMana
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

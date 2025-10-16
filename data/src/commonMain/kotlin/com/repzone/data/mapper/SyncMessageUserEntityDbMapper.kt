@@ -5,15 +5,6 @@ import com.repzone.database.SyncMessageUserEntity
 import com.repzone.domain.model.SyncMessageUserModel
 
 class SyncMessageUserEntityDbMapper : Mapper<SyncMessageUserEntity, SyncMessageUserModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncMessageUserEntity): SyncMessageUserModel {
         return SyncMessageUserModel(
@@ -52,9 +43,4 @@ class SyncMessageUserEntityDbMapper : Mapper<SyncMessageUserEntity, SyncMessageU
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

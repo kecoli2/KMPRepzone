@@ -6,15 +6,6 @@ import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.repository.ICustomerRepository
 
 class CustomerRepositoryImpl(private val mapper: CustomerEntityDbMapper, private val queries: SyncCustomerEntityQueries): ICustomerRepository {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override suspend fun deleteById(id: Long) {
         queries.deleteSyncCustomerEntity(id)
@@ -37,9 +28,4 @@ class CustomerRepositoryImpl(private val mapper: CustomerEntityDbMapper, private
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

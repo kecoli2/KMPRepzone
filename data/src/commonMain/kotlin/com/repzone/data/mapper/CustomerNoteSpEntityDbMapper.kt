@@ -5,15 +5,6 @@ import com.repzone.database.CustomerNoteSpEntity
 import com.repzone.domain.model.CustomerNoteSpModel
 
 class CustomerNoteSpEntityDbMapper : Mapper<CustomerNoteSpEntity, CustomerNoteSpModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: CustomerNoteSpEntity): CustomerNoteSpModel {
         return CustomerNoteSpModel(
@@ -56,9 +47,4 @@ class CustomerNoteSpEntityDbMapper : Mapper<CustomerNoteSpEntity, CustomerNoteSp
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

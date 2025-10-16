@@ -5,15 +5,6 @@ import com.repzone.database.SyncCampaignCustomerImplementationsEntity
 import com.repzone.domain.model.SyncCampaignCustomerImplementationsModel
 
 class SyncCampaignCustomerImplementationsEntityDbMapper : Mapper<SyncCampaignCustomerImplementationsEntity, SyncCampaignCustomerImplementationsModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncCampaignCustomerImplementationsEntity): SyncCampaignCustomerImplementationsModel {
         return SyncCampaignCustomerImplementationsModel(
@@ -40,9 +31,4 @@ class SyncCampaignCustomerImplementationsEntityDbMapper : Mapper<SyncCampaignCus
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

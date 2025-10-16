@@ -5,15 +5,6 @@ import com.repzone.database.EagleEyeLogInformationEntity
 import com.repzone.domain.model.EagleEyeLogInformationModel
 
 class EagleEyeLogInformationEntityDbMapper : Mapper<EagleEyeLogInformationEntity, EagleEyeLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: EagleEyeLogInformationEntity): EagleEyeLogInformationModel {
         return EagleEyeLogInformationModel(
@@ -34,9 +25,4 @@ class EagleEyeLogInformationEntityDbMapper : Mapper<EagleEyeLogInformationEntity
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

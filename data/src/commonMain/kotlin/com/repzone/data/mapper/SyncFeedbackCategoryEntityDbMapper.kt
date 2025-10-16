@@ -5,15 +5,6 @@ import com.repzone.database.SyncFeedbackCategoryEntity
 import com.repzone.domain.model.SyncFeedbackCategoryModel
 
 class SyncFeedbackCategoryEntityDbMapper : Mapper<SyncFeedbackCategoryEntity, SyncFeedbackCategoryModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncFeedbackCategoryEntity): SyncFeedbackCategoryModel {
         return SyncFeedbackCategoryModel(
@@ -44,9 +35,4 @@ class SyncFeedbackCategoryEntityDbMapper : Mapper<SyncFeedbackCategoryEntity, Sy
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

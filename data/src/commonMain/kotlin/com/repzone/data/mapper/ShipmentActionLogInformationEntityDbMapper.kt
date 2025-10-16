@@ -5,15 +5,6 @@ import com.repzone.database.ShipmentActionLogInformationEntity
 import com.repzone.domain.model.ShipmentActionLogInformationModel
 
 class ShipmentActionLogInformationEntityDbMapper : Mapper<ShipmentActionLogInformationEntity, ShipmentActionLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: ShipmentActionLogInformationEntity): ShipmentActionLogInformationModel {
         return ShipmentActionLogInformationModel(
@@ -40,9 +31,4 @@ class ShipmentActionLogInformationEntityDbMapper : Mapper<ShipmentActionLogInfor
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

@@ -5,15 +5,6 @@ import com.repzone.database.DynamicListOrganizationEntity
 import com.repzone.domain.model.DynamicListOrganizationModel
 
 class DynamicListOrganizationEntityDbMapper : Mapper<DynamicListOrganizationEntity, DynamicListOrganizationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: DynamicListOrganizationEntity): DynamicListOrganizationModel {
         return DynamicListOrganizationModel(
@@ -40,9 +31,4 @@ class DynamicListOrganizationEntityDbMapper : Mapper<DynamicListOrganizationEnti
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

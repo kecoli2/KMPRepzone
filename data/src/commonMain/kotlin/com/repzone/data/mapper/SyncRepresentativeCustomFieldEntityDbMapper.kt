@@ -5,15 +5,6 @@ import com.repzone.database.SyncRepresentativeCustomFieldEntity
 import com.repzone.domain.model.SyncRepresentativeCustomFieldModel
 
 class SyncRepresentativeCustomFieldEntityDbMapper : Mapper<SyncRepresentativeCustomFieldEntity, SyncRepresentativeCustomFieldModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncRepresentativeCustomFieldEntity): SyncRepresentativeCustomFieldModel {
         return SyncRepresentativeCustomFieldModel(
@@ -44,9 +35,4 @@ class SyncRepresentativeCustomFieldEntityDbMapper : Mapper<SyncRepresentativeCus
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

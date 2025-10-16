@@ -8,15 +8,6 @@ import com.repzone.database.SyncAddressEntity
 import com.repzone.domain.model.SyncAddressModel
 
 class SyncAddressDbMapper: Mapper<SyncAddressEntity, SyncAddressModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncAddressEntity): SyncAddressModel {
         return SyncAddressModel(
@@ -59,9 +50,4 @@ class SyncAddressDbMapper: Mapper<SyncAddressEntity, SyncAddressModel> {
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

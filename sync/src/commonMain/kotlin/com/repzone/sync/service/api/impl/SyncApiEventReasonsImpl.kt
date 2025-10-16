@@ -10,15 +10,6 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.setBody
 
 class SyncApiEventReasonsImpl(client: HttpClient) : BaseSyncApiService<List<EventReasonDto>>(client) {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun extractLastId(data: List<EventReasonDto>): Int {
         return data.lastOrNull()?.id ?: 0
@@ -35,9 +26,4 @@ class SyncApiEventReasonsImpl(client: HttpClient) : BaseSyncApiService<List<Even
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

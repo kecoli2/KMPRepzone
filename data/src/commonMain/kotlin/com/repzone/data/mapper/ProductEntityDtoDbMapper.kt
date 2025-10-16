@@ -14,15 +14,6 @@ import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, ProductDto> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
 
     override fun toDomain(from: SyncProductEntity): ProductDto {
@@ -134,9 +125,4 @@ class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, ProductDto> {
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

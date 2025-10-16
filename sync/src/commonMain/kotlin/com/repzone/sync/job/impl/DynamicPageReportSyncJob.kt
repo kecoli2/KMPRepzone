@@ -62,9 +62,4 @@ class DynamicPageReportSyncJob(apiService: ISyncApiService<List<DynamicPageRepor
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

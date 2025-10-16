@@ -29,9 +29,4 @@ class PresentationThemeConfig(private val userSession: IUserSession? = null) : I
 
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

@@ -18,15 +18,6 @@ import repzonemobile.core.generated.resources.job_customer_group
 
 class CustomerGroupRawSqlBulkInsertService(private val mapper: MapperDto<SyncCustomerGroupEntity, SyncCustomerGroupModel, CustomerGroupDto>,
                                            coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<CustomerGroupDto>>(coordinator) {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun buildCompositeOperation(items: List<CustomerGroupDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val customerGroupsList = items.map { mapper.fromDto(it) }
@@ -53,9 +44,4 @@ class CustomerGroupRawSqlBulkInsertService(private val mapper: MapperDto<SyncCus
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

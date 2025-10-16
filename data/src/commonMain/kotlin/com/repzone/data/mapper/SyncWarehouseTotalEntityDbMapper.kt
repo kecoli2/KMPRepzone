@@ -5,15 +5,6 @@ import com.repzone.database.SyncWarehouseTotalEntity
 import com.repzone.domain.model.SyncWarehouseTotalModel
 
 class SyncWarehouseTotalEntityDbMapper : Mapper<SyncWarehouseTotalEntity, SyncWarehouseTotalModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncWarehouseTotalEntity): SyncWarehouseTotalModel {
         return SyncWarehouseTotalModel(
@@ -32,9 +23,4 @@ class SyncWarehouseTotalEntityDbMapper : Mapper<SyncWarehouseTotalEntity, SyncWa
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

@@ -10,15 +10,6 @@ import io.ktor.client.HttpClient
 import io.ktor.client.request.setBody
 
 class SyncApiDocumentMapsImpl(client: HttpClient): BaseSyncApiService<List<DocumentMapModelDto>>(client) {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun extractLastId(data: List<DocumentMapModelDto>): Int {
         return data.lastOrNull()?.id ?: 0
@@ -35,10 +26,5 @@ class SyncApiDocumentMapsImpl(client: HttpClient): BaseSyncApiService<List<Docum
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 
 }

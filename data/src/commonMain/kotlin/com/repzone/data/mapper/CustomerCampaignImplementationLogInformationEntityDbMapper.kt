@@ -5,15 +5,6 @@ import com.repzone.database.CustomerCampaignImplementationLogInformationEntity
 import com.repzone.domain.model.CustomerCampaignImplementationLogInformationModel
 
 class CustomerCampaignImplementationLogInformationEntityDbMapper : Mapper<CustomerCampaignImplementationLogInformationEntity, CustomerCampaignImplementationLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: CustomerCampaignImplementationLogInformationEntity): CustomerCampaignImplementationLogInformationModel {
         return CustomerCampaignImplementationLogInformationModel(
@@ -34,9 +25,4 @@ class CustomerCampaignImplementationLogInformationEntityDbMapper : Mapper<Custom
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

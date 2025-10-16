@@ -5,15 +5,6 @@ import com.repzone.database.SyncStockApprovalLogInformationEntity
 import com.repzone.domain.model.SyncStockApprovalLogInformationModel
 
 class SyncStockApprovalLogInformationEntityDbMapper : Mapper<SyncStockApprovalLogInformationEntity, SyncStockApprovalLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncStockApprovalLogInformationEntity): SyncStockApprovalLogInformationModel {
         return SyncStockApprovalLogInformationModel(
@@ -38,9 +29,4 @@ class SyncStockApprovalLogInformationEntityDbMapper : Mapper<SyncStockApprovalLo
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

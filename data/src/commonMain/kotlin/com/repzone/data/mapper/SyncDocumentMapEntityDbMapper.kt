@@ -9,15 +9,6 @@ import com.repzone.network.dto.DocumentMapModelDto
 import kotlin.time.ExperimentalTime
 
 class SyncDocumentMapEntityDbMapper : MapperDto<SyncDocumentMapEntity, SyncDocumentMapModel, DocumentMapModelDto> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncDocumentMapEntity): SyncDocumentMapModel {
         return SyncDocumentMapModel(
@@ -102,9 +93,4 @@ class SyncDocumentMapEntityDbMapper : MapperDto<SyncDocumentMapEntity, SyncDocum
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

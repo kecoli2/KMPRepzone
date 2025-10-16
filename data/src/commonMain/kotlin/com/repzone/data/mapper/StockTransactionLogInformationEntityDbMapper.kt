@@ -5,15 +5,6 @@ import com.repzone.database.StockTransactionLogInformationEntity
 import com.repzone.domain.model.StockTransactionLogInformationModel
 
 class StockTransactionLogInformationEntityDbMapper : Mapper<StockTransactionLogInformationEntity, StockTransactionLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: StockTransactionLogInformationEntity): StockTransactionLogInformationModel {
         return StockTransactionLogInformationModel(
@@ -42,9 +33,4 @@ class StockTransactionLogInformationEntityDbMapper : Mapper<StockTransactionLogI
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

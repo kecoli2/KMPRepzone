@@ -131,9 +131,4 @@ class SyncManagerImpl(private val syncJobs: Map<SyncJobType, ISyncJob>, private 
             }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

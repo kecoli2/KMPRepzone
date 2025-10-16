@@ -18,15 +18,6 @@ import repzonemobile.core.generated.resources.job_module
 
 class EventReasonsRawSqlBulkInsertService(private val mapper: MapperDto<SyncEventReasonEntity, SyncEventReasonModel, EventReasonDto>,
     coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<EventReasonDto>>(coordinator) {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun buildCompositeOperation(items: List<EventReasonDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val eventReasons = items.map { mapper.fromDto(it) }
@@ -52,9 +43,4 @@ class EventReasonsRawSqlBulkInsertService(private val mapper: MapperDto<SyncEven
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

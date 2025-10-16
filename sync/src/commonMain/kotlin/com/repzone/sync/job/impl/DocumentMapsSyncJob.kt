@@ -62,9 +62,4 @@ class DocumentMapsSyncJob(apiService: ISyncApiService<List<DocumentMapModelDto>>
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

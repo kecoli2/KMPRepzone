@@ -9,15 +9,6 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 class SyncProductGroupEntityDbMapper: Mapper<SyncProductGroupEntity, SyncProductGroupModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncProductGroupEntity): SyncProductGroupModel {
         return SyncProductGroupModel(
@@ -65,10 +56,5 @@ class SyncProductGroupEntityDbMapper: Mapper<SyncProductGroupEntity, SyncProduct
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 
 }

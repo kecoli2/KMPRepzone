@@ -61,9 +61,4 @@ class PakageCustomFieldSyncJob(apiService: ISyncApiService<List<PackageCustomFie
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

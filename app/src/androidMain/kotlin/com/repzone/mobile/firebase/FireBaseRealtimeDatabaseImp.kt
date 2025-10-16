@@ -10,15 +10,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
 class FireBaseRealtimeDatabaseImp(private val db: FirebaseDatabase = FirebaseDatabase.getInstance()): IFireBaseRealtimeDatabase {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override suspend fun set(path: String, value: String?) {
         db.getReference(path).setValue(value)
@@ -39,11 +30,6 @@ class FireBaseRealtimeDatabaseImp(private val db: FirebaseDatabase = FirebaseDat
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 
 }
 

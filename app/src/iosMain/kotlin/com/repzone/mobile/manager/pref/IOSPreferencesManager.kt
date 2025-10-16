@@ -37,10 +37,5 @@ class IOSPreferencesManager: IPreferencesManager {
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 
 }

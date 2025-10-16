@@ -5,15 +5,6 @@ import com.repzone.database.SMSValidationLogInformationEntity
 import com.repzone.domain.model.SMSValidationLogInformationModel
 
 class SMSValidationLogInformationEntityDbMapper : Mapper<SMSValidationLogInformationEntity, SMSValidationLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SMSValidationLogInformationEntity): SMSValidationLogInformationModel {
         return SMSValidationLogInformationModel(
@@ -40,9 +31,4 @@ class SMSValidationLogInformationEntityDbMapper : Mapper<SMSValidationLogInforma
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

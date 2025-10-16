@@ -5,15 +5,6 @@ import com.repzone.database.SystemLogInformationEntity
 import com.repzone.domain.model.SystemLogInformationModel
 
 class SystemLogInformationEntityDbMapper : Mapper<SystemLogInformationEntity, SystemLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SystemLogInformationEntity): SystemLogInformationModel {
         return SystemLogInformationModel(
@@ -34,9 +25,4 @@ class SystemLogInformationEntityDbMapper : Mapper<SystemLogInformationEntity, Sy
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

@@ -5,15 +5,6 @@ import com.repzone.database.DynamicListItemsEntity
 import com.repzone.domain.model.DynamicListItemsModel
 
 class DynamicListItemsEntityDbMapper : Mapper<DynamicListItemsEntity, DynamicListItemsModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: DynamicListItemsEntity): DynamicListItemsModel {
         return DynamicListItemsModel(
@@ -40,9 +31,4 @@ class DynamicListItemsEntityDbMapper : Mapper<DynamicListItemsEntity, DynamicLis
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

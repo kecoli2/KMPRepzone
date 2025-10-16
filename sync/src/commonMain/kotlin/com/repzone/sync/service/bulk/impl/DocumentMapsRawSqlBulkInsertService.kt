@@ -24,15 +24,6 @@ class DocumentMapsRawSqlBulkInsertService(private val mapperDocument: MapperDto<
                                           private val mapperProcess: SyncDocumentMapProcessEntityDbMapper,
                                           private val mapperProcessStep: SyncDocumentMapProcessStepEntityDbMapper, coordinator: TransactionCoordinator
 ): CompositeRawSqlBulkInsertService<List<DocumentMapModelDto>>(coordinator) {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun buildCompositeOperation(items: List<DocumentMapModelDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val documents = items.map { mapperDocument.fromDto(it) }
@@ -81,9 +72,4 @@ class DocumentMapsRawSqlBulkInsertService(private val mapperDocument: MapperDto<
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

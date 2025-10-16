@@ -62,9 +62,4 @@ class CustomerSyncJob(apiService: ISyncApiService<List<CustomerDto>>,
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

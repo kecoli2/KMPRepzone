@@ -20,15 +20,6 @@ import repzonemobile.core.generated.resources.job_customer_price_parameter
 class CustomerPriceParameterslRawSqlBulkInsertService(
     private val mapper: MapperDto<SyncCrmPriceListParameterEntity, SyncCrmPriceListParameterModel, CrmPriceListParameterDto>,
     coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<CrmPriceListParameterDto>>(coordinator) {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun buildCompositeOperation(items: List<CrmPriceListParameterDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val parameters = items.map { it ->
@@ -57,10 +48,5 @@ class CustomerPriceParameterslRawSqlBulkInsertService(
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 
 }

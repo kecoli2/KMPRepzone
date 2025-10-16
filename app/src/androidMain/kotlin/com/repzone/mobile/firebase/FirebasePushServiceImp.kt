@@ -5,15 +5,6 @@ import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.tasks.await
 
 class FirebasePushServiceImp: IFirebasePushService {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override suspend fun getToken(): String? {
         return try {
@@ -24,10 +15,5 @@ class FirebasePushServiceImp: IFirebasePushService {
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 
 }

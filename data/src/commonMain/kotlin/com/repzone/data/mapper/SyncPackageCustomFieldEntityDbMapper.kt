@@ -8,15 +8,6 @@ import com.repzone.domain.model.SyncPackageCustomFieldModel
 import com.repzone.network.dto.PackageCustomFieldDto
 
 class SyncPackageCustomFieldEntityDbMapper : MapperDto<SyncPackageCustomFieldEntity, SyncPackageCustomFieldModel, PackageCustomFieldDto> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncPackageCustomFieldEntity): SyncPackageCustomFieldModel {
         return SyncPackageCustomFieldModel(
@@ -55,9 +46,4 @@ class SyncPackageCustomFieldEntityDbMapper : MapperDto<SyncPackageCustomFieldEnt
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

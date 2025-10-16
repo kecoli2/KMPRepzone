@@ -5,15 +5,6 @@ import com.repzone.database.InventoryCountLogInformationEntity
 import com.repzone.domain.model.InventoryCountLogInformationModel
 
 class InventoryCountLogInformationEntityDbMapper : Mapper<InventoryCountLogInformationEntity, InventoryCountLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: InventoryCountLogInformationEntity): InventoryCountLogInformationModel {
         return InventoryCountLogInformationModel(
@@ -38,9 +29,4 @@ class InventoryCountLogInformationEntityDbMapper : Mapper<InventoryCountLogInfor
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

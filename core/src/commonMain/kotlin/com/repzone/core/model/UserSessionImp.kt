@@ -38,9 +38,4 @@ class UserSessionImp(private val preferences: IPreferencesManager): IUserSession
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

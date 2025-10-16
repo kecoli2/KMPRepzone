@@ -5,15 +5,6 @@ import com.repzone.database.SyncGameEntity
 import com.repzone.domain.model.SyncGameModel
 
 class SyncGameEntityDbMapper : Mapper<SyncGameEntity, SyncGameModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncGameEntity): SyncGameModel {
         return SyncGameModel(
@@ -58,9 +49,4 @@ class SyncGameEntityDbMapper : Mapper<SyncGameEntity, SyncGameModel> {
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

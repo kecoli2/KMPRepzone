@@ -5,15 +5,6 @@ import com.repzone.database.CollectionLogInformationEntity
 import com.repzone.domain.model.CollectionLogInformationModel
 
 class CollectionLogInformationEntityDbMapper : Mapper<CollectionLogInformationEntity, CollectionLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: CollectionLogInformationEntity): CollectionLogInformationModel {
         return CollectionLogInformationModel(
@@ -40,9 +31,4 @@ class CollectionLogInformationEntityDbMapper : Mapper<CollectionLogInformationEn
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

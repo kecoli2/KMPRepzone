@@ -5,15 +5,6 @@ import com.repzone.database.ProductParameterv4Entity
 import com.repzone.domain.model.ProductParameterv4Model
 
 class ProductParameterv4EntityDbMapper : Mapper<ProductParameterv4Entity, ProductParameterv4Model> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: ProductParameterv4Entity): ProductParameterv4Model {
         return ProductParameterv4Model(
@@ -46,9 +37,4 @@ class ProductParameterv4EntityDbMapper : Mapper<ProductParameterv4Entity, Produc
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

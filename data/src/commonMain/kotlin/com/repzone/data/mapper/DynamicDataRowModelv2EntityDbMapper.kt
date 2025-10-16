@@ -5,15 +5,6 @@ import com.repzone.database.DynamicDataRowModelv2Entity
 import com.repzone.domain.model.DynamicDataRowModelv2Model
 
 class DynamicDataRowModelv2EntityDbMapper : Mapper<DynamicDataRowModelv2Entity, DynamicDataRowModelv2Model> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: DynamicDataRowModelv2Entity): DynamicDataRowModelv2Model {
         return DynamicDataRowModelv2Model(
@@ -34,9 +25,4 @@ class DynamicDataRowModelv2EntityDbMapper : Mapper<DynamicDataRowModelv2Entity, 
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

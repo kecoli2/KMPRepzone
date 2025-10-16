@@ -18,15 +18,6 @@ import repzonemobile.core.generated.resources.job_dynamic_event_reasons
 
 class DynamicPageReportRawSqlBulkInsertService(private val mapper: MapperDto<SyncDynamicPageReportEntity, SyncDynamicPageReportModel, DynamicPageReportDto>,
     coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<DynamicPageReportDto>>(coordinator) {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun buildCompositeOperation(items: List<DynamicPageReportDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val pages = items.map { mapper.fromDto(it) }
@@ -53,9 +44,4 @@ class DynamicPageReportRawSqlBulkInsertService(private val mapper: MapperDto<Syn
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

@@ -8,15 +8,6 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 class TokenProviderImpl(private val userSession: IUserSession) :
     ITokenProvider {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun getToken(): String? {
         return userSession.getActiveSession()?.token
@@ -68,10 +59,5 @@ class TokenProviderImpl(private val userSession: IUserSession) :
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 
 }

@@ -5,15 +5,6 @@ import com.repzone.database.SyncTenantDiscountEntity
 import com.repzone.domain.model.SyncTenantDiscountModel
 
 class SyncTenantDiscountEntityDbMapper : Mapper<SyncTenantDiscountEntity, SyncTenantDiscountModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncTenantDiscountEntity): SyncTenantDiscountModel {
         return SyncTenantDiscountModel(
@@ -52,9 +43,4 @@ class SyncTenantDiscountEntityDbMapper : Mapper<SyncTenantDiscountEntity, SyncTe
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

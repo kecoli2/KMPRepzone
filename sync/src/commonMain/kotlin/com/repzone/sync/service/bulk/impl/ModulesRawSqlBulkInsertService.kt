@@ -23,15 +23,6 @@ import repzonemobile.core.generated.resources.job_product_group
 class ModulesRawSqlBulkInsertService(private val mapperCustomField: MapperDto<SyncPackageCustomFieldEntity, SyncPackageCustomFieldModel, PackageCustomFieldDto>,
     private val mapperCustomFieldProduct: MapperDto<SyncPackageCustomFieldProductEntity, SyncPackageCustomFieldProductModel, PackageCustomFieldProductDto>, coordinator: TransactionCoordinator)
     : CompositeRawSqlBulkInsertService<List<PackageCustomFieldDto>>(coordinator) {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun buildCompositeOperation(items: List<PackageCustomFieldDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val customField = items.map { mapperCustomField.fromDto(it) }
@@ -70,9 +61,4 @@ class ModulesRawSqlBulkInsertService(private val mapperCustomField: MapperDto<Sy
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

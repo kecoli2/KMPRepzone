@@ -5,15 +5,6 @@ import com.repzone.database.SyncCampaignMasterRuleEntity
 import com.repzone.domain.model.SyncCampaignMasterRuleModel
 
 class SyncCampaignMasterRuleEntityDbMapper : Mapper<SyncCampaignMasterRuleEntity, SyncCampaignMasterRuleModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncCampaignMasterRuleEntity): SyncCampaignMasterRuleModel {
         return SyncCampaignMasterRuleModel(
@@ -44,9 +35,4 @@ class SyncCampaignMasterRuleEntityDbMapper : Mapper<SyncCampaignMasterRuleEntity
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

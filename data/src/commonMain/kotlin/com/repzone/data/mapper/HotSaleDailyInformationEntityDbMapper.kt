@@ -5,15 +5,6 @@ import com.repzone.database.HotSaleDailyInformationEntity
 import com.repzone.domain.model.HotSaleDailyInformationModel
 
 class HotSaleDailyInformationEntityDbMapper : Mapper<HotSaleDailyInformationEntity, HotSaleDailyInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: HotSaleDailyInformationEntity): HotSaleDailyInformationModel {
         return HotSaleDailyInformationModel(
@@ -34,9 +25,4 @@ class HotSaleDailyInformationEntityDbMapper : Mapper<HotSaleDailyInformationEnti
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

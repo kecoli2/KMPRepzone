@@ -5,15 +5,6 @@ import com.repzone.database.DownedDriveItemEntity
 import com.repzone.domain.model.DownedDriveItemModel
 
 class DownedDriveItemEntityDbMapper : Mapper<DownedDriveItemEntity, DownedDriveItemModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: DownedDriveItemEntity): DownedDriveItemModel {
         return DownedDriveItemModel(
@@ -32,9 +23,4 @@ class DownedDriveItemEntityDbMapper : Mapper<DownedDriveItemEntity, DownedDriveI
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

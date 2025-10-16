@@ -5,15 +5,6 @@ import com.repzone.database.SyncDocumentOrganizationEntity
 import com.repzone.domain.model.SyncDocumentOrganizationModel
 
 class SyncDocumentOrganizationEntityDbMapper : Mapper<SyncDocumentOrganizationEntity, SyncDocumentOrganizationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncDocumentOrganizationEntity): SyncDocumentOrganizationModel {
         return SyncDocumentOrganizationModel(
@@ -60,9 +51,4 @@ class SyncDocumentOrganizationEntityDbMapper : Mapper<SyncDocumentOrganizationEn
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

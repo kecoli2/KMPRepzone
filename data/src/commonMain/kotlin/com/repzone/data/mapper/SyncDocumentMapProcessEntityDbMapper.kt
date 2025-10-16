@@ -7,15 +7,6 @@ import com.repzone.domain.model.SyncDocumentMapProcessModel
 import com.repzone.network.dto.DocumentMapProcessDto
 
 class SyncDocumentMapProcessEntityDbMapper : MapperDto<SyncDocumentMapProcessEntity, SyncDocumentMapProcessModel, DocumentMapProcessDto> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncDocumentMapProcessEntity): SyncDocumentMapProcessModel {
         return SyncDocumentMapProcessModel(
@@ -54,9 +45,4 @@ class SyncDocumentMapProcessEntityDbMapper : MapperDto<SyncDocumentMapProcessEnt
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

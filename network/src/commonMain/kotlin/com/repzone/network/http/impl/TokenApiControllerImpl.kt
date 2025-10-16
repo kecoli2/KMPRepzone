@@ -18,15 +18,6 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 
 class TokenApiControllerImpl(private val client: HttpClient): ITokenApiController {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
 
     override suspend fun pushToken(tokenRequest: LoginRequest): ApiResult<LoginResponse> {
@@ -67,10 +58,5 @@ class TokenApiControllerImpl(private val client: HttpClient): ITokenApiControlle
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 
 }

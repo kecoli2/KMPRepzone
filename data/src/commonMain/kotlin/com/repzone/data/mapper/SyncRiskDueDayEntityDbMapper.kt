@@ -5,15 +5,6 @@ import com.repzone.database.SyncRiskDueDayEntity
 import com.repzone.domain.model.SyncRiskDueDayModel
 
 class SyncRiskDueDayEntityDbMapper : Mapper<SyncRiskDueDayEntity, SyncRiskDueDayModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncRiskDueDayEntity): SyncRiskDueDayModel {
         return SyncRiskDueDayModel(
@@ -40,9 +31,4 @@ class SyncRiskDueDayEntityDbMapper : Mapper<SyncRiskDueDayEntity, SyncRiskDueDay
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

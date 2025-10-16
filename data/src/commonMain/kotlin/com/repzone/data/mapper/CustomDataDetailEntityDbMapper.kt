@@ -5,15 +5,6 @@ import com.repzone.database.CustomDataDetailEntity
 import com.repzone.domain.model.CustomDataDetailModel
 
 class CustomDataDetailEntityDbMapper : Mapper<CustomDataDetailEntity, CustomDataDetailModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: CustomDataDetailEntity): CustomDataDetailModel {
         return CustomDataDetailModel(
@@ -32,9 +23,4 @@ class CustomDataDetailEntityDbMapper : Mapper<CustomDataDetailEntity, CustomData
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

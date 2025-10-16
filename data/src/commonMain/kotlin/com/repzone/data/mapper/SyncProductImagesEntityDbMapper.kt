@@ -5,15 +5,6 @@ import com.repzone.database.SyncProductImagesEntity
 import com.repzone.domain.model.SyncProductImagesModel
 
 class SyncProductImagesEntityDbMapper : Mapper<SyncProductImagesEntity, SyncProductImagesModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncProductImagesEntity): SyncProductImagesModel {
         return SyncProductImagesModel(
@@ -40,9 +31,4 @@ class SyncProductImagesEntityDbMapper : Mapper<SyncProductImagesEntity, SyncProd
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

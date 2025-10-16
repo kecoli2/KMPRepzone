@@ -12,15 +12,6 @@ class SyncModuleRepositoryImpl(
     private val mapper: Mapper<SyncModuleEntity, SyncModuleModel>,
     private val queries: SyncModuleEntityQueries
 ): ISyncModuleRepository {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override suspend fun deleteById(id: Long, module: UIModule) {
         queries.deleteSyncModuleEntity(id, module.enumToLong())
@@ -39,9 +30,4 @@ class SyncModuleRepositoryImpl(
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

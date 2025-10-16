@@ -5,15 +5,6 @@ import com.repzone.database.OrderLogInformationEntity
 import com.repzone.domain.model.OrderLogInformationModel
 
 class OrderLogInformationEntityDbMapper : Mapper<OrderLogInformationEntity, OrderLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: OrderLogInformationEntity): OrderLogInformationModel {
         return OrderLogInformationModel(
@@ -72,9 +63,4 @@ class OrderLogInformationEntityDbMapper : Mapper<OrderLogInformationEntity, Orde
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

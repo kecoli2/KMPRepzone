@@ -11,15 +11,6 @@ import io.ktor.client.request.setBody
 
 class SyncApiRouteDataImpl(client: HttpClient) : BaseSyncApiService<List<RouteDto>>(client){
 
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun extractLastId(data: List<RouteDto>): Int {
         return data.lastOrNull()?.id ?: 0
@@ -36,9 +27,4 @@ class SyncApiRouteDataImpl(client: HttpClient) : BaseSyncApiService<List<RouteDt
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

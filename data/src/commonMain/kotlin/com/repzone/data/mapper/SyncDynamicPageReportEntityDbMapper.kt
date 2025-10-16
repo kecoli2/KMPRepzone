@@ -10,15 +10,6 @@ import kotlin.time.ExperimentalTime
 
 class SyncDynamicPageReportEntityDbMapper :
     MapperDto<SyncDynamicPageReportEntity, SyncDynamicPageReportModel, DynamicPageReportDto> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncDynamicPageReportEntity): SyncDynamicPageReportModel {
         return SyncDynamicPageReportModel(
@@ -70,9 +61,4 @@ class SyncDynamicPageReportEntityDbMapper :
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

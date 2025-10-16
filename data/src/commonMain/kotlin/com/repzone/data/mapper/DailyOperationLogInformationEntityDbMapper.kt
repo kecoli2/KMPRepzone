@@ -5,15 +5,6 @@ import com.repzone.database.DailyOperationLogInformationEntity
 import com.repzone.domain.model.DailyOperationLogInformationModel
 
 class DailyOperationLogInformationEntityDbMapper : Mapper<DailyOperationLogInformationEntity, DailyOperationLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: DailyOperationLogInformationEntity): DailyOperationLogInformationModel {
         return DailyOperationLogInformationModel(
@@ -42,9 +33,4 @@ class DailyOperationLogInformationEntityDbMapper : Mapper<DailyOperationLogInfor
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

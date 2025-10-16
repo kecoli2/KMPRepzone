@@ -5,15 +5,6 @@ import com.repzone.database.FormLogInformationEntity
 import com.repzone.domain.model.FormLogInformationModel
 
 class FormLogInformationEntityDbMapper : Mapper<FormLogInformationEntity, FormLogInformationModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: FormLogInformationEntity): FormLogInformationModel {
         return FormLogInformationModel(
@@ -54,9 +45,4 @@ class FormLogInformationEntityDbMapper : Mapper<FormLogInformationEntity, FormLo
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }

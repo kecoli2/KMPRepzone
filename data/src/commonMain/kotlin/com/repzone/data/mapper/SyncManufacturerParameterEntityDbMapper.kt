@@ -5,15 +5,6 @@ import com.repzone.database.SyncManufacturerParameterEntity
 import com.repzone.domain.model.SyncManufacturerParameterModel
 
 class SyncManufacturerParameterEntityDbMapper : Mapper<SyncManufacturerParameterEntity, SyncManufacturerParameterModel> {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-    //endregion
-
     //region Public Method
     override fun toDomain(from: SyncManufacturerParameterEntity): SyncManufacturerParameterModel {
         return SyncManufacturerParameterModel(
@@ -42,9 +33,4 @@ class SyncManufacturerParameterEntityDbMapper : Mapper<SyncManufacturerParameter
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
-    //region Private Method
-    //endregion
 }
