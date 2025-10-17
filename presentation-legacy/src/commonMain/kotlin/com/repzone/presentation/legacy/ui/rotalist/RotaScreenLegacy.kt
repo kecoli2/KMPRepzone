@@ -2,7 +2,6 @@ package com.repzone.presentation.legacy.ui.rotalist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -46,6 +45,7 @@ import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
+import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
@@ -80,7 +80,6 @@ import repzonemobile.core.generated.resources.documents
 import repzonemobile.core.generated.resources.eagleeyelogstitle
 import repzonemobile.core.generated.resources.exit
 import repzonemobile.core.generated.resources.generalsettings
-import repzonemobile.core.generated.resources.indir
 import repzonemobile.core.generated.resources.notificationlogpagetitle
 import repzonemobile.core.generated.resources.onlinehubtitle
 import repzonemobile.core.generated.resources.profile
@@ -90,7 +89,7 @@ import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_mi
 @Composable
 fun RotaScreenLegacy(themeManager: ThemeManager){
     var selectedTab by remember { mutableIntStateOf(0) }
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Open)
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedItemIndex by rememberSaveable { mutableStateOf(-1) }
     val drawerItems = getNavigationItems()
@@ -99,19 +98,13 @@ fun RotaScreenLegacy(themeManager: ThemeManager){
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet(modifier = Modifier.width(280.dp)) {
-
-                // TÜM içerik Column; en alta ÇIKIŞ koyabilmek için
-                Column(
-                    modifier = Modifier
-                        .fillMaxHeight() // ← altı “sabitlemek” için şart
-                ) {
-
+                Column(modifier = Modifier.fillMaxHeight()) {
                     // Drawer Header
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(150.dp)
-                            .background(MaterialTheme.colorScheme.onSecondaryContainer),
+                            .background(themeManager.getCurrentColorScheme().colorPalet.secondary20),
                         contentAlignment = Alignment.CenterStart
                     ) {
                         Row(
@@ -150,11 +143,7 @@ fun RotaScreenLegacy(themeManager: ThemeManager){
 
                     Spacer(Modifier.height(16.dp))
 
-                    // Menü öğeleri: Kayabilir/çoksa taşmasın diye LazyColumn + weight(1f)
-                    LazyColumn(
-                        modifier = Modifier
-                            .weight(1f, fill = true) // ← boşluğu doldur, alt butonu aşağı it
-                    ) {
+                    LazyColumn(modifier = Modifier.weight(1f, fill = true)) {
                         itemsIndexed(drawerItems) { index, item ->
                             NavigationDrawerItem(
                                 label = { Text(item.title, style = MaterialTheme.typography.bodyMedium) },
@@ -232,7 +221,7 @@ fun RotaScreenLegacy(themeManager: ThemeManager){
                 // Custom Top Bar
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
-                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    color = themeManager.getCurrentColorScheme().colorPalet.secondary20,
                     shadowElevation = 4.dp
                 ) {
                     Row(
@@ -260,11 +249,8 @@ fun RotaScreenLegacy(themeManager: ThemeManager){
                         }
 
                         // Orta - Logo (weight ile tam ortada)
-                        Box(
-                            modifier = Modifier.weight(1f),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Surface(modifier = Modifier, color = MaterialTheme.colorScheme.onSecondaryContainer) {
+                        Box(modifier = Modifier.weight(1f),contentAlignment = Alignment.Center) {
+                            Surface(modifier = Modifier, color = Color.Transparent) {
                                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                                     Image(
                                         painter = painterResource(Res.drawable.img_generic_logo_min),
@@ -308,22 +294,11 @@ fun RotaScreenLegacy(themeManager: ThemeManager){
                 }
 
                 // LazyColumn içinde kaybolacak alan + Tab + content
-                LazyColumn(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color(0xFFF5F5F5))
-                ) {
+                LazyColumn(modifier = Modifier.fillMaxSize().background(Color(0xFFF5F5F5))) {
                     // Kaybolacak Alan
                     item {
-                        Surface(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(120.dp),
-                            color = Color(0xFF4CAF50)
-                        ) {
-                            Column(
-                                modifier = Modifier.padding(16.dp)
-                            ) {
+                        Surface(modifier = Modifier.fillMaxWidth().height(120.dp), color = themeManager.getCurrentColorScheme().colorPalet.primary60) {
+                            Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
                                     text = "Kaydırınca Kaybolacak Alan",
                                     style = MaterialTheme.typography.headlineSmall,
@@ -341,18 +316,17 @@ fun RotaScreenLegacy(themeManager: ThemeManager){
 
                     // Tab Layout - Sticky
                     stickyHeader {
-                        TabRow(
+                        PrimaryTabRow(
                             selectedTabIndex = selectedTab,
-                            containerColor = Color.White,
-                            contentColor = Color(0xFF9C27B0)
+                            // containerColor = Color.White, // İstersen override et
+                            // contentColor = Color(0xFF9C27B0), // Gerekiyorsa belirt
                         ) {
                             repeat(3) { index ->
                                 Tab(
                                     selected = selectedTab == index,
                                     onClick = { selectedTab = index },
                                     text = { Text("Tab ${index + 1}") },
-                                    selectedContentColor = Color(0xFF9C27B0),
-                                    unselectedContentColor = Color.Gray
+                                    unselectedContentColor = MaterialTheme.colorScheme.outlineVariant
                                 )
                             }
                         }

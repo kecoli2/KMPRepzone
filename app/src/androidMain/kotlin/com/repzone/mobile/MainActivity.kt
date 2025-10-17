@@ -1,5 +1,6 @@
 package com.repzone.mobile
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -54,7 +55,7 @@ private fun AppContent() {
 }
 
 @Composable
-@Preview(showBackground = true)
+@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun AppAndroidPreview() {
     /*val themeManager = ThemeManager()
     val themeConfig: IPresentationConfig = LegacyThemeConfig()*/
