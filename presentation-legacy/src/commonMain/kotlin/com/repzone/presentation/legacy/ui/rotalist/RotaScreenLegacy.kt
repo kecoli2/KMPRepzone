@@ -2,6 +2,8 @@ package com.repzone.presentation.legacy.ui.rotalist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
@@ -34,6 +37,7 @@ import androidx.compose.material.icons.outlined.EditNotifications
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Room
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.SyncLock
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
@@ -49,10 +53,10 @@ import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -66,6 +70,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.repzone.core.ui.manager.theme.ThemeManager
@@ -87,12 +92,13 @@ import repzonemobile.presentation_legacy.generated.resources.Res
 import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_min
 
 @Composable
-fun RotaScreenLegacy(themeManager: ThemeManager){
-    var selectedTab by remember { mutableIntStateOf(0) }
+fun RotaScreenLegacy(themeManager: ThemeManager) {
+    var selectedTab by rememberSaveable  { mutableIntStateOf(0) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedItemIndex by rememberSaveable { mutableStateOf(-1) }
     val drawerItems = getNavigationItems()
+    var customerList = remember { generateDummyCustomers(500) }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -146,7 +152,12 @@ fun RotaScreenLegacy(themeManager: ThemeManager){
                     LazyColumn(modifier = Modifier.weight(1f, fill = true)) {
                         itemsIndexed(drawerItems) { index, item ->
                             NavigationDrawerItem(
-                                label = { Text(item.title, style = MaterialTheme.typography.bodyMedium) },
+                                label = {
+                                    Text(
+                                        item.title,
+                                        style = MaterialTheme.typography.bodyMedium
+                                    )
+                                },
                                 selected = index == selectedItemIndex,
                                 onClick = {
                                     selectedItemIndex = index
@@ -187,7 +198,12 @@ fun RotaScreenLegacy(themeManager: ThemeManager){
                     // ALT: ÇIKIŞ
                     HorizontalDivider()
                     NavigationDrawerItem(
-                        label = { Text(repzonemobile.core.generated.resources.Res.string.exit.fromResource(), style = MaterialTheme.typography.bodyMedium) },
+                        label = {
+                            Text(
+                                repzonemobile.core.generated.resources.Res.string.exit.fromResource(),
+                                style = MaterialTheme.typography.bodyMedium
+                            )
+                        },
                         selected = false,
                         onClick = {
                             scope.launch {
@@ -249,9 +265,12 @@ fun RotaScreenLegacy(themeManager: ThemeManager){
                         }
 
                         // Orta - Logo (weight ile tam ortada)
-                        Box(modifier = Modifier.weight(1f),contentAlignment = Alignment.Center) {
+                        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                             Surface(modifier = Modifier, color = Color.Transparent) {
-                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                Box(
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentAlignment = Alignment.Center
+                                ) {
                                     Image(
                                         painter = painterResource(Res.drawable.img_generic_logo_min),
                                         contentDescription = null,
@@ -294,10 +313,13 @@ fun RotaScreenLegacy(themeManager: ThemeManager){
                 }
 
                 // LazyColumn içinde kaybolacak alan + Tab + content
-                LazyColumn(modifier = Modifier.fillMaxSize().background(Color(0xFFF5F5F5))) {
+                LazyColumn(modifier = Modifier.fillMaxSize()) {
                     // Kaybolacak Alan
                     item {
-                        Surface(modifier = Modifier.fillMaxWidth().height(120.dp), color = themeManager.getCurrentColorScheme().colorPalet.primary60) {
+                        Surface(
+                            modifier = Modifier.fillMaxWidth().height(120.dp),
+                            color = themeManager.getCurrentColorScheme().colorPalet.primary60
+                        ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(
                                     text = "Kaydırınca Kaybolacak Alan",
@@ -316,11 +338,7 @@ fun RotaScreenLegacy(themeManager: ThemeManager){
 
                     // Tab Layout - Sticky
                     stickyHeader {
-                        PrimaryTabRow(
-                            selectedTabIndex = selectedTab,
-                            // containerColor = Color.White, // İstersen override et
-                            // contentColor = Color(0xFF9C27B0), // Gerekiyorsa belirt
-                        ) {
+                        PrimaryTabRow(selectedTabIndex = selectedTab,) {
                             repeat(3) { index ->
                                 Tab(
                                     selected = selectedTab == index,
@@ -332,36 +350,28 @@ fun RotaScreenLegacy(themeManager: ThemeManager){
                         }
                     }
 
-                    // Tab Content Items
-                    val itemCount = when (selectedTab) {
-                        0 -> 50
-                        1 -> 100
-                        else -> 2000
-                    }
-
-                    val bgColor = when (selectedTab) {
-                        0 -> Color(0xFFFFCC80)
-                        1 -> Color(0xFFF8BBD0)
-                        else -> Color(0xFFB2DFDB)
-                    }
-
-                    items(itemCount) { index ->
-                        Card(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 6.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White)
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(bgColor.copy(alpha = 0.3f))
-                                    .padding(16.dp)
-                            ) {
-                                Text("İçerik Kartı ${index + 1}")
-                            }
+                    when(selectedTab) {
+                        0 -> {
+                            customerList = generateDummyCustomers(4)
+                        }
+                        1 -> {
+                            customerList = generateDummyCustomers(500)
+                        }
+                        2 -> {
+                            customerList = generateDummyCustomers(200)
                         }
                     }
+
+                    /*items(customerList.size) { item, index ->
+                        CustomerCard(customer = customerList[index], modifier = Modifier)
+                        HorizontalDivider()
+                    }*/
+
+                    itemsIndexed(customerList, itemContent = { index, customer ->
+                        CustomerCard(customer = customer, modifier = Modifier)
+                        HorizontalDivider()
+                    })
+
                 }
             }
         }
@@ -369,7 +379,7 @@ fun RotaScreenLegacy(themeManager: ThemeManager){
 }
 
 @Composable
-private fun getNavigationItems(): List<NavigationItem>{
+fun getNavigationItems(): List<NavigationItem>{
     return listOf(
         NavigationItem(
             title = repzonemobile.core.generated.resources.Res.string.generalsettings.fromResource(),
@@ -419,4 +429,142 @@ private fun getNavigationItems(): List<NavigationItem>{
             navigationItemType = NavigationItemType.CUSTOMER_NOTES
         )
     )
+}
+
+@Composable
+fun CustomerCard(customer: CustomerUi, modifier: Modifier = Modifier) {
+    // Tek kat Surface yerine Card/Surface tek seferde; elevation yoksa Surface da olur.
+    Surface(
+        modifier = modifier.clickable{
+            println("Customer clicked")
+        },
+        color = MaterialTheme.colorScheme.surface
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Avatar
+            if (customer.avatarUrl != null) {
+                AsyncImage(
+                    model = customer.avatarUrl,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop,
+                    alignment = Alignment.Center,
+                    placeholder = painterResource(repzonemobile.core.generated.resources.Res.drawable.profile),
+                    error = painterResource(repzonemobile.core.generated.resources.Res.drawable.profile)
+                    // crossfade = false (Coil 3'te parametre farklı olabilir; varsa kapat)
+                )
+            } else {
+                Image(
+                    painter = painterResource(repzonemobile.core.generated.resources.Res.drawable.profile),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                )
+            }
+
+            // Orta metinler
+            Column(
+                modifier = Modifier
+                    .padding(start = 12.dp)
+                    .weight(1f),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(
+                    text = customer.title,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = customer.subtitle,
+                    fontWeight = FontWeight.Light,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
+            // Sağ blok: sabit genişlik → daha az ölçüm maliyeti
+            Column(
+                modifier = Modifier
+                    .widthIn(min = 120.dp) // sabitleyerek weight ölçümünü azalt
+                    .padding(start = 8.dp),
+                horizontalAlignment = Alignment.End
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.AccessTime,
+                        contentDescription = null,
+                        modifier = Modifier
+                            .size(18.dp)
+                            .padding(end = 6.dp),
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = customer.timeRange,
+                        fontWeight = FontWeight.Light,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                Text(
+                    text = customer.dayLabel,
+                    fontWeight = FontWeight.Light,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+    }
+}
+
+data class CustomerUi(
+    val id: String,
+    val title: String,
+    val subtitle: String,
+    val timeRange: String,   // "08:00-08:30"
+    val dayLabel: String,    // "Bugün"
+    val avatarUrl: String?   // null ise local placeholder
+)
+
+fun generateDummyCustomers(count: Int = 50): List<CustomerUi> {
+    val names = listOf("Ali", "Ayşe", "Murat", "Zeynep", "Mehmet", "Elif", "Cem", "Canan")
+    val companies = listOf("Market", "Mağaza", "Bakkal", "Tekstil", "Gıda", "Elektronik", "Mobilya")
+
+    return List(count) { index ->
+        val name = names.random()
+        val company = "${companies.random()} ${index + 1}"
+        val time = "${(8..17).random()}:00 - ${(8..17).random()}:30"
+        val day = listOf("Bugün", "Dün", "Yarın").random()
+        val avatar = if (index % 2 == 0)
+            "https://randomuser.me/api/portraits/men/${(1..99).random()}.jpg"
+        else
+            "https://randomuser.me/api/portraits/women/${(1..99).random()}.jpg"
+
+        CustomerUi(
+            id = index.toString(),
+            title = "$name ${listOf("Yılmaz", "Kaya", "Demir", "Çelik").random()}",
+            subtitle = company,
+            timeRange = time,
+            dayLabel = day,
+            avatarUrl = avatar
+        )
+    }
 }

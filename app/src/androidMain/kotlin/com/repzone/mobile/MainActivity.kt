@@ -21,6 +21,7 @@ import com.repzone.network.di.NetworkModule
 import com.repzone.network.di.PlatformNetworkModule
 import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
+import com.repzone.presentation.legacy.ui.rotalist.CustomerCard
 import com.repzone.presentation.legacy.ui.rotalist.RotaScreenLegacy
 import com.repzone.sync.di.SyncModule
 import org.koin.android.ext.koin.androidContext
@@ -55,7 +56,7 @@ private fun AppContent() {
 }
 
 @Composable
-@Preview(showBackground = true, showSystemUi = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun AppAndroidPreview() {
     /*val themeManager = ThemeManager()
     val themeConfig: IPresentationConfig = LegacyThemeConfig()*/
