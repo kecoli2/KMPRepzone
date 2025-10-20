@@ -329,21 +329,23 @@ fun CustomerListScreenLegacy(themeManager: ThemeManager) = ViewModelHost<Custome
                     }
 
                     // Tab Layout - Sticky
-                    stickyHeader {
-                        PrimaryTabRow(selectedTabIndex = selectedTab,) {
-                            repeat(3) { index ->
-                                Tab(
-                                    selected = selectedTab == index,
-                                    onClick = { selectedTab = index },
-                                    text = {
-                                        when(index +1){
-                                            1 -> Text(repzonemobile.core.generated.resources.Res.string.routetoday.fromResource())
-                                            2 -> Text(repzonemobile.core.generated.resources.Res.string.routetomorrow.fromResource())
-                                            3 -> Text(repzonemobile.core.generated.resources.Res.string.routeothers.fromResource())
-                                        }
-                                           },
-                                    unselectedContentColor = MaterialTheme.colorScheme.outlineVariant
-                                )
+                    if (uiState.isTabActive) {
+                        stickyHeader {
+                            PrimaryTabRow(selectedTabIndex = selectedTab,) {
+                                repeat(3) { index ->
+                                    Tab(
+                                        selected = selectedTab == index,
+                                        onClick = { selectedTab = index },
+                                        text = {
+                                            when(index +1){
+                                                1 -> Text(repzonemobile.core.generated.resources.Res.string.routetoday.fromResource())
+                                                2 -> Text(repzonemobile.core.generated.resources.Res.string.routetomorrow.fromResource())
+                                                3 -> Text(repzonemobile.core.generated.resources.Res.string.routeothers.fromResource())
+                                            }
+                                        },
+                                        unselectedContentColor = MaterialTheme.colorScheme.outlineVariant
+                                    )
+                                }
                             }
                         }
                     }
