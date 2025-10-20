@@ -6,7 +6,9 @@ import com.repzone.core.model.UserSessionModel
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.core.ui.base.clearError
 import com.repzone.core.ui.base.hasError
+import com.repzone.core.ui.base.setError
 import com.repzone.core.ui.base.setErrorStringResource
+import com.repzone.core.util.extensions.jsonToModel
 import com.repzone.core.util.extensions.toJson
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.network.api.ITokenApiController
@@ -14,7 +16,6 @@ import com.repzone.network.http.wrapper.ApiException
 import com.repzone.network.http.wrapper.ApiResult
 import com.repzone.network.models.request.LoginRequest
 import com.repzone.network.models.response.LoginResponse
-import kotlinx.coroutines.delay
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.authenticating
 import repzonemobile.core.generated.resources.check_internet
@@ -37,7 +38,6 @@ class LoginScreenViewModel(
     //region Public Method
     @OptIn(ExperimentalUuidApi::class)
     suspend fun login(email: String, password: String) {
-        // Validation
         if (email.isBlank() || password.isBlank()) {
             setErrorStringResource(Res.string.login_issue)
             return
@@ -53,13 +53,8 @@ class LoginScreenViewModel(
         }
 
         try {
-            // Progress simulation
             updateLoadingMessage(Res.string.checking_credentials)
-            delay(800)
-
             updateLoadingMessage(Res.string.authenticating)
-            delay(700)
-
             val request = LoginRequest(
                 email = email,
                 password = password,
@@ -110,7 +105,6 @@ class LoginScreenViewModel(
         when (response) {
             is ApiResult.Success -> {
                 updateLoadingMessage(Res.string.login_successful)
-                delay(500) // Success mesajını göster
                 // Token'ı kaydet
                 isharedPreferences.setActiveUserCode(response.data.userId)
                 val activeSessions = UserSessionModel(
@@ -123,6 +117,7 @@ class LoginScreenViewModel(
                     token = response.data.tokenResponse?.accessToken,
                     tokenType = response.data.tokenResponse?.tokenType ?: "bearer"
                 )
+                checkUserIdentity(activeSessions.tokenType, activeSessions.token!!)
                 isharedPreferences.setUserSessions(activeSessions.toJson())
                 iDatabaseManager.switchUser(response.data.userId)
                 // Success state
@@ -135,10 +130,33 @@ class LoginScreenViewModel(
                 }
             }
             is ApiResult.Error -> {
-                prepareErrorMessage(response.exception)
+                setError(response.exception.message)
+                //prepareErrorMessage(response.exception)
             }
             is ApiResult.Loading -> {
-                // Already loading
+            }
+        }
+    }
+
+    private suspend fun checkUserIdentity(tokenType: String, token: String){
+        val responseInfo = tokenApiController.verifyIdentity(tokenType, token)
+
+        when(responseInfo){
+            is ApiResult.Success -> {
+                if (responseInfo.data.state == 1){
+                    val model = isharedPreferences.getUserSessions()?.jsonToModel<UserSessionModel>()
+                    model?.identity = responseInfo.data
+                    model?.let {
+                        isharedPreferences.setUserSessions(it.toJson())
+                    }
+                }
+            }
+            is ApiResult.Error -> {
+                setError(responseInfo.exception.message)
+            }
+
+            ApiResult.Loading -> {
+
             }
         }
     }

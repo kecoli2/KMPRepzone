@@ -17,6 +17,7 @@ import com.repzone.database.di.DatabaseAndroidPreviewModule
 import com.repzone.database.di.DatabaseModulePreview
 import com.repzone.mobile.di.AndroidDIModulePreview
 import com.repzone.mobile.di.FirebaseMockAndroidModule
+import com.repzone.navigation.AppRouter
 import com.repzone.network.di.NetworkModule
 import com.repzone.network.di.PlatformNetworkModule
 import com.repzone.presentation.legacy.di.PresentationModuleLegacy
@@ -49,8 +50,8 @@ private fun AppContent() {
 
     AppTheme(themeManager = themeManager) {
         //AppAndroidPreview()
-        //AppRouter()
-        CustomerListScreenLegacy(themeManager)
+        AppRouter()
+        //CustomerListScreenLegacy(themeManager)
     }
 }
 
@@ -77,7 +78,7 @@ fun AppAndroidPreview() {
     val themeManager : ThemeManager = koinInject()
     themeManager.initialize(LegacyThemeConfig())
     AppTheme(themeManager) {
-        CustomerListScreenLegacy(themeManager)
+        CustomerListScreenLegacy()
     }
 }
 

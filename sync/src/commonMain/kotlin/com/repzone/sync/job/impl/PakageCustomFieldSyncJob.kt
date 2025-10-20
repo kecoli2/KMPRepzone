@@ -57,6 +57,8 @@ class PakageCustomFieldSyncJob(apiService: ISyncApiService<List<PackageCustomFie
 
     override fun onPreExecuteFilterModel(value: FilterModelRequest): FilterModelRequest {
         value.take = 5000
+        value.lastId = 0
+        value.lastModDate = ""
         return value
     }
     //endregion

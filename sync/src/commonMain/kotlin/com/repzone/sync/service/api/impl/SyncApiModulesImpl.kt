@@ -24,6 +24,13 @@ class SyncApiModulesImpl(httpClient: HttpClient) : BaseSyncApiService<List<Packa
             setBody(requestModel)
         }
     }
+
+    override fun setupRequestFilter(model: SyncModuleModel, requestModel: FilterModelRequest?) {
+        requestModel?.lastId = 0
+        requestModel?.fetchOnlyActive = true
+        requestModel?.lastModDate = ""
+
+    }
     //endregion
 
 }

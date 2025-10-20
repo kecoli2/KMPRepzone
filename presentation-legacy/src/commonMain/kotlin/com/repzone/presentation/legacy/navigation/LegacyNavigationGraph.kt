@@ -24,4 +24,6 @@ sealed interface LegacyScreen {
     // ============ MAIN SCREENS ============
     @Serializable
     data object Sync : LegacyScreen
+    @Serializable
+    data object CustomerList : LegacyScreen
 }

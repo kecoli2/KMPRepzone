@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
+import com.repzone.presentation.legacy.ui.rotalist.CustomerListScreenLegacy
 import com.repzone.presentation.legacy.ui.splash.SplashScreenLegacy
 import com.repzone.presentation.legacy.ui.sync.SyncScreenLegacy
 
@@ -53,7 +54,7 @@ fun LegacyNavHost(modifier: Modifier = Modifier, navController: NavHostControlle
                     SplashScreenLegacy(
                         onControllSucces = {
                             // Main graph'a git
-                            navController.navigate(LegacyScreen.MainGraph) {
+                            navController.navigate(LegacyScreen.Sync) {
                                 popUpTo<LegacyScreen.AuthGraph> { inclusive = false }
                             }
                         }
@@ -63,28 +64,31 @@ fun LegacyNavHost(modifier: Modifier = Modifier, navController: NavHostControlle
                     LoginScreenLegacy(
                         onLoginSuccess = {
                             // Main graph'a git
-                            navController.navigate(LegacyScreen.MainGraph) {
+                            navController.navigate(LegacyScreen.Sync) {
                                 popUpTo<LegacyScreen.AuthGraph> { inclusive = true }
                             }
                         }
                     )
                 }
+
+             composable<LegacyScreen.Sync> {
+                 SyncScreenLegacy(
+                     onSyncCompleted = {
+                         navController.navigate(LegacyScreen.CustomerList) {
+                             popUpTo<LegacyScreen.Sync> { inclusive = true }
+                         }
+                     }
+
+                 )
+             }
             }
 
          // ============ MAIN APP GRAPH ============
-         navigation<LegacyScreen.MainGraph>(startDestination = LegacyScreen.Sync) {
-                composable<LegacyScreen.Sync> {
-                    SyncScreenLegacy(
-                        onSyncCompleted = {
-                            // Main graph'a git
-                            /*navController.navigate(LegacyScreen.MainGraph) {
-                                popUpTo<LegacyScreen.AuthGraph> { inclusive = true }
-                            }*/
-                        }
-
-                    )
-                }
-            }
+         navigation<LegacyScreen.MainGraph>(startDestination = LegacyScreen.CustomerList) {
+               composable<LegacyScreen.CustomerList> {
+                     CustomerListScreenLegacy()
+               }
+         }
         }
     }
 }

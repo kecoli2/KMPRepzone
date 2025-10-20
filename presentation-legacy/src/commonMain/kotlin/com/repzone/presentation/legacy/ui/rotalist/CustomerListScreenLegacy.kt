@@ -78,6 +78,7 @@ import com.repzone.core.util.extensions.fromResource
 import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
+import org.koin.compose.koinInject
 import repzonemobile.core.generated.resources.customernotestitle
 import repzonemobile.core.generated.resources.dailyoperationstitle
 import repzonemobile.core.generated.resources.documents
@@ -90,12 +91,12 @@ import repzonemobile.core.generated.resources.profile
 import repzonemobile.core.generated.resources.routeothers
 import repzonemobile.core.generated.resources.routetoday
 import repzonemobile.core.generated.resources.routetomorrow
-import repzonemobile.core.generated.resources.todaydatetext
 import repzonemobile.presentation_legacy.generated.resources.Res
 import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_min
 
 @Composable
-fun CustomerListScreenLegacy(themeManager: ThemeManager) = ViewModelHost<CustomerListViewModel> { viewModel ->
+fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewModel ->
+    val themeManager: ThemeManager = koinInject()
     val uiState by viewModel.state.collectAsState()
     var selectedTab by rememberSaveable  { mutableIntStateOf(0) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
