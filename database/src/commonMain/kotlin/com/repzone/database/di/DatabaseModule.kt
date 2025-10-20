@@ -26,6 +26,7 @@ val DatabaseModule = module {
     single { get<AppDatabase>().syncCustomerEntityQueries }
     single { get<AppDatabase>().syncProductEntityQueries }
     single { get<AppDatabase>().syncModuleEntityQueries }
+    single { get<AppDatabase>().syncPackageCustomFieldProductEntityQueries }
 }
 
 val DatabaseModulePreview = module {
@@ -35,4 +36,5 @@ val DatabaseModulePreview = module {
     single { get<AppDatabase>().syncCustomerEntityQueries }
     single { get<AppDatabase>().syncProductEntityQueries }
     single { get<AppDatabase>().syncModuleEntityQueries }
+    single { get<AppDatabase>().syncPackageCustomFieldProductEntityQueries }
 }

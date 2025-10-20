@@ -37,9 +37,6 @@ import androidx.compose.material.icons.outlined.EditNotifications
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Room
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material.icons.outlined.SyncLock
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -56,7 +53,7 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -73,10 +70,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.ui.model.NavigationItem
 import com.repzone.core.ui.util.enum.NavigationItemType
 import com.repzone.core.util.extensions.fromResource
+import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import repzonemobile.core.generated.resources.customernotestitle
@@ -88,11 +87,16 @@ import repzonemobile.core.generated.resources.generalsettings
 import repzonemobile.core.generated.resources.notificationlogpagetitle
 import repzonemobile.core.generated.resources.onlinehubtitle
 import repzonemobile.core.generated.resources.profile
+import repzonemobile.core.generated.resources.routeothers
+import repzonemobile.core.generated.resources.routetoday
+import repzonemobile.core.generated.resources.routetomorrow
+import repzonemobile.core.generated.resources.todaydatetext
 import repzonemobile.presentation_legacy.generated.resources.Res
 import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_min
 
 @Composable
-fun RotaScreenLegacy(themeManager: ThemeManager) {
+fun CustomerListScreenLegacy(themeManager: ThemeManager) = ViewModelHost<CustomerListViewModel> { viewModel ->
+    val uiState by viewModel.state.collectAsState()
     var selectedTab by rememberSaveable  { mutableIntStateOf(0) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -285,29 +289,17 @@ fun RotaScreenLegacy(themeManager: ThemeManager) {
                         IconButton(enabled = false, onClick = {
                             println("Search clicked")
                         }) {
-                            Icon(
-                                Icons.Default.Search,
-                                contentDescription = "Search",
-                                tint = Color.White
-                            )
+                            Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.White)
                         }
                         IconButton(onClick = {
                             println("Notifications clicked")
                         }) {
-                            Icon(
-                                Icons.Default.Notifications,
-                                contentDescription = "Notifications",
-                                tint = Color.White
-                            )
+                            Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = Color.White)
                         }
                         IconButton(onClick = {
                             println("Profile clicked")
                         }) {
-                            Icon(
-                                Icons.Default.Person,
-                                contentDescription = "Profile",
-                                tint = Color.White
-                            )
+                            Icon(Icons.Default.Person, contentDescription = "Profile", tint = Color.White)
                         }
                     }
                 }
@@ -343,7 +335,13 @@ fun RotaScreenLegacy(themeManager: ThemeManager) {
                                 Tab(
                                     selected = selectedTab == index,
                                     onClick = { selectedTab = index },
-                                    text = { Text("Tab ${index + 1}") },
+                                    text = {
+                                        when(index +1){
+                                            1 -> Text(repzonemobile.core.generated.resources.Res.string.routetoday.fromResource())
+                                            2 -> Text(repzonemobile.core.generated.resources.Res.string.routetomorrow.fromResource())
+                                            3 -> Text(repzonemobile.core.generated.resources.Res.string.routeothers.fromResource())
+                                        }
+                                           },
                                     unselectedContentColor = MaterialTheme.colorScheme.outlineVariant
                                 )
                             }
@@ -351,22 +349,16 @@ fun RotaScreenLegacy(themeManager: ThemeManager) {
                     }
 
                     when(selectedTab) {
-                        0 -> {
+                        0 -> { //TODAY
                             customerList = generateDummyCustomers(4)
                         }
-                        1 -> {
+                        1 -> { // TOMORROW
                             customerList = generateDummyCustomers(500)
                         }
-                        2 -> {
+                        2 -> {// OTHERS
                             customerList = generateDummyCustomers(200)
                         }
                     }
-
-                    /*items(customerList.size) { item, index ->
-                        CustomerCard(customer = customerList[index], modifier = Modifier)
-                        HorizontalDivider()
-                    }*/
-
                     itemsIndexed(customerList, itemContent = { index, customer ->
                         CustomerCard(customer = customer, modifier = Modifier)
                         HorizontalDivider()

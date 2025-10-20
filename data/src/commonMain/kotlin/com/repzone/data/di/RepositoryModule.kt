@@ -1,7 +1,9 @@
 package com.repzone.data.di
 
 import com.repzone.data.mapper.*
+import com.repzone.data.repository.imp.CustomerListRepositoryImpl
 import com.repzone.data.repository.imp.CustomerRepositoryImpl
+import com.repzone.data.repository.imp.MobileModuleParameterRepositoryImpl
 import com.repzone.data.repository.imp.ProductRepositoryImpl
 import com.repzone.data.repository.imp.SyncModuleRepositoryImpl
 import com.repzone.data.util.Mapper
@@ -9,6 +11,7 @@ import com.repzone.data.util.MapperDto
 import com.repzone.database.*
 import com.repzone.domain.model.*
 import com.repzone.domain.repository.*
+import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.network.dto.*
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -20,6 +23,7 @@ val RepositoryModule = module {
     single<MapperDto<SyncCustomerEntity, SyncCustomerModel, CustomerDto>>(named("CustomerEntityDbMapperInterface")) { CustomerEntityDbMapper() }
     single<ICustomerRepository> { CustomerRepositoryImpl(get(named("CustomerEntityDbMapperInterface")), get()) }
     single{ CustomerEntityDbMapper() }
+    single<ICustomerListRepository> { CustomerListRepositoryImpl(get(), get()) }
     //endregion
 
     //region Product
@@ -303,6 +307,7 @@ val RepositoryModule = module {
 
     //region PackageCustomFieldProduct
     single<MapperDto<SyncPackageCustomFieldProductEntity, SyncPackageCustomFieldProductModel, PackageCustomFieldProductDto>>(named("SyncPackageCustomFieldProductEntityDbMapper")) { SyncPackageCustomFieldProductEntityDbMapper() }
+    single<IMobileModuleParameterRepository>{ MobileModuleParameterRepositoryImpl(get(), get(named("SyncPackageCustomFieldProductEntityDbMapper"))) }
     //endregion
 
     //region PaymentPlan

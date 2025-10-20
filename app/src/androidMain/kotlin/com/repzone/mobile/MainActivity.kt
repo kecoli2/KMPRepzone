@@ -21,8 +21,7 @@ import com.repzone.network.di.NetworkModule
 import com.repzone.network.di.PlatformNetworkModule
 import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
-import com.repzone.presentation.legacy.ui.rotalist.CustomerCard
-import com.repzone.presentation.legacy.ui.rotalist.RotaScreenLegacy
+import com.repzone.presentation.legacy.ui.rotalist.CustomerListScreenLegacy
 import com.repzone.sync.di.SyncModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.compose.koinInject
@@ -51,7 +50,7 @@ private fun AppContent() {
     AppTheme(themeManager = themeManager) {
         //AppAndroidPreview()
         //AppRouter()
-        RotaScreenLegacy(themeManager)
+        CustomerListScreenLegacy(themeManager)
     }
 }
 
@@ -78,7 +77,7 @@ fun AppAndroidPreview() {
     val themeManager : ThemeManager = koinInject()
     themeManager.initialize(LegacyThemeConfig())
     AppTheme(themeManager) {
-        RotaScreenLegacy(themeManager)
+        CustomerListScreenLegacy(themeManager)
     }
 }
 

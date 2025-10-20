@@ -30,6 +30,10 @@ SELECT * FROM SyncPackageCustomFieldProductEntity;
 selectBySyncPackageCustomFieldProductEntityId:
 SELECT * FROM SyncPackageCustomFieldProductEntity WHERE Id = ?;
 
+selectBySyncPackageCustomFieldProductEntityProductId:
+SELECT * FROM SyncPackageCustomFieldProductEntity WHERE ProductId = ?;
+
+
 insertSyncPackageCustomFieldProductEntity:
 INSERT INTO SyncPackageCustomFieldProductEntity
 VALUES ?;
