@@ -10,6 +10,7 @@ import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
 import com.repzone.core.enums.UserRole
+import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.model.ResourceUI
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_fetched
@@ -18,6 +19,7 @@ import repzonemobile.core.generated.resources.job_module
 
 class PakageCustomFieldSyncJob(apiService: ISyncApiService<List<PackageCustomFieldDto>>,
                                bulkInsertService: IBulkInsertService<List<PackageCustomFieldDto>>, syncModuleRepository: ISyncModuleRepository,
+    private val iUserSession: IUserSession
 ): BasePaginatedSyncJob<List<PackageCustomFieldDto>>(apiService, bulkInsertService, syncModuleRepository) {
     //region Field
     override val allowedRoles = setOf(UserRole.SALES_REP)
@@ -41,6 +43,7 @@ class PakageCustomFieldSyncJob(apiService: ISyncApiService<List<PackageCustomFie
     }
 
     override fun getCompletedMessage(count: Int): ResourceUI {
+        iUserSession.setReloadParameters()
         return ResourceUI(
             res = Res.string.job_complate_saved,
             args = listOf(count, Res.string.job_module)

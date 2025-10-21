@@ -48,6 +48,12 @@ class UserSessionImp(private val preferences: IPreferencesManager): IUserSession
         return reload
     }
 
+    override fun setReloadParameters(){
+        getActiveSession()?.let {
+            preferences.setBooleanValue("${it.userId}_reloadParameters", true)
+        }
+    }
+
 
     //endregion
 

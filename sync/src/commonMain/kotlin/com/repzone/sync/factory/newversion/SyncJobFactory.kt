@@ -1,5 +1,6 @@
 package com.repzone.sync.factory.newversion
 
+import com.repzone.core.interfaces.IUserSession
 import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.network.dto.*
 import com.repzone.sync.interfaces.IBulkInsertService
@@ -32,6 +33,7 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
         customerGroupPriceParametersBulkInsert: IBulkInsertService<List<CrmPriceListParameterDto>>,
         apiModulesApi: ISyncApiService<List<PackageCustomFieldDto>>,
         modulesRawBulkInsert: IBulkInsertService<List<PackageCustomFieldDto>>,
+        modulesUserSession: IUserSession,
         eventReasonsApi: ISyncApiService<List<EventReasonDto>>,
         eventReasonsRawBulkInsert: IBulkInsertService<List<EventReasonDto>>,
         documentMapApi: ISyncApiService<List<DocumentMapModelDto>>,
@@ -60,7 +62,7 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
                 customerGroupPriceParametersBulkInsert,
                 syncModuleRepository
             ),
-            SyncJobType.COMMON_MODULES to PakageCustomFieldSyncJob(apiModulesApi, modulesRawBulkInsert, syncModuleRepository),
+            SyncJobType.COMMON_MODULES to PakageCustomFieldSyncJob(apiModulesApi, modulesRawBulkInsert, syncModuleRepository, modulesUserSession),
             SyncJobType.COMMON_MODULES_REASONS to EventReasonsSyncJob(eventReasonsApi, eventReasonsRawBulkInsert, syncModuleRepository),
             SyncJobType.COMMON_DOCUMENT_MAPS to DocumentMapsSyncJob(documentMapApi, documentMapBulkInsert, syncModuleRepository),
             SyncJobType.COMMON_DYNAMIC_PAGES to DynamicPageReportSyncJob(dynamicPageReportApi,dynamicPageReportBulkInsert, syncModuleRepository))

@@ -7,6 +7,6 @@ interface IUserSession {
     fun getActiveSession(): UserSessionModel? = null
     fun loadActiveSession()
     fun save()
-
     fun getReloadParameters(): Boolean
+    fun setReloadParameters()
 }

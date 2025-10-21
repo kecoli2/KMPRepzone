@@ -1,5 +1,6 @@
 package com.repzone.sync.interfaces
 
+import com.repzone.core.interfaces.IUserSession
 import com.repzone.network.dto.CrmPriceListParameterDto
 import com.repzone.network.dto.CustomerDto
 import com.repzone.network.dto.CustomerEmailDto
@@ -32,6 +33,7 @@ interface ISyncFactory {
                    customerGroupPriceParametersBulkInsert: IBulkInsertService<List<CrmPriceListParameterDto>>,
                    apiModulesApi: ISyncApiService<List<PackageCustomFieldDto>>,
                    modulesRawBulkInsert: IBulkInsertService<List<PackageCustomFieldDto>>,
+                   modulesUserSession: IUserSession,
                    eventReasonsApi: ISyncApiService<List<EventReasonDto>>,
                    eventReasonsRawBulkInsert: IBulkInsertService<List<EventReasonDto>>,
                    documentMapApi: ISyncApiService<List<DocumentMapModelDto>>,

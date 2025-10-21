@@ -136,6 +136,7 @@ val SyncModule = module {
             customerGroupPriceParametersBulkInsert = get(named("customerGroupEmailBulkInsert")),
             apiModulesApi = get(named("syncModulesImpl")),
             modulesRawBulkInsert = get(named("syncModulesBulkInsert")),
+            modulesUserSession = get(),
             eventReasonsApi = get(named("syncApiEventReasonsImpl")),
             eventReasonsRawBulkInsert = get(named("syncEventReasonBulkInsert")),
             documentMapApi = get(named("syncApiDocumentMapsImpl")),

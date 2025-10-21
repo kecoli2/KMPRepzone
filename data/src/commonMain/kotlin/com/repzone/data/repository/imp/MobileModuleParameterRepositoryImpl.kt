@@ -188,10 +188,9 @@ class MobileModuleParameterRepositoryImpl(
     @OptIn(ExperimentalTime::class)
     private fun prepareLoadAllParameters(){
         parametersMap.clear()
-        val activePack = syncPackageCustomFieldProductQueries.selectAllSyncPackageCustomFieldProductEntity().executeAsList()
-        activePack.forEach { pkg ->
-            val parameters = getMobileModulePrameters(pkg.Id.toInt())
-            when (pkg.Id.toEnum<ModuleProductIdsEnum>()) {
+        ModuleProductIdsEnum.entries.forEach { pkg ->
+            val parameters = getMobileModulePrameters(pkg.value)
+            when (pkg) {
                 ModuleProductIdsEnum.ORDERS -> {
                     modules.copy(order = parameters.getBooleanValue("IsActive", false))
                     val model = OrderParameters(
@@ -415,6 +414,7 @@ class MobileModuleParameterRepositoryImpl(
                 }
             }
         }
+        iUserSession.getReloadParameters()
     }
 
     private fun preLoadParameters(){
