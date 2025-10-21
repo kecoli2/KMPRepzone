@@ -12,7 +12,6 @@ import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.di.CoreUiModule
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
-import com.repzone.data.di.RepositoryModule
 import com.repzone.data.di.RepositoryModulePreview
 import com.repzone.database.di.DatabaseAndroidPreviewModule
 import com.repzone.database.di.DatabaseModulePreview
@@ -23,7 +22,7 @@ import com.repzone.network.di.NetworkModule
 import com.repzone.network.di.PlatformNetworkModule
 import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
-import com.repzone.presentation.legacy.ui.rotalist.CustomerListScreenLegacy
+import com.repzone.presentation.legacy.ui.customerlist.CustomerListScreenLegacy
 import com.repzone.sync.di.SyncModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.compose.koinInject

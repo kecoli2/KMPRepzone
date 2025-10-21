@@ -12,7 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
-import com.repzone.presentation.legacy.ui.rotalist.CustomerListScreenLegacy
+import com.repzone.presentation.legacy.ui.customerlist.CustomerListScreenLegacy
 import com.repzone.presentation.legacy.ui.splash.SplashScreenLegacy
 import com.repzone.presentation.legacy.ui.sync.SyncScreenLegacy
 

@@ -1,4 +1,4 @@
-package com.repzone.presentation.legacy.ui.rotalist
+package com.repzone.presentation.legacy.ui.customerlist
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,22 +21,29 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTimeFilled
+import androidx.compose.material.icons.filled.Chat
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.DocumentScanner
 import androidx.compose.material.icons.filled.EditNotifications
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.ModeComment
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Room
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Task
+import androidx.compose.material.icons.filled.WatchLater
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.DocumentScanner
 import androidx.compose.material.icons.outlined.EditNotifications
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Room
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -48,9 +55,11 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -65,6 +74,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -89,8 +99,11 @@ import repzonemobile.core.generated.resources.notificationlogpagetitle
 import repzonemobile.core.generated.resources.onlinehubtitle
 import repzonemobile.core.generated.resources.profile
 import repzonemobile.core.generated.resources.routeothers
+import repzonemobile.core.generated.resources.routepagechatbtntext
+import repzonemobile.core.generated.resources.routepagetasksbtntext
 import repzonemobile.core.generated.resources.routetoday
 import repzonemobile.core.generated.resources.routetomorrow
+import repzonemobile.core.generated.resources.tasklisttitle
 import repzonemobile.presentation_legacy.generated.resources.Res
 import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_min
 
@@ -305,8 +318,20 @@ fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewMode
                     }
                 }
 
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(45.dp)
+                        .background(themeManager.getCurrentColorScheme().colorPalet.secondary20),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+
+                }
+
                 // LazyColumn içinde kaybolacak alan + Tab + content
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(modifier = Modifier.fillMaxSize().weight(1f)) {
                     // Kaybolacak Alan
                     item {
                         Surface(
@@ -367,6 +392,38 @@ fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewMode
                         HorizontalDivider()
                     })
 
+                }
+
+                // BOTTOM ROW - TASKS + CHAT
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(45.dp)
+                        .background(themeManager.getCurrentColorScheme().colorPalet.secondary20),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    TextButton(modifier = Modifier.fillMaxWidth().weight(1f).padding(end = 8.dp),
+                        onClick = { },
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = Color.White,
+                            disabledContentColor = themeManager.getCurrentColorScheme().colorPalet.neutral60
+                        ),
+                    ){
+                        Icon(imageVector = Icons.Default.Task, modifier = Modifier.padding(end = 8.dp), contentDescription = null)
+                        Text(repzonemobile.core.generated.resources.Res.string.routepagetasksbtntext.fromResource())
+                    }
+
+                    TextButton(modifier = Modifier.fillMaxWidth().weight(1f),
+                        onClick = { },
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = Color.White,
+                            disabledContentColor = themeManager.getCurrentColorScheme().colorPalet.neutral60
+                        ),
+                    ){
+                        Icon(imageVector = Icons.Default.ModeComment, modifier = Modifier.padding(end = 8.dp), contentDescription = null)
+                        Text(repzonemobile.core.generated.resources.Res.string.routepagechatbtntext.fromResource())
+                    }
                 }
             }
         }
