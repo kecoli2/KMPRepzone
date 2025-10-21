@@ -1,6 +1,7 @@
 package com.repzone.sync.transaction
 
 import app.cash.sqldelight.db.SqlDriver
+import com.repzone.core.util.extensions.now
 import com.repzone.database.AppDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,7 +12,6 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
-import kotlin.time.Clock.*
 import kotlin.time.ExperimentalTime
 
 /**
@@ -114,7 +114,7 @@ class TransactionCoordinator(
      */
     @OptIn(ExperimentalTime::class)
     private suspend fun processOperation(operation: DatabaseOperation) {
-        val startTime = System.now().toEpochMilliseconds()
+        val startTime = now()
 
         // Stats update
         statsMutex.withLock {
@@ -140,7 +140,7 @@ class TransactionCoordinator(
                 operation.recordCount
             }
 
-            val duration = System.now().toEpochMilliseconds() - startTime
+            val duration = now() - startTime
 
             // Stats update
             statsMutex.withLock {
@@ -159,7 +159,7 @@ class TransactionCoordinator(
             resultChannels[operation.id]?.send(successResult)
 
         } catch (e: Exception) {
-            val duration = System.now().toEpochMilliseconds() - startTime
+            val duration = now() - startTime
 
             // Stats update
             statsMutex.withLock {
@@ -213,7 +213,7 @@ class TransactionCoordinator(
 
     @OptIn(ExperimentalTime::class)
     private suspend fun processCompositeOperation(compositeOp: CompositeOperation) {
-        val startTime = System.now().toEpochMilliseconds()
+        val startTime = now()
 
         statsMutex.withLock {
             totalOperations++
@@ -245,7 +245,7 @@ class TransactionCoordinator(
                 recordCount
             }
 
-            val duration = System.now().toEpochMilliseconds() - startTime
+            val duration = now() - startTime
 
             statsMutex.withLock {
                 successfulOperations++
@@ -259,7 +259,7 @@ class TransactionCoordinator(
             compositeResultChannels[compositeOp.id]?.send(successResult)
 
         } catch (e: Exception) {
-            val duration = System.now().toEpochMilliseconds() - startTime
+            val duration = now() - startTime
 
             statsMutex.withLock {
                 failedOperations++

@@ -19,7 +19,6 @@ import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.customergroupspickertitle
 import repzonemobile.core.generated.resources.filterapplybuttontext
 import repzonemobile.core.generated.resources.filterclearbuttontext
-import repzonemobile.core.generated.resources.filterclearqestion
 import repzonemobile.core.generated.resources.short
 
 data class CustomerGroup(

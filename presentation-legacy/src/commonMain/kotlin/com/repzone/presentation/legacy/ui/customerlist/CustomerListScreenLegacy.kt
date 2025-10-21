@@ -38,6 +38,7 @@ import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Room
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.filled.Task
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.outlined.AccessTime
@@ -51,6 +52,7 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.ModalNavigationDrawer
@@ -64,6 +66,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -320,9 +323,21 @@ fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewMode
                         }) {
                             Icon(Icons.Default.Map, contentDescription = "Profile", tint = Color.White)
                         }
+                        IconButton(onClick = {
+                            viewModel.onEvent(event = CustomerListViewModel.Event.StartSync)
+                        }) {
+                            Icon(Icons.Default.Sync, contentDescription = "Sync", tint = Color.White)
+                        }
                     }
                 }
-
+                if(uiState.isSyncInProgress){
+                    LinearProgressIndicator(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(2.dp),
+                        color = themeManager.getCurrentColorScheme().colorPalet.primary50
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -331,6 +346,7 @@ fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewMode
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
                     BasicTextField(
                         value = searchQuery,
                         onValueChange = { searchQuery = it },

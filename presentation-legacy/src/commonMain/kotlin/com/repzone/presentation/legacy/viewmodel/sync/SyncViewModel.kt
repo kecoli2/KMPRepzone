@@ -129,12 +129,12 @@ class SyncTestViewModel(private val syncManager: ISyncManager,
 
     override fun onStop() {
         super.onStop()
-        transactionCoordinator.shutdown()
+        //transactionCoordinator.shutdown()
     }
 
     override fun onDispose() {
         super.onDispose()
-        transactionCoordinator.shutdown()
+        //transactionCoordinator.shutdown()
     }
 
     private fun getCurrentUserRole(): UserRole {
@@ -170,7 +170,7 @@ class SyncTestViewModel(private val syncManager: ISyncManager,
                 }
 
                 val userRole = getCurrentUserRole()
-                syncManager.startSync(userRole)
+                syncManager.startSync()
 
                 updateState { currentState ->
                     currentState.copy(

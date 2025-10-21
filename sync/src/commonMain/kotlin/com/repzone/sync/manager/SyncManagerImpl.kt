@@ -7,6 +7,7 @@ import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
 import com.repzone.sync.model.SyncProgress
 import com.repzone.core.enums.UserRole
+import com.repzone.core.interfaces.IUserSession
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -24,7 +25,9 @@ import kotlinx.coroutines.sync.Semaphore
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.sync.withPermit
 
-class SyncManagerImpl(private val syncJobs: Map<SyncJobType, ISyncJob>, private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)): ISyncManager {
+class SyncManagerImpl(private val syncJobs: Map<SyncJobType, ISyncJob>,
+                      private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default),
+    private val iUserSession: IUserSession): ISyncManager {
 
     //region Field
     private val mutex = Mutex()
@@ -62,9 +65,9 @@ class SyncManagerImpl(private val syncJobs: Map<SyncJobType, ISyncJob>, private 
             SyncProgress(totalJobs, completedJobs, runningJobs, failedJobs, isRunning)
         }
 
-    override suspend fun startSync(userRole: UserRole) {
+    override suspend fun startSync() {
         val applicableJobs = syncJobs.filter { (_, job) ->
-            job.isApplicableForRole(userRole)
+            job.isApplicableForRole(iUserSession.getActiveSession()?.identity?.role ?: UserRole.SALES_REP)
         }.keys.toList()
 
         startSpecificJobs(applicableJobs)
@@ -75,6 +78,10 @@ class SyncManagerImpl(private val syncJobs: Map<SyncJobType, ISyncJob>, private 
         jobs.forEach { jobType ->
             if (jobType !in runningJobs) {
                 val job = syncJobs[jobType] ?: return@forEach
+
+                if(!job.isApplicableForRole(iUserSession.getActiveSession()?.identity?.role ?: UserRole.SALES_REP)){
+                   return@forEach
+                }
 
                 val coroutineJob = scope.launch {
                     jobSemaphore.withPermit {

@@ -14,10 +14,11 @@ data class CustomerListScreenUiState(
     val isOnlineHubTargetsModuleActive: Boolean = false,
     val isCustomerAddModuleActive: Boolean = false,
     val isFeedbackModuleActive: Boolean = false,
-    val isChatButtonContainer: Boolean = false
+    val isChatButtonContainer: Boolean = false,
+    val isSyncInProgress: Boolean = false
 ): HasUiFrame {
 
     override fun copyWithUiFrame(newUiFrame: UiFrame): CustomerListScreenUiState {
-        return copy(uiFrame = uiFrame)
+        return copy(uiFrame = uiFrame,)
     }
 }

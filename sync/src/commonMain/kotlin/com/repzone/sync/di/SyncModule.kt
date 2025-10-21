@@ -32,7 +32,7 @@ val SyncModule = module {
     single { TransactionCoordinator(get(), get()) }
 
     //region GENERAL
-    single<ISyncManager>{ SyncManagerImpl(get()) }
+    single<ISyncManager>{ SyncManagerImpl(get(), iUserSession = get()) }
     //endregion GENERAL
 
 

@@ -53,12 +53,12 @@ class SyncViewModel(private val syncManager: ISyncManager, private val iusereSes
 
     override fun onStop() {
         super.onStop()
-        transactionCoordinator.shutdown()
+        //transactionCoordinator.shutdown()
     }
 
     override fun onDispose() {
         super.onDispose()
-        transactionCoordinator.shutdown()
+        //transactionCoordinator.shutdown()
     }
     //endregion
 
@@ -80,9 +80,7 @@ class SyncViewModel(private val syncManager: ISyncManager, private val iusereSes
                         successMessage = null
                     )
                 }
-
-                val userRole = getCurrentUserRole()
-                syncManager.startSync(userRole)
+                syncManager.startSync()
 
             } catch (e: Exception) {
                 updateState { currentState ->

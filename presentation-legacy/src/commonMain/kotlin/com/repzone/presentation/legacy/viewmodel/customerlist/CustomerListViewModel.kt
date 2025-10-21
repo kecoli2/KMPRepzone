@@ -4,11 +4,16 @@ import com.repzone.core.enums.VisitPlanSchedulesType
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.IMobileModuleParameterRepository
+import com.repzone.sync.interfaces.ISyncManager
+import com.repzone.sync.model.SyncJobStatus
+import com.repzone.sync.model.SyncJobType
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRepository,
-                            private val iModuleParameterRepository: IMobileModuleParameterRepository
-): BaseViewModel<CustomerListScreenUiState, Nothing>(CustomerListScreenUiState()) {
+                            private val iModuleParameterRepository: IMobileModuleParameterRepository,
+                            private val iSyncManager: ISyncManager
+): BaseViewModel<CustomerListScreenUiState, CustomerListViewModel.Event>(CustomerListScreenUiState()) {
     //region Field
     //endregion
 
@@ -24,6 +29,33 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
     //endregion
 
     //region Public Method
+    fun onEvent(event: Event) {
+        when(event){
+            Event.StartSync -> {
+                updateState { currentState ->
+                    currentState.copy(
+                        isSyncInProgress = true
+                    )
+                }
+                scope.launch {
+                    iSyncManager.startSpecificJobs(listOf(SyncJobType.COMMON_MODULES))
+                    iSyncManager.allJobsStatus.collect{ it ->
+                        when(it.get(SyncJobType.COMMON_MODULES)){
+                            is SyncJobStatus.Idle, is SyncJobStatus.Failed, is SyncJobStatus.Success -> {
+                                updateState { currentState ->
+                                    currentState.copy(
+                                        isSyncInProgress = false
+                                    )
+                                }
+                                updateUiWithPermissions()
+                            }
+                            else -> {}
+                        }
+                    }
+                }
+            }
+        }
+    }
     //endregion
 
     //region Protected Method
@@ -51,22 +83,28 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         //region Update Ui State
         updateState { currentState ->
             currentState.copy(
+                isTabActive = iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FLEXIBLE_DATES,
+                supposeRouteButton = iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FIXED_DATES,
+                showIconHeader = iModuleParameterRepository.getAttendanceTrackingParameters()?.showIconAtHeader ?: false,
+                isAttendanceTrackingModuleActive = iModuleParameterRepository.getAttendanceTrackingParameters()?.isActive ?: false,
                 taskButtonContainerVisibility = iModuleParameterRepository.getModule().task,
                 routeWellcomeBar = isActive && isDashboardActive,
                 isOnlineHubTargetsModuleActive = isActive && isOnlineHubActive,
                 isCustomerAddModuleActive = isActiveCRM && canAddNewCustomer,
                 isFeedbackModuleActive = isActiveMsgChat && isActiveFeedback,
                 isChatButtonContainer = isActiveMsgChat && isActiveMessaging,
-                isAttendanceTrackingModuleActive = iModuleParameterRepository.getAttendanceTrackingParameters()?.isActive ?: false,
-                showIconHeader = iModuleParameterRepository.getAttendanceTrackingParameters()?.showIconAtHeader ?: false,
-                isTabActive = iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FLEXIBLE_DATES ,
-                supposeRouteButton = iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FIXED_DATES
             )
         }
 
         //endregion Update Ui State
     }
     //endregion
+
+    //region Event
+    sealed class Event {
+        data object StartSync : Event()
+    }
+    //endregion Event
 }
 
 

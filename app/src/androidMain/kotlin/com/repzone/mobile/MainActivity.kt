@@ -89,14 +89,7 @@ fun AppAndroidPreview() {
     var selectedSort by remember { mutableStateOf(SortOption.NAME_ASC) }
 
     AppTheme(themeManager) {
-        FilterBottomSheet(
-            showBottomSheet = showFilterSheet,
-            onDismiss = { showFilterSheet = false },
-            selectedGroups = selectedGroups,
-            onGroupsChange = { selectedGroups = it },
-            selectedSort = selectedSort,
-            onSortChange = { selectedSort = it }
-        )
+        CustomerListScreenLegacy()
     }
 }
 

@@ -11,7 +11,7 @@ interface ISyncManager {
     val allJobsStatus: Flow<Map<SyncJobType, SyncJobStatus>>
     val overallProgress: Flow<SyncProgress>
 
-    suspend fun startSync(userRole: UserRole)
+    suspend fun startSync()
     suspend fun startSpecificJobs(jobs: List<SyncJobType>)
     suspend fun pauseAll()
     suspend fun resumeAll()
