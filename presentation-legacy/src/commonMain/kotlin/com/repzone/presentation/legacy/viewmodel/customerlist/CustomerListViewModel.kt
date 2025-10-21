@@ -18,16 +18,8 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
     //region Constructor
         init {
             scope.launch {
-                updateState { currentState ->
-                    currentState.copy(
-                        isAttendanceTrackingModuleActive = iModuleParameterRepository.getAttendanceTrackingParameters()?.isActive ?: false,
-                        showIconHeader = iModuleParameterRepository.getAttendanceTrackingParameters()?.showIconAtHeader ?: false,
-                        isTabActive = iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FLEXIBLE_DATES ,
-                        supposeRouteButton = iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FIXED_DATES
-                    )
-                }
+                updateUiWithPermissions()
             }
-            updateUiWithPermissions()
         }
     //endregion
 
@@ -64,7 +56,11 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                 isOnlineHubTargetsModuleActive = isActive && isOnlineHubActive,
                 isCustomerAddModuleActive = isActiveCRM && canAddNewCustomer,
                 isFeedbackModuleActive = isActiveMsgChat && isActiveFeedback,
-                isChatButtonContainer = isActiveMsgChat && isActiveMessaging
+                isChatButtonContainer = isActiveMsgChat && isActiveMessaging,
+                isAttendanceTrackingModuleActive = iModuleParameterRepository.getAttendanceTrackingParameters()?.isActive ?: false,
+                showIconHeader = iModuleParameterRepository.getAttendanceTrackingParameters()?.showIconAtHeader ?: false,
+                isTabActive = iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FLEXIBLE_DATES ,
+                supposeRouteButton = iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FIXED_DATES
             )
         }
 
