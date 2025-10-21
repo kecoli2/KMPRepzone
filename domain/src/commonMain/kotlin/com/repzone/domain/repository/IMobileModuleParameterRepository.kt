@@ -25,6 +25,8 @@ import com.repzone.domain.model.MobileParameterModel
 import com.repzone.domain.model.SyncPackageCustomFieldProductModel
 
 interface IMobileModuleParameterRepository {
+
+    fun getModule(): MobileParameterModel
     fun getOrdersParameters(): OrderParameters?
     fun getInvoiceEInvoceParameters(): InvoiceEInvoiceParameters?
     fun getBusinessIntelligenceParameters(): BusinessIntelligenceParameters?

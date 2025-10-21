@@ -1,6 +1,6 @@
 package com.repzone.presentation.legacy.viewmodel.customerlist
 
-import com.repzone.core.enums.ModuleProductIdsEnum
+import com.repzone.core.enums.VisitPlanSchedulesType
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.IMobileModuleParameterRepository
@@ -17,51 +17,17 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
 
     //region Constructor
         init {
-           /* scope.launch {
-                val fields = iModuleParameterRepository.getMobileModulePrameters(ModuleProductIdsEnum.GEOFENCINGANDROUTETRACKING.value)
-                var isActive = false
-                var routeParam = 0
-                var radarParameter = 0
-                fields.forEach { field ->
-                    when (field.fieldName) {
-                        "IsActive" -> {
-                            isActive = field.value.toBoolean()
-                        }
-                        "VisitPlanSchedules" -> {
-                            val itemList = field.itemList?.split(',')
-                            routeParam = itemList?.indexOf(field.value) ?: 0
-                        }
-                        "ShowNearbyCustomers" -> {
-                            val itemList = field.itemList?.split(',')
-                            radarParameter = itemList?.indexOf(field.value) ?: 0
-                        }
-                    }
-                }
-
-                val atfields = iModuleParameterRepository.getMobileModulePrameters(ModuleProductIdsEnum.ATTENDANCETRACKING.value)
-                var atIsActive = false
-                var showIconAtHeader = true
-                atfields.forEach { field ->
-                    when (field.fieldName) {
-                        "IsActive" -> {
-                            atIsActive = field.value.toBoolean()
-                        }
-                        "ShowIconAtHeader" -> {
-                            showIconAtHeader = field.value.toBoolean()
-                        }
-                    }
-                }
-
+            scope.launch {
                 updateState { currentState ->
                     currentState.copy(
-                        isAttendanceTrackingModuleActive = atIsActive,
-                        showIconHeader = showIconAtHeader,
-                        isTabActive = isActive && routeParam == 1,
-                        supposeRouteButton = isActive && routeParam == 0
+                        isAttendanceTrackingModuleActive = iModuleParameterRepository.getAttendanceTrackingParameters()?.isActive ?: false,
+                        showIconHeader = iModuleParameterRepository.getAttendanceTrackingParameters()?.showIconAtHeader ?: false,
+                        isTabActive = iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FLEXIBLE_DATES ,
+                        supposeRouteButton = iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FIXED_DATES
                     )
                 }
             }
-            updateUiWithPermissions()*/
+            updateUiWithPermissions()
         }
     //endregion
 
@@ -73,58 +39,27 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
 
     //region Private Method
     private fun updateUiWithPermissions() {
-        /*val moduleParams = iModuleParameterRepository.getMobileModuleParameter()
-
         //region Reports Module
-        val fields = iModuleParameterRepository.getMobileModulePrameters(ModuleProductIdsEnum.REPORTS.value)
-        var isActive = false
-        var isDashboardActive = false
-        var isOnlineHubActive = false
-
-        fields.forEach { field ->
-            when (field.fieldName) {
-                "IsActive" -> isActive = field.value.toBoolean()
-                "MobileDashboard" -> isDashboardActive = field.value.toBoolean()
-                "Mobile Hub" -> isOnlineHubActive = field.value.toBoolean()
-            }
-        }
+        val isActive = iModuleParameterRepository.getReportsParameters()?.isActive ?: false
+        val isDashboardActive = iModuleParameterRepository.getReportsParameters()?.mobileDashBoard ?: false
+        val isOnlineHubActive = iModuleParameterRepository.getReportsParameters()?.mobileHub ?: false
         //endregion Reports Module
 
         //region Customer add - CRM Operations
-
-        val crmFields = iModuleParameterRepository.getMobileModulePrameters(ModuleProductIdsEnum.CRMOPERATIONS.value)
-        var isActiveCRM = false
-        var canAddNewCustomer = false
-
-        crmFields.forEach { field ->
-            when (field.fieldName) {
-                "IsActive" -> isActiveCRM = field.value.toBoolean()
-                "CanAddNewCustomer" -> canAddNewCustomer = field.value.toBoolean()
-            }
-        }
-
+        val isActiveCRM = iModuleParameterRepository.getCrmOperationsParameters()?.isActive ?: false
+        val canAddNewCustomer = iModuleParameterRepository.getCrmOperationsParameters()?.canAddNewCustomer ?: false
         //endregion Customer add - CRM Operations
 
         //region Feedback - Messaging and Chat
-        val fbFields = iModuleParameterRepository.getMobileModulePrameters(ModuleProductIdsEnum.MESSAGINGANDCHAT.value)
-        var isActiveMsgChat = false
-        var isActiveFeedback = false
-        var isActiveMessaging = false
-
-        fbFields.forEach { field ->
-            when (field.fieldName) {
-                "IsActive" -> isActiveMsgChat = field.value.toBoolean()
-                "Feedback" -> isActiveFeedback = field.value.toBoolean()
-                "Messaging" -> isActiveMessaging = field.value.toBoolean()
-            }
-        }
-
+        val isActiveMsgChat = iModuleParameterRepository.getMessagingChatFeedbackParameters()?.isActive ?: false
+        val isActiveFeedback = iModuleParameterRepository.getMessagingChatFeedbackParameters()?.feedback ?: false
+        val isActiveMessaging = iModuleParameterRepository.getMessagingChatFeedbackParameters()?.messaging ?: false
         //endregion Feedback - Messaging and Chat
 
         //region Update Ui State
         updateState { currentState ->
             currentState.copy(
-                taskButtonContainerVisibility = moduleParams.task,
+                taskButtonContainerVisibility = iModuleParameterRepository.getModule().task,
                 routeWellcomeBar = isActive && isDashboardActive,
                 isOnlineHubTargetsModuleActive = isActive && isOnlineHubActive,
                 isCustomerAddModuleActive = isActiveCRM && canAddNewCustomer,
@@ -133,7 +68,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
             )
         }
 
-        //endregion Update Ui State*/
+        //endregion Update Ui State
     }
     //endregion
 }

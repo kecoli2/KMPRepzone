@@ -47,6 +47,7 @@ import com.repzone.data.util.getIntValue
 import com.repzone.data.util.getStringValue
 import com.repzone.database.SyncPackageCustomFieldProductEntity
 import com.repzone.database.SyncPackageCustomFieldProductEntityQueries
+import com.repzone.domain.model.MobileParameterModel
 import com.repzone.domain.model.SyncPackageCustomFieldProductModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.network.dto.PackageCustomFieldProductDto
@@ -58,7 +59,8 @@ class MobileModuleParameterRepositoryImpl(
         private val iUserSession: IUserSession ): IMobileModuleParameterRepository {
 
     //region Fields
-        private var parametersMap : MutableMap<ModuleProductIdsEnum, Any> = mutableMapOf()
+      private var parametersMap : MutableMap<ModuleProductIdsEnum, Any> = mutableMapOf()
+      private var modules = MobileParameterModel()
     //endregion Fields
 
     //region Constructor
@@ -67,8 +69,11 @@ class MobileModuleParameterRepositoryImpl(
     }
     //endregion Constructor
 
-
     //region Public Method
+    override fun getModule(): MobileParameterModel {
+        return modules
+    }
+
     override fun getOrdersParameters(): OrderParameters? {
         preLoadParameters()
         return parametersMap[ModuleProductIdsEnum.ORDERS] as OrderParameters?
@@ -176,7 +181,6 @@ class MobileModuleParameterRepositoryImpl(
     //endregion
 
     //region Private Method
-
     private fun getMobileModulePrameters(productId: Int): List<SyncPackageCustomFieldProductModel> {
         return syncPackageCustomFieldProductQueries.selectBySyncPackageCustomFieldProductEntityProductId(productId.toLong()).executeAsList().map { mapperCustomFieldProduct.toDomain(it) }
     }
@@ -189,6 +193,7 @@ class MobileModuleParameterRepositoryImpl(
             val parameters = getMobileModulePrameters(pkg.Id.toInt())
             when (pkg.Id.toEnum<ModuleProductIdsEnum>()) {
                 ModuleProductIdsEnum.ORDERS -> {
+                    modules.copy(order = parameters.getBooleanValue("IsActive", false))
                     val model = OrderParameters(
                         isActive = parameters.getBooleanValue("IsActive", false),
                         allowDraft = parameters.getBooleanValue("AllowDraft", false),
@@ -211,6 +216,7 @@ class MobileModuleParameterRepositoryImpl(
                     parametersMap.put(ModuleProductIdsEnum.ORDERS, model)
                 }
                 ModuleProductIdsEnum.INVOICESANDEINVOICES -> {
+                    modules.copy(invoice = parameters.getBooleanValue("IsActive", false))
                     val model = InvoiceEInvoiceParameters(
                         isActive = parameters.getBooleanValue("IsActive", false),
                         printingAllowed = parameters.getBooleanValue("PrintingAllowed", false),
@@ -220,12 +226,14 @@ class MobileModuleParameterRepositoryImpl(
                     parametersMap.put(ModuleProductIdsEnum.INVOICESANDEINVOICES, model)
                 }
                 ModuleProductIdsEnum.BUSINESSINTELLIGENCE -> {
+                    modules.copy(qlikReport = parameters.getBooleanValue("IsActive", false))
                     val model = BusinessIntelligenceParameters(
                         isActive = parameters.getBooleanValue("IsActive", false)
                     )
                     parametersMap.put(ModuleProductIdsEnum.BUSINESSINTELLIGENCE, model)
                 }
                 ModuleProductIdsEnum.DIGITALCONTENTSHARING -> {
+                    modules.copy(drive = parameters.getBooleanValue("IsActive", false))
                     val model = DigitalContentSharingParameters(
                         isActive = parameters.getBooleanValue("IsActive", false),
                     )
@@ -233,12 +241,14 @@ class MobileModuleParameterRepositoryImpl(
 
                 }
                 ModuleProductIdsEnum.TASKMANAGEMENT -> {
+                    modules.copy(task = parameters.getBooleanValue("IsActive", false))
                     val model = TaskManagmentParameters(
                         isActive = parameters.getBooleanValue("IsActive", false)
                     )
                     parametersMap.put(ModuleProductIdsEnum.TASKMANAGEMENT, model)
                 }
                 ModuleProductIdsEnum.EAGLEEYEANDLOCATIONTRACKING -> {
+                    modules.copy(eagleEye = parameters.getBooleanValue("IsActive", false))
                     val model = EagleEyeLocationTrackingParameters(
                         isActive = parameters.getBooleanValue("IsActive", false),
                         trackStatus = parameters.getBooleanValue("TrackStatus", false),
@@ -252,6 +262,7 @@ class MobileModuleParameterRepositoryImpl(
                     parametersMap.put(ModuleProductIdsEnum.EAGLEEYEANDLOCATIONTRACKING, model)
                 }
                 ModuleProductIdsEnum.MESSAGINGANDCHAT -> {
+                    modules.copy(chat = parameters.getBooleanValue("IsActive", false))
                     val model = MessagingChatFeedbackParameters(
                         isActive = parameters.getBooleanValue("IsActive", false),
                         messaging = parameters.getBooleanValue("Messaging", false),
@@ -260,6 +271,7 @@ class MobileModuleParameterRepositoryImpl(
                     parametersMap.put(ModuleProductIdsEnum.MESSAGINGANDCHAT, model)
                 }
                 ModuleProductIdsEnum.GEOFENCINGANDROUTETRACKING -> {
+                    modules.copy(geoFence = parameters.getBooleanValue("IsActive", false))
                     val model = GeofenceRouteTrackingParameters(
                         isActive = parameters.getBooleanValue("IsActive", false),
                         distance = parameters.getIntValue("Distance",250),
@@ -279,6 +291,7 @@ class MobileModuleParameterRepositoryImpl(
                     parametersMap.put(ModuleProductIdsEnum.GEOFENCINGANDROUTETRACKING, model)
                 }
                 ModuleProductIdsEnum.CUSTOMMOBILEFORMS -> {
+                    modules.copy(form = parameters.getBooleanValue("IsActive", false))
                     val models = CustomMobileFormsParameters(
                         isActive = parameters.getBooleanValue("IsActive", false),
                         allowDraft = parameters.getBooleanValue("AllowDraft", false),
@@ -291,6 +304,7 @@ class MobileModuleParameterRepositoryImpl(
 
                 }
                 ModuleProductIdsEnum.ATTENDANCETRACKING -> {
+                    modules.copy(timeTracker = parameters.getBooleanValue("IsActive", false))
                     val model = AttendanceTrackingParameters(
                         isActive = parameters.getBooleanValue("IsActive", false),
                         multiLogin = parameters.getBooleanValue("MultiLogin", false),
@@ -306,6 +320,7 @@ class MobileModuleParameterRepositoryImpl(
                     parametersMap.put(ModuleProductIdsEnum.ATTENDANCETRACKING, model)
                 }
                 ModuleProductIdsEnum.REPORTS -> {
+                    modules.copy(report = parameters.getBooleanValue("IsActive", false))
                     val model = ReportsParameters(
                         isActive = parameters.getBooleanValue("IsActive", false),
                         mobileDashBoard = parameters.getBooleanValue("MobileDashboard", false),
@@ -314,6 +329,7 @@ class MobileModuleParameterRepositoryImpl(
                     parametersMap.put(ModuleProductIdsEnum.REPORTS, model)
                 }
                 ModuleProductIdsEnum.PAYMENTCOLLECTION -> {
+                    modules.copy(payment = parameters.getBooleanValue("IsActive", false))
                     val model = PaymentCollectionsParameters(
                         isActive = parameters.getBooleanValue("IsActive", false),
                         printingAllowed = parameters.getBooleanValue("PrintingAllowed", false),
@@ -321,6 +337,7 @@ class MobileModuleParameterRepositoryImpl(
                     parametersMap.put(ModuleProductIdsEnum.PAYMENTCOLLECTION, model)
                 }
                 ModuleProductIdsEnum.DISPATCHES -> {
+                    modules.copy(dispatch = parameters.getBooleanValue("IsActive", false))
                     val model = DispatchesParameters(
                         isActive = parameters.getBooleanValue("IsActive", false),
                         printingAllowed = parameters.getBooleanValue("PrintingAllowed", false),
@@ -329,6 +346,7 @@ class MobileModuleParameterRepositoryImpl(
                     parametersMap.put(ModuleProductIdsEnum.DISPATCHES, model)
                 }
                 ModuleProductIdsEnum.GAMIFICATION -> {
+                    modules.copy(gamification = parameters.getBooleanValue("IsActive", false))
                     val model = GamificationParameters(
                         isActive = parameters.getBooleanValue("IsActive", false),
                         slashScreen = parameters.getEnumValue<OnOf>("SplashScreen", OnOf.OFF),
@@ -338,6 +356,7 @@ class MobileModuleParameterRepositoryImpl(
 
                 }
                 ModuleProductIdsEnum.CRMOPERATIONS -> {
+                    modules.copy(crmOperations = parameters.getBooleanValue("IsActive", false))
                     val model = CrmOperationsParameters(
                         isActive = parameters.getBooleanValue("IsActive", false),
                         canAddNewCustomer = parameters.getBooleanValue("CanAddNewCustomer", false),
