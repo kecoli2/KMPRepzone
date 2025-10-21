@@ -116,7 +116,7 @@ import repzonemobile.presentation_legacy.generated.resources.Res
 import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_min
 
 @Composable
-fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewModel ->
+fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Unit) = ViewModelHost<CustomerListViewModel> { viewModel ->
     val themeManager: ThemeManager = koinInject()
     val uiState by viewModel.state.collectAsState()
     var selectedTab by rememberSaveable  { mutableIntStateOf(0) }
@@ -199,7 +199,9 @@ fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewMode
                                         NavigationItemType.DAILY_OPERATIONS -> {}
                                         NavigationItemType.GPS_OPERATIONS -> {}
                                         NavigationItemType.NOTIFICATION_HISTORY -> {}
-                                        NavigationItemType.ONLINE_CENTER -> {}
+                                        NavigationItemType.ONLINE_CENTER -> {
+                                            onControllSucces(NavigationItemType.ONLINE_CENTER)
+                                        }
                                         NavigationItemType.CUSTOMER_NOTES -> {}
                                         NavigationItemType.LOG -> {}
                                     }

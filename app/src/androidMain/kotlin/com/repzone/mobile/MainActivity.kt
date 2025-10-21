@@ -89,7 +89,7 @@ fun AppAndroidPreview() {
     var selectedSort by remember { mutableStateOf(SortOption.NAME_ASC) }
 
     AppTheme(themeManager) {
-        CustomerListScreenLegacy()
+        //CustomerListScreenLegacy()
     }
 }
 
