@@ -18,22 +18,26 @@ import org.koin.dsl.module
 
 val RepositoryModule = module {
 
+    //region REPOSITORY
+    single<ICustomerRepository> { CustomerRepositoryImpl(get(named("CustomerEntityDbMapperInterface")), get()) }
+    single<ICustomerListRepository> { CustomerListRepositoryImpl(get(), get()) }
+    single<IProductRepository> { ProductRepositoryImpl(get(named("ProductEntityDbMapperInterface")), get()) }
+    single<ISyncModuleRepository> { SyncModuleRepositoryImpl(get(named("SyncModuleEntityDbMapper")), get()) }
+    single<IMobileModuleParameterRepository>{ MobileModuleParameterRepositoryImpl(get(), get(named("SyncPackageCustomFieldProductEntityDbMapper")), get()) }
+    //endregion REPOSITORY
 
+    //region DBMAPPERS
     //region Customer
     single<MapperDto<SyncCustomerEntity, SyncCustomerModel, CustomerDto>>(named("CustomerEntityDbMapperInterface")) { CustomerEntityDbMapper() }
-    single<ICustomerRepository> { CustomerRepositoryImpl(get(named("CustomerEntityDbMapperInterface")), get()) }
     single{ CustomerEntityDbMapper() }
-    single<ICustomerListRepository> { CustomerListRepositoryImpl(get(), get()) }
     //endregion
 
     //region Product
     single<Mapper<SyncProductEntity, SyncProductModel>>(named("ProductEntityDbMapperInterface")) { ProductEntityDbMapper() }
-    single<IProductRepository> { ProductRepositoryImpl(get(named("ProductEntityDbMapperInterface")), get()) }
     //endregion
 
     //region SyncModule
     single<Mapper<SyncModuleEntity, SyncModuleModel>>(named("SyncModuleEntityDbMapper")) { SyncModuleEntityDbMapper() }
-    single<ISyncModuleRepository> { SyncModuleRepositoryImpl(get(named("SyncModuleEntityDbMapper")), get()) }
     //endregion
 
     //region MobileRoute
@@ -307,7 +311,6 @@ val RepositoryModule = module {
 
     //region PackageCustomFieldProduct
     single<MapperDto<SyncPackageCustomFieldProductEntity, SyncPackageCustomFieldProductModel, PackageCustomFieldProductDto>>(named("SyncPackageCustomFieldProductEntityDbMapper")) { SyncPackageCustomFieldProductEntityDbMapper() }
-    single<IMobileModuleParameterRepository>{ MobileModuleParameterRepositoryImpl(get(), get(named("SyncPackageCustomFieldProductEntityDbMapper"))) }
     //endregion
 
     //region PaymentPlan
@@ -489,5 +492,5 @@ val RepositoryModule = module {
     //region WarehouseTotal
     single<Mapper<SyncWarehouseTotalEntity, SyncWarehouseTotalModel>>(named("SyncWarehouseTotalEntityDbMapper")) { SyncWarehouseTotalEntityDbMapper() }
     //endregion
-
+    //endregion DBMAPPERS
 }

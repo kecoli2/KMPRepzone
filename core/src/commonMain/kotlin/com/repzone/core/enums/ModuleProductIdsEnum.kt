@@ -19,5 +19,7 @@ enum class ModuleProductIdsEnum(val value : Int) {
     GAMIFICATION(38),
     CRMOPERATIONS(39),
     PRODUCTALLOCATION(40),
-    VISIT(41)
+    VISIT(41),
+    NOTIFICATIONS(34),
+    WORKING_HOURS(35)
 }

@@ -78,6 +78,7 @@ open class BaseViewModel<S : Any, E : Any>(initialState: S) {
 /**
  * HasUiFrame implement eden state'ler için loading durumunu ayarlar
  */
+@Suppress("UNCHECKED_CAST")
 fun <S> BaseViewModel<S, *>.setLoading(isLoading: Boolean)
         where S : Any, S : HasUiFrame {
     updateStateInternal { currentState ->
@@ -118,6 +119,7 @@ fun <S> BaseViewModel<S, *>.setErrorStringResource(error: StringResource?)
     }
 }
 
+@Suppress("UNCHECKED_CAST")
 fun <S> BaseViewModel<S, *>.setErrorStringResource(error: StringResource?, formatArgs: List<Any> = emptyList())
         where S : Any, S : HasUiFrame {
     updateStateInternal { currentState ->
@@ -143,6 +145,7 @@ fun <S> BaseViewModel<S, *>.clearError()
 /**
  * UiFrame'i varsayılan duruma sıfırlar
  */
+@Suppress("UNCHECKED_CAST")
 fun <S> BaseViewModel<S, *>.resetUiFrame()
         where S : Any, S : HasUiFrame {
     updateStateInternal { currentState ->

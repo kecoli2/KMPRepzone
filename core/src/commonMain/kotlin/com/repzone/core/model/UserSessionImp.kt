@@ -36,6 +36,19 @@ class UserSessionImp(private val preferences: IPreferencesManager): IUserSession
     override fun save() {
         preferences.setUserSessions(activeSessionModel?.toJson())
     }
+
+    override fun getReloadParameters(): Boolean {
+        var reload = false
+        getActiveSession()?.let {
+            reload = preferences.getBooleanValue("${it.userId}_reloadParameters", false)
+            if(reload){
+                preferences.setBooleanValue("${it.userId}_reloadParameters", false)
+            }
+        }
+        return reload
+    }
+
+
     //endregion
 
 }

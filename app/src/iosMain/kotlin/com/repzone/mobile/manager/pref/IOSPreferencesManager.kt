@@ -35,6 +35,14 @@ class IOSPreferencesManager: IPreferencesManager {
     override fun getActiveUserCode(): Int {
         return prefs.integerForKey(PreferencesConstant.ACTIVE_USER_CODE).toInt()
     }
+
+    override fun getBooleanValue(key: String, defaultValue: Boolean): Boolean {
+        return prefs.boolForKey(key)
+    }
+
+    override fun setBooleanValue(key: String, value: Boolean) {
+        prefs.setBool(value, key)
+    }
     //endregion
 
 

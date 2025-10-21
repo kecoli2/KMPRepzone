@@ -5,4 +5,7 @@ interface IPreferencesManager {
     fun getUserSessions(): String?
     fun setActiveUserCode(value: Int)
     fun getActiveUserCode(): Int
+    fun getBooleanValue(key: String, defaultValue: Boolean): Boolean
+    fun setBooleanValue(key: String, value: Boolean)
+
 }

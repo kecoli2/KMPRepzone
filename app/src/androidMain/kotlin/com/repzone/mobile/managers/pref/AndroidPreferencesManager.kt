@@ -72,6 +72,14 @@ class AndroidPreferencesManager(private val context: Context) : IPreferencesMana
     override fun getActiveUserCode(): Int {
         return prefs.getInt(PreferencesConstant.ACTIVE_USER_CODE, 0)
     }
+
+    override fun getBooleanValue(key: String, defaultValue: Boolean): Boolean {
+        return prefs.getBoolean(key, defaultValue)
+    }
+
+    override fun setBooleanValue(key: String, value: Boolean) {
+        prefs.edit { putBoolean(key, value).apply() }
+    }
     //endregion
 
 }

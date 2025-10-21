@@ -21,4 +21,12 @@ class AndroidPreferencesManagerPreview: IPreferencesManager {
     override fun getActiveUserCode(): Int {
         return 0
     }
+
+    override fun getBooleanValue(key: String, defaultValue: Boolean): Boolean {
+        return false
+    }
+
+    override fun setBooleanValue(key: String, value: Boolean) {
+
+    }
 }

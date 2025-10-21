@@ -17,7 +17,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
 
     //region Constructor
         init {
-            scope.launch {
+           /* scope.launch {
                 val fields = iModuleParameterRepository.getMobileModulePrameters(ModuleProductIdsEnum.GEOFENCINGANDROUTETRACKING.value)
                 var isActive = false
                 var routeParam = 0
@@ -61,7 +61,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                     )
                 }
             }
-            updateUiWithPermissions()
+            updateUiWithPermissions()*/
         }
     //endregion
 
@@ -73,7 +73,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
 
     //region Private Method
     private fun updateUiWithPermissions() {
-        val moduleParams = iModuleParameterRepository.getMobileModuleParameter()
+        /*val moduleParams = iModuleParameterRepository.getMobileModuleParameter()
 
         //region Reports Module
         val fields = iModuleParameterRepository.getMobileModulePrameters(ModuleProductIdsEnum.REPORTS.value)
@@ -133,7 +133,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
             )
         }
 
-        //endregion Update Ui State
+        //endregion Update Ui State*/
     }
     //endregion
 }
