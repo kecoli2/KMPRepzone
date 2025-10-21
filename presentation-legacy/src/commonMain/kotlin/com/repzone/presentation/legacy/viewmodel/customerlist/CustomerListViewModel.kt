@@ -38,7 +38,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                     )
                 }
                 scope.launch {
-                    iSyncManager.startSpecificJobs(listOf(SyncJobType.COMMON_MODULES))
+                    iSyncManager.startSpecificJobs(listOf(SyncJobType.COMMON_MODULES,SyncJobType.ROUTE ))
                     iSyncManager.allJobsStatus.collect{ it ->
                         when(it.get(SyncJobType.COMMON_MODULES)){
                             is SyncJobStatus.Idle, is SyncJobStatus.Failed, is SyncJobStatus.Success -> {

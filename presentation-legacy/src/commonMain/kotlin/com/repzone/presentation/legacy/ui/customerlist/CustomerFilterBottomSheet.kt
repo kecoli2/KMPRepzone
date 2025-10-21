@@ -45,7 +45,7 @@ fun FilterBottomSheet(
     customerGroups: List<CustomerGroup> = getDefaultCustomerGroups()
 ) {
     val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = false
+        skipPartiallyExpanded = true
     )
 
     if (showBottomSheet) {
@@ -84,7 +84,7 @@ fun FilterBottomSheet(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(max = 300.dp)  // Max yükseklik - button'lar için yer kalsın
+                        .heightIn(max = 400.dp)  // Max yükseklik - button'lar için yer kalsın
                         .verticalScroll(rememberScrollState())
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(24.dp)
