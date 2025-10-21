@@ -13,6 +13,7 @@ import com.repzone.core.ui.di.CoreUiModule
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.data.di.RepositoryModule
+import com.repzone.data.di.RepositoryModulePreview
 import com.repzone.database.di.DatabaseAndroidPreviewModule
 import com.repzone.database.di.DatabaseModulePreview
 import com.repzone.mobile.di.AndroidDIModulePreview
@@ -56,20 +57,21 @@ private fun AppContent() {
 }
 
 @Composable
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun AppAndroidPreview() {
     /*val themeManager = ThemeManager()
     val themeConfig: IPresentationConfig = LegacyThemeConfig()*/
     startKoin {
          androidContext(RepzoneApplication()) // Yerine gerçek context kullanın
             modules(
-                CoreModule,
-                DatabaseModulePreview,
-                DatabaseAndroidPreviewModule,
+ CoreModule,
+            DatabaseModulePreview,
+            DatabaseAndroidPreviewModule,
             AndroidDIModulePreview,
             PlatformNetworkModule,
-            NetworkModule, CoreUiModule,
-            RepositoryModule,
+            NetworkModule,
+            CoreUiModule,
+            RepositoryModulePreview,
             SyncModule,
             PresentationModuleLegacy
         )
