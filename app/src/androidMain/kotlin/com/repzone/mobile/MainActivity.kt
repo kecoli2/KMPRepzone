@@ -6,6 +6,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.repzone.core.di.CoreModule
 import com.repzone.core.ui.config.IPresentationConfig
@@ -23,6 +27,8 @@ import com.repzone.network.di.PlatformNetworkModule
 import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
 import com.repzone.presentation.legacy.ui.customerlist.CustomerListScreenLegacy
+import com.repzone.presentation.legacy.ui.customerlist.FilterBottomSheet
+import com.repzone.presentation.legacy.ui.customerlist.SortOption
 import com.repzone.sync.di.SyncModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.compose.koinInject
@@ -78,8 +84,19 @@ fun AppAndroidPreview() {
     loadKoinModules(FirebaseMockAndroidModule)
     val themeManager : ThemeManager = koinInject()
     themeManager.initialize(LegacyThemeConfig())
+    var showFilterSheet by remember { mutableStateOf(true) }
+    var selectedGroups by remember { mutableStateOf<List<String>>(emptyList()) }
+    var selectedSort by remember { mutableStateOf(SortOption.NAME_ASC) }
+
     AppTheme(themeManager) {
-        CustomerListScreenLegacy()
+        FilterBottomSheet(
+            showBottomSheet = showFilterSheet,
+            onDismiss = { showFilterSheet = false },
+            selectedGroups = selectedGroups,
+            onGroupsChange = { selectedGroups = it },
+            selectedSort = selectedSort,
+            onSortChange = { selectedSort = it }
+        )
     }
 }
 

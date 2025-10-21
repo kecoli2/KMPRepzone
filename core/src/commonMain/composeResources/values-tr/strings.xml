@@ -827,4 +827,5 @@
     <string name="running">Çalışıyor</string>
     <string name="waiting">Bekliyor</string>
     <string name="sync_complete">Senkronizasyon tamamlandı...</string>
+    <string name = "short">Sıralama</string>
 </resources>

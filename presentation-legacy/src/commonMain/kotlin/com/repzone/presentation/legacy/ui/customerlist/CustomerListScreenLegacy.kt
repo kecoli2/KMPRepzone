@@ -16,33 +16,36 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTimeFilled
-import androidx.compose.material.icons.filled.Chat
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.DocumentScanner
 import androidx.compose.material.icons.filled.EditNotifications
+import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ModeComment
-import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Room
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Task
-import androidx.compose.material.icons.filled.WatchLater
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.DocumentScanner
 import androidx.compose.material.icons.outlined.EditNotifications
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Room
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
@@ -55,7 +58,6 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.PrimaryTabRow
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Shapes
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -74,9 +76,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -101,9 +106,9 @@ import repzonemobile.core.generated.resources.profile
 import repzonemobile.core.generated.resources.routeothers
 import repzonemobile.core.generated.resources.routepagechatbtntext
 import repzonemobile.core.generated.resources.routepagetasksbtntext
+import repzonemobile.core.generated.resources.routesearchcustomer
 import repzonemobile.core.generated.resources.routetoday
 import repzonemobile.core.generated.resources.routetomorrow
-import repzonemobile.core.generated.resources.tasklisttitle
 import repzonemobile.presentation_legacy.generated.resources.Res
 import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_min
 
@@ -117,6 +122,11 @@ fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewMode
     var selectedItemIndex by rememberSaveable { mutableStateOf(-1) }
     val drawerItems = getNavigationItems()
     var customerList = remember { generateDummyCustomers(500) }
+    var searchQuery by remember { mutableStateOf("") }
+    val focusManager = LocalFocusManager.current
+    var showFilterSheet by remember { mutableStateOf(false) }
+    var selectedGroups by remember { mutableStateOf<List<String>>(emptyList()) }
+    var selectedSort by remember { mutableStateOf(SortOption.NAME_ASC) }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -299,21 +309,16 @@ fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewMode
                             }
                         }
 
-                        // Sağ taraf - 3 buton
-                        IconButton(enabled = false, onClick = {
-                            println("Search clicked")
-                        }) {
-                            Icon(Icons.Default.Search, contentDescription = "Search", tint = Color.White)
-                        }
+                        // Sağ taraf - 2 buton sonrasında ... nokta menu
                         IconButton(onClick = {
                             println("Notifications clicked")
                         }) {
-                            Icon(Icons.Default.Notifications, contentDescription = "Notifications", tint = Color.White)
+                            Icon(Icons.Default.Timer, contentDescription = "Notifications", tint = Color.White)
                         }
                         IconButton(onClick = {
                             println("Profile clicked")
                         }) {
-                            Icon(Icons.Default.Person, contentDescription = "Profile", tint = Color.White)
+                            Icon(Icons.Default.Map, contentDescription = "Profile", tint = Color.White)
                         }
                     }
                 }
@@ -321,13 +326,97 @@ fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewMode
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(45.dp)
+                        .wrapContentHeight()
                         .background(themeManager.getCurrentColorScheme().colorPalet.secondary20),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+                    BasicTextField(
+                        value = searchQuery,
+                        onValueChange = { searchQuery = it },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f)
+                            .height(40.dp)
+                            .padding(start = 8.dp, end = 4.dp, top = 4.dp, bottom = 4.dp)
+                            .background(Color.White, RoundedCornerShape(22.dp))
+                            .padding(horizontal = 12.dp, vertical = 8.dp),
+                        textStyle = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
+                        singleLine = true,
+                        cursorBrush = SolidColor(Color.Red),
+                        keyboardOptions = KeyboardOptions(
+                            keyboardType = KeyboardType.Text,
+                            imeAction = ImeAction.Search
+                        ),
+                        keyboardActions = KeyboardActions(
+                            onSearch = {
+                                println("Search: $searchQuery")
+                                focusManager.clearFocus()
+                            }
+                        ),
+                        decorationBox = { innerTextField ->
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                // Search Icon
+                                Icon(
+                                    imageVector = Icons.Default.Search,
+                                    contentDescription = "Search",
+                                    tint = Color.Gray,
+                                    modifier = Modifier.size(18.dp)
+                                )
 
+                                Spacer(modifier = Modifier.width(8.dp))
 
+                                // TextField + Placeholder
+                                Box(modifier = Modifier.weight(1f)) {
+                                    if (searchQuery.isEmpty()) {
+                                        Text(
+                                            repzonemobile.core.generated.resources.Res.string.routesearchcustomer.fromResource(),
+                                            style = MaterialTheme.typography.bodyMedium,
+                                            color = Color.Gray
+                                        )
+                                    }
+                                    innerTextField()
+                                }
+
+                                // Clear Icon
+                                if (searchQuery.isNotEmpty()) {
+                                    IconButton(
+                                        onClick = {
+                                            searchQuery = ""
+                                                  focusManager.clearFocus()
+                                                  },
+                                        modifier = Modifier.size(32.dp)
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.Default.Close,
+                                            contentDescription = "Clear",
+                                            tint = Color.Gray,
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    )
+                    IconButton(onClick = {
+                        showFilterSheet = true
+                    }){
+                        Icon(Icons.Default.FilterList,
+                            contentDescription = "Filter",
+                            tint = Color.White)
+                    }
+                    // BottomSheet
+                    FilterBottomSheet(
+                        showBottomSheet = showFilterSheet,
+                        onDismiss = { showFilterSheet = false },
+                        selectedGroups = selectedGroups,
+                        onGroupsChange = { selectedGroups = it },
+                        selectedSort = selectedSort,
+                        onSortChange = { selectedSort = it }
+                    )
                 }
 
                 // LazyColumn içinde kaybolacak alan + Tab + content
@@ -403,26 +492,30 @@ fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewMode
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    TextButton(modifier = Modifier.fillMaxWidth().weight(1f).padding(end = 8.dp),
-                        onClick = { },
-                        colors = ButtonDefaults.textButtonColors(
-                            contentColor = Color.White,
-                            disabledContentColor = themeManager.getCurrentColorScheme().colorPalet.neutral60
-                        ),
-                    ){
-                        Icon(imageVector = Icons.Default.Task, modifier = Modifier.padding(end = 8.dp), contentDescription = null)
-                        Text(repzonemobile.core.generated.resources.Res.string.routepagetasksbtntext.fromResource())
+                    if(uiState.taskButtonContainerVisibility){
+                        TextButton(modifier = Modifier.fillMaxWidth().weight(1f).padding(end = 8.dp),
+                            onClick = { },
+                            colors = ButtonDefaults.textButtonColors(
+                                contentColor = Color.White,
+                                disabledContentColor = themeManager.getCurrentColorScheme().colorPalet.neutral60
+                            ),
+                        ){
+                            Icon(imageVector = Icons.Default.Task, modifier = Modifier.padding(end = 8.dp), contentDescription = null)
+                            Text(repzonemobile.core.generated.resources.Res.string.routepagetasksbtntext.fromResource())
+                        }
                     }
 
-                    TextButton(modifier = Modifier.fillMaxWidth().weight(1f),
-                        onClick = { },
-                        colors = ButtonDefaults.textButtonColors(
-                            contentColor = Color.White,
-                            disabledContentColor = themeManager.getCurrentColorScheme().colorPalet.neutral60
-                        ),
-                    ){
-                        Icon(imageVector = Icons.Default.ModeComment, modifier = Modifier.padding(end = 8.dp), contentDescription = null)
-                        Text(repzonemobile.core.generated.resources.Res.string.routepagechatbtntext.fromResource())
+                    if(uiState.isChatButtonContainer){
+                        TextButton(modifier = Modifier.fillMaxWidth().weight(1f),
+                            onClick = { },
+                            colors = ButtonDefaults.textButtonColors(
+                                contentColor = Color.White,
+                                disabledContentColor = themeManager.getCurrentColorScheme().colorPalet.neutral60
+                            ),
+                        ){
+                            Icon(imageVector = Icons.Default.ModeComment, modifier = Modifier.padding(end = 8.dp), contentDescription = null)
+                            Text(repzonemobile.core.generated.resources.Res.string.routepagechatbtntext.fromResource())
+                        }
                     }
                 }
             }

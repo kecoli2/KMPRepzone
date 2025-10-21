@@ -827,4 +827,5 @@
     <string name="running">Running</string>
     <string name="waiting">Waiting</string>
     <string name="sync_complete">Synchronization completed...</string>
+    <string name = "short">Shorting</string>
 </resources>
