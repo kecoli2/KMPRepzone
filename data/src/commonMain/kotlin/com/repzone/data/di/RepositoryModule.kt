@@ -30,6 +30,7 @@ val RepositoryModule = module {
     //region Customer
     single<MapperDto<SyncCustomerEntity, SyncCustomerModel, CustomerDto>>(named("CustomerEntityDbMapperInterface")) { CustomerEntityDbMapper() }
     single{ CustomerEntityDbMapper() }
+    single<Mapper<CustomerItemViewEntity, CustomerItemModel>>(named("CustomerItemViewEntityDbMapper")) { CustomerItemViewEntityDbMapper() }
     //endregion
 
     //region Product

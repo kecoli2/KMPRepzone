@@ -13,6 +13,17 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 import kotlin.time.Duration.Companion.days
 
+
+// ============================================
+// Long <-> Instant Conversions
+// ============================================
+
+fun Long.toInstant(): Instant =
+    Instant.fromEpochMilliseconds(this)
+
+fun Long.toInstantFromSeconds(): Instant =
+    Instant.fromEpochSeconds(this)
+
 // UTC Long <-> ISO 8601 String Conversions
 // ============================================
 
