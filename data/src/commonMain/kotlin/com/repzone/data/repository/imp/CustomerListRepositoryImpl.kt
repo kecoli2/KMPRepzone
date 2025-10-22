@@ -4,7 +4,8 @@ import com.repzone.database.SyncCustomerEntityQueries
 import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 
-class CustomerListRepositoryImpl(private val customerQueries: SyncCustomerEntityQueries,
+class CustomerListRepositoryImpl(
+    private val customerQueries: SyncCustomerEntityQueries,
     private val iMobileModuleParameter: IMobileModuleParameterRepository
 ): ICustomerListRepository {
     //region Field
