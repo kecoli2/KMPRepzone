@@ -1,0 +1,57 @@
+CREATE VIEW IF NOT EXISTS CustomerItemViewEntity AS
+SELECT
+    C.Id CustomerId,
+    V.Id VisitId,
+    C.IconIndex IconIndex,
+    V.Finish FinishDate,
+    RA.Id AppointmentId,
+    RA.StartDate Date,
+    C.Tags TagRaw,
+    C.Name Name,
+    C.Code CustomerCode,
+    C.GroupName CustomerGroupName,
+    (A.Street || ' ' || A.District) Address,
+    A.Latitude Latitude,
+    A.Longitude Longitude,
+    A.AddressType AddressType,
+    C.PhotoPath ImageUri,
+    C.ParentId ParentCustomerId,
+    RA.EndDate EndDate,
+    C.Blocked CustomerBlocked,
+    RA.SprintId SprintId
+FROM SyncRouteAppointmentEntity RA
+INNER JOIN SyncCustomerEntity C ON RA.CustomerId = C.Id
+INNER JOIN SyncAddressEntity A ON A.CustomerId = C.Id
+LEFT JOIN VisitEntity V ON V.AppointmentId = RA.Id
+WHERE RA.State = 1
+    AND C.State = 1
+    AND C.IsVisible = 1
+    AND A.State = 1;
+
+getRoutes:
+SELECT
+    CustomerId,
+    VisitId,
+    IconIndex,
+    FinishDate,
+    AppointmentId,
+    Date,
+    TagRaw,
+    Name,
+    CustomerCode,
+    CustomerGroupName,
+    Address,
+    Latitude,
+    Longitude,
+    AddressType,
+    ImageUri,
+    ParentCustomerId,
+    EndDate,
+    CAST(:dontShowDatePart AS INTEGER) DontShowDatePart,
+    CustomerBlocked,
+    CAST(:swipeEnabled AS INTEGER) SwipeEnabled,
+    1 ShowDisplayClock
+FROM CustomerItemViewEntity C
+WHERE SprintId = :activeSprintId
+    AND (:onlyParents = 0 OR ParentCustomerId = 0 OR ParentCustomerId IS NULL)
+ORDER BY Date, AddressType;
