@@ -38,3 +38,9 @@ WHERE Id = ?;
 
 deleteSyncRouteAppointmentEntity:
 DELETE FROM SyncRouteAppointmentEntity WHERE Id = ?;
+
+selectByMaxSprintIdOrderStartDate:
+SELECT *
+FROM SyncRouteAppointmentEntity
+WHERE SprintId = (SELECT MAX(SprintId) FROM SyncRouteAppointmentEntity)
+ORDER BY StartDate ASC;

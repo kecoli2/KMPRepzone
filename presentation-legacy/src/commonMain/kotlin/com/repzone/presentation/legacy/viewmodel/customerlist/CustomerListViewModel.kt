@@ -9,7 +9,9 @@ import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRepository,
                             private val iModuleParameterRepository: IMobileModuleParameterRepository,
                             private val iSyncManager: ISyncManager
@@ -51,6 +53,15 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                             }
                             else -> {}
                         }
+                    }
+                }
+            }
+
+            Event.TestCustomerList -> {
+                scope.launch {
+                    val test = iCustomerListRepository.getCustomerList(null)
+                    if(1==1){
+
                     }
                 }
             }
@@ -103,6 +114,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
     //region Event
     sealed class Event {
         data object StartSync : Event()
+        data object TestCustomerList : Event()
     }
     //endregion Event
 }

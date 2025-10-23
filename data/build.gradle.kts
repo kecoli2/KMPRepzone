@@ -31,6 +31,7 @@ kotlin {
                 implementation(libs.kotlinx.coroutines.core)
                 implementation(libs.koin.core)
                 implementation(libs.ktor.serialization.json)
+                implementation(libs.kotlinx.datetime)
 
                 //ADD PROJECT
                 implementation(projects.domain)

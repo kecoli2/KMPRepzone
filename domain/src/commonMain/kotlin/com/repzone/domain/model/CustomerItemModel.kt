@@ -24,6 +24,11 @@ data class CustomerItemModel(
     val endDate: Instant?,
     val customerBlocked: Long?,
     val sprintId: Long?,
-){
-    
+    //OPTIONAL FIELD
+    val dontShowDatePart: Boolean = false,
+    val swipeEnabled: Boolean = false,
+    val showCalendarInfo: Boolean = false,
+    val showDisplayClock: Boolean = false,
+    val displayOrder: Int? = null,
+    val showDisplayOrder: Boolean = false) {
 }

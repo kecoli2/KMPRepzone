@@ -3,8 +3,10 @@
 package com.repzone.core.util.extensions
 
 import androidx.compose.runtime.Composable
+import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
+import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.*
@@ -23,6 +25,10 @@ fun Long.toInstant(): Instant =
 
 fun Long.toInstantFromSeconds(): Instant =
     Instant.fromEpochSeconds(this)
+
+fun Instant.addDays(days: Int, timeZone: TimeZone = TimeZone.currentSystemDefault()): Instant =
+    this.plus(days, DateTimeUnit.DAY, timeZone)
+
 
 // UTC Long <-> ISO 8601 String Conversions
 // ============================================

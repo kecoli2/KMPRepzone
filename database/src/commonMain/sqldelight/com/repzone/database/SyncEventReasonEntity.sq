@@ -18,6 +18,9 @@ SELECT * FROM SyncEventReasonEntity;
 selectBySyncEventReasonEntityId:
 SELECT * FROM SyncEventReasonEntity WHERE Id = ?;
 
+selectBySyncEventReasonEntityStateNotEqualAndReasonTypeEqual:
+SELECT * FROM SyncEventReasonEntity WHERE State != ? AND ReasonType = ?;
+
 insertSyncEventReasonEntity:
 INSERT INTO SyncEventReasonEntity
 VALUES ?;

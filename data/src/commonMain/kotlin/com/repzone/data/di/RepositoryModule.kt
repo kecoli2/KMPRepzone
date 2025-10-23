@@ -1,10 +1,12 @@
 package com.repzone.data.di
 
 import com.repzone.data.mapper.*
+import com.repzone.data.repository.imp.EventReasonRepositoryImpl
 import com.repzone.data.repository.imp.CustomerListRepositoryImpl
 import com.repzone.data.repository.imp.CustomerRepositoryImpl
 import com.repzone.data.repository.imp.MobileModuleParameterRepositoryImpl
 import com.repzone.data.repository.imp.ProductRepositoryImpl
+import com.repzone.data.repository.imp.RouteAppointmentRepositoryImpl
 import com.repzone.data.repository.imp.SyncModuleRepositoryImpl
 import com.repzone.data.util.Mapper
 import com.repzone.data.util.MapperDto
@@ -20,10 +22,12 @@ val RepositoryModule = module {
 
     //region REPOSITORY
     single<ICustomerRepository> { CustomerRepositoryImpl(get(named("CustomerEntityDbMapperInterface")), get()) }
-    single<ICustomerListRepository> { CustomerListRepositoryImpl(get(), get()) }
+    single<ICustomerListRepository> { CustomerListRepositoryImpl(get(), get(), get(), get(), get(named("CustomerItemViewEntityDbMapper"))) }
     single<IProductRepository> { ProductRepositoryImpl(get(named("ProductEntityDbMapperInterface")), get()) }
     single<ISyncModuleRepository> { SyncModuleRepositoryImpl(get(named("SyncModuleEntityDbMapper")), get()) }
     single<IMobileModuleParameterRepository>{ MobileModuleParameterRepositoryImpl(get(), get(named("SyncPackageCustomFieldProductEntityDbMapper")), get()) }
+    single<IRouteAppointmentRepository> { RouteAppointmentRepositoryImpl(get()) }
+    single<IEventReasonRepository> { EventReasonRepositoryImpl(get()) }
     //endregion REPOSITORY
 
     //region DBMAPPERS

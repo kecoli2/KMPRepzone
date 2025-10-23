@@ -369,7 +369,7 @@ val RepositoryModulePreview = module {
 
     //region REPOSITORY
     single<ICustomerRepository> { CustomerRepositoryImpl(get(named("CustomerEntityDbMapperInterface")), get()) }
-    single<ICustomerListRepository> { CustomerListRepositoryImpl(get(), get()) }
+    single<ICustomerListRepository> { CustomerListRepositoryImpl(get(), get(), get(), get(), get(named("CustomerEntityDbMapperInterface"))) }
     single<IProductRepository> { ProductRepositoryImpl(get(named("ProductEntityDbMapperInterface")), get()) }
     single<ISyncModuleRepository> { SyncModuleRepositoryImpl(get(named("SyncModuleEntityDbMapper")), get()) }
     single<IMobileModuleParameterRepository>{ MobileModuleParameterRepositoryImplPreview(get(), get(named("SyncPackageCustomFieldProductEntityDbMapper")), get()) }

@@ -18,7 +18,8 @@ SELECT
     C.ParentId ParentCustomerId,
     RA.EndDate EndDate,
     C.Blocked CustomerBlocked,
-    RA.SprintId SprintId
+    RA.SprintId SprintId,
+    CAST (1 AS INTEGER) ShowDisplayClock
 FROM SyncRouteAppointmentEntity RA
 INNER JOIN SyncCustomerEntity C ON RA.CustomerId = C.Id
 INNER JOIN SyncAddressEntity A ON A.CustomerId = C.Id
@@ -28,7 +29,7 @@ WHERE RA.State = 1
     AND C.IsVisible = 1
     AND A.State = 1;
 
-getRoutes:
+selectCustomerItemViewEntity:
 SELECT
     CustomerId,
     VisitId,
@@ -47,11 +48,11 @@ SELECT
     ImageUri,
     ParentCustomerId,
     EndDate,
-    CAST(:dontShowDatePart AS INTEGER) DontShowDatePart,
     CustomerBlocked,
-    CAST(:swipeEnabled AS INTEGER) SwipeEnabled,
-    1 ShowDisplayClock
-FROM CustomerItemViewEntity C
-WHERE SprintId = :activeSprintId
+    SprintId,
+    ShowDisplayClock
+FROM CustomerItemViewEntity
+WHERE SprintId = ?
     AND (:onlyParents = 0 OR ParentCustomerId = 0 OR ParentCustomerId IS NULL)
+    GROUP BY AppointmentId
 ORDER BY Date, AddressType;

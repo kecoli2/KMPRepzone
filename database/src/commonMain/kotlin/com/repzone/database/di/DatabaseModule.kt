@@ -1,7 +1,9 @@
 package com.repzone.database.di
 
 import app.cash.sqldelight.db.SqlDriver
+import com.repzone.core.config.BuildConfig
 import com.repzone.database.AppDatabase
+import com.repzone.database.driver.LoggingDriver
 import com.repzone.database.impl.DatabaseManagerImpl
 import com.repzone.database.interfaces.IDatabaseManager
 import kotlinx.coroutines.runBlocking
@@ -18,7 +20,13 @@ val DatabaseModule = module {
 
     single {
         runBlocking {
-            get<IDatabaseManager>().getSqlDriver()
+            var orginal = get<IDatabaseManager>().getSqlDriver()
+
+            if(BuildConfig.IS_DEBUG){
+                LoggingDriver(orginal, "SQLDelight", true)
+            }else{
+                orginal
+            }
         }
     }
 

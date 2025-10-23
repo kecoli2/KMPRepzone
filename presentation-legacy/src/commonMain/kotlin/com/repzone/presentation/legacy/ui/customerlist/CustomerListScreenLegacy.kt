@@ -194,7 +194,9 @@ fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Uni
                                     selectedItemIndex = index
                                     scope.launch { drawerState.close() }
                                     when (drawerItems[index].navigationItemType) {
-                                        NavigationItemType.GENERAL_SETTINGS -> {}
+                                        NavigationItemType.GENERAL_SETTINGS -> {
+                                            viewModel.onEvent(event = CustomerListViewModel.Event.TestCustomerList)
+                                        }
                                         NavigationItemType.SHARED_DOCUMENT -> {}
                                         NavigationItemType.DAILY_OPERATIONS -> {}
                                         NavigationItemType.GPS_OPERATIONS -> {}
