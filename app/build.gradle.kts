@@ -67,9 +67,15 @@ kotlin {
             implementation(projects.core)
             implementation(projects.presentation)
             implementation(projects.presentationLegacy)
+
+            implementation(libs.coil.mp)
+            //implementation(libs.coil.network.ktor)
+            implementation(libs.coil.compose)
+
         }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
+
             implementation(projects.core)
             implementation(projects.data)
             implementation(projects.database)

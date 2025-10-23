@@ -19,13 +19,21 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import coil3.ImageLoader
+import coil3.PlatformContext
+import coil3.compose.setSingletonImageLoaderFactory
+import coil3.disk.DiskCache
+import coil3.memory.MemoryCache
+import coil3.request.CachePolicy
+import coil3.request.crossfade
+import coil3.util.DebugLogger
 import com.repzone.core.interfaces.IFireBaseRealtimeDatabase
 import com.repzone.core.interfaces.IFirebaseCrashService
 import com.repzone.core.interfaces.ILocationService
 import com.repzone.core.model.GeoPoint
 import kotlinx.coroutines.launch
+import okio.FileSystem
 import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.resources.stringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.koinInject
 import repzonemobile.app.generated.resources.Res
@@ -34,6 +42,12 @@ import repzonemobile.app.generated.resources.compose_multiplatform
 @Composable
 @Preview
 fun App() {
+
+    setSingletonImageLoaderFactory { context ->
+
+        getAsyncImageLoader(context)
+
+    }
     MaterialTheme {
         var showContent by remember { mutableStateOf(false) }
         val iFirebaseCrashlytics = koinInject<IFirebaseCrashService>()
@@ -88,6 +102,19 @@ fun App() {
             PrinterSection()*/
         }
     }
+}
+
+fun getAsyncImageLoader(context: PlatformContext) =
+    ImageLoader.Builder(context).memoryCachePolicy(CachePolicy.ENABLED).memoryCache {
+        MemoryCache.Builder().maxSizePercent(context, 0.3).strongReferencesEnabled(true).build()
+    }.diskCachePolicy(CachePolicy.ENABLED).networkCachePolicy(CachePolicy.ENABLED).diskCache {
+        newDiskCache()
+    }.crossfade(true).logger(DebugLogger()).build()
+
+fun newDiskCache(): DiskCache {
+    return DiskCache.Builder().directory(FileSystem.SYSTEM_TEMPORARY_DIRECTORY / "image_cache")
+        .maxSizeBytes(1024L * 1024 * 1024) // 512MB
+        .build()
 }
 
 /*

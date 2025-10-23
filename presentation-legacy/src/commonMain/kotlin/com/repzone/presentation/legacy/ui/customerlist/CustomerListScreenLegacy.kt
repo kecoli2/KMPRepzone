@@ -35,6 +35,7 @@ import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ModeComment
 import androidx.compose.material.icons.filled.People
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Room
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
@@ -78,8 +79,12 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.graphics.painter.ColorPainter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
@@ -88,6 +93,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.repzone.core.config.BuildConfig
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.ui.model.NavigationItem
@@ -102,6 +108,7 @@ import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListViewMo
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
+import repzonemobile.core.generated.resources.customer_not_found
 import repzonemobile.core.generated.resources.customernotestitle
 import repzonemobile.core.generated.resources.dailyoperationstitle
 import repzonemobile.core.generated.resources.documents
@@ -504,7 +511,7 @@ fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Uni
                         }
                     }
                     itemsIndexed(customerList, itemContent = { index, customer ->
-                        CustomerCard(customer = customer, modifier = Modifier)
+                        CustomerCard(customer = customer, modifier = Modifier, themeManager = themeManager)
                         HorizontalDivider()
                     })
 
@@ -605,7 +612,7 @@ fun getNavigationItems(): List<NavigationItem>{
 
 @OptIn(ExperimentalTime::class)
 @Composable
-fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier) {
+fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, themeManager: ThemeManager) {
     // Tek kat Surface yerine Card/Surface tek seferde; elevation yoksa Surface da olur.
     Surface(
         modifier = modifier.clickable{
@@ -622,24 +629,33 @@ fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier) {
             // Avatar
             if (customer.imageUri != null) {
                 AsyncImage(
-                    model = customer.imageUri,
+                    model = "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg",
                     contentDescription = null,
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center,
-                    placeholder = painterResource(repzonemobile.core.generated.resources.Res.drawable.profile),
-                    error = painterResource(repzonemobile.core.generated.resources.Res.drawable.profile)
-                    // crossfade = false (Coil 3'te parametre farklı olabilir; varsa kapat)
+                    error = painterResource(repzonemobile.core.generated.resources.Res.drawable.customer_not_found),
+                    onError = {
+                        println("Error: ${it.result.throwable.message}")
+                    },
+                    colorFilter = ColorFilter.tint(
+                        color = themeManager.getCurrentColorScheme().colorPalet.primary50,
+                        blendMode = BlendMode.SrcIn
+                    )
+
                 )
             } else {
-                Image(
-                    painter = painterResource(repzonemobile.core.generated.resources.Res.drawable.profile),
+                Icon(
+                    imageVector = Icons.Default.Person, // veya Icons.Filled.AccountCircle
                     contentDescription = null,
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(8.dp),
+                    tint = themeManager.getCurrentColorScheme().colorPalet.primary50
                 )
             }
 
@@ -661,6 +677,15 @@ fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier) {
                 Text(
                     text = customer.address ?: "",
                     fontWeight = FontWeight.Light,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+
+                Text(
+                    text = customer.customerGroupName ?: "",
+                    fontWeight = FontWeight.SemiBold,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
