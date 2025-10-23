@@ -92,7 +92,12 @@ import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.ui.model.NavigationItem
 import com.repzone.core.ui.util.enum.NavigationItemType
+import com.repzone.core.util.extensions.addDays
 import com.repzone.core.util.extensions.fromResource
+import com.repzone.core.util.extensions.now
+import com.repzone.core.util.extensions.toInstant
+import com.repzone.core.util.extensions.toShortDateTime
+import com.repzone.domain.model.CustomerItemModel
 import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -114,7 +119,9 @@ import repzonemobile.core.generated.resources.routetoday
 import repzonemobile.core.generated.resources.routetomorrow
 import repzonemobile.presentation_legacy.generated.resources.Res
 import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_min
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 @Composable
 fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Unit) = ViewModelHost<CustomerListViewModel> { viewModel ->
     val themeManager: ThemeManager = koinInject()
@@ -124,12 +131,12 @@ fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Uni
     val scope = rememberCoroutineScope()
     var selectedItemIndex by rememberSaveable { mutableStateOf(-1) }
     val drawerItems = getNavigationItems()
-    var customerList = remember { generateDummyCustomers(500) }
     var searchQuery by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
     var showFilterSheet by remember { mutableStateOf(false) }
     var selectedGroups by remember { mutableStateOf<List<String>>(emptyList()) }
     var selectedSort by remember { mutableStateOf(SortOption.NAME_ASC) }
+    val customerList = uiState.filteredCustomers
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -195,7 +202,6 @@ fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Uni
                                     scope.launch { drawerState.close() }
                                     when (drawerItems[index].navigationItemType) {
                                         NavigationItemType.GENERAL_SETTINGS -> {
-                                            viewModel.onEvent(event = CustomerListViewModel.Event.TestCustomerList)
                                         }
                                         NavigationItemType.SHARED_DOCUMENT -> {}
                                         NavigationItemType.DAILY_OPERATIONS -> {}
@@ -487,13 +493,14 @@ fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Uni
 
                     when(selectedTab) {
                         0 -> { //TODAY
-                            customerList = generateDummyCustomers(4)
+                            viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(null))
                         }
                         1 -> { // TOMORROW
-                            customerList = generateDummyCustomers(500)
+                            val date = now().toInstant().addDays(1)
+                            viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(date))
                         }
                         2 -> {// OTHERS
-                            customerList = generateDummyCustomers(200)
+                            viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(null))
                         }
                     }
                     itemsIndexed(customerList, itemContent = { index, customer ->
@@ -596,8 +603,9 @@ fun getNavigationItems(): List<NavigationItem>{
     )
 }
 
+@OptIn(ExperimentalTime::class)
 @Composable
-fun CustomerCard(customer: CustomerUi, modifier: Modifier = Modifier) {
+fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier) {
     // Tek kat Surface yerine Card/Surface tek seferde; elevation yoksa Surface da olur.
     Surface(
         modifier = modifier.clickable{
@@ -612,9 +620,9 @@ fun CustomerCard(customer: CustomerUi, modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             // Avatar
-            if (customer.avatarUrl != null) {
+            if (customer.imageUri != null) {
                 AsyncImage(
-                    model = customer.avatarUrl,
+                    model = customer.imageUri,
                     contentDescription = null,
                     modifier = Modifier
                         .size(48.dp)
@@ -644,14 +652,14 @@ fun CustomerCard(customer: CustomerUi, modifier: Modifier = Modifier) {
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(
-                    text = customer.title,
+                    text = customer.name ?: "",
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
-                    text = customer.subtitle,
+                    text = customer.address ?: "",
                     fontWeight = FontWeight.Light,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -679,7 +687,7 @@ fun CustomerCard(customer: CustomerUi, modifier: Modifier = Modifier) {
                         tint = MaterialTheme.colorScheme.primary
                     )
                     Text(
-                        text = customer.timeRange,
+                        text = customer.date?.toEpochMilliseconds()?.toShortDateTime() ?: "",
                         fontWeight = FontWeight.Light,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -688,7 +696,7 @@ fun CustomerCard(customer: CustomerUi, modifier: Modifier = Modifier) {
                     )
                 }
                 Text(
-                    text = customer.dayLabel,
+                    text = customer.date?.toEpochMilliseconds()?.toShortDateTime() ?: "",
                     fontWeight = FontWeight.Light,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -700,15 +708,15 @@ fun CustomerCard(customer: CustomerUi, modifier: Modifier = Modifier) {
     }
 }
 
-data class CustomerUi(
+/*data class CustomerUi(
     val id: String,
     val title: String,
     val subtitle: String,
     val timeRange: String,   // "08:00-08:30"
     val dayLabel: String,    // "Bugün"
     val avatarUrl: String?   // null ise local placeholder
-)
-
+)*/
+/*
 fun generateDummyCustomers(count: Int = 50): List<CustomerUi> {
     val names = listOf("Ali", "Ayşe", "Murat", "Zeynep", "Mehmet", "Elif", "Cem", "Canan")
     val companies = listOf("Market", "Mağaza", "Bakkal", "Tekstil", "Gıda", "Elektronik", "Mobilya")
@@ -732,4 +740,4 @@ fun generateDummyCustomers(count: Int = 50): List<CustomerUi> {
             avatarUrl = avatar
         )
     }
-}
+}*/

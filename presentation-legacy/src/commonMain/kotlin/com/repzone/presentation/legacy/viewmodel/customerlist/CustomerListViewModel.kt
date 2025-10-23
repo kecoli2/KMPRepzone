@@ -2,14 +2,19 @@ package com.repzone.presentation.legacy.viewmodel.customerlist
 
 import com.repzone.core.enums.VisitPlanSchedulesType
 import com.repzone.core.ui.base.BaseViewModel
+import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.sync.interfaces.ISyncManager
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRepository,
@@ -17,6 +22,9 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                             private val iSyncManager: ISyncManager
 ): BaseViewModel<CustomerListScreenUiState, CustomerListViewModel.Event>(CustomerListScreenUiState()) {
     //region Field
+    private val _customerList = MutableStateFlow<List<CustomerItemModel>>(emptyList())
+    val customerList: StateFlow<List<CustomerItemModel>> = _customerList.asStateFlow()
+    private var utcDate: Instant? = null
     //endregion
 
     //region Properties
@@ -26,6 +34,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         init {
             scope.launch {
                 updateUiWithPermissions()
+                loadCustomerList(null)
             }
         }
     //endregion
@@ -35,21 +44,21 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         when(event){
             Event.StartSync -> {
                 updateState { currentState ->
-                    currentState.copy(
-                        isSyncInProgress = true
-                    )
+                    currentState.copy(isSyncInProgress = true)
                 }
                 scope.launch {
-                    iSyncManager.startSpecificJobs(listOf(SyncJobType.COMMON_MODULES,SyncJobType.ROUTE ))
-                    iSyncManager.allJobsStatus.collect{ it ->
-                        when(it.get(SyncJobType.COMMON_MODULES)){
-                            is SyncJobStatus.Idle, is SyncJobStatus.Failed, is SyncJobStatus.Success -> {
+                    iSyncManager.startSpecificJobs(listOf(SyncJobType.COMMON_MODULES, SyncJobType.ROUTE))
+                    iSyncManager.allJobsStatus.collect { jobStatuses ->
+                        when(jobStatuses[SyncJobType.COMMON_MODULES]){
+                            is SyncJobStatus.Idle,
+                            is SyncJobStatus.Failed,
+                            is SyncJobStatus.Success -> {
                                 updateState { currentState ->
-                                    currentState.copy(
-                                        isSyncInProgress = false
-                                    )
+                                    currentState.copy(isSyncInProgress = false)
                                 }
                                 updateUiWithPermissions()
+                                // Sync tamamlandıktan sonra listeyi yenile
+                                loadCustomerList(state.value.selectedDate)
                             }
                             else -> {}
                         }
@@ -57,12 +66,22 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                 }
             }
 
-            Event.TestCustomerList -> {
+            is Event.LoadCustomerList -> {
                 scope.launch {
-                    val test = iCustomerListRepository.getCustomerList(null)
-                    if(1==1){
-
+                    updateState { currentState ->
+                        currentState.copy(selectedDate = event.date)
                     }
+                    loadCustomerList(event.date)
+                }
+            }
+
+            is Event.FilterCustomerList -> {
+                filterCustomerList(event.query)
+            }
+
+            Event.RefreshCustomerList -> {
+                scope.launch {
+                    loadCustomerList(state.value.selectedDate)
                 }
             }
         }
@@ -73,6 +92,61 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
     //endregion
 
     //region Private Method
+
+    private suspend fun loadCustomerList(date: Instant?) {
+        updateState { currentState ->
+            currentState.copy(
+                customerListState = CustomerListScreenUiState.CustomerListState.Loading
+            )
+        }
+
+        try {
+            val list = iCustomerListRepository.getCustomerList(date)
+
+            updateState { currentState ->
+                currentState.copy(
+                    customerListState = if (list.isEmpty()) {
+                        CustomerListScreenUiState.CustomerListState.Empty
+                    } else {
+                        CustomerListScreenUiState.CustomerListState.Success
+                    },
+                    allCustomers = list,
+                    filteredCustomers = list
+                )
+            }
+        } catch (e: Exception) {
+            updateState { currentState ->
+                currentState.copy(
+                    customerListState = CustomerListScreenUiState.CustomerListState.Error(
+                        e.message ?: "Unknown error"
+                    )
+                )
+            }
+        }
+    }
+
+    private fun filterCustomerList(query: String) {
+        updateState { currentState ->
+            val filtered = if (query.isBlank()) {
+                currentState.allCustomers
+            } else {
+                currentState.allCustomers.filter { customer ->
+                    customer.name?.contains(query, ignoreCase = true) == true ||
+                            customer.customerCode?.contains(query, ignoreCase = true) == true
+                }
+            }
+
+            currentState.copy(
+                filteredCustomers = filtered,
+                customerListState = if (filtered.isEmpty()) {
+                    CustomerListScreenUiState.CustomerListState.Empty
+                } else {
+                    CustomerListScreenUiState.CustomerListState.Success
+                }
+            )
+        }
+    }
+
     private fun updateUiWithPermissions() {
         //region Reports Module
         val isActive = iModuleParameterRepository.getReportsParameters()?.isActive ?: false
@@ -114,7 +188,9 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
     //region Event
     sealed class Event {
         data object StartSync : Event()
-        data object TestCustomerList : Event()
+        data class FilterCustomerList(val query: String) : Event()
+        data class LoadCustomerList(val date: Instant?) : Event()
+        data object RefreshCustomerList : Event()
     }
     //endregion Event
 }
