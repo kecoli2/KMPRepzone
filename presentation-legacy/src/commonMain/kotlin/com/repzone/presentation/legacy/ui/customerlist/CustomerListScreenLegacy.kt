@@ -100,9 +100,15 @@ import com.repzone.core.ui.model.NavigationItem
 import com.repzone.core.ui.util.enum.NavigationItemType
 import com.repzone.core.util.extensions.addDays
 import com.repzone.core.util.extensions.fromResource
+import com.repzone.core.util.extensions.isFuture
+import com.repzone.core.util.extensions.isToday
+import com.repzone.core.util.extensions.isTomorrow
+import com.repzone.core.util.extensions.isYesterday
 import com.repzone.core.util.extensions.now
+import com.repzone.core.util.extensions.toDayName
 import com.repzone.core.util.extensions.toInstant
 import com.repzone.core.util.extensions.toShortDateTime
+import com.repzone.core.util.extensions.toTimeOnly
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListViewModel
 import kotlinx.coroutines.launch
@@ -124,6 +130,7 @@ import repzonemobile.core.generated.resources.routepagetasksbtntext
 import repzonemobile.core.generated.resources.routesearchcustomer
 import repzonemobile.core.generated.resources.routetoday
 import repzonemobile.core.generated.resources.routetomorrow
+import repzonemobile.core.generated.resources.todaydatetext
 import repzonemobile.presentation_legacy.generated.resources.Res
 import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_min
 import kotlin.time.ExperimentalTime
@@ -631,7 +638,6 @@ fun getNavigationItems(): List<NavigationItem>{
 @OptIn(ExperimentalTime::class)
 @Composable
 fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, themeManager: ThemeManager) {
-
     Surface(
         modifier = modifier.height(80.dp).clickable{
             println("Customer clicked")
@@ -662,7 +668,6 @@ fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, the
                         color = themeManager.getCurrentColorScheme().colorPalet.primary50,
                         blendMode = BlendMode.SrcIn
                     )
-
                 )
             } else {
                 Icon(
@@ -718,9 +723,21 @@ fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, the
                     .padding(start = 8.dp),
                 horizontalAlignment = Alignment.End
             ) {
-                val formattedDate = remember(customer.date) {
-                    customer.date?.toEpochMilliseconds()?.toShortDateTime() ?: ""
+                val formattedDateStart = remember(customer.date) {
+                    customer.date?.toEpochMilliseconds()?.toTimeOnly() ?: ""
                 }
+
+                val formattedDate2 = remember(customer.date) {
+                    customer.endDate?.toEpochMilliseconds()?.toTimeOnly() ?: ""
+                }
+
+                val dayDesc =
+                    when {
+                        customer.date?.toEpochMilliseconds()?.isToday() == true -> repzonemobile.core.generated.resources.Res.string.routetoday.fromResource()
+                        customer.date?.toEpochMilliseconds()?.isTomorrow() == true -> repzonemobile.core.generated.resources.Res.string.routetomorrow.fromResource()
+                        else -> customer.date?.toDayName() ?: ""
+                    }
+
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -734,7 +751,7 @@ fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, the
                     )
 
                     Text(
-                        text = formattedDate,
+                        text = "${formattedDateStart}-${formattedDate2}",
                         fontWeight = FontWeight.Light,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -743,7 +760,7 @@ fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, the
                     )
                 }
                 Text(
-                    text = formattedDate,
+                    text = dayDesc,
                     fontWeight = FontWeight.Light,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,

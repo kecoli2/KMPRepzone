@@ -4,6 +4,7 @@ package com.repzone.core.util.extensions
 
 import androidx.compose.runtime.Composable
 import kotlinx.datetime.DateTimeUnit
+import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.plus
@@ -91,6 +92,25 @@ fun Long.toUserFriendly(timeZone: TimeZone = TimeZone.currentSystemDefault()): S
     return "${local.day} $monthName ${local.year}, " +
             "${local.hour.toString().padStart(2, '0')}:${local.minute.toString().padStart(2, '0')}"
 }
+
+@Composable
+fun Instant.toDayName(timeZone: TimeZone = TimeZone.currentSystemDefault()): String {
+    val local = this.toLocalDateTime(timeZone)
+    val dayName = when (local.dayOfWeek) {
+        DayOfWeek.MONDAY -> Res.string.weekday1.fromResource()
+        DayOfWeek.TUESDAY -> Res.string.weekday2.fromResource()
+        DayOfWeek.WEDNESDAY -> Res.string.weekday3.fromResource()
+        DayOfWeek.THURSDAY -> Res.string.weekday4.fromResource()
+        DayOfWeek.FRIDAY -> Res.string.weekday5.fromResource()
+        DayOfWeek.SATURDAY -> Res.string.weekday6.fromResource()
+        DayOfWeek.SUNDAY -> Res.string.weekday7.fromResource()
+    }
+    return "${local.day} $dayName"
+}
+
+@Composable
+fun Instant?.toDayNameOrEmpty(timeZone: TimeZone = TimeZone.currentSystemDefault()): String =
+    this?.toDayName(timeZone) ?: ""
 
 fun Long.toDateString(
     pattern: String,
@@ -194,6 +214,10 @@ fun Long.isPast(): Boolean =
 fun Long.isFuture(): Boolean =
     this > Clock.System.now().toEpochMilliseconds()
 
+fun Long.isTomorrow(timeZone: TimeZone = TimeZone.currentSystemDefault()): Boolean {
+    val tomorrow = Clock.System.now().plus(1.days).toEpochMilliseconds()
+    return this.isSameDay(tomorrow, timeZone)
+}
 // ============================================
 // Nullable Long Extensions
 // ============================================

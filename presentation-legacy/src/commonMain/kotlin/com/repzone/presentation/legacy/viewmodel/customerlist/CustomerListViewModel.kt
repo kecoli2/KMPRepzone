@@ -24,7 +24,6 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                             private val iSyncManager: ISyncManager
 ): BaseViewModel<CustomerListScreenUiState, CustomerListViewModel.Event>(CustomerListScreenUiState()) {
     //region Field
-    private var utcDate: Instant? = null
     private var searchQuery: String = ""
     //endregion
 
@@ -35,7 +34,6 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         init {
             scope.launch {
                 updateUiWithPermissions()
-                loadCustomerList(null)
             }
         }
     //endregion
@@ -213,7 +211,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         //region Update Ui State
         updateState { currentState ->
             currentState.copy(
-                isTabActive = iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FLEXIBLE_DATES,
+                isTabActive = iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FIXED_DATES,
                 supposeRouteButton = iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FIXED_DATES,
                 showIconHeader = iModuleParameterRepository.getAttendanceTrackingParameters()?.showIconAtHeader ?: false,
                 isAttendanceTrackingModuleActive = iModuleParameterRepository.getAttendanceTrackingParameters()?.isActive ?: false,
@@ -243,9 +241,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         data class FilterCustomerList(val query: String) : Event()
         data class LoadCustomerList(val date: Instant?) : Event()
         data object RefreshCustomerList : Event()
-
         data class ApplyFilter(val selectedGroups: List<String>, val sortOption: CustomerSortOption) : Event()
-
         data object ClearFilters : Event()
     }
     //endregion Event

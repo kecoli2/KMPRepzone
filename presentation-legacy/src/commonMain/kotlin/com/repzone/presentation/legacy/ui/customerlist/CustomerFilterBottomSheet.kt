@@ -120,7 +120,7 @@ fun FilterBottomSheet(
                     OutlinedButton(
                         onClick = {
                             tempSelectedGroups = emptyList()
-                            tempSelectedSort = CustomerSortOption.NAME_ASC
+                            tempSelectedSort = CustomerSortOption.DATE_ASC
                             onClearFilters()
                         },
                         modifier = Modifier.weight(1f)

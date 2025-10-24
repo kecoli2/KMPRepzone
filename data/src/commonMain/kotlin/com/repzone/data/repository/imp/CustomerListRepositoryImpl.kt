@@ -71,7 +71,7 @@ class CustomerListRepositoryImpl(private val database: AppDatabase,
                         date = itemModel.date?.addDays(28)
                     )
                 }
-                listModel = listModel.sortedBy { it.date }
+                listModel = listModel.sortedBy { it.date?.toEpochMilliseconds() ?: Long.MIN_VALUE  }
             }else {
                 val utcOffsetMinutes = TimeZone.currentSystemDefault()
                     .offsetAt(Clock.System.now())
@@ -80,18 +80,18 @@ class CustomerListRepositoryImpl(private val database: AppDatabase,
                 val localdateTime = utcDate.toLocalDateTime(TimeZone.UTC).date.atStartOfDayIn(TimeZone.UTC)
 
                 val targetDate = localdateTime
-                    .plus(utcOffsetMinutes, DateTimeUnit.SECOND, TimeZone.UTC)
+                    .plus(utcOffsetMinutes, DateTimeUnit.MINUTE, TimeZone.UTC)
                     .toLocalDateTime(TimeZone.UTC)
                     .date
 
                 listModel = listModel
                     .filter { item ->
                         item.date
-                            ?.plus(utcOffsetMinutes, DateTimeUnit.SECOND, TimeZone.UTC)
+                            ?.plus(utcOffsetMinutes, DateTimeUnit.MINUTE, TimeZone.UTC)
                             ?.toLocalDateTime(TimeZone.UTC)
                             ?.date == targetDate
                     }
-                    .sortedBy { it.date }
+                    .sortedBy { it.date?.toEpochMilliseconds() ?: Long.MIN_VALUE  }
             }
         }
 

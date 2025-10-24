@@ -31,7 +31,7 @@ data class CustomerListScreenUiState(
     val activeCustomerGroup : List<CustomerGroup> = emptyList(),
 
     val selectedFilterGroups: List<String> = emptyList(),
-    val selectedSortOption: CustomerSortOption = CustomerSortOption.NAME_ASC
+    val selectedSortOption: CustomerSortOption = CustomerSortOption.DATE_ASC
 ): HasUiFrame {
 
     override fun copyWithUiFrame(newUiFrame: UiFrame): CustomerListScreenUiState {
