@@ -26,9 +26,6 @@ import com.repzone.network.di.NetworkModule
 import com.repzone.network.di.PlatformNetworkModule
 import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
-import com.repzone.presentation.legacy.ui.customerlist.CustomerListScreenLegacy
-import com.repzone.presentation.legacy.ui.customerlist.FilterBottomSheet
-import com.repzone.presentation.legacy.ui.customerlist.SortOption
 import com.repzone.sync.di.SyncModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.compose.koinInject
@@ -86,7 +83,6 @@ fun AppAndroidPreview() {
     themeManager.initialize(LegacyThemeConfig())
     var showFilterSheet by remember { mutableStateOf(true) }
     var selectedGroups by remember { mutableStateOf<List<String>>(emptyList()) }
-    var selectedSort by remember { mutableStateOf(SortOption.NAME_ASC) }
 
     AppTheme(themeManager) {
         //CustomerListScreenLegacy()

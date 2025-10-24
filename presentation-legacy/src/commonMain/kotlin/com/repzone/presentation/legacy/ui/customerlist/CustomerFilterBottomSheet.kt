@@ -8,30 +8,24 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.repzone.core.util.extensions.fromResource
+import com.repzone.presentation.legacy.model.CustomerGroup
+import com.repzone.presentation.legacy.model.enum.CustomerSortOption
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.customergroupspickertitle
 import repzonemobile.core.generated.resources.filterapplybuttontext
 import repzonemobile.core.generated.resources.filterclearbuttontext
 import repzonemobile.core.generated.resources.short
 
-data class CustomerGroup(
-    val id: String,
-    val name: String
-)
 
-enum class SortOption(val label: String) {
-    NAME_ASC("İsim (A-Z)"),
-    NAME_DESC("İsim (Z-A)"),
-    DATE_ASC("Tarih (Eskiden Yeniye)"),
-    DATE_DESC("Tarih (Yeniden Eskiye)")
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,13 +34,15 @@ fun FilterBottomSheet(
     onDismiss: () -> Unit,
     selectedGroups: List<String>,
     onGroupsChange: (List<String>) -> Unit,
-    selectedSort: SortOption,
-    onSortChange: (SortOption) -> Unit,
-    customerGroups: List<CustomerGroup> = getDefaultCustomerGroups()
+    selectedSort: CustomerSortOption,
+    onSortChange: (CustomerSortOption) -> Unit,
+    onApplyFilters: (List<String>, CustomerSortOption) -> Unit,
+    onClearFilters: () -> Unit,
+    customerGroups: List<CustomerGroup>
 ) {
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
-    )
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var tempSelectedGroups by remember(selectedGroups) { mutableStateOf(selectedGroups) }
+    var tempSelectedSort by remember(selectedSort) { mutableStateOf(selectedSort) }
 
     if (showBottomSheet) {
         ModalBottomSheet(
@@ -95,14 +91,13 @@ fun FilterBottomSheet(
                         content = {
                             CustomerGroupChips(
                                 groups = customerGroups,
-                                selectedGroups = selectedGroups,
+                                selectedGroups = tempSelectedGroups,
                                 onGroupToggle = { groupId ->
-                                    val newSelection = if (selectedGroups.contains(groupId)) {
-                                        selectedGroups - groupId
+                                    tempSelectedGroups = if (tempSelectedGroups.contains(groupId)) {
+                                        tempSelectedGroups - groupId
                                     } else {
-                                        selectedGroups + groupId
+                                        tempSelectedGroups + groupId
                                     }
-                                    onGroupsChange(newSelection)
                                 }
                             )
                         }
@@ -113,8 +108,8 @@ fun FilterBottomSheet(
                         title = Res.string.short.fromResource(),
                         content = {
                             SortChips(
-                                selectedSort = selectedSort,
-                                onSortChange = onSortChange
+                                selectedSort = tempSelectedSort,
+                                onSortChange = { tempSelectedSort = it }
                             )
                         }
                     )
@@ -124,8 +119,9 @@ fun FilterBottomSheet(
                     // Temizle Button
                     OutlinedButton(
                         onClick = {
-                            onGroupsChange(emptyList())
-                            onSortChange(SortOption.NAME_ASC)
+                            tempSelectedGroups = emptyList()
+                            tempSelectedSort = CustomerSortOption.NAME_ASC
+                            onClearFilters()
                         },
                         modifier = Modifier.weight(1f)
                     ) {
@@ -134,7 +130,9 @@ fun FilterBottomSheet(
 
                     // Uygula Button
                     Button(
-                        onClick = onDismiss,
+                        onClick = {
+                            onApplyFilters(tempSelectedGroups, tempSelectedSort)
+                        },
                         modifier = Modifier.weight(1f)
                     ) {
                         Text(Res.string.filterapplybuttontext.fromResource())
@@ -190,15 +188,15 @@ fun CustomerGroupChips(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SortChips(
-    selectedSort: SortOption,
-    onSortChange: (SortOption) -> Unit
+    selectedSort: CustomerSortOption,
+    onSortChange: (CustomerSortOption) -> Unit
 ) {
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        SortOption.entries.forEach { option ->
+        CustomerSortOption.entries.forEach { option ->
             FilterChip(
                 selected = selectedSort == option,
                 onClick = { onSortChange(option) },
@@ -217,14 +215,33 @@ fun SortChips(
     }
 }
 
-fun getDefaultCustomerGroups(): List<CustomerGroup> {
-    return listOf(
-        CustomerGroup("1", "A Grubu"),
-        CustomerGroup("2", "B Grubu"),
-        CustomerGroup("3", "C Grubu"),
-        CustomerGroup("4", "VIP Müşteriler"),
-        CustomerGroup("5", "Potansiyel Müşteriler"),
-        CustomerGroup("6", "Aktif Müşteriler"),
-        CustomerGroup("7", "Pasif Müşteriler")
-    )
+
+@Composable
+fun FilterButtonWithBadge(
+    filterCount: Int,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier) {
+        IconButton(onClick = onClick) {
+            Icon(
+                imageVector = Icons.Default.FilterList,
+                contentDescription = "Filter",
+                tint = Color.White
+            )
+        }
+
+        // Badge SOL ÜSTTE
+        if (filterCount > 0) {
+            Badge(
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .offset(x = 6.dp, y = 6.dp),
+                containerColor = MaterialTheme.colorScheme.error,
+                contentColor = Color.White
+            ) {
+                Text(text = filterCount.toString())
+            }
+        }
+    }
 }

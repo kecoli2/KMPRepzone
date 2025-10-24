@@ -5,6 +5,8 @@ import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.IMobileModuleParameterRepository
+import com.repzone.presentation.legacy.model.CustomerGroup
+import com.repzone.presentation.legacy.model.enum.CustomerSortOption
 import com.repzone.sync.interfaces.ISyncManager
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
@@ -22,9 +24,8 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                             private val iSyncManager: ISyncManager
 ): BaseViewModel<CustomerListScreenUiState, CustomerListViewModel.Event>(CustomerListScreenUiState()) {
     //region Field
-    private val _customerList = MutableStateFlow<List<CustomerItemModel>>(emptyList())
-    val customerList: StateFlow<List<CustomerItemModel>> = _customerList.asStateFlow()
     private var utcDate: Instant? = null
+    private var searchQuery: String = ""
     //endregion
 
     //region Properties
@@ -42,7 +43,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
     //region Public Method
     fun onEvent(event: Event) {
         when(event){
-            Event.StartSync -> {
+            is Event.StartSync -> {
                 updateState { currentState ->
                     currentState.copy(isSyncInProgress = true)
                 }
@@ -79,10 +80,18 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                 filterCustomerList(event.query)
             }
 
-            Event.RefreshCustomerList -> {
+            is Event.RefreshCustomerList -> {
                 scope.launch {
                     loadCustomerList(state.value.selectedDate)
                 }
+            }
+
+            is Event.ApplyFilter -> {
+                applyFilters(event.selectedGroups, event.sortOption)
+            }
+
+            is Event.ClearFilters -> {
+                clearFilters()
             }
         }
     }
@@ -92,6 +101,59 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
     //endregion
 
     //region Private Method
+    private fun clearFilters() {
+        updateState { currentState ->
+            currentState.copy(
+                selectedFilterGroups = emptyList(),
+                selectedSortOption = CustomerSortOption.NAME_ASC
+            )
+        }
+        applyFilters(emptyList(), CustomerSortOption.NAME_ASC)
+    }
+    private fun applyFilters(selectedGroups: List<String>, sortOption: CustomerSortOption) {
+        updateState { currentState ->
+            currentState.copy(
+                customerListState = CustomerListScreenUiState.CustomerListState.Loading
+            )
+        }
+
+        var filtered = if (searchQuery.isBlank()) {
+            state.value.allCustomers
+        } else {
+            state.value.allCustomers.filter { customer ->
+                customer.name?.contains(searchQuery, ignoreCase = true) == true ||
+                        customer.customerCode?.contains(searchQuery, ignoreCase = true) == true || customer.customerId.toString().contains(searchQuery, ignoreCase = true)
+            }
+        }
+
+        updateState { currentState ->
+            if (selectedGroups.isNotEmpty()) {
+                filtered = filtered.filter { customer ->
+                    selectedGroups.contains(customer.customerGroupName)
+                }
+            }
+
+            // 2. Sıralama uygula
+            filtered = when (sortOption) {
+                CustomerSortOption.NAME_ASC -> filtered.sortedBy { it.name?.lowercase() }
+                CustomerSortOption.NAME_DESC -> filtered.sortedByDescending { it.name?.lowercase() }
+                CustomerSortOption.DATE_ASC -> filtered.sortedBy { it.date?.toEpochMilliseconds() }
+                CustomerSortOption.DATE_DESC -> filtered.sortedByDescending { it.date?.toEpochMilliseconds() }
+            }
+
+            currentState.copy(
+                filteredCustomers = filtered,
+                customerListState = if (filtered.isEmpty()) {
+                    CustomerListScreenUiState.CustomerListState.Empty
+                } else {
+                    CustomerListScreenUiState.CustomerListState.Success
+                },
+                // Seçili filtreleri state'e kaydet
+                selectedFilterGroups = selectedGroups,
+                selectedSortOption = sortOption
+            )
+        }
+    }
 
     private suspend fun loadCustomerList(date: Instant?) {
         updateState { currentState ->
@@ -99,7 +161,6 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                 customerListState = CustomerListScreenUiState.CustomerListState.Loading
             )
         }
-
         try {
             val list = iCustomerListRepository.getCustomerList(date)
 
@@ -111,9 +172,10 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                         CustomerListScreenUiState.CustomerListState.Success
                     },
                     allCustomers = list,
-                    filteredCustomers = list
+                    activeCustomerGroup = prepareCustomerGroup(list)
                 )
             }
+            applyFilters(state.value.selectedFilterGroups, state.value.selectedSortOption)
         } catch (e: Exception) {
             updateState { currentState ->
                 currentState.copy(
@@ -126,25 +188,8 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
     }
 
     private fun filterCustomerList(query: String) {
-        updateState { currentState ->
-            val filtered = if (query.isBlank()) {
-                currentState.allCustomers
-            } else {
-                currentState.allCustomers.filter { customer ->
-                    customer.name?.contains(query, ignoreCase = true) == true ||
-                            customer.customerCode?.contains(query, ignoreCase = true) == true
-                }
-            }
-
-            currentState.copy(
-                filteredCustomers = filtered,
-                customerListState = if (filtered.isEmpty()) {
-                    CustomerListScreenUiState.CustomerListState.Empty
-                } else {
-                    CustomerListScreenUiState.CustomerListState.Success
-                }
-            )
-        }
+        searchQuery = query
+        applyFilters(state.value.selectedFilterGroups, state.value.selectedSortOption)
     }
 
     private fun updateUiWithPermissions() {
@@ -183,6 +228,13 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
 
         //endregion Update Ui State
     }
+
+    private fun prepareCustomerGroup(list: List<CustomerItemModel>): List<CustomerGroup> {
+        val grpoupList = list.filter { it.customerGroupName?.isNotEmpty() == true }.groupBy { it.customerGroupName }.map { (group, _) ->
+            CustomerGroup(group!!, group)
+        }
+        return grpoupList
+    }
     //endregion
 
     //region Event
@@ -191,6 +243,10 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         data class FilterCustomerList(val query: String) : Event()
         data class LoadCustomerList(val date: Instant?) : Event()
         data object RefreshCustomerList : Event()
+
+        data class ApplyFilter(val selectedGroups: List<String>, val sortOption: CustomerSortOption) : Event()
+
+        data object ClearFilters : Event()
     }
     //endregion Event
 }

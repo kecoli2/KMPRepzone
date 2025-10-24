@@ -127,13 +127,14 @@ import repzonemobile.core.generated.resources.routetomorrow
 import repzonemobile.presentation_legacy.generated.resources.Res
 import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_min
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 @Composable
 fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Unit) = ViewModelHost<CustomerListViewModel> { viewModel ->
     val themeManager: ThemeManager = koinInject()
     val uiState by viewModel.state.collectAsState()
-    var selectedTab by rememberSaveable  { mutableIntStateOf(0) }
+    var selectedTab by rememberSaveable  { mutableIntStateOf(2) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedItemIndex by rememberSaveable { mutableStateOf(-1) }
@@ -141,8 +142,8 @@ fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Uni
     var searchQuery by remember { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
     var showFilterSheet by remember { mutableStateOf(false) }
-    var selectedGroups by remember { mutableStateOf<List<String>>(emptyList()) }
-    var selectedSort by remember { mutableStateOf(SortOption.NAME_ASC) }
+    val selectedGroups = uiState.selectedFilterGroups
+    val selectedSort = uiState.selectedSortOption
     val customerList = uiState.filteredCustomers
 
     ModalNavigationDrawer(
@@ -366,7 +367,10 @@ fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Uni
 
                     BasicTextField(
                         value = searchQuery,
-                        onValueChange = { searchQuery = it },
+                        onValueChange = {
+                                searchQuery = it
+                                viewModel.onEvent(CustomerListViewModel.Event.FilterCustomerList(searchQuery))
+                            },
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f)
@@ -384,6 +388,7 @@ fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Uni
                         keyboardActions = KeyboardActions(
                             onSearch = {
                                 println("Search: $searchQuery")
+                                viewModel.onEvent(CustomerListViewModel.Event.FilterCustomerList(searchQuery))
                                 focusManager.clearFocus()
                             }
                         ),
@@ -419,8 +424,8 @@ fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Uni
                                     IconButton(
                                         onClick = {
                                             searchQuery = ""
-                                                  focusManager.clearFocus()
-                                                  },
+                                            focusManager.clearFocus()
+                                            viewModel.onEvent(CustomerListViewModel.Event.FilterCustomerList(searchQuery)) },
                                         modifier = Modifier.size(32.dp)
                                     ) {
                                         Icon(
@@ -434,21 +439,30 @@ fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Uni
                             }
                         }
                     )
-                    IconButton(onClick = {
-                        showFilterSheet = true
-                    }){
-                        Icon(Icons.Default.FilterList,
-                            contentDescription = "Filter",
-                            tint = Color.White)
-                    }
+
+                    FilterButtonWithBadge(
+                        filterCount = selectedGroups.size,
+                        onClick = { showFilterSheet = true },
+                        modifier = Modifier
+                    )
+
                     // BottomSheet
                     FilterBottomSheet(
                         showBottomSheet = showFilterSheet,
                         onDismiss = { showFilterSheet = false },
                         selectedGroups = selectedGroups,
-                        onGroupsChange = { selectedGroups = it },
+                        onGroupsChange = { /* Sadece local state güncellenecek */ },
                         selectedSort = selectedSort,
-                        onSortChange = { selectedSort = it }
+                        onSortChange = { /* Sadece local state güncellenecek */ },
+                        onApplyFilters = {groups, short ->
+                            viewModel.onEvent(CustomerListViewModel.Event.ApplyFilter(groups, short))
+                            showFilterSheet = false
+                        } ,
+                        onClearFilters = {
+                            viewModel.onEvent(CustomerListViewModel.Event.ClearFilters)
+                            showFilterSheet = false
+                        },
+                        customerGroups = uiState.activeCustomerGroup
                     )
                 }
 
@@ -472,6 +486,20 @@ fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Uni
                                     style = MaterialTheme.typography.bodyMedium,
                                     color = Color.White
                                 )
+                            }
+                        }
+                        LaunchedEffect(selectedTab){
+                            when(selectedTab) {
+                                0 -> { //TODAY
+                                    viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(now().toInstant()))
+                                }
+                                1 -> { // TOMORROW
+                                    val date = now().toInstant().addDays(1)
+                                    viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(date))
+                                }
+                                2 -> {// OTHERS
+                                    viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(null))
+                                }
                             }
                         }
                     }
@@ -498,23 +526,13 @@ fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Uni
                         }
                     }
 
-                    when(selectedTab) {
-                        0 -> { //TODAY
-                            viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(null))
-                        }
-                        1 -> { // TOMORROW
-                            val date = now().toInstant().addDays(1)
-                            viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(date))
-                        }
-                        2 -> {// OTHERS
-                            viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(null))
-                        }
-                    }
-                    itemsIndexed(customerList, itemContent = { index, customer ->
-                        CustomerCard(customer = customer, modifier = Modifier, themeManager = themeManager)
+                    itemsIndexed(
+                        items = customerList,
+                        key = { _, customer -> "${customer.customerId}-${customer.date}" }
+                    ) { index, customer ->
+                        CustomerCard(customer = customer, themeManager = themeManager, modifier = Modifier)
                         HorizontalDivider()
-                    })
-
+                    }
                 }
 
                 // BOTTOM ROW - TASKS + CHAT
@@ -613,9 +631,9 @@ fun getNavigationItems(): List<NavigationItem>{
 @OptIn(ExperimentalTime::class)
 @Composable
 fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, themeManager: ThemeManager) {
-    // Tek kat Surface yerine Card/Surface tek seferde; elevation yoksa Surface da olur.
+
     Surface(
-        modifier = modifier.clickable{
+        modifier = modifier.height(80.dp).clickable{
             println("Customer clicked")
         },
         color = MaterialTheme.colorScheme.surface
@@ -700,6 +718,9 @@ fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, the
                     .padding(start = 8.dp),
                 horizontalAlignment = Alignment.End
             ) {
+                val formattedDate = remember(customer.date) {
+                    customer.date?.toEpochMilliseconds()?.toShortDateTime() ?: ""
+                }
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -711,8 +732,9 @@ fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, the
                             .padding(end = 6.dp),
                         tint = MaterialTheme.colorScheme.primary
                     )
+
                     Text(
-                        text = customer.date?.toEpochMilliseconds()?.toShortDateTime() ?: "",
+                        text = formattedDate,
                         fontWeight = FontWeight.Light,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -721,7 +743,7 @@ fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, the
                     )
                 }
                 Text(
-                    text = customer.date?.toEpochMilliseconds()?.toShortDateTime() ?: "",
+                    text = formattedDate,
                     fontWeight = FontWeight.Light,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
