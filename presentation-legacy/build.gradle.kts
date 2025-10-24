@@ -53,10 +53,7 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
 
                 implementation(libs.coil.compose)
-                implementation(libs.coil.mp)
-                implementation(libs.coil.compose)
-
-
+                implementation(libs.coil.network.ktor)
 
                 //PROJECT DEPENDCY
                 implementation(projects.core)
@@ -72,14 +69,11 @@ kotlin {
             dependencies {
                 //LIBS IMPORT
                 implementation(libs.androidx.activity.compose)
-                implementation(libs.ktor.client.okhttp)
-
             }
         }
 
         iosMain {
             dependencies {
-                implementation(libs.ktor.client.darwin)
             }
         }
     }

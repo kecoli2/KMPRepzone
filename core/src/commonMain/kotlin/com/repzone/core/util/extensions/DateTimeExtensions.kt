@@ -57,6 +57,11 @@ fun Long.toTimeOnly(timeZone: TimeZone = TimeZone.currentSystemDefault()): Strin
     return "${local.hour.toString().padStart(2, '0')}:${local.minute.toString().padStart(2, '0')}:${local.second.toString().padStart(2, '0')}"
 }
 
+fun Long.toTimeOnlyHourMinute(timeZone: TimeZone = TimeZone.currentSystemDefault()): String {
+    val local = Instant.fromEpochMilliseconds(this).toLocalDateTime(timeZone)
+    return "${local.hour.toString().padStart(2, '0')}:${local.minute.toString().padStart(2, '0')}"
+}
+
 fun Long.toShortTime(timeZone: TimeZone = TimeZone.currentSystemDefault()): String {
     val local = Instant.fromEpochMilliseconds(this).toLocalDateTime(timeZone)
     return "${local.hour.toString().padStart(2, '0')}:${local.minute.toString().padStart(2, '0')}"

@@ -75,7 +75,9 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
             }
 
             is Event.FilterCustomerList -> {
-                filterCustomerList(event.query)
+                scope.launch {
+                    filterCustomerList(event.query)
+                }
             }
 
             is Event.RefreshCustomerList -> {
@@ -85,11 +87,15 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
             }
 
             is Event.ApplyFilter -> {
-                applyFilters(event.selectedGroups, event.sortOption)
+                scope.launch {
+                    applyFilters(event.selectedGroups, event.sortOption)
+                }
             }
 
             is Event.ClearFilters -> {
-                clearFilters()
+                scope.launch {
+                    clearFilters()
+                }
             }
         }
     }
@@ -99,7 +105,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
     //endregion
 
     //region Private Method
-    private fun clearFilters() {
+    private suspend fun clearFilters() {
         updateState { currentState ->
             currentState.copy(
                 selectedFilterGroups = emptyList(),
@@ -108,7 +114,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         }
         applyFilters(emptyList(), CustomerSortOption.NAME_ASC)
     }
-    private fun applyFilters(selectedGroups: List<String>, sortOption: CustomerSortOption) {
+    private suspend fun applyFilters(selectedGroups: List<String>, sortOption: CustomerSortOption) {
         updateState { currentState ->
             currentState.copy(
                 customerListState = CustomerListScreenUiState.CustomerListState.Loading
@@ -185,7 +191,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         }
     }
 
-    private fun filterCustomerList(query: String) {
+    private suspend fun filterCustomerList(query: String) {
         searchQuery = query
         applyFilters(state.value.selectedFilterGroups, state.value.selectedSortOption)
     }

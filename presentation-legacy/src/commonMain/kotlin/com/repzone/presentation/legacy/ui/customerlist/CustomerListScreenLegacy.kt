@@ -30,7 +30,6 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.DocumentScanner
 import androidx.compose.material.icons.filled.EditNotifications
-import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ModeComment
@@ -83,8 +82,6 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.graphics.painter.ColorPainter
-import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
@@ -93,34 +90,31 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.repzone.core.config.BuildConfig
+import com.repzone.core.constant.CdnConfig
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.ui.model.NavigationItem
 import com.repzone.core.ui.util.enum.NavigationItemType
 import com.repzone.core.util.extensions.addDays
 import com.repzone.core.util.extensions.fromResource
-import com.repzone.core.util.extensions.isFuture
 import com.repzone.core.util.extensions.isToday
 import com.repzone.core.util.extensions.isTomorrow
-import com.repzone.core.util.extensions.isYesterday
 import com.repzone.core.util.extensions.now
+import com.repzone.core.util.extensions.toDateString
 import com.repzone.core.util.extensions.toDayName
 import com.repzone.core.util.extensions.toInstant
-import com.repzone.core.util.extensions.toShortDateTime
-import com.repzone.core.util.extensions.toTimeOnly
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
-import repzonemobile.core.generated.resources.customer_not_found
 import repzonemobile.core.generated.resources.customernotestitle
 import repzonemobile.core.generated.resources.dailyoperationstitle
 import repzonemobile.core.generated.resources.documents
 import repzonemobile.core.generated.resources.eagleeyelogstitle
 import repzonemobile.core.generated.resources.exit
 import repzonemobile.core.generated.resources.generalsettings
+import repzonemobile.core.generated.resources.image_not_found
 import repzonemobile.core.generated.resources.notificationlogpagetitle
 import repzonemobile.core.generated.resources.onlinehubtitle
 import repzonemobile.core.generated.resources.profile
@@ -130,11 +124,9 @@ import repzonemobile.core.generated.resources.routepagetasksbtntext
 import repzonemobile.core.generated.resources.routesearchcustomer
 import repzonemobile.core.generated.resources.routetoday
 import repzonemobile.core.generated.resources.routetomorrow
-import repzonemobile.core.generated.resources.todaydatetext
 import repzonemobile.presentation_legacy.generated.resources.Res
 import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_min
 import kotlin.time.ExperimentalTime
-import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 @Composable
@@ -653,25 +645,21 @@ fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, the
             // Avatar
             if (customer.imageUri != null) {
                 AsyncImage(
-                    model = "https://letsenhance.io/static/73136da51c245e80edc6ccfe44888a99/396e9/MainBefore.jpg",
+                    model = "${CdnConfig.CDN_IMAGE_CONFIG}xs/${customer.imageUri}",
                     contentDescription = null,
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center,
-                    error = painterResource(repzonemobile.core.generated.resources.Res.drawable.customer_not_found),
+                    error = painterResource(repzonemobile.core.generated.resources.Res.drawable.image_not_found),
                     onError = {
                         println("Error: ${it.result.throwable.message}")
                     },
-                    colorFilter = ColorFilter.tint(
-                        color = themeManager.getCurrentColorScheme().colorPalet.primary50,
-                        blendMode = BlendMode.SrcIn
-                    )
                 )
             } else {
                 Icon(
-                    imageVector = Icons.Default.Person, // veya Icons.Filled.AccountCircle
+                    imageVector = Icons.Default.Person,
                     contentDescription = null,
                     modifier = Modifier
                         .size(48.dp)
@@ -724,11 +712,11 @@ fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, the
                 horizontalAlignment = Alignment.End
             ) {
                 val formattedDateStart = remember(customer.date) {
-                    customer.date?.toEpochMilliseconds()?.toTimeOnly() ?: ""
+                    customer.date?.toEpochMilliseconds()?.toDateString("HH:mm") ?: ""
                 }
 
                 val formattedDate2 = remember(customer.date) {
-                    customer.endDate?.toEpochMilliseconds()?.toTimeOnly() ?: ""
+                    customer.endDate?.toEpochMilliseconds()?.toDateString("HH:mm") ?: ""
                 }
 
                 val dayDesc =
@@ -771,37 +759,3 @@ fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, the
         }
     }
 }
-
-/*data class CustomerUi(
-    val id: String,
-    val title: String,
-    val subtitle: String,
-    val timeRange: String,   // "08:00-08:30"
-    val dayLabel: String,    // "Bugün"
-    val avatarUrl: String?   // null ise local placeholder
-)*/
-/*
-fun generateDummyCustomers(count: Int = 50): List<CustomerUi> {
-    val names = listOf("Ali", "Ayşe", "Murat", "Zeynep", "Mehmet", "Elif", "Cem", "Canan")
-    val companies = listOf("Market", "Mağaza", "Bakkal", "Tekstil", "Gıda", "Elektronik", "Mobilya")
-
-    return List(count) { index ->
-        val name = names.random()
-        val company = "${companies.random()} ${index + 1}"
-        val time = "${(8..17).random()}:00 - ${(8..17).random()}:30"
-        val day = listOf("Bugün", "Dün", "Yarın").random()
-        val avatar = if (index % 2 == 0)
-            "https://randomuser.me/api/portraits/men/${(1..99).random()}.jpg"
-        else
-            "https://randomuser.me/api/portraits/women/${(1..99).random()}.jpg"
-
-        CustomerUi(
-            id = index.toString(),
-            title = "$name ${listOf("Yılmaz", "Kaya", "Demir", "Çelik").random()}",
-            subtitle = company,
-            timeRange = time,
-            dayLabel = day,
-            avatarUrl = avatar
-        )
-    }
-}*/

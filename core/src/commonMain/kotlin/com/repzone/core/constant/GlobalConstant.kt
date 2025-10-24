@@ -8,6 +8,10 @@ object PreferencesConstant {
     const val ACTIVE_USER_CODE = "ACTIVE_USER_CODE"
 }
 
+object CdnConfig {
+    const val CDN_IMAGE_CONFIG = "https://cdn.repzone.com/images/"
+}
+
 
 object ITokenApiControllerConstant {
     const val TOKEN_ENDPOINT = "/api/Auth/Login"
