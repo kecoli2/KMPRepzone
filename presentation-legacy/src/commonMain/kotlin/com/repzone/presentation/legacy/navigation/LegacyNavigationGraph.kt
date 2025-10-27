@@ -26,4 +26,7 @@ sealed interface LegacyScreen {
     data object Sync : LegacyScreen
     @Serializable
     data object CustomerList : LegacyScreen
+
+    @Serializable
+    data object SettingsScreen: LegacyScreen
 }

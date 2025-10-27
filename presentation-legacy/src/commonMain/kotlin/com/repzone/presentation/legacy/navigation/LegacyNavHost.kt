@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.repzone.core.ui.ui.settings.SettingsScreen
 import com.repzone.core.ui.util.enum.NavigationItemType
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
 import com.repzone.presentation.legacy.ui.customerlist.CustomerListScreenLegacy
@@ -86,24 +87,44 @@ fun LegacyNavHost(modifier: Modifier = Modifier, navController: NavHostControlle
          // ============ MAIN APP GRAPH ============
          navigation<LegacyScreen.MainGraph>(startDestination = LegacyScreen.CustomerList) {
                composable<LegacyScreen.CustomerList> {
-                    /* CustomerListScreenLegacy({ type ->
+                     CustomerListScreenLegacy({ type ->
                          when(type) {
-                             NavigationItemType.GENERAL_SETTINGS -> TODO()
-                             NavigationItemType.SHARED_DOCUMENT -> TODO()
-                             NavigationItemType.DAILY_OPERATIONS -> TODO()
-                             NavigationItemType.GPS_OPERATIONS -> TODO()
-                             NavigationItemType.NOTIFICATION_HISTORY -> TODO()
-                             NavigationItemType.ONLINE_CENTER -> {
-                                 if(1==1){
-
+                             NavigationItemType.GENERAL_SETTINGS -> {
+                                 navController.navigate(LegacyScreen.SettingsScreen) {
+                                     popUpTo<LegacyScreen.Sync> { inclusive = false }
                                  }
                              }
-                             NavigationItemType.CUSTOMER_NOTES -> TODO()
-                             NavigationItemType.LOG -> TODO()
+                             NavigationItemType.SHARED_DOCUMENT -> {
+                                 TODO()
+                             }
+                             NavigationItemType.DAILY_OPERATIONS -> {
+                                 TODO()
+                             }
+                             NavigationItemType.GPS_OPERATIONS -> {
+                                 TODO()
+                             }
+                             NavigationItemType.NOTIFICATION_HISTORY -> {
+                                 TODO()
+                             }
+                             NavigationItemType.ONLINE_CENTER -> {
+
+                             }
+                             NavigationItemType.CUSTOMER_NOTES -> {
+                                 TODO()
+                             }
+                             NavigationItemType.LOG -> {
+                                 TODO()
+                             }
                          }
-                     })*/
-                   CustomerListScreenLegacy()
+                     })
                }
+
+             composable<LegacyScreen.SettingsScreen>{
+                 SettingsScreen{
+                     navController.popBackStack()
+                 }
+             }
+
          }
         }
     }

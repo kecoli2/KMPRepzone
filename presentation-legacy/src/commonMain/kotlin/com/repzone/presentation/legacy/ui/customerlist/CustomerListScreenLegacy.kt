@@ -78,9 +78,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
@@ -91,7 +89,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.repzone.core.constant.CdnConfig
+import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.base.ViewModelHost
+import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.ui.model.NavigationItem
 import com.repzone.core.ui.util.enum.NavigationItemType
@@ -130,8 +130,9 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 @Composable
-fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewModel ->
+fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> Unit) = ViewModelHost<CustomerListViewModel> { viewModel ->
     val themeManager: ThemeManager = koinInject()
+    val iUserSessionInfo: IUserSession = koinInject()
     val uiState by viewModel.state.collectAsState()
     var selectedTab by rememberSaveable  { mutableIntStateOf(2) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -145,6 +146,9 @@ fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewMode
     val selectedSort = uiState.selectedSortOption
     val customerList = uiState.filteredCustomers
     val representSummary = uiState.representSummary
+    val userNameSurName by remember { mutableStateOf("${iUserSessionInfo.getActiveSession()?.firstName} ${iUserSessionInfo.getActiveSession()?.lastName}") }
+    val userMail by remember { mutableStateOf(iUserSessionInfo.getActiveSession()?.email ?: "") }
+
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -178,13 +182,13 @@ fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewMode
                                 horizontalAlignment = Alignment.Start,
                             ) {
                                 Text(
-                                    "Salih Yücel",
+                                    userNameSurName,
                                     style = MaterialTheme.typography.bodyMedium,
                                     fontWeight = FontWeight.Bold,
                                     color = Color.White
                                 )
                                 Text(
-                                    "salih.yucel@repzone.com",
+                                    userMail,
                                     style = MaterialTheme.typography.bodySmall,
                                     fontWeight = FontWeight.Light,
                                     color = Color.White
@@ -210,6 +214,7 @@ fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewMode
                                     scope.launch { drawerState.close() }
                                     when (drawerItems[index].navigationItemType) {
                                         NavigationItemType.GENERAL_SETTINGS -> {
+                                            onNavigationDrawer(NavigationItemType.GENERAL_SETTINGS)
                                         }
                                         NavigationItemType.SHARED_DOCUMENT -> {}
                                         NavigationItemType.DAILY_OPERATIONS -> {}
@@ -672,15 +677,15 @@ fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, the
             ) {
                 Text(
                     text = customer.name ?: "",
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 2,
+                    maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
                 Text(
                     text = customer.address ?: "",
                     fontWeight = FontWeight.Light,
-                    style = MaterialTheme.typography.bodyMedium,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
@@ -735,6 +740,7 @@ fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, the
                         fontWeight = FontWeight.Light,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        fontSize = AppTheme.dimens.textSmall,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )

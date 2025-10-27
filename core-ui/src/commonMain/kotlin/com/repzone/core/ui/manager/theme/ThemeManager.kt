@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.asStateFlow
 /**
  * Core tema yönetimi
  * Sadece renk şeması ve light/dark mode yönetir
+ * Ayrıca dimensons larıda burada yönetilir
  * Modül seçimi build time'da yapılır
  */
 class ThemeManager {
@@ -20,6 +21,14 @@ class ThemeManager {
 
     private val _currentColorSchemeId = MutableStateFlow<ThemeType?>(null)
     val currentColorSchemeId: StateFlow<ThemeType?> = _currentColorSchemeId.asStateFlow()
+
+    // YENİ: Responsive state
+    private val _responsiveState = MutableStateFlow(ResponsiveState())
+    val responsiveState: StateFlow<ResponsiveState> = _responsiveState.asStateFlow()
+
+    // YENİ: Dil yönetimi
+    private val _currentLanguage = MutableStateFlow("tr") // Default Türkçe
+    val currentLanguage: StateFlow<String> = _currentLanguage.asStateFlow()
 
     // Aktif presentation config (build time'da set edilir)
     private var activePresentationConfig: IPresentationConfig? = null
@@ -88,5 +97,38 @@ class ThemeManager {
      */
     fun getActiveModuleInfo(): String {
         return activePresentationConfig?.moduleName ?: "Not initialized"
+    }
+
+    /**
+     * YENİ: Responsive state'i güncelle
+     * AppTheme composable tarafından otomatik çağrılır
+     */
+    fun updateResponsiveState(windowSizeClass: WindowSizeClass, isLandscape: Boolean) {
+        val dimensions = when (windowSizeClass.widthSizeClass) {
+            WindowWidthSizeClass.Compact -> DimensionDefaults.compact
+            WindowWidthSizeClass.Medium -> DimensionDefaults.medium
+            WindowWidthSizeClass.Expanded -> DimensionDefaults.expanded
+        }
+
+        _responsiveState.value = ResponsiveState(
+            windowSizeClass = windowSizeClass,
+            isLandscape = isLandscape,
+            dimensions = dimensions
+        )
+    }
+
+    /**
+     * YENİ: Dil değiştir
+     * @param languageCode: "tr", "en", "de", vb.
+     */
+    fun setLanguage(languageCode: String) {
+        _currentLanguage.value = languageCode
+    }
+
+    /**
+     * YENİ: Mevcut dili getir
+     */
+    fun getCurrentLanguage(): String {
+        return _currentLanguage.value
     }
 }

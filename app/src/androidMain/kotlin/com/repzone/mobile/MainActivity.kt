@@ -16,6 +16,7 @@ import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.di.CoreUiModule
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
+import com.repzone.core.ui.ui.settings.SettingsScreen
 import com.repzone.data.di.RepositoryModulePreview
 import com.repzone.database.di.DatabaseAndroidPreviewModule
 import com.repzone.database.di.DatabaseModulePreview
@@ -62,7 +63,8 @@ private fun AppContent() {
 }
 
 @Composable
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, widthDp = 800, heightDp = 400)
+//@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, widthDp = 800, heightDp = 400)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun AppAndroidPreview() {
     /*val themeManager = ThemeManager()
     val themeConfig: IPresentationConfig = LegacyThemeConfig()*/
@@ -88,15 +90,10 @@ fun AppAndroidPreview() {
     var selectedGroups by remember { mutableStateOf<List<String>>(emptyList()) }
 
     AppTheme(themeManager) {
-        CustomerListScreenLegacy()
-        /*CustomerSummary(RepresentSummary(
-            visitTotal = 10,
-            visitDoneTotal = 5,
-            orderCount = 2,
-            orderValue = 100.0,
-            formCount = 3,
-            activeAppoinmentDayCount = 1
-        ), themeManager)*/
+        CustomerListScreenLegacy{
+
+        }
+        //SettingsScreen()
     }
 }
 
