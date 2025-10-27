@@ -485,11 +485,13 @@ fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewMode
                 LazyColumn(modifier = Modifier.fillMaxSize().weight(1f)) {
                     // Kaybolacak Alan
                     item {
-                        Surface(
-                            modifier = Modifier.fillMaxWidth().height(180.dp),
-                            color = themeManager.getCurrentColorScheme().colorPalet.primary60
-                        ) {
-                            CustomerSummary(representSummary, themeManager)
+                        if(uiState.isDashboardActive){
+                            Surface(
+                                modifier = Modifier.fillMaxWidth().height(180.dp),
+                                color = themeManager.getCurrentColorScheme().colorPalet.primary60
+                            ) {
+                                CustomerSummary(representSummary, themeManager)
+                            }
                         }
                     }
 

@@ -230,6 +230,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                 isCustomerAddModuleActive = isActiveCRM && canAddNewCustomer,
                 isFeedbackModuleActive = isActiveMsgChat && isActiveFeedback,
                 isChatButtonContainer = isActiveMsgChat && isActiveMessaging,
+                isDashboardActive = iModuleParameterRepository.getReportsParameters()?.isActive ?: false && iModuleParameterRepository.getReportsParameters()?.mobileDashBoard ?: false
             )
         }
 

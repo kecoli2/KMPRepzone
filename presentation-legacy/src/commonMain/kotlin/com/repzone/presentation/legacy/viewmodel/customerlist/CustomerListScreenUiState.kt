@@ -23,6 +23,7 @@ data class CustomerListScreenUiState(
     val isFeedbackModuleActive: Boolean = false,
     val isChatButtonContainer: Boolean = false,
     val isSyncInProgress: Boolean = false,
+    val isDashboardActive: Boolean = false,
 
     // Customer List State
     val customerListState: CustomerListState = CustomerListState.Initial,
