@@ -32,7 +32,7 @@ class RepresentativeRepositoryImpl(private val database: AppDatabase,
         val sprintForms = database.formLogInformationEntityQueries.selectByFormLogInformationEntityStartAndDateAndStatus(activeSprint?.startDate, activeSprint?.endDate,
             OrderStatus.SENT.enumToLong()).executeAsList()
 
-        return if (date != null){
+        val summary = if (date != null){
             RepresentSummary(
                 visitTotal = routes.size,
                 visitDoneTotal = routes.filter {
@@ -56,6 +56,7 @@ class RepresentativeRepositoryImpl(private val database: AppDatabase,
             )
         }
 
+        return summary
     }
     //endregion
 

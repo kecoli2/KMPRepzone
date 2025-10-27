@@ -16,5 +16,5 @@ val PresentationModuleLegacy = module {
     factory { SyncTestViewModel(get(), get(), get()) }
     factory { SplashScreenViewModel(get(), get()) }
     factory { SyncViewModel(get(),get(),get()) }
-    factory { CustomerListViewModel(get(), get(), get()) }
+    factory { CustomerListViewModel(get(), get(), get(), get()) }
 }

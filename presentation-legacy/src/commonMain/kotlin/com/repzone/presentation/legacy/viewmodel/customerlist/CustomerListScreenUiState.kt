@@ -3,6 +3,7 @@ package com.repzone.presentation.legacy.viewmodel.customerlist
 import com.repzone.core.model.HasUiFrame
 import com.repzone.core.model.UiFrame
 import com.repzone.domain.model.CustomerItemModel
+import com.repzone.domain.model.RepresentSummary
 import com.repzone.presentation.legacy.model.CustomerGroup
 import com.repzone.presentation.legacy.model.enum.CustomerSortOption
 import kotlin.time.ExperimentalTime
@@ -31,7 +32,11 @@ data class CustomerListScreenUiState(
     val activeCustomerGroup : List<CustomerGroup> = emptyList(),
 
     val selectedFilterGroups: List<String> = emptyList(),
-    val selectedSortOption: CustomerSortOption = CustomerSortOption.DATE_ASC
+    val selectedSortOption: CustomerSortOption = CustomerSortOption.DATE_ASC,
+
+    // Represent Summary
+    val representSummary: RepresentSummary? = null
+
 ): HasUiFrame {
 
     override fun copyWithUiFrame(newUiFrame: UiFrame): CustomerListScreenUiState {

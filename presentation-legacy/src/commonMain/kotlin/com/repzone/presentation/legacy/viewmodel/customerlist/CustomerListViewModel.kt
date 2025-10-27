@@ -5,6 +5,7 @@ import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.IMobileModuleParameterRepository
+import com.repzone.domain.repository.IRepresentativeRepository
 import com.repzone.presentation.legacy.model.CustomerGroup
 import com.repzone.presentation.legacy.model.enum.CustomerSortOption
 import com.repzone.sync.interfaces.ISyncManager
@@ -21,7 +22,8 @@ import kotlin.time.Instant
 @OptIn(ExperimentalTime::class)
 class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRepository,
                             private val iModuleParameterRepository: IMobileModuleParameterRepository,
-                            private val iSyncManager: ISyncManager
+                            private val iSyncManager: ISyncManager,
+                            private var representRepository: IRepresentativeRepository
 ): BaseViewModel<CustomerListScreenUiState, CustomerListViewModel.Event>(CustomerListScreenUiState()) {
     //region Field
     private var searchQuery: String = ""
@@ -176,7 +178,8 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                         CustomerListScreenUiState.CustomerListState.Success
                     },
                     allCustomers = list,
-                    activeCustomerGroup = prepareCustomerGroup(list)
+                    activeCustomerGroup = prepareCustomerGroup(list),
+                    representSummary = representRepository.getSummary(date, list)
                 )
             }
             applyFilters(state.value.selectedFilterGroups, state.value.selectedSortOption)
