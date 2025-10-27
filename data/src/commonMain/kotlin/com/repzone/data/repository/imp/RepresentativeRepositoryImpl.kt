@@ -47,7 +47,7 @@ class RepresentativeRepositoryImpl(private val database: AppDatabase,
             )
         }else{
             RepresentSummary(
-                visitTotal = sprintOrders.count(),
+                visitTotal = routes.size,
                 visitDoneTotal = sprintRoutes.count(),
                 orderCount = routes.count { it.visitId != null },
                 orderValue = sprintOrders.filter { it.TotalCost != null }.sumOf { it.TotalCost!! },

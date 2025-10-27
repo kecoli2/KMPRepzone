@@ -55,6 +55,12 @@ kotlin {
                 implementation(libs.coil.compose)
                 implementation(libs.coil.network.ktor)
 
+                //VICO CHART
+                implementation(libs.vico.compose)
+                implementation(libs.vico.compose.m3)
+                implementation(libs.vico.core)
+
+
                 //PROJECT DEPENDCY
                 implementation(projects.core)
                 implementation(projects.coreUi)

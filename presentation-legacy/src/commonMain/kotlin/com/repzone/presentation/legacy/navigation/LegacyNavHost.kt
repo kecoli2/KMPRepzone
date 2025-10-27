@@ -86,7 +86,7 @@ fun LegacyNavHost(modifier: Modifier = Modifier, navController: NavHostControlle
          // ============ MAIN APP GRAPH ============
          navigation<LegacyScreen.MainGraph>(startDestination = LegacyScreen.CustomerList) {
                composable<LegacyScreen.CustomerList> {
-                     CustomerListScreenLegacy({ type ->
+                    /* CustomerListScreenLegacy({ type ->
                          when(type) {
                              NavigationItemType.GENERAL_SETTINGS -> TODO()
                              NavigationItemType.SHARED_DOCUMENT -> TODO()
@@ -101,7 +101,8 @@ fun LegacyNavHost(modifier: Modifier = Modifier, navController: NavHostControlle
                              NavigationItemType.CUSTOMER_NOTES -> TODO()
                              NavigationItemType.LOG -> TODO()
                          }
-                     })
+                     })*/
+                   CustomerListScreenLegacy()
                }
          }
         }

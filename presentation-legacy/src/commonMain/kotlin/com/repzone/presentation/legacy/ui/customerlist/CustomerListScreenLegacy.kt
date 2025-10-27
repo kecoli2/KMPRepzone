@@ -130,7 +130,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 @Composable
-fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Unit) = ViewModelHost<CustomerListViewModel> { viewModel ->
+fun CustomerListScreenLegacy() = ViewModelHost<CustomerListViewModel> { viewModel ->
     val themeManager: ThemeManager = koinInject()
     val uiState by viewModel.state.collectAsState()
     var selectedTab by rememberSaveable  { mutableIntStateOf(2) }
@@ -144,6 +144,7 @@ fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Uni
     val selectedGroups = uiState.selectedFilterGroups
     val selectedSort = uiState.selectedSortOption
     val customerList = uiState.filteredCustomers
+    val representSummary = uiState.representSummary
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -215,7 +216,7 @@ fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Uni
                                         NavigationItemType.GPS_OPERATIONS -> {}
                                         NavigationItemType.NOTIFICATION_HISTORY -> {}
                                         NavigationItemType.ONLINE_CENTER -> {
-                                            onControllSucces(NavigationItemType.ONLINE_CENTER)
+                                            //onControllSucces(NavigationItemType.ONLINE_CENTER)
                                         }
                                         NavigationItemType.CUSTOMER_NOTES -> {}
                                         NavigationItemType.LOG -> {}
@@ -465,41 +466,30 @@ fun CustomerListScreenLegacy(onControllSucces: (type: NavigationItemType) -> Uni
                     )
                 }
 
+                LaunchedEffect(selectedTab){
+                    when(selectedTab) {
+                        0 -> { //TODAY
+                            viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(now().toInstant()))
+                        }
+                        1 -> { // TOMORROW
+                            val date = now().toInstant().addDays(1)
+                            viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(date))
+                        }
+                        2 -> {// OTHERS
+                            viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(null))
+                        }
+                    }
+                }
+
                 // LazyColumn içinde kaybolacak alan + Tab + content
                 LazyColumn(modifier = Modifier.fillMaxSize().weight(1f)) {
                     // Kaybolacak Alan
                     item {
                         Surface(
-                            modifier = Modifier.fillMaxWidth().height(120.dp),
+                            modifier = Modifier.fillMaxWidth().height(180.dp),
                             color = themeManager.getCurrentColorScheme().colorPalet.primary60
                         ) {
-                            Column(modifier = Modifier.padding(16.dp)) {
-                                Text(
-                                    text = "Kaydırınca Kaybolacak Alan",
-                                    style = MaterialTheme.typography.headlineSmall,
-                                    color = Color.White
-                                )
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(
-                                    text = "Bu alan scroll yapınca yukarı kaybolacak",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    color = Color.White
-                                )
-                            }
-                        }
-                        LaunchedEffect(selectedTab){
-                            when(selectedTab) {
-                                0 -> { //TODAY
-                                    viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(now().toInstant()))
-                                }
-                                1 -> { // TOMORROW
-                                    val date = now().toInstant().addDays(1)
-                                    viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(date))
-                                }
-                                2 -> {// OTHERS
-                                    viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(null))
-                                }
-                            }
+                            CustomerSummary(representSummary, themeManager)
                         }
                     }
 

@@ -8,6 +8,7 @@ import com.repzone.data.mapper.CustomDataDetailEntityDbMapper
 import com.repzone.data.mapper.CustomDataHeaderEntityDbMapper
 import com.repzone.data.mapper.CustomerCampaignImplementationLogInformationEntityDbMapper
 import com.repzone.data.mapper.CustomerEntityDbMapper
+import com.repzone.data.mapper.CustomerItemViewEntityDbMapper
 import com.repzone.data.mapper.CustomerNoteSpEntityDbMapper
 import com.repzone.data.mapper.DailyOperationLogInformationEntityDbMapper
 import com.repzone.data.mapper.DocumentMapDocNumberInformationEntityDbMapper
@@ -115,9 +116,12 @@ import com.repzone.data.mapper.VisitEntityDbMapper
 import com.repzone.data.mapper.VisitLogInformationEntityDbMapper
 import com.repzone.data.repository.imp.CustomerListRepositoryImpl
 import com.repzone.data.repository.imp.CustomerRepositoryImpl
+import com.repzone.data.repository.imp.EventReasonRepositoryImpl
 import com.repzone.data.repository.imp.MobileModuleParameterRepositoryImpl
 import com.repzone.data.repository.imp.MobileModuleParameterRepositoryImplPreview
 import com.repzone.data.repository.imp.ProductRepositoryImpl
+import com.repzone.data.repository.imp.RepresentativeRepositoryImpl
+import com.repzone.data.repository.imp.RouteAppointmentRepositoryImpl
 import com.repzone.data.repository.imp.SyncModuleRepositoryImpl
 import com.repzone.data.util.Mapper
 import com.repzone.data.util.MapperDto
@@ -128,6 +132,7 @@ import com.repzone.database.CrashLogInformationEntity
 import com.repzone.database.CustomDataDetailEntity
 import com.repzone.database.CustomDataHeaderEntity
 import com.repzone.database.CustomerCampaignImplementationLogInformationEntity
+import com.repzone.database.CustomerItemViewEntity
 import com.repzone.database.CustomerNoteSpEntity
 import com.repzone.database.DailyOperationLogInformationEntity
 import com.repzone.database.DocumentMapDocNumberInformationEntity
@@ -240,6 +245,7 @@ import com.repzone.domain.model.CrashLogInformationModel
 import com.repzone.domain.model.CustomDataDetailModel
 import com.repzone.domain.model.CustomDataHeaderModel
 import com.repzone.domain.model.CustomerCampaignImplementationLogInformationModel
+import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.model.CustomerNoteSpModel
 import com.repzone.domain.model.DailyOperationLogInformationModel
 import com.repzone.domain.model.DocumentMapDocNumberInformationModel
@@ -347,8 +353,11 @@ import com.repzone.domain.model.VisitLogInformationModel
 import com.repzone.domain.model.VisitModel
 import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.ICustomerRepository
+import com.repzone.domain.repository.IEventReasonRepository
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.repository.IProductRepository
+import com.repzone.domain.repository.IRepresentativeRepository
+import com.repzone.domain.repository.IRouteAppointmentRepository
 import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.network.dto.CrmPriceListParameterDto
 import com.repzone.network.dto.CustomerDto
@@ -369,16 +378,20 @@ val RepositoryModulePreview = module {
 
     //region REPOSITORY
     single<ICustomerRepository> { CustomerRepositoryImpl(get(named("CustomerEntityDbMapperInterface")), get()) }
-    single<ICustomerListRepository> { CustomerListRepositoryImpl(get(), get(), get(), get(), get(named("CustomerEntityDbMapperInterface"))) }
+    single<ICustomerListRepository> { CustomerListRepositoryImpl(get(), get(), get(), get(), get(named("CustomerItemViewEntityDbMapper"))) }
     single<IProductRepository> { ProductRepositoryImpl(get(named("ProductEntityDbMapperInterface")), get()) }
     single<ISyncModuleRepository> { SyncModuleRepositoryImpl(get(named("SyncModuleEntityDbMapper")), get()) }
     single<IMobileModuleParameterRepository>{ MobileModuleParameterRepositoryImplPreview(get(), get(named("SyncPackageCustomFieldProductEntityDbMapper")), get()) }
+    factory<IRepresentativeRepository>{ RepresentativeRepositoryImpl(get(), get()) }
+    single<IRouteAppointmentRepository> { RouteAppointmentRepositoryImpl(get()) }
+    single<IEventReasonRepository> { EventReasonRepositoryImpl(get()) }
     //endregion REPOSITORY
 
     //region DBMAPPERS
     //region Customer
     single<MapperDto<SyncCustomerEntity, SyncCustomerModel, CustomerDto>>(named("CustomerEntityDbMapperInterface")) { CustomerEntityDbMapper() }
     single{ CustomerEntityDbMapper() }
+    single<Mapper<CustomerItemViewEntity, CustomerItemModel>>(named("CustomerItemViewEntityDbMapper")) { CustomerItemViewEntityDbMapper() }
     //endregion
 
     //region Product

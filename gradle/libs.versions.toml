@@ -49,6 +49,9 @@ playServicesLocation = "21.3.0"
 # Coil Glide benzeridir
 coil = "3.3.0"
 
+# Vico Charts
+vico = "1.13.1"
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -129,5 +132,9 @@ coil-compose-core = { module = "io.coil-kt.coil3:coil-compose-core", version.ref
 coil-network-ktor = { module = "io.coil-kt.coil3:coil-network-ktor3", version.ref = "coil" }
 coil-mp = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
 
+# Vico Charts
+vico-compose = { module = "com.patrykandpatrick.vico:compose", version.ref = "vico" }
+vico-compose-m3 = { module = "com.patrykandpatrick.vico:compose-m3", version.ref = "vico" }
+vico-core = { module = "com.patrykandpatrick.vico:core", version.ref = "vico" }
 
 

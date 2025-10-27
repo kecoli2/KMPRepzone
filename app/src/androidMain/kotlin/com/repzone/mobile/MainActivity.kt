@@ -19,6 +19,7 @@ import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.data.di.RepositoryModulePreview
 import com.repzone.database.di.DatabaseAndroidPreviewModule
 import com.repzone.database.di.DatabaseModulePreview
+import com.repzone.domain.model.RepresentSummary
 import com.repzone.mobile.di.AndroidDIModulePreview
 import com.repzone.mobile.di.FirebaseMockAndroidModule
 import com.repzone.navigation.AppRouter
@@ -26,6 +27,8 @@ import com.repzone.network.di.NetworkModule
 import com.repzone.network.di.PlatformNetworkModule
 import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
+import com.repzone.presentation.legacy.ui.customerlist.CustomerListScreenLegacy
+import com.repzone.presentation.legacy.ui.customerlist.CustomerSummary
 import com.repzone.sync.di.SyncModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.compose.koinInject
@@ -59,7 +62,7 @@ private fun AppContent() {
 }
 
 @Composable
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, widthDp = 800, heightDp = 400)
 fun AppAndroidPreview() {
     /*val themeManager = ThemeManager()
     val themeConfig: IPresentationConfig = LegacyThemeConfig()*/
@@ -85,7 +88,15 @@ fun AppAndroidPreview() {
     var selectedGroups by remember { mutableStateOf<List<String>>(emptyList()) }
 
     AppTheme(themeManager) {
-        //CustomerListScreenLegacy()
+        CustomerListScreenLegacy()
+        /*CustomerSummary(RepresentSummary(
+            visitTotal = 10,
+            visitDoneTotal = 5,
+            orderCount = 2,
+            orderValue = 100.0,
+            formCount = 3,
+            activeAppoinmentDayCount = 1
+        ), themeManager)*/
     }
 }
 

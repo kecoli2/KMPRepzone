@@ -35,7 +35,14 @@ data class CustomerListScreenUiState(
     val selectedSortOption: CustomerSortOption = CustomerSortOption.DATE_ASC,
 
     // Represent Summary
-    val representSummary: RepresentSummary? = null
+    val representSummary: RepresentSummary = RepresentSummary(
+        visitTotal = 0,
+        visitDoneTotal = 0,
+        orderCount = 0,
+        orderValue = 0.0,
+        formCount = 0,
+        activeAppoinmentDayCount = 0
+    )
 
 ): HasUiFrame {
 
