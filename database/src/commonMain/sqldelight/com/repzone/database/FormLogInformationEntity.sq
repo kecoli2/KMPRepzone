@@ -25,6 +25,9 @@ SELECT * FROM FormLogInformationEntity;
 selectByFormLogInformationEntityId:
 SELECT * FROM FormLogInformationEntity WHERE Id = ?;
 
+selectByFormLogInformationEntityStartAndDateAndStatus:
+SELECT * FROM FormLogInformationEntity WHERE RecordDate > ? AND RecordDate < ? AND Status = ?;
+
 insertFormLogInformationEntity:
 INSERT INTO FormLogInformationEntity
 VALUES ?;

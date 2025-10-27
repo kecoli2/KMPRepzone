@@ -1,4 +1,4 @@
-package com.repzone.presentation.legacy.model
+package com.repzone.domain.model
 
 data class RepresentSummary(
     val visitTotal : Int,

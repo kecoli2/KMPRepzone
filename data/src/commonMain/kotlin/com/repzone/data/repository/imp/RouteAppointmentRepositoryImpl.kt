@@ -1,7 +1,6 @@
 package com.repzone.data.repository.imp
 
 import com.repzone.database.AppDatabase
-import com.repzone.database.SyncRouteAppointmentEntityQueries
 import com.repzone.domain.repository.IRouteAppointmentRepository
 import com.repzone.domain.util.models.SprintInformation
 

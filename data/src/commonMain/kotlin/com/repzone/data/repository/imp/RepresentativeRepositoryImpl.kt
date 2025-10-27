@@ -1,0 +1,68 @@
+package com.repzone.data.repository.imp
+
+import com.repzone.core.enums.OrderStatus
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.database.AppDatabase
+import com.repzone.domain.model.CustomerItemModel
+import com.repzone.domain.model.RepresentSummary
+import com.repzone.domain.repository.IRepresentativeRepository
+import com.repzone.domain.repository.IRouteAppointmentRepository
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
+
+@OptIn(ExperimentalTime::class)
+class RepresentativeRepositoryImpl(private val database: AppDatabase,
+                                   private val iRouteAppointmentRepository: IRouteAppointmentRepository): IRepresentativeRepository {
+    //region Field
+    //endregion
+
+    //region Properties
+    //endregion
+
+    //region Constructor
+    //endregion
+
+    //region Public Method
+    override fun getSummary(date: Instant?, routes: List<CustomerItemModel>) : RepresentSummary{
+        val activeSprint = iRouteAppointmentRepository.getActiveSprintInformation()
+        val sprintOrders = database.orderLogInformationEntityQueries.selectByOrderOrderDateAndStatus(activeSprint?.startDate, activeSprint?.endDate,
+            OrderStatus.SENT.enumToLong()).executeAsList()
+        val sprintRoutes = database.syncRouteAppointmentEntityQueries.selectBySyncRouteAppointmentEntitySprintIdAndState(activeSprint?.id?.toLong(),
+            OrderStatus.SENT.enumToLong()).executeAsList()
+        val sprintForms = database.formLogInformationEntityQueries.selectByFormLogInformationEntityStartAndDateAndStatus(activeSprint?.startDate, activeSprint?.endDate,
+            OrderStatus.SENT.enumToLong()).executeAsList()
+
+        return if (date != null){
+            RepresentSummary(
+                visitTotal = routes.size,
+                visitDoneTotal = routes.filter {
+                    it.visitId != null
+                }.size ,
+                orderCount = sprintOrders.count {
+                    it.OrderDate == date.toEpochMilliseconds()
+                },
+                orderValue = sprintOrders.filter { it.OrderDate == date.toEpochMilliseconds() }.sumOf { it.TotalCost!! },
+                formCount = sprintForms.filter { it.RecordDate == date.toEpochMilliseconds() }.size,
+                activeAppoinmentDayCount = routes.groupBy { it.date }.count { it.value.isNotEmpty() }
+            )
+        }else{
+            RepresentSummary(
+                visitTotal = sprintOrders.count(),
+                visitDoneTotal = sprintRoutes.count(),
+                orderCount = routes.count { it.visitId != null },
+                orderValue = sprintOrders.filter { it.TotalCost != null }.sumOf { it.TotalCost!! },
+                formCount = sprintForms.count(),
+                activeAppoinmentDayCount = routes.groupBy { it.date }.count { it.value.isNotEmpty() }
+            )
+        }
+
+    }
+    //endregion
+
+    //region Protected Method
+    //endregion
+
+    //region Private Method
+    //endregion
+
+}

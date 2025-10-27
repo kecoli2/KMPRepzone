@@ -6,6 +6,7 @@ import com.repzone.data.repository.imp.CustomerListRepositoryImpl
 import com.repzone.data.repository.imp.CustomerRepositoryImpl
 import com.repzone.data.repository.imp.MobileModuleParameterRepositoryImpl
 import com.repzone.data.repository.imp.ProductRepositoryImpl
+import com.repzone.data.repository.imp.RepresentativeRepositoryImpl
 import com.repzone.data.repository.imp.RouteAppointmentRepositoryImpl
 import com.repzone.data.repository.imp.SyncModuleRepositoryImpl
 import com.repzone.data.util.Mapper
@@ -28,6 +29,7 @@ val RepositoryModule = module {
     single<IMobileModuleParameterRepository>{ MobileModuleParameterRepositoryImpl(get(), get(named("SyncPackageCustomFieldProductEntityDbMapper")), get()) }
     single<IRouteAppointmentRepository> { RouteAppointmentRepositoryImpl(get()) }
     single<IEventReasonRepository> { EventReasonRepositoryImpl(get()) }
+    factory<IRepresentativeRepository>{ RepresentativeRepositoryImpl(get(), get()) }
     //endregion REPOSITORY
 
     //region DBMAPPERS

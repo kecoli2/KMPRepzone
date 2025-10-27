@@ -109,10 +109,10 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         updateState { currentState ->
             currentState.copy(
                 selectedFilterGroups = emptyList(),
-                selectedSortOption = CustomerSortOption.NAME_ASC
+                selectedSortOption = CustomerSortOption.DATE_ASC
             )
         }
-        applyFilters(emptyList(), CustomerSortOption.NAME_ASC)
+        applyFilters(emptyList(), CustomerSortOption.DATE_ASC)
     }
     private suspend fun applyFilters(selectedGroups: List<String>, sortOption: CustomerSortOption) {
         updateState { currentState ->

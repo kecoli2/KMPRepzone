@@ -18,6 +18,9 @@ SELECT * FROM SyncRouteAppointmentEntity;
 selectBySyncRouteAppointmentEntityId:
 SELECT * FROM SyncRouteAppointmentEntity WHERE Id = ?;
 
+selectBySyncRouteAppointmentEntitySprintIdAndState:
+SELECT * FROM SyncRouteAppointmentEntity WHERE SprintId = ? AND State = ?;
+
 insertSyncRouteAppointmentEntity:
 INSERT INTO SyncRouteAppointmentEntity
 VALUES ?;

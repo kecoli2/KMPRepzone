@@ -34,6 +34,9 @@ SELECT * FROM OrderLogInformationEntity;
 selectByOrderLogInformationEntityId:
 SELECT * FROM OrderLogInformationEntity WHERE Id = ?;
 
+selectByOrderOrderDateAndStatus:
+SELECT * FROM OrderLogInformationEntity WHERE OrderDate > ? AND OrderDate < ? AND Status = ?;
+
 insertOrderLogInformationEntity:
 INSERT INTO OrderLogInformationEntity
 VALUES ?;
