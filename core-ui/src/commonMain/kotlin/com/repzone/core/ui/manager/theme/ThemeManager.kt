@@ -2,11 +2,16 @@ package com.repzone.core.ui.manager.theme
 
 import com.repzone.core.enums.ThemeMode
 import com.repzone.core.enums.ThemeType
+import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.manager.theme.common.ColorSchemeVariant
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 
 /**
  * Core tema yönetimi
@@ -14,40 +19,52 @@ import kotlinx.coroutines.flow.asStateFlow
  * Ayrıca dimensons larıda burada yönetilir
  * Modül seçimi build time'da yapılır
  */
-class ThemeManager {
+class ThemeManager(private val iUserSession: IUserSession? = null) {
 
+    //region Fields
     private val _themeMode = MutableStateFlow(ThemeMode.SYSTEM)
     val themeMode: StateFlow<ThemeMode> = _themeMode.asStateFlow()
 
     private val _currentColorSchemeId = MutableStateFlow<ThemeType?>(null)
     val currentColorSchemeId: StateFlow<ThemeType?> = _currentColorSchemeId.asStateFlow()
 
-    // YENİ: Responsive state
     private val _responsiveState = MutableStateFlow(ResponsiveState())
     val responsiveState: StateFlow<ResponsiveState> = _responsiveState.asStateFlow()
 
-    // YENİ: Dil yönetimi
     private val _currentLanguage = MutableStateFlow("tr") // Default Türkçe
     val currentLanguage: StateFlow<String> = _currentLanguage.asStateFlow()
-
-    // Aktif presentation config (build time'da set edilir)
     private var activePresentationConfig: IPresentationConfig? = null
+    //endregion Fields
 
-    /**
-     * Build time'da aktif presentation modülünü set et
-     * App.kt'de bir kez çağrılır
-     */
-    fun initialize(config: IPresentationConfig) {
-        activePresentationConfig = config
+    //region Public Method
 
-        // Default renk şemasını set et
-        val defaultSchemeId = config.getDefaultColorSchemeId()
-        _currentColorSchemeId.value = defaultSchemeId
+    fun loadSavedSettings(){
+        iUserSession?.let { sessions ->
+
+            sessions.getThemeMode()?.let { savedMode ->
+                _themeMode.value = savedMode
+            }
+
+            sessions.getColorScheme()?.let { savedScheme ->
+                _currentColorSchemeId.value = savedScheme
+            }
+
+            sessions.getLanguage()?.let { savedLanguage ->
+                _currentLanguage.value = savedLanguage
+            }
+        }
     }
 
-    /**
-     * Renk şemasını değiştir
-     */
+    fun initialize(config: IPresentationConfig) {
+        activePresentationConfig = config
+        loadSavedSettings()
+
+        if (_currentColorSchemeId.value == null) {
+            val defaultSchemeId = config.getDefaultColorSchemeId()
+            _currentColorSchemeId.value = defaultSchemeId
+        }
+    }
+
     fun setColorScheme(themeType: ThemeType) {
         val config = activePresentationConfig ?: return
         val schemes = config.provideColorSchemes()
@@ -55,11 +72,14 @@ class ThemeManager {
         if (schemes.any { it.id == themeType }) {
             _currentColorSchemeId.value = themeType
         }
+
+        iUserSession?.let { session ->
+            CoroutineScope(Dispatchers.IO).launch {
+                session.saveColorScheme(themeType)
+            }
+        }
     }
 
-    /**
-     * Aktif renk şemasını getir
-     */
     fun getCurrentColorScheme(): ColorSchemeVariant {
         val config = activePresentationConfig!!
         val schemeId = _currentColorSchemeId.value
@@ -67,42 +87,34 @@ class ThemeManager {
         return config.provideColorSchemes().find { it.id == schemeId }!!
     }
 
-    /**
-     * Mevcut tüm renk şemalarını getir
-     */
     fun getAvailableColorSchemes(): List<ColorSchemeVariant> {
         return activePresentationConfig?.provideColorSchemes() ?: emptyList()
     }
 
-    /**
-     * Tema modunu değiştir (Light/Dark/System)
-     */
     fun setThemeMode(mode: ThemeMode) {
         _themeMode.value = mode
+
+        iUserSession?.let { session ->
+            CoroutineScope(Dispatchers.IO).launch {
+                session.saveThemeMode(mode)
+            }
+        }
     }
 
-    /**
-     * Light ve Dark arasında toggle
-     */
     fun toggleTheme() {
-        _themeMode.value = when (_themeMode.value) {
+        val newMode = when (_themeMode.value) {
             ThemeMode.LIGHT -> ThemeMode.DARK
             ThemeMode.DARK -> ThemeMode.LIGHT
             ThemeMode.SYSTEM -> ThemeMode.DARK
         }
+
+        setThemeMode(newMode)
     }
 
-    /**
-     * Aktif modül bilgisini getir
-     */
     fun getActiveModuleInfo(): String {
         return activePresentationConfig?.moduleName ?: "Not initialized"
     }
 
-    /**
-     * YENİ: Responsive state'i güncelle
-     * AppTheme composable tarafından otomatik çağrılır
-     */
     fun updateResponsiveState(windowSizeClass: WindowSizeClass, isLandscape: Boolean) {
         val dimensions = when (windowSizeClass.widthSizeClass) {
             WindowWidthSizeClass.Compact -> DimensionDefaults.compact
@@ -117,18 +129,18 @@ class ThemeManager {
         )
     }
 
-    /**
-     * YENİ: Dil değiştir
-     * @param languageCode: "tr", "en", "de", vb.
-     */
     fun setLanguage(languageCode: String) {
         _currentLanguage.value = languageCode
+
+        iUserSession?.let { session ->
+            CoroutineScope(Dispatchers.IO).launch {
+                session.saveLanguage(languageCode)
+            }
+        }
     }
 
-    /**
-     * YENİ: Mevcut dili getir
-     */
     fun getCurrentLanguage(): String {
         return _currentLanguage.value
     }
+    //endregion Public Method
 }

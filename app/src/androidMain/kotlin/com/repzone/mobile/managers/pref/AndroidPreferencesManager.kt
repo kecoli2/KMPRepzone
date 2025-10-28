@@ -17,42 +17,6 @@ class AndroidPreferencesManager(private val context: Context) : IPreferencesMana
     //endregion
 
     //region Public Method
-    /*override fun getToken(): String? {
-        return prefs.getString(PreferencesConstant.TOKEN, null)
-    }
-
-    override fun setToken(token: String?) {
-        if (token == null) {
-            prefs.edit { remove(PreferencesConstant.TOKEN) }
-        }else{
-            prefs.edit { putString(PreferencesConstant.TOKEN, token) }
-        }
-    }
-
-    override fun setExpiresAtEpochSeconds(expiresAtEpochSeconds: Long?) {
-        if(expiresAtEpochSeconds == null){
-            prefs.edit { remove(PreferencesConstant.TOKEN_EXPIRES_AT) }
-        }else{
-            prefs.edit { putLong(PreferencesConstant.TOKEN_EXPIRES_AT, expiresAtEpochSeconds) }
-        }
-    }
-
-    override fun getExpiresAtEpochSeconds(): Long? {
-        return prefs.getLong(PreferencesConstant.TOKEN_EXPIRES_AT, 0)
-    }
-
-    override fun getRefreshToken(): String? {
-        return prefs.getString(PreferencesConstant.REFRESH_TOKEN, null)
-    }
-
-    override fun setRefreshToken(token: String?) {
-        if (token == null) {
-            prefs.edit { remove(PreferencesConstant.REFRESH_TOKEN) }
-        }else{
-            prefs.edit { putString(PreferencesConstant.REFRESH_TOKEN, token) }
-        }
-    }*/
-
     override fun setUserSessions(value: String?) {
         if(value == null){
             prefs.edit { remove("${PreferencesConstant.USER_SESSIONS}_${getActiveUserCode()}").apply() }
@@ -79,6 +43,26 @@ class AndroidPreferencesManager(private val context: Context) : IPreferencesMana
 
     override fun setBooleanValue(key: String, value: Boolean) {
         prefs.edit { putBoolean(key, value).apply() }
+    }
+
+    override fun getIntValue(key: String, defaultValue: Int): Int {
+        return prefs.getInt(key, defaultValue)
+    }
+
+    override fun setIntValue(key: String, value: Int) {
+        prefs.edit { putInt(key, value).apply() }
+    }
+
+    override fun getStringValue(key: String, defaultValue: String?): String? {
+        return prefs.getString(key, defaultValue)
+    }
+
+    override fun setStringValue(key: String, value: String?) {
+        prefs.edit { putString(key, value).apply() }
+    }
+
+    override fun reoveKey(key: String) {
+        prefs.edit { remove(key).apply() }
     }
     //endregion
 

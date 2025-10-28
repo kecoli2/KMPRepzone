@@ -43,6 +43,26 @@ class IOSPreferencesManager: IPreferencesManager {
     override fun setBooleanValue(key: String, value: Boolean) {
         prefs.setBool(value, key)
     }
+
+    override fun getIntValue(key: String, defaultValue: Int): Int {
+        return prefs.integerForKey(key).toInt()
+    }
+
+    override fun setIntValue(key: String, value: Int) {
+        prefs.setInteger(value.toLong(), key)
+    }
+
+    override fun getStringValue(key: String, defaultValue: String?): String? {
+        return prefs.stringForKey(key)
+    }
+
+    override fun setStringValue(key: String, value: String?) {
+        prefs.setObject(value, key)
+    }
+
+    override fun reoveKey(key: String) {
+        prefs.removeObjectForKey(key)
+    }
     //endregion
 
 

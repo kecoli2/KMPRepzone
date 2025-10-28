@@ -6,12 +6,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.tooling.preview.Preview
 import com.repzone.core.di.CoreModule
+import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.di.CoreUiModule
 import com.repzone.core.ui.manager.theme.AppTheme
@@ -52,9 +54,8 @@ private fun AppContent() {
     // DI'dan inject et
     val themeManager: ThemeManager = koinInject()
     val themeConfig: IPresentationConfig = koinInject()  // Modern için
-
+    val userSession: IUserSession = koinInject()
     themeManager.initialize(themeConfig)
-
     AppTheme(themeManager = themeManager) {
         //AppAndroidPreview()
         AppRouter()
@@ -86,6 +87,7 @@ fun AppAndroidPreview() {
     loadKoinModules(FirebaseMockAndroidModule)
     val themeManager : ThemeManager = koinInject()
     themeManager.initialize(LegacyThemeConfig())
+
     var showFilterSheet by remember { mutableStateOf(true) }
     var selectedGroups by remember { mutableStateOf<List<String>>(emptyList()) }
 

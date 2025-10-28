@@ -29,4 +29,24 @@ class AndroidPreferencesManagerPreview: IPreferencesManager {
     override fun setBooleanValue(key: String, value: Boolean) {
 
     }
+
+    override fun getIntValue(key: String, defaultValue: Int): Int {
+        return defaultValue
+    }
+
+    override fun setIntValue(key: String, value: Int) {
+
+    }
+
+    override fun getStringValue(key: String, defaultValue: String?): String? {
+        return defaultValue
+    }
+
+    override fun setStringValue(key: String, value: String?) {
+
+    }
+
+    override fun reoveKey(key: String) {
+
+    }
 }
