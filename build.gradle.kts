@@ -11,6 +11,8 @@ plugins {
     alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
     alias(libs.plugins.androidLint) apply false
     alias(libs.plugins.kotlinSerialization) apply false
+    alias(libs.plugins.jetbrainsKotlinJvm) apply false
+
 }
 val tmpDir = if (System.getProperty("os.name").lowercase(Locale.getDefault()).contains("windows")) {
     "C:/Temp"

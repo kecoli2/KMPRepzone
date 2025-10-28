@@ -6,6 +6,18 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.sqldelight)
+    alias(libs.plugins.ksp)
+}
+
+dependencies {
+    // KSP processor'ı ekle
+    add("kspCommonMainMetadata", project(":processor"))
+}
+
+// KSP configuration
+ksp {
+    // SQLDelight dosyalarının yolu
+    arg("sqldelight.path", "${projectDir}/src/commonMain/sqldelight")
 }
 
 kotlin {
@@ -32,6 +44,8 @@ kotlin {
 
                 //Project Dependcy
                 implementation(projects.core)
+                kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
+
             }
         }
 

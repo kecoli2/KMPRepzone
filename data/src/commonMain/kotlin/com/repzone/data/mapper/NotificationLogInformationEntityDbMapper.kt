@@ -12,10 +12,10 @@ class NotificationLogInformationEntityDbMapper : Mapper<NotificationLogInformati
             eventSource = from.EventSource,
             eventType = from.EventType,
             logDate = from.LogDate,
-            body = from.body,
-            footer = from.footer,
-            header = from.header_,
-            image = from.image
+            body = from.Body,
+            footer = from.Footer,
+            header = from.Header,
+            image = from.Image
         )
     }
 
@@ -25,10 +25,10 @@ class NotificationLogInformationEntityDbMapper : Mapper<NotificationLogInformati
             EventSource = domain.eventSource,
             EventType = domain.eventType,
             LogDate = domain.logDate,
-            body = domain.body,
-            footer = domain.footer,
-            header_ = domain.header,
-            image = domain.image
+            Body = domain.body,
+            Footer = domain.footer,
+            Header = domain.header,
+            Image = domain.image
         )
     }
     //endregion

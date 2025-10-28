@@ -58,22 +58,63 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
             identifier = null,
             sql = sql,
             mapper = { cursor ->
-                results.add(metadata.createInstance(SqlDelightCursor(cursor)) as T)
-                app.cash.sqldelight.db.QueryResult.Unit
+                // Cursor'u iterate et - HER SATIR için döngü
+                while (cursor.next().value) {
+                    val entity = metadata.createInstance(SqlDelightCursor(cursor)) as T
+                    results.add(entity)
+                }
+                app.cash.sqldelight.db.QueryResult.Value(results)  // Unit değil, Value döndür
             },
             parameters = params.size
-        ){
-            params.forEachIndexed { index, value ->
-                bindValue(this, index + 1, value)
+        ) {
+            if (params.isNotEmpty()) {
+                params.forEachIndexed { index, value ->
+                    bindValue(this, index, value)
+                }
             }
         }
 
         return results
     }
 
-    fun firstOrNull(): T? = toList().firstOrNull()
+    fun firstOrNull(): T? {
+        limit(1)
+        val params = mutableListOf<Any?>()
 
-    fun first(): T = toList().first()
+        val whereClause = if (whereCondition != NoCondition) {
+            " WHERE ${whereCondition.toSQL(params)}"
+        } else {
+            ""
+        }
+
+        val sql = "SELECT ${metadata.columns.joinToString(", ") { it.name }} " +
+                "FROM ${metadata.tableName}" +
+                whereClause + " LIMIT 1"
+
+        var result: T? = null
+
+        driver.executeQuery(
+            identifier = null,
+            sql = sql,
+            mapper = { cursor ->
+                if (cursor.next().value) {  // İlk satıra git
+                    result = metadata.createInstance(SqlDelightCursor(cursor)) as T
+                }
+                app.cash.sqldelight.db.QueryResult.Value(result)
+            },
+            parameters = params.size
+        ) {
+            params.forEachIndexed { index, value ->
+                bindValue(this, index, value)
+            }
+        }
+
+        return result
+    }
+
+    fun first(): T {
+        return firstOrNull() ?: throw NoSuchElementException("No entity found")
+    }
 
 }
 

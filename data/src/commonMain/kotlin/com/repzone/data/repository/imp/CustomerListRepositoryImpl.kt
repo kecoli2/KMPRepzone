@@ -11,6 +11,10 @@ import com.repzone.data.util.Mapper
 import com.repzone.data.util.toDomainList
 import com.repzone.database.AppDatabase
 import com.repzone.database.CustomerItemViewEntity
+import com.repzone.database.SyncModuleEntity
+import com.repzone.database.SyncModuleEntityMetadata
+import com.repzone.database.interfaces.IDatabaseManager
+import com.repzone.database.runtime.select
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.IEventReasonRepository
@@ -32,7 +36,9 @@ class CustomerListRepositoryImpl(private val database: AppDatabase,
                                  private val iMobileModuleParameter: IMobileModuleParameterRepository,
                                  private val iRouteAppointmentRepository: IRouteAppointmentRepository,
                                  private val iEventReasonRepository: IEventReasonRepository,
-                                 private val mapper: Mapper<CustomerItemViewEntity, CustomerItemModel>): ICustomerListRepository {
+                                 private val mapper: Mapper<CustomerItemViewEntity, CustomerItemModel>,
+                                 private val iDatabaseMAnager: IDatabaseManager
+): ICustomerListRepository {
     //region Field
     //endregion
 
@@ -44,6 +50,39 @@ class CustomerListRepositoryImpl(private val database: AppDatabase,
 
     //region Public Method
     override suspend fun getCustomerList(utcDate: Instant?): List<CustomerItemModel> {
+        val allModules = iDatabaseMAnager.getSqlDriver().select<SyncModuleEntity>().toList()
+
+        val top10 = iDatabaseMAnager.getSqlDriver().select<SyncModuleEntity>(){
+            limit(10)
+        }.toList()
+
+        val modules = iDatabaseMAnager.getSqlDriver().select<SyncModuleEntity>(){
+            where {
+                criteria("SyncType", equal = 1)
+            }
+        }.toList()
+
+        val modulesNot = iDatabaseMAnager.getSqlDriver().select<SyncModuleEntity>(){
+            where {
+                criteria("SyncType", notEqual = 1)
+            }
+        }.toList()
+
+        val modulesIsNull = iDatabaseMAnager.getSqlDriver().select<SyncModuleEntity>(){
+            where {
+                criteria("SyncType", isNull = false)
+            }
+        }.toList()
+
+        val specificTypes = iDatabaseMAnager.getSqlDriver().select<SyncModuleEntity> {
+            where {
+                criteria("SyncType", In = listOf(1, 2, 3))
+            }
+        }.toList()
+
+
+
+
         val activeStrint = iRouteAppointmentRepository.getActiveSprintInformation()
         val dontShowDatePart = iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.isActive == true && iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FLEXIBLE_DATES
         val onlyParents = iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.isActive == true && iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.groupByParentCustomer == OnOf.ON

@@ -4,12 +4,12 @@
 
 CREATE TABLE IF NOT EXISTS NotificationLogInformationEntity (
     Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    body TEXT,
+    Body TEXT,
     EventSource TEXT,
     EventType TEXT,
-    footer TEXT,
-    header TEXT,
-    image TEXT,
+    Footer TEXT,
+    Header TEXT,
+    Image TEXT,
     LogDate INTEGER
 );
 
@@ -29,10 +29,10 @@ VALUES ?;
 
 updateNotificationLogInformationEntity:
 UPDATE NotificationLogInformationEntity SET
-    image = ?,
-    footer = ?,
-    header = ?,
-    body = ?,
+    Image = ?,
+    Footer = ?,
+    Header = ?,
+    Body = ?,
     EventType = ?,
     EventSource = ?,
     LogDate = ?
