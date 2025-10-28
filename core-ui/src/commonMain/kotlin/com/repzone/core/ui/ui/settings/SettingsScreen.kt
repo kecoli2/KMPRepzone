@@ -3,18 +3,7 @@ package com.repzone.core.ui.ui.settings
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -22,41 +11,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.ColorLens
-import androidx.compose.material.icons.filled.DarkMode
-import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.LightMode
-import androidx.compose.material.icons.filled.Palette
-import androidx.compose.material.icons.filled.PhoneAndroid
-import androidx.compose.material.icons.filled.ScreenRotation
-import androidx.compose.material.icons.filled.SettingsBrightness
-import androidx.compose.material.icons.filled.Smartphone
-import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.filled.TextFields
-import androidx.compose.material.icons.filled.Translate
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DividerDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -67,7 +24,9 @@ import com.repzone.core.enums.ThemeMode
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.WindowWidthSizeClass
 import com.repzone.core.ui.manager.theme.common.ColorSchemeVariant
-
+import org.jetbrains.compose.resources.stringResource
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.*
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -90,7 +49,7 @@ fun SettingsScreen(onBackClick: () -> Unit = {}) {
                 title = {
                     Column {
                         Text(
-                            text = "Ayarlar",
+                            text = stringResource(Res.string.settings),
                             fontSize = AppTheme.dimens.textLarge,
                             fontWeight = FontWeight.Bold
                         )
@@ -100,7 +59,7 @@ fun SettingsScreen(onBackClick: () -> Unit = {}) {
                     IconButton(onClick = onBackClick) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Geri",
+                            contentDescription = stringResource(Res.string.back),
                             modifier = Modifier.size(AppTheme.dimens.iconSizeMedium),
                             tint = Color.White
                         )
@@ -123,16 +82,16 @@ fun SettingsScreen(onBackClick: () -> Unit = {}) {
             // Görünüm Bölümü
             item {
                 SettingSection(
-                    title = "Görünüm",
+                    title = stringResource(Res.string.appearance),
                     icon = Icons.Default.Palette
                 ) {
                     // Tema Modu
                     SettingItem(
-                        title = "Tema Modu",
+                        title = stringResource(Res.string.theme_mode),
                         subtitle = when (themeMode) {
-                            ThemeMode.LIGHT -> "Açık tema"
-                            ThemeMode.DARK -> "Koyu tema"
-                            ThemeMode.SYSTEM -> "Sistem ayarını takip et"
+                            ThemeMode.LIGHT -> stringResource(Res.string.light_theme)
+                            ThemeMode.DARK -> stringResource(Res.string.dark_theme)
+                            ThemeMode.SYSTEM -> stringResource(Res.string.system_theme)
                         },
                         icon = when (themeMode) {
                             ThemeMode.LIGHT -> Icons.Default.LightMode
@@ -151,7 +110,7 @@ fun SettingsScreen(onBackClick: () -> Unit = {}) {
 
                     // Renk Şeması
                     SettingItem(
-                        title = "Renk Şeması",
+                        title = stringResource(Res.string.color_scheme),
                         subtitle = currentColorScheme.name,
                         icon = Icons.Default.ColorLens,
                         trailing = {
@@ -177,11 +136,11 @@ fun SettingsScreen(onBackClick: () -> Unit = {}) {
             // Dil ve Bölge Bölümü
             item {
                 SettingSection(
-                    title = "Dil ve Bölge",
+                    title = stringResource(Res.string.language_region),
                     icon = Icons.Default.Language
                 ) {
                     SettingItem(
-                        title = "Uygulama Dili",
+                        title = stringResource(Res.string.app_language),
                         subtitle = getLanguageName(currentLanguage),
                         icon = Icons.Default.Translate,
                         trailing = {
@@ -198,15 +157,15 @@ fun SettingsScreen(onBackClick: () -> Unit = {}) {
             // Hakkında Bölümü
             item {
                 SettingSection(
-                    title = "Hakkında",
+                    title = stringResource(Res.string.about),
                     icon = Icons.Default.Info
                 ) {
                     InfoRow(
-                        label = "Ekran Boyutu",
+                        label = stringResource(Res.string.screen_size),
                         value = when (responsiveState.windowSizeClass.widthSizeClass) {
-                            WindowWidthSizeClass.Compact -> "Compact"
-                            WindowWidthSizeClass.Medium -> "Medium"
-                            WindowWidthSizeClass.Expanded -> "Expanded"
+                            WindowWidthSizeClass.Compact -> stringResource(Res.string.compact)
+                            WindowWidthSizeClass.Medium -> stringResource(Res.string.medium)
+                            WindowWidthSizeClass.Expanded -> stringResource(Res.string.expanded)
                         },
                         icon = Icons.Default.Smartphone
                     )
@@ -214,13 +173,15 @@ fun SettingsScreen(onBackClick: () -> Unit = {}) {
                     HorizontalDivider(
                         modifier = Modifier.padding(
                             start = AppTheme.dimens.paddingExtraLarge + AppTheme.dimens.paddingMedium
-                        ),
-                        thickness = DividerDefaults.Thickness, color = DividerDefaults.color
+                        )
                     )
 
                     InfoRow(
-                        label = "Yönelim",
-                        value = if (responsiveState.isLandscape) "Yatay" else "Dikey",
+                        label = stringResource(Res.string.orientation),
+                        value = if (responsiveState.isLandscape)
+                            stringResource(Res.string.landscape)
+                        else
+                            stringResource(Res.string.portrait),
                         icon = if (responsiveState.isLandscape)
                             Icons.Default.ScreenRotation
                         else
@@ -230,12 +191,11 @@ fun SettingsScreen(onBackClick: () -> Unit = {}) {
                     HorizontalDivider(
                         modifier = Modifier.padding(
                             start = AppTheme.dimens.paddingExtraLarge + AppTheme.dimens.paddingMedium
-                        ),
-                        thickness = DividerDefaults.Thickness, color = DividerDefaults.color
+                        )
                     )
 
                     InfoRow(
-                        label = "Font Boyutu",
+                        label = stringResource(Res.string.font_size), // ← String resource
                         value = "${responsiveState.dimensions.textMedium}",
                         icon = Icons.Default.TextFields
                     )
@@ -243,21 +203,15 @@ fun SettingsScreen(onBackClick: () -> Unit = {}) {
                     HorizontalDivider(
                         modifier = Modifier.padding(
                             start = AppTheme.dimens.paddingExtraLarge + AppTheme.dimens.paddingMedium
-                        ),
-                        thickness = DividerDefaults.Thickness, color = DividerDefaults.color
+                        )
                     )
 
                     InfoRow(
-                        label = "Versiyon",
+                        label = stringResource(Res.string.version),
                         value = "1.0.0",
                         icon = Icons.Default.Star
                     )
                 }
-            }
-
-            // Alt boşluk
-            item {
-                Spacer(modifier = Modifier.height(AppTheme.dimens.paddingLarge))
             }
         }
     }
@@ -367,7 +321,6 @@ fun SettingItem(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.weight(1f)
         ) {
-            // Icon Container
             Box(
                 modifier = Modifier
                     .size(AppTheme.dimens.iconSizeLarge)
@@ -482,10 +435,6 @@ fun LanguageSelectionDialog(
     val languages = listOf(
         LanguageOption("tr", "Türkçe", "🇹🇷"),
         LanguageOption("en", "English", "🇬🇧"),
-        LanguageOption("de", "Deutsch", "🇩🇪"),
-        LanguageOption("fr", "Français", "🇫🇷"),
-        LanguageOption("es", "Español", "🇪🇸"),
-        LanguageOption("ar", "العربية", "🇸🇦")
     )
 
     AlertDialog(
@@ -500,7 +449,7 @@ fun LanguageSelectionDialog(
         },
         title = {
             Text(
-                "Dil Seçin",
+                stringResource(Res.string.select_language),
                 fontSize = AppTheme.dimens.textLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -565,7 +514,7 @@ fun LanguageSelectionDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Kapat", fontSize = AppTheme.dimens.textMedium)
+                Text(stringResource(Res.string.close), fontSize = AppTheme.dimens.textMedium) // ← String resource
             }
         },
         shape = RoundedCornerShape(AppTheme.dimens.cornerRadius)
@@ -586,9 +535,9 @@ fun ThemeModeDialog(
     )
 
     val modes = listOf(
-        ThemeModeOption(ThemeMode.LIGHT, "Açık Tema", Icons.Default.LightMode),
-        ThemeModeOption(ThemeMode.DARK, "Koyu Tema", Icons.Default.DarkMode),
-        ThemeModeOption(ThemeMode.SYSTEM, "Sistem Ayarı", Icons.Default.SettingsBrightness)
+        ThemeModeOption(ThemeMode.LIGHT, stringResource(Res.string.light_theme), Icons.Default.LightMode),
+        ThemeModeOption(ThemeMode.DARK, stringResource(Res.string.dark_theme), Icons.Default.DarkMode),
+        ThemeModeOption(ThemeMode.SYSTEM, stringResource(Res.string.system_theme), Icons.Default.SettingsBrightness)
     )
 
     AlertDialog(
@@ -603,7 +552,7 @@ fun ThemeModeDialog(
         },
         title = {
             Text(
-                "Tema Modu",
+                stringResource(Res.string.select_theme_mode),
                 fontSize = AppTheme.dimens.textLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -669,7 +618,7 @@ fun ThemeModeDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Kapat", fontSize = AppTheme.dimens.textMedium)
+                Text(stringResource(Res.string.close), fontSize = AppTheme.dimens.textMedium)
             }
         },
         shape = RoundedCornerShape(AppTheme.dimens.cornerRadius)
@@ -696,7 +645,7 @@ fun ColorSchemeDialog(
         },
         title = {
             Text(
-                "Renk Şeması",
+                stringResource(Res.string.select_color_scheme),
                 fontSize = AppTheme.dimens.textLarge,
                 fontWeight = FontWeight.Bold
             )
@@ -732,13 +681,11 @@ fun ColorSchemeDialog(
                                 horizontalArrangement = Arrangement.spacedBy(AppTheme.dimens.paddingMedium),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                // Renk önizlemesi
                                 Box(
                                     modifier = Modifier
                                         .size(AppTheme.dimens.iconSizeLarge)
                                         .background(
-                                            // Scheme'in primary rengini göster
-                                            color = Color(0xFFFF6B35), // Örnek renk
+                                            color = Color(0xFFFF6B35),
                                             shape = CircleShape
                                         )
                                         .border(
@@ -773,7 +720,7 @@ fun ColorSchemeDialog(
         },
         confirmButton = {
             TextButton(onClick = onDismiss) {
-                Text("Kapat", fontSize = AppTheme.dimens.textMedium)
+                Text(stringResource(Res.string.close), fontSize = AppTheme.dimens.textMedium)
             }
         },
         shape = RoundedCornerShape(AppTheme.dimens.cornerRadius)
@@ -785,10 +732,6 @@ fun getLanguageName(code: String): String {
     return when (code) {
         "tr" -> "Türkçe"
         "en" -> "English"
-        "de" -> "Deutsch"
-        "fr" -> "Français"
-        "es" -> "Español"
-        "ar" -> "العربية"
         else -> code
     }
 }
@@ -797,10 +740,6 @@ fun getLanguageFlag(code: String): String {
     return when (code) {
         "tr" -> "🇹🇷"
         "en" -> "🇬🇧"
-        "de" -> "🇩🇪"
-        "fr" -> "🇫🇷"
-        "es" -> "🇪🇸"
-        "ar" -> "🇸🇦"
         else -> "🌐"
     }
 }

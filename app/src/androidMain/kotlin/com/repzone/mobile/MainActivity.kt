@@ -20,6 +20,7 @@ import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.di.CoreUiModule
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
+import com.repzone.core.ui.ui.settings.SettingsScreen
 import com.repzone.data.di.RepositoryModulePreview
 import com.repzone.database.di.DatabaseAndroidPreviewModule
 import com.repzone.database.di.DatabaseModulePreview
@@ -114,8 +115,6 @@ fun AppAndroidPreview() {
     var selectedGroups by remember { mutableStateOf<List<String>>(emptyList()) }
 
     AppTheme(themeManager) {
-        CustomerListScreenLegacy {
-        }
-        //SettingsScreen()
+        SettingsScreen()
     }
 }

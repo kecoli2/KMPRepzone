@@ -828,4 +828,32 @@
     <string name="waiting">Bekliyor</string>
     <string name="sync_complete">Senkronizasyon tamamlandı...</string>
     <string name = "short">Sıralama</string>
+
+    <string name="appearance">Görünüm</string>
+    <string name="theme_mode">Tema Modu</string>
+    <string name="light_theme">Açık tema</string>
+    <string name="dark_theme">Koyu tema</string>
+    <string name="system_theme">Sistem ayarını takip et</string>
+    <string name="color_scheme">Renk Şeması</string>
+    <string name="language_region">Dil ve Bölge</string>
+    <string name="app_language">Uygulama Dili</string>
+
+    <string name="about">Hakkında</string>
+    <string name="screen_size">Ekran Boyutu</string>
+    <string name="orientation">Yönelim</string>
+    <string name="landscape">Yatay</string>
+    <string name="portrait">Dikey</string>
+    <string name="font_size">Font Boyutu</string>
+    <string name="version">Versiyon</string>
+
+    <string name="close">Kapat</string>
+    <string name="select_language">Dil Seçin</string>
+    <string name="select_theme_mode">Tema Modu</string>
+    <string name="select_color_scheme">Renk Şeması</string>
+
+    <string name="compact">Compact (Telefon)</string>
+    <string name="medium">Medium (Tablet Dikey)</string>
+    <string name="expanded">Expanded (Tablet Yatay)</string>
+    <string name="settings">Ayarlar</string>
+    <string name="back">Geri</string>
 </resources>
