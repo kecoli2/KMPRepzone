@@ -8,8 +8,13 @@ import com.repzone.core.ui.manager.theme.common.ColorSchemeVariant
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
@@ -22,6 +27,7 @@ import kotlinx.coroutines.launch
 class ThemeManager(private val iUserSession: IUserSession? = null) {
 
     //region Fields
+    private val managerScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     private val _themeMode = MutableStateFlow(ThemeMode.SYSTEM)
     val themeMode: StateFlow<ThemeMode> = _themeMode.asStateFlow()
 
@@ -34,10 +40,16 @@ class ThemeManager(private val iUserSession: IUserSession? = null) {
     private val _currentLanguage = MutableStateFlow("tr") // Default Türkçe
     val currentLanguage: StateFlow<String> = _currentLanguage.asStateFlow()
     private var activePresentationConfig: IPresentationConfig? = null
+
+    private val _languageChangeEvent = MutableSharedFlow<String>(replay = 0)
+    val languageChangeEvent: SharedFlow<String> = _languageChangeEvent.asSharedFlow()
+
     //endregion Fields
 
     //region Public Method
-
+    fun onDestroy() {
+        managerScope.cancel()
+    }
     fun loadSavedSettings(){
         iUserSession?.let { sessions ->
 
@@ -131,11 +143,9 @@ class ThemeManager(private val iUserSession: IUserSession? = null) {
 
     fun setLanguage(languageCode: String) {
         _currentLanguage.value = languageCode
-
-        iUserSession?.let { session ->
-            CoroutineScope(Dispatchers.IO).launch {
-                session.saveLanguage(languageCode)
-            }
+        managerScope.launch {
+            iUserSession?.saveLanguage(languageCode)
+            _languageChangeEvent.emit(languageCode)
         }
     }
 

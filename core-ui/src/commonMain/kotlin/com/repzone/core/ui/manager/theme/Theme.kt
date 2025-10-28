@@ -11,8 +11,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.staticCompositionLocalOf
 import com.repzone.core.enums.ThemeMode
+import com.repzone.core.ui.manager.locale.LocalAppLocale
+import com.repzone.core.ui.manager.locale.rememberLocaleConfiguration
+import com.repzone.core.ui.manager.theme.AppTheme.currentLanguage
 
-// YENİ: ThemeManager için CompositionLocal
 val LocalThemeManager = staticCompositionLocalOf<ThemeManager> {
     error("No ThemeManager provided")
 }
@@ -23,6 +25,7 @@ fun AppTheme(
     content: @Composable () -> Unit
 ) {
     val themeMode by themeManager.themeMode.collectAsState()
+    val currentLanguage by themeManager.currentLanguage.collectAsState()
     val isSystemInDarkTheme = isSystemInDarkTheme()
 
     val isDarkTheme = when (themeMode) {
@@ -31,11 +34,9 @@ fun AppTheme(
         ThemeMode.SYSTEM -> isSystemInDarkTheme
     }
 
-    // YENİ: Window size'ı algıla ve ThemeManager'a bildir
     val windowSizeClass = rememberWindowSizeClass()
     val isLandscapeMode = isLandscape()
 
-    // Her değişiklikte ThemeManager'ı güncelle
     LaunchedEffect(windowSizeClass, isLandscapeMode) {
         themeManager.updateResponsiveState(
             windowSizeClass = windowSizeClass,
@@ -43,19 +44,22 @@ fun AppTheme(
         )
     }
 
-    // Aktif renk şemasını al
     val colorSchemeVariant = themeManager.getCurrentColorScheme()
-
     val colorScheme = if (isDarkTheme) {
         colorSchemeVariant.colorPalet.darkColorScheme()
     } else {
         colorSchemeVariant.colorPalet.lightColorScheme()
     }
 
+    val locale = rememberLocaleConfiguration(currentLanguage)
+
     val typography = (colorSchemeVariant.typography as? Typography) ?: DefaultTypography
     val shapes = (colorSchemeVariant.shapes as? Shapes) ?: DefaultShapes
 
-    CompositionLocalProvider(LocalThemeManager provides themeManager) {
+    CompositionLocalProvider(
+        LocalThemeManager provides themeManager,
+        LocalAppLocale provides locale
+    ) {
         MaterialTheme(
             colorScheme = colorScheme,
             typography = typography as androidx.compose.material3.Typography,
@@ -65,7 +69,6 @@ fun AppTheme(
     }
 }
 
-// YENİ: Kolay erişim için helper object
 object AppTheme {
     // Dimensions (responsive)
     val dimens: Dimensions
@@ -92,7 +95,6 @@ object AppTheme {
                 ThemeMode.DARK -> true
                 ThemeMode.LIGHT -> false
                 ThemeMode.SYSTEM -> isSystemDark
-                else -> { false }
             }
         }
 
