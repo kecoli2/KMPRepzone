@@ -75,19 +75,6 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
 
     fun first(): T = toList().first()
 
-    private fun bindValue(statement: app.cash.sqldelight.db.SqlPreparedStatement, index: Int, value: Any?) {
-        when (value) {
-            null -> statement.bindBytes(index, null)
-            is String -> statement.bindString(index, value)
-            is Long -> statement.bindLong(index, value)
-            is Int -> statement.bindLong(index, value.toLong())
-            is Boolean -> statement.bindLong(index, if (value) 1L else 0L)
-            is Double -> statement.bindDouble(index, value)
-            is Float -> statement.bindDouble(index, value.toDouble())
-            is ByteArray -> statement.bindBytes(index, value)
-            else -> statement.bindString(index, value.toString())
-        }
-    }
 }
 
 // SQLDelight Cursor wrapper
