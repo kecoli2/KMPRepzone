@@ -28,7 +28,7 @@ class DocumentMapsRawSqlBulkInsertService(private val mapperDocument: MapperDto<
     override fun buildCompositeOperation(items: List<DocumentMapModelDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val documents = items.map { mapperDocument.fromDto(it) }
         val process = items.flatMap {it -> it.process?.map { mapperProcess.fromDto(it, it.name) } ?: emptyList() }
-        val processStep = items.flatMap { it -> it.process?.flatMap { stepp -> stepp.steps?.map { mapperProcessStep.fromDto(it, it.id) } ?: emptyList() } ?: emptyList()}
+        val processStep = items.flatMap { it -> it.process?.flatMap { stepp -> stepp.steps?.map { mapperProcessStep.fromDto(it, stepp.id) } ?: emptyList() } ?: emptyList()}
 
         val operations = listOf(
             TableOperation(
