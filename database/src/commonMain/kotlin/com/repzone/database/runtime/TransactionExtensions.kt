@@ -47,7 +47,6 @@ class TransactionScope(val driver: SqlDriver) {
 
 // Transaction - sonuç dönmez
 fun SqlDriver.transaction(body: TransactionScope.() -> Unit) {
-    // SQLDelight'ın transaction API'sini kullan
     execute(null, "BEGIN TRANSACTION", 0)
 
     try {

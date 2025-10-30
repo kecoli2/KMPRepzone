@@ -8,15 +8,15 @@ class CriteriaBuilder {
         equal: Any? = null,
         notEqual: Any? = null,
         like: String? = null,
-        notLike: String? = null,  // YENİ
+        notLike: String? = null,
         greaterThan: Any? = null,
-        greaterThanOrEqual: Any? = null,  // YENİ
+        greaterThanOrEqual: Any? = null,
         lessThan: Any? = null,
-        lessThanOrEqual: Any? = null,  // YENİ
+        lessThanOrEqual: Any? = null,
         isNull: Boolean? = null,
         In: List<Any>? = null,
-        notIn: List<Any>? = null,  // YENİ
-        between: Pair<Any, Any>? = null  // YENİ
+        notIn: List<Any>? = null,
+        between: Pair<Any, Any>? = null
     ) {
         when {
             equal != null -> {
@@ -28,19 +28,19 @@ class CriteriaBuilder {
             like != null -> {
                 conditions.add(FieldCondition(field, "LIKE", like))
             }
-            notLike != null -> {  // YENİ
+            notLike != null -> {
                 conditions.add(FieldCondition(field, "NOT LIKE", notLike))
             }
             greaterThan != null -> {
                 conditions.add(FieldCondition(field, ">", greaterThan))
             }
-            greaterThanOrEqual != null -> {  // YENİ
+            greaterThanOrEqual != null -> {
                 conditions.add(FieldCondition(field, ">=", greaterThanOrEqual))
             }
             lessThan != null -> {
                 conditions.add(FieldCondition(field, "<", lessThan))
             }
-            lessThanOrEqual != null -> {  // YENİ
+            lessThanOrEqual != null -> {
                 conditions.add(FieldCondition(field, "<=", lessThanOrEqual))
             }
             isNull != null -> {
@@ -55,10 +55,10 @@ class CriteriaBuilder {
             In != null -> {
                 conditions.add(InCondition(field, In, false))
             }
-            notIn != null -> {  // YENİ
+            notIn != null -> {
                 conditions.add(InCondition(field, notIn, true))
             }
-            between != null -> {  // YENİ
+            between != null -> {
                 conditions.add(BetweenCondition(field, between.first, between.second))
             }
         }
@@ -72,7 +72,7 @@ class CriteriaBuilder {
         }
     }
 
-    fun and(block: CriteriaBuilder.() -> Unit) {  // YENİ - explicit AND
+    fun and(block: CriteriaBuilder.() -> Unit) {
         val builder = CriteriaBuilder()
         builder.block()
         if (builder.conditions.isNotEmpty()) {
@@ -80,7 +80,6 @@ class CriteriaBuilder {
         }
     }
 
-    // YENİ - NOT wrapper
     fun not(block: CriteriaBuilder.() -> Unit) {
         val builder = CriteriaBuilder()
         builder.block()

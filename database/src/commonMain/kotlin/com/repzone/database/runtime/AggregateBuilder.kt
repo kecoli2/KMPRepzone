@@ -1,6 +1,13 @@
+@file:OptIn(ExperimentalTime::class)
+
 package com.repzone.database.runtime
 
 import app.cash.sqldelight.db.SqlDriver
+import com.repzone.core.config.BuildConfig
+import com.repzone.core.platform.Logger
+import com.repzone.core.util.extensions.now
+import com.repzone.core.util.extensions.toInstant
+import kotlin.time.ExperimentalTime
 
 // COUNT
 inline fun <reified T : Any> SqlDriver.count(
@@ -19,6 +26,36 @@ inline fun <reified T : Any> SqlDriver.count(
     }
 
     val sql = "SELECT COUNT(*) FROM ${metadata.tableName}$whereClause"
+
+    // Logging
+    if (BuildConfig.IS_DEBUG) {
+        val startTime = now()
+        SqlQueryLogger.logRawQuery(sql, params)
+
+        var count = 0L
+
+        executeQuery(
+            identifier = null,
+            sql = sql,
+            mapper = { cursor ->
+                if (cursor.next().value) {
+                    count = cursor.getLong(0) ?: 0L
+                }
+                app.cash.sqldelight.db.QueryResult.Value(count)
+            },
+            parameters = params.size
+        ) {
+            params.forEachIndexed { index, value ->
+                bindValue(this, index, value)
+            }
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("COUNT", elapsed)
+        Logger.d("SQL_RESULT", "Count: $count")
+
+        return count
+    }
 
     var count = 0L
 
@@ -60,6 +97,36 @@ inline fun <reified T : Any> SqlDriver.sum(
 
     val sql = "SELECT SUM($field) FROM ${metadata.tableName}$whereClause"
 
+    // Logging
+    if (BuildConfig.IS_DEBUG) {
+        val startTime = now()
+        SqlQueryLogger.logRawQuery(sql, params)
+
+        var sum = 0.0
+
+        executeQuery(
+            identifier = null,
+            sql = sql,
+            mapper = { cursor ->
+                if (cursor.next().value) {
+                    sum = cursor.getDouble(0) ?: 0.0
+                }
+                app.cash.sqldelight.db.QueryResult.Value(sum)
+            },
+            parameters = params.size
+        ) {
+            params.forEachIndexed { index, value ->
+                bindValue(this, index, value)
+            }
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("SUM", elapsed)
+        Logger.d("SQL_RESULT", "Sum: $sum")
+
+        return sum
+    }
+
     var sum = 0.0
 
     executeQuery(
@@ -99,6 +166,36 @@ inline fun <reified T : Any> SqlDriver.avg(
     }
 
     val sql = "SELECT AVG($field) FROM ${metadata.tableName}$whereClause"
+
+    // Logging
+    if (BuildConfig.IS_DEBUG) {
+        val startTime = now()
+        SqlQueryLogger.logRawQuery(sql, params)
+
+        var avg = 0.0
+
+        executeQuery(
+            identifier = null,
+            sql = sql,
+            mapper = { cursor ->
+                if (cursor.next().value) {
+                    avg = cursor.getDouble(0) ?: 0.0
+                }
+                app.cash.sqldelight.db.QueryResult.Value(avg)
+            },
+            parameters = params.size
+        ) {
+            params.forEachIndexed { index, value ->
+                bindValue(this, index, value)
+            }
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("AVG", elapsed)
+        Logger.d("SQL_RESULT", "Average: $avg")
+
+        return avg
+    }
 
     var avg = 0.0
 
@@ -140,6 +237,36 @@ inline fun <reified T : Any> SqlDriver.maxLong(
 
     val sql = "SELECT MAX($field) FROM ${metadata.tableName}$whereClause"
 
+    // Logging
+    if (BuildConfig.IS_DEBUG) {
+        val startTime = now()
+        SqlQueryLogger.logRawQuery(sql, params)
+
+        var max: Long? = null
+
+        executeQuery(
+            identifier = null,
+            sql = sql,
+            mapper = { cursor ->
+                if (cursor.next().value) {
+                    max = cursor.getLong(0)
+                }
+                app.cash.sqldelight.db.QueryResult.Value(max)
+            },
+            parameters = params.size
+        ) {
+            params.forEachIndexed { index, value ->
+                bindValue(this, index, value)
+            }
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("MAX", elapsed)
+        Logger.d("SQL_RESULT", "Max: $max")
+
+        return max
+    }
+
     var max: Long? = null
 
     executeQuery(
@@ -179,6 +306,34 @@ inline fun <reified T : Any> SqlDriver.maxDouble(
     }
 
     val sql = "SELECT MAX($field) FROM ${metadata.tableName}$whereClause"
+
+    if (BuildConfig.IS_DEBUG) {
+        val startTime = now()
+        SqlQueryLogger.logRawQuery(sql, params)
+
+        var max: Double? = null
+
+        executeQuery(
+            identifier = null,
+            sql = sql,
+            mapper = { cursor ->
+                if (cursor.next().value) {
+                    max = cursor.getDouble(0)
+                }
+                app.cash.sqldelight.db.QueryResult.Value(max)
+            },
+            parameters = params.size
+        ) {
+            params.forEachIndexed { index, value ->
+                bindValue(this, index, value)
+            }
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("MAX", elapsed)
+
+        return max
+    }
 
     var max: Double? = null
 
@@ -220,6 +375,34 @@ inline fun <reified T : Any> SqlDriver.maxString(
 
     val sql = "SELECT MAX($field) FROM ${metadata.tableName}$whereClause"
 
+    if (BuildConfig.IS_DEBUG) {
+        val startTime = now()
+        SqlQueryLogger.logRawQuery(sql, params)
+
+        var max: String? = null
+
+        executeQuery(
+            identifier = null,
+            sql = sql,
+            mapper = { cursor ->
+                if (cursor.next().value) {
+                    max = cursor.getString(0)
+                }
+                app.cash.sqldelight.db.QueryResult.Value(max)
+            },
+            parameters = params.size
+        ) {
+            params.forEachIndexed { index, value ->
+                bindValue(this, index, value)
+            }
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("MAX", elapsed)
+
+        return max
+    }
+
     var max: String? = null
 
     executeQuery(
@@ -259,6 +442,35 @@ inline fun <reified T : Any> SqlDriver.minLong(
     }
 
     val sql = "SELECT MIN($field) FROM ${metadata.tableName}$whereClause"
+
+    if (BuildConfig.IS_DEBUG) {
+        val startTime = now()
+        SqlQueryLogger.logRawQuery(sql, params)
+
+        var min: Long? = null
+
+        executeQuery(
+            identifier = null,
+            sql = sql,
+            mapper = { cursor ->
+                if (cursor.next().value) {
+                    min = cursor.getLong(0)
+                }
+                app.cash.sqldelight.db.QueryResult.Value(min)
+            },
+            parameters = params.size
+        ) {
+            params.forEachIndexed { index, value ->
+                bindValue(this, index, value)
+            }
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("MIN", elapsed)
+        Logger.d("SQL_RESULT", "Min: $min")
+
+        return min
+    }
 
     var min: Long? = null
 
@@ -300,6 +512,34 @@ inline fun <reified T : Any> SqlDriver.minDouble(
 
     val sql = "SELECT MIN($field) FROM ${metadata.tableName}$whereClause"
 
+    if (BuildConfig.IS_DEBUG) {
+        val startTime = now()
+        SqlQueryLogger.logRawQuery(sql, params)
+
+        var min: Double? = null
+
+        executeQuery(
+            identifier = null,
+            sql = sql,
+            mapper = { cursor ->
+                if (cursor.next().value) {
+                    min = cursor.getDouble(0)
+                }
+                app.cash.sqldelight.db.QueryResult.Value(min)
+            },
+            parameters = params.size
+        ) {
+            params.forEachIndexed { index, value ->
+                bindValue(this, index, value)
+            }
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("MIN", elapsed)
+
+        return min
+    }
+
     var min: Double? = null
 
     executeQuery(
@@ -339,6 +579,34 @@ inline fun <reified T : Any> SqlDriver.minString(
     }
 
     val sql = "SELECT MIN($field) FROM ${metadata.tableName}$whereClause"
+
+    if (BuildConfig.IS_DEBUG) {
+        val startTime = now()
+        SqlQueryLogger.logRawQuery(sql, params)
+
+        var min: String? = null
+
+        executeQuery(
+            identifier = null,
+            sql = sql,
+            mapper = { cursor ->
+                if (cursor.next().value) {
+                    min = cursor.getString(0)
+                }
+                app.cash.sqldelight.db.QueryResult.Value(min)
+            },
+            parameters = params.size
+        ) {
+            params.forEachIndexed { index, value ->
+                bindValue(this, index, value)
+            }
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("MIN", elapsed)
+
+        return min
+    }
 
     var min: String? = null
 

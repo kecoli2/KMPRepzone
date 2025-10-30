@@ -1,6 +1,13 @@
+@file:OptIn(ExperimentalTime::class)
+
 package com.repzone.database.runtime
 
 import app.cash.sqldelight.db.SqlDriver
+import com.repzone.core.config.BuildConfig
+import com.repzone.core.platform.Logger
+import com.repzone.core.util.extensions.now
+import com.repzone.core.util.extensions.toInstant
+import kotlin.time.ExperimentalTime
 
 // ============================================
 // TRUE BATCH INSERT - Tek SQL statement
@@ -34,6 +41,29 @@ fun <T : Any> SqlDriver.batchInsert(entities: List<T>): List<Long> {
         insertColumns.forEach { col ->
             allValues.add(values[col.name])
         }
+    }
+
+    // Logging
+    if (BuildConfig.IS_DEBUG) {
+        val startTime = now()
+        SqlQueryLogger.logBatch("INSERT", metadata.tableName, entities.size)
+        SqlQueryLogger.logRawQuery(sql, allValues)
+
+        // Tek execute ile tüm kayıtları ekle
+        execute(
+            identifier = null,
+            sql = sql,
+            parameters = allValues.size
+        ) {
+            allValues.forEachIndexed { index, value ->
+                bindValue(this, index, value)
+            }
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("BATCH INSERT", elapsed)
+
+        return List(entities.size) { -1L }
     }
 
     // Tek execute ile tüm kayıtları ekle
@@ -77,6 +107,28 @@ fun <T : Any> SqlDriver.batchInsertOrReplace(entities: List<T>): List<Long> {
         }
     }
 
+    // Logging
+    if (BuildConfig.IS_DEBUG) {
+        val startTime = now()
+        SqlQueryLogger.logBatch("INSERT OR REPLACE", metadata.tableName, entities.size)
+        SqlQueryLogger.logRawQuery(sql, allValues)
+
+        execute(
+            identifier = null,
+            sql = sql,
+            parameters = allValues.size
+        ) {
+            allValues.forEachIndexed { index, value ->
+                bindValue(this, index, value)
+            }
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("BATCH INSERT OR REPLACE", elapsed)
+
+        return List(entities.size) { -1L }
+    }
+
     execute(
         identifier = null,
         sql = sql,
@@ -103,6 +155,24 @@ fun <T : Any> SqlDriver.batchInsertWithIds(entities: List<T>): List<Long> {
 
     val insertedIds = mutableListOf<Long>()
 
+    if (BuildConfig.IS_DEBUG) {
+        val metadata = EntityMetadataRegistry.getMetadata(entities.first())
+        val startTime = now()
+        SqlQueryLogger.logBatch("INSERT WITH IDS", metadata.tableName, entities.size)
+
+        transaction {
+            entities.forEach { entity ->
+                val id = insert(entity)
+                insertedIds.add(id)
+            }
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("BATCH INSERT WITH IDS", elapsed)
+
+        return insertedIds
+    }
+
     transaction {
         entities.forEach { entity ->
             val id = insert(entity)
@@ -126,6 +196,25 @@ fun <T : Any> SqlDriver.batchUpdate(entities: List<T>): Int {
 
     var totalAffected = 0
 
+    if (BuildConfig.IS_DEBUG) {
+        val metadata = EntityMetadataRegistry.getMetadata(entities.first())
+        val startTime = now()
+        SqlQueryLogger.logBatch("UPDATE", metadata.tableName, entities.size)
+
+        transaction {
+            entities.forEach { entity ->
+                val affected = update(entity)
+                totalAffected += affected
+            }
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("BATCH UPDATE", elapsed)
+        Logger.d("SQL_RESULT", "Updated $totalAffected rows")
+
+        return totalAffected
+    }
+
     transaction {
         entities.forEach { entity ->
             val affected = update(entity)
@@ -147,6 +236,25 @@ fun <T : Any> SqlDriver.batchDelete(entities: List<T>): Int {
     if (entities.isEmpty()) return 0
 
     var totalAffected = 0
+
+    if (BuildConfig.IS_DEBUG) {
+        val metadata = EntityMetadataRegistry.getMetadata(entities.first())
+        val startTime = now()
+        SqlQueryLogger.logBatch("DELETE", metadata.tableName, entities.size)
+
+        transaction {
+            entities.forEach { entity ->
+                val affected = delete(entity)
+                totalAffected += affected
+            }
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("BATCH DELETE", elapsed)
+        Logger.d("SQL_RESULT", "Deleted $totalAffected rows")
+
+        return totalAffected
+    }
 
     transaction {
         entities.forEach { entity ->
@@ -170,6 +278,28 @@ inline fun <reified T : Any> SqlDriver.batchDeleteByIds(ids: List<Any>): Int {
 
     val placeholders = ids.joinToString(", ") { "?" }
     val sql = "DELETE FROM ${metadata.tableName} WHERE ${pk.name} IN ($placeholders)"
+
+    if (BuildConfig.IS_DEBUG) {
+        val startTime = now()
+        val whereClause = "${pk.name} IN ($placeholders)"
+        SqlQueryLogger.logDelete(tableName = metadata.tableName, whereClause = whereClause, parameters = ids)
+
+        val result = execute(
+            identifier = null,
+            sql = sql,
+            parameters = ids.size
+        ) {
+            ids.forEachIndexed { index, id ->
+                bindValue(this, index, id)
+            }
+        }.value.toInt()
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("BATCH DELETE BY IDS", elapsed)
+        Logger.d("SQL_RESULT", "Deleted $result rows")
+
+        return result
+    }
 
     return execute(
         identifier = null,
@@ -197,8 +327,25 @@ fun <T : Any> SqlDriver.batchInsertChunked(
 
     val allIds = mutableListOf<Long>()
 
+    if (BuildConfig.IS_DEBUG) {
+        val metadata = EntityMetadataRegistry.getMetadata(entities.first())
+        val startTime = now()
+        SqlQueryLogger.logBatch("CHUNKED INSERT", metadata.tableName, entities.size)
+        Logger.d("SQL_QUERY", "Chunk size: $chunkSize")
+
+        entities.chunked(chunkSize).forEach { chunk ->
+            val ids = batchInsert(chunk)  // Gerçek batch insert
+            allIds.addAll(ids)
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("BATCH INSERT CHUNKED", elapsed)
+
+        return allIds
+    }
+
     entities.chunked(chunkSize).forEach { chunk ->
-        val ids = batchInsert(chunk)  // Gerçek batch insert
+        val ids = batchInsert(chunk)
         allIds.addAll(ids)
     }
 
@@ -212,6 +359,22 @@ fun <T : Any> SqlDriver.batchUpdateChunked(
     if (entities.isEmpty()) return 0
 
     var totalAffected = 0
+
+    if (BuildConfig.IS_DEBUG) {
+        val metadata = EntityMetadataRegistry.getMetadata(entities.first())
+        val startTime = now()
+        SqlQueryLogger.logBatch("CHUNKED UPDATE", metadata.tableName, entities.size)
+        Logger.d("SQL_QUERY", "Chunk size: $chunkSize")
+
+        entities.chunked(chunkSize).forEach { chunk ->
+            totalAffected += batchUpdate(chunk)
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("BATCH UPDATE CHUNKED", elapsed)
+
+        return totalAffected
+    }
 
     entities.chunked(chunkSize).forEach { chunk ->
         totalAffected += batchUpdate(chunk)
@@ -227,6 +390,22 @@ fun <T : Any> SqlDriver.batchDeleteChunked(
     if (entities.isEmpty()) return 0
 
     var totalAffected = 0
+
+    if (BuildConfig.IS_DEBUG) {
+        val metadata = EntityMetadataRegistry.getMetadata(entities.first())
+        val startTime = now()
+        SqlQueryLogger.logBatch("CHUNKED DELETE", metadata.tableName, entities.size)
+        Logger.d("SQL_QUERY", "Chunk size: $chunkSize")
+
+        entities.chunked(chunkSize).forEach { chunk ->
+            totalAffected += batchDelete(chunk)
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("BATCH DELETE CHUNKED", elapsed)
+
+        return totalAffected
+    }
 
     entities.chunked(chunkSize).forEach { chunk ->
         totalAffected += batchDelete(chunk)
@@ -250,6 +429,25 @@ fun <T : Any> SqlDriver.batchInsertWithProgress(
     val total = entities.size
     var processed = 0
 
+    if (BuildConfig.IS_DEBUG) {
+        val metadata = EntityMetadataRegistry.getMetadata(entities.first())
+        val startTime = now()
+        SqlQueryLogger.logBatch("INSERT WITH PROGRESS", metadata.tableName, entities.size)
+
+        entities.chunked(chunkSize).forEach { chunk ->
+            val ids = batchInsert(chunk)
+            allIds.addAll(ids)
+            processed += chunk.size
+            onProgress(processed, total)
+            Logger.d("SQL_PROGRESS", "Progress: $processed/$total")
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("BATCH INSERT WITH PROGRESS", elapsed)
+
+        return allIds
+    }
+
     entities.chunked(chunkSize).forEach { chunk ->
         val ids = batchInsert(chunk)
         allIds.addAll(ids)
@@ -268,6 +466,26 @@ fun <T : Any> SqlDriver.batchUpdateWithProgress(
 
     var totalAffected = 0
     val total = entities.size
+
+    if (BuildConfig.IS_DEBUG) {
+        val metadata = EntityMetadataRegistry.getMetadata(entities.first())
+        val startTime = now()
+        SqlQueryLogger.logBatch("UPDATE WITH PROGRESS", metadata.tableName, entities.size)
+
+        transaction {
+            entities.forEachIndexed { index, entity ->
+                val affected = update(entity)
+                totalAffected += affected
+                onProgress(index + 1, total)
+                Logger.d("SQL_PROGRESS", "Progress: ${index + 1}/$total")
+            }
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("BATCH UPDATE WITH PROGRESS", elapsed)
+
+        return totalAffected
+    }
 
     transaction {
         entities.forEachIndexed { index, entity ->

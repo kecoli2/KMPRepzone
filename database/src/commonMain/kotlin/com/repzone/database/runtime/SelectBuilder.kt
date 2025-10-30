@@ -1,7 +1,13 @@
 package com.repzone.database.runtime
 
 import app.cash.sqldelight.db.SqlDriver
+import com.repzone.core.config.BuildConfig
+import com.repzone.core.platform.Logger
+import com.repzone.core.util.extensions.now
+import com.repzone.core.util.extensions.toInstant
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver: SqlDriver) {
     var whereCondition: Condition = NoCondition
         internal set
@@ -12,7 +18,7 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
     var limitValue: Int? = null
         internal set
 
-    var offsetValue: Int? = null  // YENİ
+    var offsetValue: Int? = null
         internal set
 
     var groupByBuilder: GroupByBuilder? = null
@@ -45,9 +51,10 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
         groupByBuilder = builder
     }
 
-    fun toList(): List<T> {
-        val params = mutableListOf<Any?>()
-
+    /**
+     * Build SQL query string (for logging)
+     */
+    private fun buildSQL(params: MutableList<Any?>): String {
         // Build WHERE clause
         val whereClause = if (whereCondition != NoCondition) {
             " WHERE ${whereCondition.toSQL(params)}"
@@ -85,11 +92,11 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
         // Build LIMIT clause
         val limitClause = limitValue?.let { " LIMIT $it" } ?: ""
 
-        // Build OFFSET clause - YENİ
+        // Build OFFSET clause
         val offsetClause = offsetValue?.let { " OFFSET $it" } ?: ""
 
         // Final SQL
-        val sql = "SELECT ${metadata.columns.joinToString(", ") { it.name }} " +
+        return "SELECT ${metadata.columns.joinToString(", ") { it.name }} " +
                 "FROM ${metadata.tableName}" +
                 whereClause +
                 groupByClause +
@@ -97,8 +104,31 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
                 orderByClause +
                 limitClause +
                 offsetClause
+    }
 
-        // Execute and collect results
+    fun toList(): List<T> {
+        val params = mutableListOf<Any?>()
+        val sql = buildSQL(params)
+
+        // Logging
+        if (BuildConfig.IS_DEBUG) {
+            val startTime = now()
+
+            SqlQueryLogger.logRawQuery(sql, params)
+
+            val results = executeQuery(sql, params)
+
+            val elapsed = (now() - startTime).toInstant().epochSeconds
+            SqlQueryLogger.logQueryTime("SELECT", elapsed)
+            Logger.d("SQL_RESULT", "Returned ${results.size} rows")
+
+            return results
+        }
+
+        return executeQuery(sql, params)
+    }
+
+    private fun executeQuery(sql: String, params: List<Any?>): List<T> {
         val results = mutableListOf<T>()
 
         driver.executeQuery(
@@ -125,40 +155,39 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
     }
 
     fun firstOrNull(): T? {
+        val originalLimit = limitValue
         limit(1)
-        val params = mutableListOf<Any?>()
 
-        val whereClause = if (whereCondition != NoCondition) {
-            " WHERE ${whereCondition.toSQL(params)}"
-        } else {
-            ""
+        val params = mutableListOf<Any?>()
+        val sql = buildSQL(params)
+
+        // Logging
+        if (BuildConfig.IS_DEBUG) {
+            val startTime = now()
+
+            SqlQueryLogger.logRawQuery(sql, params)
+
+            val result = executeSingleQuery(sql, params)
+
+            val elapsed = (now() - startTime).toInstant().epochSeconds
+            SqlQueryLogger.logQueryTime("SELECT (firstOrNull)", elapsed)
+            Logger.d("SQL_RESULT", "Returned ${if (result != null) "1 row" else "no rows"}")
+
+            // Restore original limit
+            limitValue = originalLimit
+
+            return result
         }
 
-        // Build GROUP BY clause
-        val groupByClause = groupByBuilder?.let { builder ->
-            if (builder.groupByFields.isNotEmpty()) {
-                " GROUP BY ${builder.groupByFields.joinToString(", ")}"
-            } else {
-                ""
-            }
-        } ?: ""
+        val result = executeSingleQuery(sql, params)
 
-        // Build HAVING clause
-        val havingClause = groupByBuilder?.let { builder ->
-            if (builder.havingCondition != NoCondition) {
-                " HAVING ${builder.havingCondition.toSQL(params)}"
-            } else {
-                ""
-            }
-        } ?: ""
+        // Restore original limit
+        limitValue = originalLimit
 
-        val sql = "SELECT ${metadata.columns.joinToString(", ") { it.name }} " +
-                "FROM ${metadata.tableName}" +
-                whereClause +
-                groupByClause +
-                havingClause +
-                " LIMIT 1"
+        return result
+    }
 
+    private fun executeSingleQuery(sql: String, params: List<Any?>): T? {
         var result: T? = null
 
         driver.executeQuery(
