@@ -96,6 +96,20 @@ class EntityMetadataProcessor(
             }
         }
 
+        // 6. Extensions generate et - YENİ
+        if (schemas.isNotEmpty()) {
+            try {
+                EntityExtensionsGenerator.generate(
+                    schemas = schemas,
+                    codeGenerator = codeGenerator,
+                    logger = logger
+                )
+                logger.info("Generated entity extensions for ${schemas.size} entities")
+            } catch (e: Exception) {
+                logger.error("Failed to generate extensions: ${e.message}")
+            }
+        }
+
         return emptyList()
     }
 

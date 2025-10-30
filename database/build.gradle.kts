@@ -1,5 +1,3 @@
-import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
@@ -61,23 +59,6 @@ kotlin {
                 dependencies { implementation(libs.sqldelight.nativeDriver) }
             }
         }
-    }
-
-    tasks.register<GenerateEntityExtensionsTask>("generateEntityExtensions") {
-        // SQLDelight generated path
-        sourceDir.set(layout.buildDirectory.dir("generated/sqldelight/code/AppDatabase/commonMain/com/repzone/database"))
-        outputDir.set(layout.buildDirectory.dir("generated/extensions"))
-
-        // SQLDelight task'ından sonra çalışmalı
-        dependsOn("generateCommonMainAppDatabaseInterface")
-    }
-
-    sourceSets.commonMain {
-        kotlin.srcDir(layout.buildDirectory.dir("generated/extensions"))
-    }
-
-    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask<*>>().configureEach {
-        dependsOn("generateEntityExtensions")
     }
 }
 
@@ -273,93 +254,6 @@ tasks.register("generateMapperDI") {
     }
 }
 //endregion REGISTER TASKS
-
-//region GENERATOR EXTENSIONS FOR SQLDELIGHT
-abstract class GenerateEntityExtensionsTask : DefaultTask() {
-    @get:InputDirectory
-    abstract val sourceDir: DirectoryProperty
-
-    @get:OutputDirectory
-    abstract val outputDir: DirectoryProperty
-
-    @TaskAction
-    fun generate() {
-        val sourceDirFile = sourceDir.asFile.get()
-        val outputDirFile = outputDir.asFile.get()
-
-        outputDirFile.mkdirs()
-
-        // SQLDelight generated entity'leri bul
-        sourceDirFile.walkTopDown()
-            .filter { it.isFile && it.name.endsWith(".kt") && it.name.contains("Entity") }
-            .forEach { file ->
-                generateExtension(file, outputDirFile)
-            }
-    }
-    private fun generateExtension(entityFile: File, outputDir: File) {
-        val content = entityFile.readText()
-
-        if (!content.contains("data class")) return
-
-        val className = entityFile.nameWithoutExtension
-        val packageName = content.substringAfter("package ").substringBefore("\n").trim()
-
-        // Field'ları tip bilgisi ile parse et
-        val fieldPattern = """val (\w+):\s*([^,\)]+?)(?:\s*[,\)]|${'$'})""".toRegex()
-        val fields = fieldPattern.findAll(content).map { matchResult ->
-            val name = matchResult.groupValues[1]
-            val type = matchResult.groupValues[2].trim()
-            name to type
-        }.toList()
-
-        if (fields.isEmpty()) return
-
-        // String field indexlerini bul
-        val stringFieldIndices = fields.mapIndexedNotNull { idx, (_, type) ->
-            if (type.contains("String")) idx else null
-        }
-
-        val extensionContent = """
-        package $packageName
-        
-        // Auto-generated metadata for $className
-        
-        object ${className}Metadata {
-            val tableName: String = "${className.replace("Metadata", "")}"
-            val columns: List<String> = listOf(${fields.joinToString { "\"${it.first}\"" }})
-        }
-        
-        fun $className.toValuesList(): List<Any?> = listOf(
-            ${fields.joinToString(",\n            ") { "this.${it.first}" }}
-        )
-        
-        fun $className.toSqlValuesString(): String {
-            return toValuesList()
-                .mapIndexed { index, value ->
-                    when {
-                        value == null -> "NULL"
-                        ${if (stringFieldIndices.isNotEmpty()) "isStringField(index) -> (value as? String)?.quote() ?: \"NULL\"" else ""}
-                        value is Boolean -> if (value) "1" else "0"
-                        else -> value.toString()
-                    }
-                }
-                .joinToString(", ", prefix = "(", postfix = ")")
-        }
-        
-        ${if (stringFieldIndices.isNotEmpty()) """
-        private fun isStringField(index: Int): Boolean {
-            val stringFields = setOf(${stringFieldIndices.joinToString()})
-            return index in stringFields
-        }
-        
-        private fun String.quote() = "'${'$'}{replace("'", "''")}'"
-        """ else ""}
-    """.trimIndent()
-
-        File(outputDir, "${className}Extensions.kt").writeText(extensionContent)
-    }
-}
-//endregion
 
 //region GENERATOR MODEL CLASS
 fun convertEntityToModel(entityContent: String, modelPackage: String): String {
