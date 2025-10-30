@@ -1,5 +1,7 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.util.extensions.toBoolean
+import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncProductEntity
 import com.repzone.domain.model.SyncProductModel
@@ -12,15 +14,15 @@ class SyncProductEntityDbMapper : Mapper<SyncProductEntity, SyncProductModel> {
             brandId = from.BrandId,
             brandName = from.BrandName,
             brandPhotoPath = from.BrandPhotoPath,
-            closeToReturns = from.CloseToReturns,
-            closeToSales = from.CloseToSales,
+            closeToReturns = from.CloseToReturns?.toBoolean() ?: false,
+            closeToSales = from.CloseToSales?.toBoolean() ?: false,
             color = from.Color,
             description = from.Description,
             displayOrder = from.DisplayOrder,
             groupId = from.GroupId,
             groupName = from.GroupName,
             groupPhotoPath = from.GroupPhotoPath,
-            isVisible = from.IsVisible,
+            isVisible = from.IsVisible?.toBoolean() ?: false,
             manufacturerId = from.ManufacturerId,
             maximumOrderQuantity = from.MaximumOrderQuantity,
             minimumOrderQuantity = from.MinimumOrderQuantity,
@@ -46,15 +48,15 @@ class SyncProductEntityDbMapper : Mapper<SyncProductEntity, SyncProductModel> {
             BrandId = domain.brandId,
             BrandName = domain.brandName,
             BrandPhotoPath = domain.brandPhotoPath,
-            CloseToReturns = domain.closeToReturns,
-            CloseToSales = domain.closeToSales,
+            CloseToReturns = domain.closeToReturns.toLong(),
+            CloseToSales = domain.closeToSales.toLong(),
             Color = domain.color,
             Description = domain.description,
             DisplayOrder = domain.displayOrder,
             GroupId = domain.groupId,
             GroupName = domain.groupName,
             GroupPhotoPath = domain.groupPhotoPath,
-            IsVisible = domain.isVisible,
+            IsVisible = domain.isVisible?.toLong(),
             ManufacturerId = domain.manufacturerId,
             MaximumOrderQuantity = domain.maximumOrderQuantity,
             MinimumOrderQuantity = domain.minimumOrderQuantity,

@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.AddressType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncAddressEntity
 import com.repzone.domain.model.SyncAddressModel
@@ -10,7 +13,7 @@ class SyncAddressEntityDbMapper : Mapper<SyncAddressEntity, SyncAddressModel> {
         return SyncAddressModel(
             id = from.Id,
             addressName = from.AddressName,
-            addressType = from.AddressType,
+            addressType = from.AddressType?.toEnum<AddressType>() ?: AddressType.MAIL,
             city = from.City,
             contact = from.Contact,
             country = from.Country,
@@ -30,7 +33,7 @@ class SyncAddressEntityDbMapper : Mapper<SyncAddressEntity, SyncAddressModel> {
         return SyncAddressEntity(
             Id = domain.id,
             AddressName = domain.addressName,
-            AddressType = domain.addressType,
+            AddressType = domain.addressType.enumToLong(),
             City = domain.city,
             Contact = domain.contact,
             Country = domain.country,
