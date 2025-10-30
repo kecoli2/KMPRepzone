@@ -115,7 +115,6 @@ class EntityMetadataProcessor(
             try {
                 EntityMapperGenerator.generate(
                     schemas = schemas,
-                    codeGenerator = codeGenerator,
                     logger = logger
                 )
                 logger.info("Generated entity mappers for ${schemas.size} entities")

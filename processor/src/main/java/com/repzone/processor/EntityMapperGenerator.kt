@@ -5,6 +5,7 @@ import com.google.devtools.ksp.processing.KSPLogger
 import com.repzone.processor.TableSchema
 import java.io.File
 
+
 object EntityMapperGenerator {
 
     data class EntityField(
@@ -15,7 +16,6 @@ object EntityMapperGenerator {
 
     fun generate(
         schemas: List<TableSchema>,
-        codeGenerator: CodeGenerator,
         logger: KSPLogger
     ) {
         logger.info("EntityMapperGenerator: Starting generation for ${schemas.size} schemas")
@@ -88,7 +88,6 @@ object EntityMapperGenerator {
         logger.info("Generated mapper code length: ${code.length} characters")
 
         try {
-            // Write to data module directly
             mapperFile.writeText(code)
             logger.info("Successfully generated mapper: ${mapperFile.absolutePath}")
         } catch (e: Exception) {
@@ -109,60 +108,40 @@ object EntityMapperGenerator {
     ): String = buildString {
         appendLine("package $mapperPackage")
         appendLine()
+        appendLine("import com.repzone.data.util.Mapper")
         appendLine("import $entityPackage.$entityName")
         appendLine("import $modelPackage.$modelName")
         appendLine()
-        appendLine("/**")
-        appendLine(" * Auto-generated mapper for $entityName")
-        appendLine(" * Maps between Entity (database) and Model (domain)")
-        appendLine(" */")
-        appendLine("object $mapperName {")
-        appendLine()
+        appendLine("class $mapperName : Mapper<$entityName, $modelName> {")
+        appendLine("    //region Public Method")
 
-        // toModel function
-        appendLine("    /**")
-        appendLine("     * Convert Entity to Model")
-        appendLine("     */")
-        appendLine("    fun $entityName.toModel(): $modelName {")
+        // toDomain method
+        appendLine("    override fun toDomain(from: $entityName): $modelName {")
         appendLine("        return $modelName(")
         entityFields.forEachIndexed { index, field ->
             val comma = if (index < entityFields.size - 1) "," else ""
-            appendLine("            ${field.name} = this.${field.name}$comma")
+            // Entity: PascalCase (Key), Model: camelCase (key)
+            val modelFieldName = field.name.toCamelCase()
+            appendLine("            $modelFieldName = from.${field.name}$comma")
         }
         appendLine("        )")
         appendLine("    }")
         appendLine()
 
-        // toEntity function
-        appendLine("    /**")
-        appendLine("     * Convert Model to Entity")
-        appendLine("     */")
-        appendLine("    fun $modelName.toEntity(): $entityName {")
+        // fromDomain method
+        appendLine("    override fun fromDomain(domain: $modelName): $entityName {")
         appendLine("        return $entityName(")
         entityFields.forEachIndexed { index, field ->
             val comma = if (index < entityFields.size - 1) "," else ""
-            appendLine("            ${field.name} = this.${field.name}$comma")
+            // Entity: PascalCase (Key), Model: camelCase (key)
+            val modelFieldName = field.name.toCamelCase()
+            appendLine("            ${field.name} = domain.$modelFieldName$comma")
         }
         appendLine("        )")
         appendLine("    }")
+
+        appendLine("    //endregion")
         appendLine()
-
-        // List extensions
-        appendLine("    /**")
-        appendLine("     * Convert List of Entities to List of Models")
-        appendLine("     */")
-        appendLine("    fun List<$entityName>.toModelList(): List<$modelName> {")
-        appendLine("        return map { it.toModel() }")
-        appendLine("    }")
-        appendLine()
-
-        appendLine("    /**")
-        appendLine("     * Convert List of Models to List of Entities")
-        appendLine("     */")
-        appendLine("    fun List<$modelName>.toEntityList(): List<$entityName> {")
-        appendLine("        return map { it.toEntity() }")
-        appendLine("    }")
-
         appendLine("}")
     }
 
@@ -174,5 +153,13 @@ object EntityMapperGenerator {
             "BLOB" -> "ByteArray"
             else -> "String"
         }
+    }
+
+    // PascalCase -> camelCase
+    // Key -> key
+    // LastSyncDate -> lastSyncDate
+    private fun String.toCamelCase(): String {
+        if (this.isEmpty()) return this
+        return this.first().lowercase() + this.substring(1)
     }
 }
