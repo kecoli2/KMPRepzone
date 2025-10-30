@@ -56,3 +56,9 @@ android {
         targetCompatibility = JavaVersion.VERSION_21
     }
 }
+
+tasks.configureEach {
+    if (name.startsWith("compileKotlin") || name.startsWith("compile") || name.startsWith("assemble")) {
+        dependsOn(":database:kspCommonMainKotlinMetadata")
+    }
+}
