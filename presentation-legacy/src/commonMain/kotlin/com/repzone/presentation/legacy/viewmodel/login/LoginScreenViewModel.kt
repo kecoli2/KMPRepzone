@@ -8,6 +8,7 @@ import com.repzone.core.ui.base.clearError
 import com.repzone.core.ui.base.hasError
 import com.repzone.core.ui.base.setError
 import com.repzone.core.ui.base.setErrorStringResource
+import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.util.extensions.jsonToModel
 import com.repzone.core.util.extensions.toJson
 import com.repzone.database.interfaces.IDatabaseManager
@@ -33,7 +34,8 @@ import kotlin.uuid.Uuid
 class LoginScreenViewModel(
     private val tokenApiController: ITokenApiController,
     private val isharedPreferences: IPreferencesManager,
-    private val iDatabaseManager: IDatabaseManager
+    private val iDatabaseManager: IDatabaseManager,
+    private val iThemeManager: ThemeManager
 ) : BaseViewModel<LoginScreenUiState, LoginScreenViewModel.Event>(LoginScreenUiState()) {
     //region Public Method
     @OptIn(ExperimentalUuidApi::class)
@@ -127,6 +129,7 @@ class LoginScreenViewModel(
                         loadingMessage = Res.string.logging_in
                     )
                 }
+                iThemeManager.loadSavedSettings()
                 emitEvent(Event.Login)
             }
             is ApiResult.Error -> {
