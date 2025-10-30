@@ -7,11 +7,6 @@ plugins {
     alias(libs.plugins.ksp)
 }
 
-dependencies {
-    // KSP processor'ı ekle
-    add("kspCommonMainMetadata", project(":processor"))
-}
-
 // KSP configuration
 ksp {
     // SQLDelight dosyalarının yolu
@@ -93,7 +88,27 @@ sqldelight {
     }
 }
 
+dependencies {
+    // KSP processor'ı ekle
+    add("kspCommonMainMetadata", project(":processor"))
+}
+
+afterEvaluate {
+    // Tüm Kotlin compile task'larını bul ve KSP'ye bağla
+    tasks.matching { task ->
+        task.name.startsWith("compile") &&
+                task.name.contains("Kotlin") &&
+                !task.name.contains("Metadata")  // Metadata hariç
+    }.configureEach {
+        dependsOn("kspCommonMainKotlinMetadata")
+    }
+}
+
 //region REGISTER TASKS
+/*tasks.withType<KotlinCompile>().configureEach {
+    dependsOn("kspCommonMainKotlinMetadata")
+}*/
+
 tasks.register("generateDomainModels") {
     group = "generation"
     description = "Generate domain models from SQLDelight entities"
