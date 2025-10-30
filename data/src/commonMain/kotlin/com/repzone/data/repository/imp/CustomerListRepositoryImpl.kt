@@ -66,6 +66,9 @@ class CustomerListRepositoryImpl(private val database: AppDatabase,
             where {
                 criteria("SyncType", notEqual = 1)
             }
+            orderBy {
+
+            }
         }.toList()
 
         val modulesIsNull = iDatabaseMAnager.getSqlDriver().select<SyncModuleEntity>(){

@@ -71,7 +71,7 @@ class DeleteBuilder<T : Any>(
 // Helper Functions
 // ========================================
 
-internal fun bindValue(statement: app.cash.sqldelight.db.SqlPreparedStatement, index: Int, value: Any?) {
+fun bindValue(statement: app.cash.sqldelight.db.SqlPreparedStatement, index: Int, value: Any?) {
     when (value) {
         null -> statement.bindBytes(index, null)
         is String -> statement.bindString(index, value)

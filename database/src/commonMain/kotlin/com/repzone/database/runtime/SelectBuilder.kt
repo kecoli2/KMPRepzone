@@ -3,9 +3,10 @@ package com.repzone.database.runtime
 import app.cash.sqldelight.db.SqlDriver
 
 class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver: SqlDriver) {
-    private var whereCondition: Condition = NoCondition
-    private var orderSpecs: List<OrderSpec> = emptyList()
-    private var limitValue: Int? = null
+    var whereCondition: Condition = NoCondition
+    internal var orderSpecs: List<OrderSpec> = emptyList()
+    internal var groupByBuilder: GroupByBuilder? = null
+    internal var limitValue: Int? = null
 
     fun where(block: CriteriaBuilder.() -> Unit) {
         val builder = CriteriaBuilder()
@@ -24,6 +25,12 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
         limitValue = count
     }
 
+    fun groupBy(block: GroupByBuilder.() -> Unit) {
+        val builder = GroupByBuilder()
+        builder.block()
+        groupByBuilder = builder
+    }
+
     fun toList(): List<T> {
         val params = mutableListOf<Any?>()
 
@@ -33,6 +40,24 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
         } else {
             ""
         }
+
+        // Build GROUP BY clause
+        val groupByClause = groupByBuilder?.let { builder ->
+            if (builder.groupByFields.isNotEmpty()) {
+                " GROUP BY ${builder.groupByFields.joinToString(", ")}"
+            } else {
+                ""
+            }
+        } ?: ""
+
+        // Build HAVING clause
+        val havingClause = groupByBuilder?.let { builder ->
+            if (builder.havingCondition != NoCondition) {
+                " HAVING ${builder.havingCondition.toSQL(params)}"
+            } else {
+                ""
+            }
+        } ?: ""
 
         // Build ORDER BY clause
         val orderByClause = if (orderSpecs.isNotEmpty()) {
@@ -49,7 +74,11 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
         // Final SQL
         val sql = "SELECT ${metadata.columns.joinToString(", ") { it.name }} " +
                 "FROM ${metadata.tableName}" +
-                whereClause + orderByClause + limitClause
+                whereClause +
+                groupByClause +
+                havingClause +
+                orderByClause +
+                limitClause
 
         // Execute and collect results
         val results = mutableListOf<T>()
@@ -87,9 +116,30 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
             ""
         }
 
+        // Build GROUP BY clause
+        val groupByClause = groupByBuilder?.let { builder ->
+            if (builder.groupByFields.isNotEmpty()) {
+                " GROUP BY ${builder.groupByFields.joinToString(", ")}"
+            } else {
+                ""
+            }
+        } ?: ""
+
+        // Build HAVING clause
+        val havingClause = groupByBuilder?.let { builder ->
+            if (builder.havingCondition != NoCondition) {
+                " HAVING ${builder.havingCondition.toSQL(params)}"
+            } else {
+                ""
+            }
+        } ?: ""
+
         val sql = "SELECT ${metadata.columns.joinToString(", ") { it.name }} " +
                 "FROM ${metadata.tableName}" +
-                whereClause + " LIMIT 1"
+                whereClause +
+                groupByClause +
+                havingClause +
+                " LIMIT 1"
 
         var result: T? = null
 
