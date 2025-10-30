@@ -7,6 +7,8 @@ import com.repzone.core.util.extensions.addDays
 import com.repzone.core.util.extensions.now
 import com.repzone.core.util.extensions.toInstant
 import com.repzone.core.util.extensions.toLong
+import com.repzone.data.sample.DatabaseTest
+import com.repzone.data.sample.SyncModuleEntitySamples
 import com.repzone.data.util.Mapper
 import com.repzone.data.util.toDomainList
 import com.repzone.database.AppDatabase
@@ -51,6 +53,9 @@ class CustomerListRepositoryImpl(private val database: AppDatabase,
 
     //region Public Method
     override suspend fun getCustomerList(utcDate: Instant?): List<CustomerItemModel> {
+        val dbTest = DatabaseTest(iDatabaseMAnager.getSqlDriver())
+        dbTest.runAllTests()
+
         val activeStrint = iRouteAppointmentRepository.getActiveSprintInformation()
         val dontShowDatePart = iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.isActive == true && iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FLEXIBLE_DATES
         val onlyParents = iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.isActive == true && iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.groupByParentCustomer == OnOf.ON

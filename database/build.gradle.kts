@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.gradle.api.tasks.PathSensitivity
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -11,6 +12,9 @@ plugins {
 ksp {
     // SQLDelight dosyalarının yolu
     arg("sqldelight.path", "${projectDir}/src/commonMain/sqldelight")
+
+    // Incremental processing'i kapat - her zaman full build
+    arg("incremental", "false")
 }
 
 kotlin {
@@ -104,6 +108,15 @@ afterEvaluate {
     }
 }
 
+tasks.configureEach {
+    if (name.startsWith("ksp") && name.contains("Metadata")) {
+        dependsOn("generateCommonMainAppDatabaseInterface")
+        outputs.upToDateWhen { false }
+        inputs.dir("${layout.buildDirectory.get()}/generated/sqldelight/code/AppDatabase/commonMain")
+            .withPathSensitivity(PathSensitivity.RELATIVE)
+            .optional()
+    }
+}
 //region REGISTER TASKS
 /*tasks.withType<KotlinCompile>().configureEach {
     dependsOn("kspCommonMainKotlinMetadata")

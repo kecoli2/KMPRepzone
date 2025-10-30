@@ -19,6 +19,8 @@ fun SqlDriver.update(entity: Any): Int = updateGenerated(entity)
 
 fun SqlDriver.delete(entity: Any): Int = deleteGenerated(entity)
 
+fun SqlDriver.insertOrReplace(entity: Any): Long = insertOrReplaceGenerated(entity)
+
 inline fun <reified T : Any> SqlDriver.delete(
     block: DeleteBuilder<T>.() -> Unit
 ): Int {

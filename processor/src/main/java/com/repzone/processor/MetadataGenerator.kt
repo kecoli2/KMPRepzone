@@ -145,7 +145,7 @@ object MetadataGenerator {
             val cursorMethod = getCursorMethod(column.type)
 
             // Property'nin nullable olup olmadığını kontrol et
-            val isPropertyNullable = propertyNullability?.get(column.name) ?: true
+            val isPropertyNullable = propertyNullability?.get(column.name) ?: !column.isNotNull
 
             // Eğer property non-null ve cursor nullable dönüyorsa !! ekle
             val nullableOperator = if (!isPropertyNullable) "!!" else ""
