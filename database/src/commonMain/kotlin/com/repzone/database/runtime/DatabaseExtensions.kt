@@ -61,7 +61,7 @@ class DeleteBuilder<T : Any>(
             parameters = params.size
         ) {
             params.forEachIndexed { index, value ->
-                bindValue(this, index + 1, value)
+                bindValue(this, index, value)
             }
         }.value.toInt()
     }

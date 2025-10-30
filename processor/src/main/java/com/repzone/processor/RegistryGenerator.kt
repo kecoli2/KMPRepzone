@@ -97,11 +97,12 @@ object RegistryGenerator {
     }
 
     private fun generateInsertFunction(schemas: List<TableSchema>): FunSpec {
-        val entityMetadataType = ClassName("com.repzone.database.runtime", "EntityMetadata")
         val sqlDriverType = ClassName("app.cash.sqldelight.db", "SqlDriver")
+        val anyType = Any::class.asClassName()
 
         val codeBlock = CodeBlock.builder()
-            .add("val metadata: %T = when (entity::class.simpleName) {\n", entityMetadataType)
+            .addStatement("val metadata: %T = when (entity::class.simpleName) {",
+                ClassName("com.repzone.database.runtime", "EntityMetadata"))
             .indent()
 
         schemas.filter { !it.isView }.forEach { schema ->
@@ -121,43 +122,46 @@ object RegistryGenerator {
 
         codeBlock.add("else -> throw IllegalArgumentException(\"Unknown entity type: \${entity::class.simpleName}\")\n")
             .unindent()
-            .add("}\n\n")
-            .add("val values = metadata.extractValues(entity)\n")
-            .add("val insertColumns = metadata.columns.filterNot { it.isAutoIncrement }\n")
-            .add("val columnNames = insertColumns.joinToString(\", \") { it.name }\n")
-            .add("val placeholders = insertColumns.joinToString(\", \") { \"?\" }\n")
-            .add("val sql = \"INSERT INTO \${metadata.tableName} (\$columnNames) VALUES (\$placeholders)\"\n\n")
-            .add("return execute(\n")
+            .addStatement("}")
+            .addStatement("")
+            .addStatement("val values = metadata.extractValues(entity)")
+            .addStatement("val insertColumns = metadata.columns.filterNot { it.isAutoIncrement }")
+            .addStatement("val columnNames = insertColumns.joinToString(\", \") { it.name }")
+            .addStatement("val placeholders = insertColumns.joinToString(\", \") { \"?\" }")
+            .addStatement("val sql = \"INSERT INTO \${metadata.tableName} (\$columnNames) VALUES (\$placeholders)\"")
+            .addStatement("")
+            .addStatement("return execute(")
             .indent()
-            .add("identifier = null,\n")
-            .add("sql = sql,\n")
-            .add("parameters = insertColumns.size\n")
+            .addStatement("identifier = null,")
+            .addStatement("sql = sql,")
+            .addStatement("parameters = insertColumns.size")
             .unindent()
-            .add(") {\n")
+            .addStatement(") {")
             .indent()
-            .add("insertColumns.forEachIndexed { index, col ->\n")
+            .addStatement("insertColumns.forEachIndexed { index, col ->")
             .indent()
-            .add("%T(this, index, values[col.name])\n",
+            .addStatement("%T(this, index, values[col.name])",  // 0-based index
                 ClassName("com.repzone.database.runtime", "bindValue"))
             .unindent()
-            .add("}\n")
+            .addStatement("}")
             .unindent()
-            .add("}.value\n")
+            .addStatement("}.value")
 
         return FunSpec.builder("insertGenerated")
             .receiver(sqlDriverType)
-            .addParameter("entity", Any::class)
+            .addParameter("entity", anyType)
             .returns(Long::class)
             .addCode(codeBlock.build())
             .build()
     }
 
     private fun generateUpdateFunction(schemas: List<TableSchema>): FunSpec {
-        val entityMetadataType = ClassName("com.repzone.database.runtime", "EntityMetadata")
         val sqlDriverType = ClassName("app.cash.sqldelight.db", "SqlDriver")
+        val anyType = Any::class.asClassName()
 
         val codeBlock = CodeBlock.builder()
-            .add("val metadata: %T = when (entity::class.simpleName) {\n", entityMetadataType)
+            .addStatement("val metadata: %T = when (entity::class.simpleName) {",
+                ClassName("com.repzone.database.runtime", "EntityMetadata"))
             .indent()
 
         schemas.filter { !it.isView }.forEach { schema ->
@@ -177,46 +181,49 @@ object RegistryGenerator {
 
         codeBlock.add("else -> throw IllegalArgumentException(\"Unknown entity type: \${entity::class.simpleName}\")\n")
             .unindent()
-            .add("}\n\n")
-            .add("val values = metadata.extractValues(entity)\n")
-            .add("val pk = metadata.primaryKey\n")
-            .add("val updateColumns = metadata.columns.filterNot { it.isPrimaryKey }\n")
-            .add("val setClause = updateColumns.joinToString(\", \") { \"\${it.name} = ?\" }\n")
-            .add("val whereClause = \"\${pk.name} = ?\"\n")
-            .add("val sql = \"UPDATE \${metadata.tableName} SET \$setClause WHERE \$whereClause\"\n\n")
-            .add("return execute(\n")
+            .addStatement("}")
+            .addStatement("")
+            .addStatement("val values = metadata.extractValues(entity)")
+            .addStatement("val pk = metadata.primaryKey")
+            .addStatement("val updateColumns = metadata.columns.filterNot { it.isPrimaryKey }")
+            .addStatement("val setClause = updateColumns.joinToString(\", \") { \"\${it.name} = ?\" }")
+            .addStatement("val whereClause = \"\${pk.name} = ?\"")
+            .addStatement("val sql = \"UPDATE \${metadata.tableName} SET \$setClause WHERE \$whereClause\"")
+            .addStatement("")
+            .addStatement("return execute(")
             .indent()
-            .add("identifier = null,\n")
-            .add("sql = sql,\n")
-            .add("parameters = updateColumns.size + 1\n")
+            .addStatement("identifier = null,")
+            .addStatement("sql = sql,")
+            .addStatement("parameters = updateColumns.size + 1")  // +1 for WHERE clause
             .unindent()
-            .add(") {\n")
+            .addStatement(") {")
             .indent()
-            .add("updateColumns.forEachIndexed { index, col ->\n")
+            .addStatement("updateColumns.forEachIndexed { index, col ->")
             .indent()
-            .add("%T(this, index, values[col.name])\n",
+            .addStatement("%T(this, index, values[col.name])",  // index yerine index (0-based)
                 ClassName("com.repzone.database.runtime", "bindValue"))
             .unindent()
-            .add("}\n")
-            .add("%T(this, updateColumns.size + 1, values[pk.name])\n",
+            .addStatement("}")
+            .addStatement("%T(this, updateColumns.size, values[pk.name])",  // updateColumns.size (0-based için son index)
                 ClassName("com.repzone.database.runtime", "bindValue"))
             .unindent()
-            .add("}.value.toInt()\n")
+            .addStatement("}.value.toInt()")
 
         return FunSpec.builder("updateGenerated")
             .receiver(sqlDriverType)
-            .addParameter("entity", Any::class)
+            .addParameter("entity", anyType)
             .returns(Int::class)
             .addCode(codeBlock.build())
             .build()
     }
 
     private fun generateDeleteFunction(schemas: List<TableSchema>): FunSpec {
-        val entityMetadataType = ClassName("com.repzone.database.runtime", "EntityMetadata")
         val sqlDriverType = ClassName("app.cash.sqldelight.db", "SqlDriver")
+        val anyType = Any::class.asClassName()
 
         val codeBlock = CodeBlock.builder()
-            .add("val metadata: %T = when (entity::class.simpleName) {\n", entityMetadataType)
+            .addStatement("val metadata: %T = when (entity::class.simpleName) {",
+                ClassName("com.repzone.database.runtime", "EntityMetadata"))
             .indent()
 
         schemas.filter { !it.isView }.forEach { schema ->
@@ -236,26 +243,28 @@ object RegistryGenerator {
 
         codeBlock.add("else -> throw IllegalArgumentException(\"Unknown entity type: \${entity::class.simpleName}\")\n")
             .unindent()
-            .add("}\n\n")
-            .add("val values = metadata.extractValues(entity)\n")
-            .add("val pk = metadata.primaryKey\n")
-            .add("val sql = \"DELETE FROM \${metadata.tableName} WHERE \${pk.name} = ?\"\n\n")
-            .add("return execute(\n")
+            .addStatement("}")
+            .addStatement("")
+            .addStatement("val values = metadata.extractValues(entity)")
+            .addStatement("val pk = metadata.primaryKey")
+            .addStatement("val sql = \"DELETE FROM \${metadata.tableName} WHERE \${pk.name} = ?\"")
+            .addStatement("")
+            .addStatement("return execute(")
             .indent()
-            .add("identifier = null,\n")
-            .add("sql = sql,\n")
-            .add("parameters = 1\n")
+            .addStatement("identifier = null,")
+            .addStatement("sql = sql,")
+            .addStatement("parameters = 1")
             .unindent()
-            .add(") {\n")
+            .addStatement(") {")
             .indent()
-            .add("%T(this, 1, values[pk.name])\n",
+            .addStatement("%T(this, 0, values[pk.name])",  // 0-based index
                 ClassName("com.repzone.database.runtime", "bindValue"))
             .unindent()
-            .add("}.value.toInt()\n")
+            .addStatement("}.value.toInt()")
 
         return FunSpec.builder("deleteGenerated")
             .receiver(sqlDriverType)
-            .addParameter("entity", Any::class)
+            .addParameter("entity", anyType)
             .returns(Int::class)
             .addCode(codeBlock.build())
             .build()

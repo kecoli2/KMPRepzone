@@ -26,6 +26,7 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.offsetAt
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
+import org.koin.core.logger.Logger
 import kotlin.time.Clock
 
 import kotlin.time.ExperimentalTime
@@ -50,45 +51,6 @@ class CustomerListRepositoryImpl(private val database: AppDatabase,
 
     //region Public Method
     override suspend fun getCustomerList(utcDate: Instant?): List<CustomerItemModel> {
-
-        iDatabaseMAnager.getSqlDriver().newTransaction()
-
-        val allModules = iDatabaseMAnager.getSqlDriver().select<SyncModuleEntity>().toList()
-
-        val top10 = iDatabaseMAnager.getSqlDriver().select<SyncModuleEntity>(){
-            limit(10)
-        }.toList()
-
-        val modules = iDatabaseMAnager.getSqlDriver().select<SyncModuleEntity>(){
-            where {
-                criteria("SyncType", equal = 1)
-            }
-        }.toList()
-
-        val modulesNot = iDatabaseMAnager.getSqlDriver().select<SyncModuleEntity>(){
-            where {
-                criteria("SyncType", notEqual = 1)
-            }
-            orderBy {
-
-            }
-        }.toList()
-
-        val modulesIsNull = iDatabaseMAnager.getSqlDriver().select<SyncModuleEntity>(){
-            where {
-                criteria("SyncType", isNull = false)
-            }
-        }.toList()
-
-        val specificTypes = iDatabaseMAnager.getSqlDriver().select<SyncModuleEntity> {
-            where {
-                criteria("SyncType", In = listOf(1, 2, 3))
-            }
-        }.toList()
-
-
-
-
         val activeStrint = iRouteAppointmentRepository.getActiveSprintInformation()
         val dontShowDatePart = iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.isActive == true && iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FLEXIBLE_DATES
         val onlyParents = iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.isActive == true && iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.groupByParentCustomer == OnOf.ON
