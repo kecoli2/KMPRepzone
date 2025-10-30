@@ -148,64 +148,6 @@ tasks.register("generateDomainModels") {
     }
 }
 
-tasks.register("generateEntityMappers") {
-    group = "generation"
-    description = "Generate entity mappers from SQLDelight entities"
-
-    // SQLDelight generation'dan sonra çalışsın
-    dependsOn("generateCommonMainAppDatabaseInterface")
-
-    doLast {
-        val mapperPackage = "com.repzone.data.mapper"
-        val entityPackage = "com.repzone.database"
-        val modelPackage = "com.repzone.domain.model"
-
-        // SQLDelight'ın generate ettiği Entity'lerin yolu
-        val entityDir = file("build/generated/sqldelight/code/AppDatabase/commonMain/com/repzone/database")
-
-        // Mapper'ların yazılacağı klasör (data modülü altında)
-        val mapperDir = file("data/src/commonMain/kotlin/${mapperPackage.replace('.', '/')}")
-
-        if (!entityDir.exists()) {
-            return@doLast
-        }
-
-        // Mapper klasörünü oluştur
-        mapperDir.mkdirs()
-
-        // Tüm Entity dosyalarını bul ve mapper oluştur
-        entityDir.walkTopDown()
-            .filter { it.isFile && it.extension == "kt" && it.name.endsWith("Entity.kt") }
-            .forEach { entityFile ->
-                // Entity içeriğini oku ve field'ları parse et
-                val entityContent = entityFile.readText()
-                val entityFields = parseEntityFields(entityContent)
-
-                // Entity ve Model isimlerini belirle
-                val entityName = entityFile.nameWithoutExtension // Örn: SyncProductEntity
-                val modelName = entityName.replace("Entity", "Model") // Örn: SyncProductModel
-                val mapperName = entityName.replace("Entity", "EntityDbMapper") // Örn: SyncProductEntityDbMapper
-
-                // Mapper içeriğini oluştur
-                val mapperContent = generateMapper(
-                    mapperName = mapperName,
-                    entityName = entityName,
-                    modelName = modelName,
-                    entityFields = entityFields,
-                    mapperPackage = mapperPackage,
-                    entityPackage = entityPackage,
-                    modelPackage = modelPackage
-                )
-
-                // Mapper dosyasını yaz
-                val mapperFileName = "$mapperName.kt"
-                val mapperFile = File(mapperDir, mapperFileName)
-
-                mapperFile.writeText(mapperContent)
-            }
-    }
-}
-
 tasks.register("generateMapperDI") {
     group = "generation"
     description = "Generate Koin DI definitions for entity mappers"

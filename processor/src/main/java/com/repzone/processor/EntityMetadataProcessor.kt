@@ -110,6 +110,20 @@ class EntityMetadataProcessor(
             }
         }
 
+        // 7. Mappers generate et - YENİ
+        if (schemas.isNotEmpty()) {
+            try {
+                EntityMapperGenerator.generate(
+                    schemas = schemas,
+                    codeGenerator = codeGenerator,
+                    logger = logger
+                )
+                logger.info("Generated entity mappers for ${schemas.size} entities")
+            } catch (e: Exception) {
+                logger.error("Failed to generate mappers: ${e.message}")
+            }
+        }
+
         return emptyList()
     }
 
