@@ -1,6 +1,7 @@
 package com.repzone.presentation.legacy.viewmodel.customerlist
 
 import com.repzone.core.enums.VisitPlanSchedulesType
+import com.repzone.core.interfaces.IPreferencesManager
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
@@ -23,7 +24,8 @@ import kotlin.time.Instant
 class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRepository,
                             private val iModuleParameterRepository: IMobileModuleParameterRepository,
                             private val iSyncManager: ISyncManager,
-                            private var representRepository: IRepresentativeRepository
+                            private var representRepository: IRepresentativeRepository,
+                            private val iPreferencesManager: IPreferencesManager
 ): BaseViewModel<CustomerListScreenUiState, CustomerListViewModel.Event>(CustomerListScreenUiState()) {
     //region Field
     private var searchQuery: String = ""
@@ -97,6 +99,12 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
             is Event.ClearFilters -> {
                 scope.launch {
                     clearFilters()
+                }
+            }
+
+            is Event.LogOut -> {
+                scope.launch {
+                    iPreferencesManager.setActiveUserCode(0)
                 }
             }
         }
@@ -253,6 +261,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         data object RefreshCustomerList : Event()
         data class ApplyFilter(val selectedGroups: List<String>, val sortOption: CustomerSortOption) : Event()
         data object ClearFilters : Event()
+        data object LogOut: Event()
     }
     //endregion Event
 }

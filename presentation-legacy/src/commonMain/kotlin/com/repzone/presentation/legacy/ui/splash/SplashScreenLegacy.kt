@@ -53,7 +53,7 @@ import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_mi
 import repzonemobile.presentation_legacy.generated.resources.img_login_background
 
 @Composable
-fun SplashScreenLegacy(onControllSucces: () -> Unit) = ViewModelHost<SplashScreenViewModel>{ viewModel ->
+fun SplashScreenLegacy(onNavigateToLogin: () -> Unit, onNavigateToMain: () -> Unit) = ViewModelHost<SplashScreenViewModel>{ viewModel ->
     val state by viewModel.state.collectAsState()
     val navController = LocalNavController.current
     val pm = rememberPermissionManager()
@@ -69,20 +69,16 @@ fun SplashScreenLegacy(onControllSucces: () -> Unit) = ViewModelHost<SplashScree
         viewModel.events.collect{ event ->
             when (event){
                 is SplashScreenViewModel.Event.ControllSucces -> {
-                    onControllSucces()
+                    onNavigateToMain()
                 }
                 is SplashScreenViewModel.Event.NavigateToLogin -> {
-                    navController.navigate(LegacyScreen.Login){
-                        popUpTo(LegacyScreen.Splash){
-                            inclusive = true
-                        }
-                    }
+                    onNavigateToLogin()
                 }
 
-                SplashScreenViewModel.Event.PermissionDeniedPermanent -> {
+                is SplashScreenViewModel.Event.PermissionDeniedPermanent -> {
                     showPermDeniedDialog  = true
                 }
-                SplashScreenViewModel.Event.PermissionDeniedTemporary -> {
+                is SplashScreenViewModel.Event.PermissionDeniedTemporary -> {
                     showTempDeniedDialog = true
                 }
             }

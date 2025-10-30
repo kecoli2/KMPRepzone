@@ -34,7 +34,7 @@ class LoginScreenViewModel(
     private val tokenApiController: ITokenApiController,
     private val isharedPreferences: IPreferencesManager,
     private val iDatabaseManager: IDatabaseManager
-) : BaseViewModel<LoginScreenUiState, Nothing>(LoginScreenUiState()) {
+) : BaseViewModel<LoginScreenUiState, LoginScreenViewModel.Event>(LoginScreenUiState()) {
     //region Public Method
     @OptIn(ExperimentalUuidApi::class)
     suspend fun login(email: String, password: String) {
@@ -124,10 +124,10 @@ class LoginScreenViewModel(
                 updateState { currentState ->
                     currentState.copy(
                         uiFrame = UiFrame(), // Reset UiFrame
-                        isLoginSuccessful = true,
                         loadingMessage = Res.string.logging_in
                     )
                 }
+                emitEvent(Event.Login)
             }
             is ApiResult.Error -> {
                 setError(response.exception.message)
@@ -185,4 +185,10 @@ class LoginScreenViewModel(
 
     }
     //endregion
+
+    //region Event
+    sealed class Event {
+        data object Login : Event()
+    }
+    //endregion Event
 }

@@ -221,10 +221,11 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                                         NavigationItemType.GPS_OPERATIONS -> {}
                                         NavigationItemType.NOTIFICATION_HISTORY -> {}
                                         NavigationItemType.ONLINE_CENTER -> {
-                                            //onControllSucces(NavigationItemType.ONLINE_CENTER)
+
                                         }
                                         NavigationItemType.CUSTOMER_NOTES -> {}
                                         NavigationItemType.LOG -> {}
+                                        else -> {}
                                     }
                                 },
                                 icon = {
@@ -262,6 +263,8 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                         onClick = {
                             scope.launch {
                                 drawerState.close()
+                                viewModel.onEvent(CustomerListViewModel.Event.LogOut)
+                                onNavigationDrawer(NavigationItemType.LOGOUT)
                             }
                         },
                         icon = {

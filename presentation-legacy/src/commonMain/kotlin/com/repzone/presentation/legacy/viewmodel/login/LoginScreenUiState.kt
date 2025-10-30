@@ -7,7 +7,6 @@ import repzonemobile.core.generated.resources.logging_in
 
 data class LoginScreenUiState(
     override val uiFrame: UiFrame = UiFrame(),
-    val isLoginSuccessful: Boolean = false,
     val loadingMessage: Any? = Res.string.logging_in,
     val username: String = "trdemouser6@rep.zone",
     val password: String = "Le4g7H") : HasUiFrame {

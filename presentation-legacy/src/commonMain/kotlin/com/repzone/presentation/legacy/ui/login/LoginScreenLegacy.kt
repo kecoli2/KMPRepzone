@@ -39,9 +39,13 @@ fun LoginScreenLegacy(onLoginSuccess: () -> Unit) = ViewModelHost<LoginScreenVie
     val themeManager: ThemeManager = koinInject()
 
     // Success handling
-    LaunchedEffect(state.isLoginSuccessful) {
-        if (state.isLoginSuccessful) {
-            onLoginSuccess()
+    LaunchedEffect(Unit) {
+        viewModel.events.collect { event ->
+            when (event) {
+                is LoginScreenViewModel.Event.Login -> {
+                    onLoginSuccess()
+                }
+            }
         }
     }
 

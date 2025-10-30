@@ -8,5 +8,6 @@ enum class NavigationItemType {
     NOTIFICATION_HISTORY,
     ONLINE_CENTER,
     CUSTOMER_NOTES,
-    LOG
+    LOG,
+    LOGOUT
 }

@@ -19,113 +19,85 @@ import com.repzone.presentation.legacy.ui.splash.SplashScreenLegacy
 import com.repzone.presentation.legacy.ui.sync.SyncScreenLegacy
 
 @Composable
-fun LegacyNavHost(modifier: Modifier = Modifier, navController: NavHostController = rememberNavController()) {
+fun LegacyNavHost(
+    modifier: Modifier = Modifier,
+    navController: NavHostController = rememberNavController()
+) {
     CompositionLocalProvider(LocalNavController provides navController) {
         NavHost(
             navController = navController,
-            startDestination = LegacyScreen.AuthGraph,
+            startDestination = LegacyScreen.AuthGraph,  // 👈 Splash'tan başla
             modifier = modifier.fillMaxSize(),
-            enterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Start,
-                    tween(300)
-                )
-            },
-            exitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.Start,
-                    tween(300)
-                )
-            },
-            popEnterTransition = {
-                slideIntoContainer(
-                    AnimatedContentTransitionScope.SlideDirection.End,
-                    tween(300)
-                )
-            },
-            popExitTransition = {
-                slideOutOfContainer(
-                    AnimatedContentTransitionScope.SlideDirection.End,
-                    tween(300)
-                )
-            }
+            // ... transitions ...
         ) {
-         // ============ AUTH GRAPH ============
-         navigation<LegacyScreen.AuthGraph>(startDestination = LegacyScreen.Splash) {
+
+            // ============ AUTH GRAPH ============
+            navigation<LegacyScreen.AuthGraph>(startDestination = LegacyScreen.Splash  // 👈 Auth graph'ın başlangıcı
+            ) {
                 composable<LegacyScreen.Splash> {
                     SplashScreenLegacy(
-                        onControllSucces = {
-                            // Main graph'a git
-                            navController.navigate(LegacyScreen.Sync) {
-                                popUpTo<LegacyScreen.AuthGraph> { inclusive = false }
+                        onNavigateToLogin = {
+                            navController.navigate(LegacyScreen.Login) {
+                                popUpTo(LegacyScreen.Splash) { inclusive = true }
+                            }
+                        },
+                        onNavigateToMain = {
+                            navController.navigate(LegacyScreen.MainGraph) {
+                                popUpTo(LegacyScreen.AuthGraph) { inclusive = true }
                             }
                         }
                     )
                 }
+
                 composable<LegacyScreen.Login> {
                     LoginScreenLegacy(
                         onLoginSuccess = {
-                            // Main graph'a git
-                            navController.navigate(LegacyScreen.Sync) {
-                                popUpTo<LegacyScreen.AuthGraph> { inclusive = true }
+                            // Login başarılı → Main graph'a git
+                            navController.navigate(LegacyScreen.MainGraph) {
+                                popUpTo(LegacyScreen.AuthGraph) { inclusive = true }
+                            }
+                        }
+                    )
+                }
+            }
+
+            // ============ MAIN APP GRAPH ============
+            navigation<LegacyScreen.MainGraph>(startDestination = LegacyScreen.Sync) {
+                composable<LegacyScreen.Sync> {
+                    SyncScreenLegacy(
+                        onSyncCompleted = {
+                            navController.navigate(LegacyScreen.CustomerList) {
+                                popUpTo(LegacyScreen.Sync) { inclusive = true }
                             }
                         }
                     )
                 }
 
-             composable<LegacyScreen.Sync> {
-                 SyncScreenLegacy(
-                     onSyncCompleted = {
-                         navController.navigate(LegacyScreen.CustomerList) {
-                             popUpTo<LegacyScreen.Sync> { inclusive = true }
-                         }
-                     }
-                 )
-             }
-         }
+                composable<LegacyScreen.CustomerList> {
+                    CustomerListScreenLegacy({ type ->
+                        when(type) {
+                            NavigationItemType.GENERAL_SETTINGS -> {
+                                navController.navigate(LegacyScreen.SettingsScreen)
+                            }
 
-         // ============ MAIN APP GRAPH ============
-         navigation<LegacyScreen.MainGraph>(startDestination = LegacyScreen.CustomerList) {
-               composable<LegacyScreen.CustomerList> {
-                     CustomerListScreenLegacy({ type ->
-                         when(type) {
-                             NavigationItemType.GENERAL_SETTINGS -> {
-                                 navController.navigate(LegacyScreen.SettingsScreen) {
-                                     popUpTo<LegacyScreen.Sync> { inclusive = false }
-                                 }
-                             }
-                             NavigationItemType.SHARED_DOCUMENT -> {
-                                 TODO()
-                             }
-                             NavigationItemType.DAILY_OPERATIONS -> {
-                                 TODO()
-                             }
-                             NavigationItemType.GPS_OPERATIONS -> {
-                                 TODO()
-                             }
-                             NavigationItemType.NOTIFICATION_HISTORY -> {
-                                 TODO()
-                             }
-                             NavigationItemType.ONLINE_CENTER -> {
+                            NavigationItemType.LOGOUT -> {
+                                navController.navigate(LegacyScreen.Login) {
+                                    // Tüm back stack'i temizle
+                                    popUpTo(0) { inclusive = true }
+                                }
+                            }
 
-                             }
-                             NavigationItemType.CUSTOMER_NOTES -> {
-                                 TODO()
-                             }
-                             NavigationItemType.LOG -> {
-                                 TODO()
-                             }
-                         }
-                     })
-               }
+                            else -> { /* TODO */ }
+                        }
+                    })
+                }
 
-             composable<LegacyScreen.SettingsScreen>{
-                 SettingsScreen{
-                     navController.popBackStack()
-                 }
-             }
-
-         }
+                composable<LegacyScreen.SettingsScreen> {
+                    SettingsScreen {
+                        navController.navigateUp()
+                    }
+                }
+            }
         }
     }
 }
