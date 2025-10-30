@@ -258,6 +258,20 @@ class DatabaseTest(private val driver: SqlDriver) {
             where { criteria("SyncType", In = listOf(10, 11, 12, 13, 14)) }
         }
 
+        val sss = driver.select<SyncModuleEntity> {
+            where {
+                or {
+
+                }
+                and {
+
+                }
+
+
+                criteria("SyncType", In = listOf(10, 11, 12, 13, 14))
+            }
+        }
+
         verify(count == BATCH_TEST_ENTITIES.size.toLong(),
             "Expected ${BATCH_TEST_ENTITIES.size} entities, got $count")
 

@@ -603,7 +603,7 @@ class SyncModuleEntitySamples(private val driver: SqlDriver) {
         // 100'er 100'er ekle
         val ids = driver.batchInsertChunked(
             entities = largeList,
-            chunkSize = 100
+            chunkSize = 1000
         )
 
         println("Inserted ${ids.size} modules in chunks")

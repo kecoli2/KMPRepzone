@@ -47,7 +47,7 @@ fun <T : Any> SqlDriver.batchInsert(entities: List<T>): List<Long> {
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()
         SqlQueryLogger.logBatch("INSERT", metadata.tableName, entities.size)
-        SqlQueryLogger.logRawQuery(sql, allValues)
+        //SqlQueryLogger.logRawQuery(sql, allValues)
 
         // Tek execute ile tüm kayıtları ekle
         execute(
@@ -111,7 +111,7 @@ fun <T : Any> SqlDriver.batchInsertOrReplace(entities: List<T>): List<Long> {
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()
         SqlQueryLogger.logBatch("INSERT OR REPLACE", metadata.tableName, entities.size)
-        SqlQueryLogger.logRawQuery(sql, allValues)
+        //SqlQueryLogger.logRawQuery(sql, allValues)
 
         execute(
             identifier = null,

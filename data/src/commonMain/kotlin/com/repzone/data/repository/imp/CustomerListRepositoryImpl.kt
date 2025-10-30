@@ -56,6 +56,9 @@ class CustomerListRepositoryImpl(private val database: AppDatabase,
         val dbTest = DatabaseTest(iDatabaseMAnager.getSqlDriver())
         dbTest.runAllTests()
 
+        val sdsd = SyncModuleEntitySamples(iDatabaseMAnager.getSqlDriver())
+        sdsd.chunkedBatchInsert()
+
         val activeStrint = iRouteAppointmentRepository.getActiveSprintInformation()
         val dontShowDatePart = iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.isActive == true && iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FLEXIBLE_DATES
         val onlyParents = iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.isActive == true && iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.groupByParentCustomer == OnOf.ON
