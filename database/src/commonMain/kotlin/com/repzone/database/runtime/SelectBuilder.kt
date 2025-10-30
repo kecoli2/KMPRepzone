@@ -4,9 +4,19 @@ import app.cash.sqldelight.db.SqlDriver
 
 class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver: SqlDriver) {
     var whereCondition: Condition = NoCondition
-    internal var orderSpecs: List<OrderSpec> = emptyList()
-    internal var groupByBuilder: GroupByBuilder? = null
-    internal var limitValue: Int? = null
+        internal set
+
+    var orderSpecs = mutableListOf<OrderSpec>()
+        internal set
+
+    var limitValue: Int? = null
+        internal set
+
+    var offsetValue: Int? = null  // YENİ
+        internal set
+
+    var groupByBuilder: GroupByBuilder? = null
+        internal set
 
     fun where(block: CriteriaBuilder.() -> Unit) {
         val builder = CriteriaBuilder()
@@ -17,12 +27,16 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
     fun orderBy(block: OrderByBuilder.() -> Unit) {
         val builder = OrderByBuilder()
         builder.block()
-        orderSpecs = builder.build()
+        orderSpecs = builder.orderSpecs
     }
 
     fun limit(count: Int) {
         require(count > 0) { "Limit must be positive" }
         limitValue = count
+    }
+
+    fun offset(count: Int) {
+        offsetValue = count
     }
 
     fun groupBy(block: GroupByBuilder.() -> Unit) {
@@ -71,6 +85,9 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
         // Build LIMIT clause
         val limitClause = limitValue?.let { " LIMIT $it" } ?: ""
 
+        // Build OFFSET clause - YENİ
+        val offsetClause = offsetValue?.let { " OFFSET $it" } ?: ""
+
         // Final SQL
         val sql = "SELECT ${metadata.columns.joinToString(", ") { it.name }} " +
                 "FROM ${metadata.tableName}" +
@@ -78,7 +95,8 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
                 groupByClause +
                 havingClause +
                 orderByClause +
-                limitClause
+                limitClause +
+                offsetClause
 
         // Execute and collect results
         val results = mutableListOf<T>()
@@ -169,7 +187,7 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
 }
 
 // SQLDelight Cursor wrapper
-private class SqlDelightCursor(
+class SqlDelightCursor(
     private val cursor: app.cash.sqldelight.db.SqlCursor
 ) : Cursor {
     override fun getString(index: Int): String? = cursor.getString(index)

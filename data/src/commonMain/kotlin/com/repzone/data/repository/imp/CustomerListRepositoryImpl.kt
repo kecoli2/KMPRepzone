@@ -50,6 +50,9 @@ class CustomerListRepositoryImpl(private val database: AppDatabase,
 
     //region Public Method
     override suspend fun getCustomerList(utcDate: Instant?): List<CustomerItemModel> {
+
+        iDatabaseMAnager.getSqlDriver().newTransaction()
+
         val allModules = iDatabaseMAnager.getSqlDriver().select<SyncModuleEntity>().toList()
 
         val top10 = iDatabaseMAnager.getSqlDriver().select<SyncModuleEntity>(){

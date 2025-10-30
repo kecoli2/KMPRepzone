@@ -11,16 +11,14 @@ data class OrderSpec(
 )
 
 class OrderByBuilder {
-    private val orders = mutableListOf<OrderSpec>()
+    internal val orderSpecs = mutableListOf<OrderSpec>()  // Bu satır var mı?
 
     fun order(field: String, desc: Boolean = false) {
-        orders.add(
+        orderSpecs.add(
             OrderSpec(
                 field = field,
                 direction = if (desc) OrderDirection.DESC else OrderDirection.ASC
             )
         )
     }
-
-    internal fun build(): List<OrderSpec> = orders
 }

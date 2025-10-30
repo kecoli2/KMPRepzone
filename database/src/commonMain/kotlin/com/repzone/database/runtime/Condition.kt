@@ -4,126 +4,76 @@ sealed interface Condition {
     fun toSQL(params: MutableList<Any?>): String
 }
 
-// Basit condition'lar
-data class Equals(val column: String, val value: Any?) : Condition {
-    override fun toSQL(params: MutableList<Any?>): String {
-        return if (value == null) {
-            "$column IS NULL"
-        } else {
-            params.add(value)
-            "$column = ?"
-        }
-    }
-}
-
-data class NotEquals(val column: String, val value: Any?) : Condition {
-    override fun toSQL(params: MutableList<Any?>): String {
-        return if (value == null) {
-            "$column IS NOT NULL"
-        } else {
-            params.add(value)
-            "$column != ?"
-        }
-    }
-}
-
-data class Like(val column: String, val pattern: String) : Condition {
-    override fun toSQL(params: MutableList<Any?>): String {
-        params.add(pattern)
-        return "$column LIKE ?"
-    }
-}
-
-data class In(val column: String, val values: List<Any?>) : Condition {
-    override fun toSQL(params: MutableList<Any?>): String {
-        if (values.isEmpty()) {
-            return "1 = 0" // Always false
-        }
-        val placeholders = values.joinToString(", ") {
-            params.add(it)
-            "?"
-        }
-        return "$column IN ($placeholders)"
-    }
-}
-
-data class NotIn(val column: String, val values: List<Any?>) : Condition {
-    override fun toSQL(params: MutableList<Any?>): String {
-        if (values.isEmpty()) {
-            return "1 = 1" // Always true
-        }
-        val placeholders = values.joinToString(", ") {
-            params.add(it)
-            "?"
-        }
-        return "$column NOT IN ($placeholders)"
-    }
-}
-
-data class GreaterThan(val column: String, val value: Any) : Condition {
-    override fun toSQL(params: MutableList<Any?>): String {
-        params.add(value)
-        return "$column > ?"
-    }
-}
-
-data class LessThan(val column: String, val value: Any) : Condition {
-    override fun toSQL(params: MutableList<Any?>): String {
-        params.add(value)
-        return "$column < ?"
-    }
-}
-
-data class GreaterThanOrEqual(val column: String, val value: Any) : Condition {
-    override fun toSQL(params: MutableList<Any?>): String {
-        params.add(value)
-        return "$column >= ?"
-    }
-}
-
-data class LessThanOrEqual(val column: String, val value: Any) : Condition {
-    override fun toSQL(params: MutableList<Any?>): String {
-        params.add(value)
-        return "$column <= ?"
-    }
-}
-
-data class IsNull(val column: String) : Condition {
-    override fun toSQL(params: MutableList<Any?>): String {
-        return "$column IS NULL"
-    }
-}
-
-data class IsNotNull(val column: String) : Condition {
-    override fun toSQL(params: MutableList<Any?>): String {
-        return "$column IS NOT NULL"
-    }
-}
-
-// Gruplar
-data class AndGroup(val conditions: List<Condition>) : Condition {
-    override fun toSQL(params: MutableList<Any?>): String {
-        if (conditions.isEmpty()) return "1 = 1"
-        if (conditions.size == 1) return conditions[0].toSQL(params)
-
-        return conditions.joinToString(" AND ", prefix = "(", postfix = ")") {
-            it.toSQL(params)
-        }
-    }
-}
-
-data class OrGroup(val conditions: List<Condition>) : Condition {
-    override fun toSQL(params: MutableList<Any?>): String {
-        if (conditions.isEmpty()) return "1 = 0"
-        if (conditions.size == 1) return conditions[0].toSQL(params)
-
-        return conditions.joinToString(" OR ", prefix = "(", postfix = ")") {
-            it.toSQL(params)
-        }
-    }
-}
-
-// Empty condition (no WHERE clause)
 object NoCondition : Condition {
-    override fun toSQL(params: MutableList<Any?>): String = "1 = 1"
+    override fun toSQL(params: MutableList<Any?>): String = ""
+}
+
+data class FieldCondition(val field: String, val operator: String, val value: Any?) : Condition {
+    override fun toSQL(params: MutableList<Any?>): String {
+        return when (operator) {
+            "IS NULL", "IS NOT NULL" -> "$field $operator"
+            else -> {
+                params.add(value)
+                "$field $operator ?"
+            }
+        }
+    }
+}
+
+data class InCondition(val field: String, val values: List<Any>, val isNotIn: Boolean = false) : Condition {
+    override fun toSQL(params: MutableList<Any?>): String {
+        if (values.isEmpty()) {
+            return if (isNotIn) "1=1" else "1=0"
+        }
+
+        val placeholders = values.joinToString(", ") { "?" }
+        params.addAll(values)
+
+        val operator = if (isNotIn) "NOT IN" else "IN"
+        return "$field $operator ($placeholders)"
+    }
+}
+data class BetweenCondition(val field: String, val start: Any, val end: Any) : Condition {
+    override fun toSQL(params: MutableList<Any?>): String {
+        params.add(start)
+        params.add(end)
+        return "$field BETWEEN ? AND ?"
+    }
+}
+
+data class NotCondition(val condition: Condition) : Condition {
+    override fun toSQL(params: MutableList<Any?>): String {
+        val sql = condition.toSQL(params)
+        return if (sql.isNotEmpty()) "NOT ($sql)" else ""
+    }
+}
+
+data class AndCondition(val conditions: List<Condition>) : Condition {
+    override fun toSQL(params: MutableList<Any?>): String {
+        val sqlParts = conditions.mapNotNull { condition ->
+            val sql = condition.toSQL(params)
+            if (sql.isNotEmpty()) sql else null
+        }
+
+        return if (sqlParts.isNotEmpty()) {
+            sqlParts.joinToString(" AND ", "(", ")")
+        } else {
+            ""
+        }
+    }
+}
+
+data class OrCondition(val conditions: List<Condition>) : Condition {
+    override fun toSQL(params: MutableList<Any?>): String {
+        val sqlParts = conditions.mapNotNull { condition ->
+            val sql = condition.toSQL(params)
+            if (sql.isNotEmpty()) sql else null
+        }
+
+        return if (sqlParts.isNotEmpty()) {
+            sqlParts.joinToString(" OR ", "(", ")")
+        } else {
+            ""
+        }
+    }
 }
