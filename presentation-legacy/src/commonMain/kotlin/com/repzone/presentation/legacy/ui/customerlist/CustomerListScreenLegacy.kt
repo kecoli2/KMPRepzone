@@ -91,6 +91,9 @@ import coil3.compose.AsyncImage
 import com.repzone.core.constant.CdnConfig
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.base.ViewModelHost
+import com.repzone.core.ui.component.RepzoneTopAppBar
+import com.repzone.core.ui.component.TopBarAction
+import com.repzone.core.ui.component.TopBarLeftIcon
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.ui.model.NavigationItem
@@ -115,6 +118,7 @@ import repzonemobile.core.generated.resources.eagleeyelogstitle
 import repzonemobile.core.generated.resources.exit
 import repzonemobile.core.generated.resources.generalsettings
 import repzonemobile.core.generated.resources.image_not_found
+import repzonemobile.core.generated.resources.img_generic_logo_min
 import repzonemobile.core.generated.resources.notificationlogpagetitle
 import repzonemobile.core.generated.resources.onlinehubtitle
 import repzonemobile.core.generated.resources.profile
@@ -125,7 +129,6 @@ import repzonemobile.core.generated.resources.routesearchcustomer
 import repzonemobile.core.generated.resources.routetoday
 import repzonemobile.core.generated.resources.routetomorrow
 import repzonemobile.presentation_legacy.generated.resources.Res
-import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_min
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -292,70 +295,28 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                     .padding(paddingValues)
             ) {
                 // Custom Top Bar
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    color = themeManager.getCurrentColorScheme().colorPalet.secondary20,
-                    shadowElevation = 4.dp
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(64.dp)
-                            .padding(horizontal = 4.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        // Sol taraf - Hamburger Menu
-                        IconButton(onClick = {
+                RepzoneTopAppBar(modifier = Modifier,
+                    themeManager = themeManager,
+                    leftIconType = TopBarLeftIcon.Menu(
+                        onClick = {
                             scope.launch {
-                                if (drawerState.isClosed) {
-                                    drawerState.open()
-                                } else {
-                                    drawerState.close()
-                                }
-                            }
-                        }) {
-                            Icon(
-                                Icons.Default.Menu,
-                                contentDescription = "Menu",
-                                tint = Color.White
-                            )
-                        }
-
-                        // Orta - Logo (weight ile tam ortada)
-                        Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
-                            Surface(modifier = Modifier, color = Color.Transparent) {
-                                Box(
-                                    modifier = Modifier.fillMaxSize(),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Image(
-                                        painter = painterResource(Res.drawable.img_generic_logo_min),
-                                        contentDescription = null,
-                                        modifier = Modifier.matchParentSize(),
-                                        contentScale = ContentScale.Inside
-                                    )
-                                }
+                                if (drawerState.isClosed) drawerState.open()
+                                else drawerState.close()
                             }
                         }
+                    ),
+                    rightIcons = listOf(
+                        TopBarAction(Icons.Default.Timer, "Timer", Color.White,{
 
-                        // Sağ taraf - 2 buton sonrasında ... nokta menu
-                        IconButton(onClick = {
-                            println("Notifications clicked")
-                        }) {
-                            Icon(Icons.Default.Timer, contentDescription = "Notifications", tint = Color.White)
-                        }
-                        IconButton(onClick = {
-                            println("Profile clicked")
-                        }) {
-                            Icon(Icons.Default.Map, contentDescription = "Profile", tint = Color.White)
-                        }
-                        IconButton(onClick = {
+                        }),
+                        TopBarAction(Icons.Default.Map, "Map",Color.White, {
+
+                        }),
+                        TopBarAction(Icons.Default.Sync, "Timer",Color.White, {
                             viewModel.onEvent(event = CustomerListViewModel.Event.StartSync)
-                        }) {
-                            Icon(Icons.Default.Sync, contentDescription = "Sync", tint = Color.White)
-                        }
-                    }
-                }
+                        }),
+                    ),
+                )
                 if(uiState.isSyncInProgress){
                     LinearProgressIndicator(
                         modifier = Modifier
@@ -498,7 +459,7 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                                 modifier = Modifier.fillMaxWidth().height(180.dp),
                                 color = themeManager.getCurrentColorScheme().colorPalet.primary60
                             ) {
-                                CustomerSummary(representSummary, themeManager)
+                                RepresentSummary(representSummary, themeManager)
                             }
                         }
                     }

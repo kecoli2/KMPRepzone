@@ -5,6 +5,7 @@ import com.repzone.core.config.BuildConfig
 import com.repzone.database.AppDatabase
 import com.repzone.database.driver.LoggingDriver
 import com.repzone.database.impl.DatabaseManagerImpl
+import com.repzone.database.impl.DatabaseManagerPreview
 import com.repzone.database.interfaces.IDatabaseManager
 import kotlinx.coroutines.runBlocking
 import org.koin.dsl.module
@@ -38,8 +39,9 @@ val DatabaseModule = module {
 }
 
 val DatabaseModulePreview = module {
-    single { AppDatabase(get<SqlDriver>()) }
 
+    single { AppDatabase(get<SqlDriver>()) }
+    single<IDatabaseManager>{ DatabaseManagerPreview(get(), get()) }
     // Queryler
     single { get<AppDatabase>().syncCustomerEntityQueries }
     single { get<AppDatabase>().syncProductEntityQueries }

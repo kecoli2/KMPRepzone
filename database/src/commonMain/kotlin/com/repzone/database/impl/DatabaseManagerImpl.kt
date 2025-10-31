@@ -75,3 +75,26 @@ class DatabaseManagerImpl(private val driverFactory: DatabaseDriverFactory,
     }
     //endregion
 }
+
+class DatabaseManagerPreview(private val database: AppDatabase, private val sqlDriver: SqlDriver): IDatabaseManager{
+    override suspend fun getDatabase(): AppDatabase {
+        return database
+    }
+
+    override suspend fun switchUser(userId: Int) {
+
+    }
+
+    override suspend fun logout() {
+
+    }
+
+    override suspend fun deleteUserData(userId: Int) {
+
+    }
+
+    override suspend fun getSqlDriver(): SqlDriver {
+        return sqlDriver
+    }
+
+}

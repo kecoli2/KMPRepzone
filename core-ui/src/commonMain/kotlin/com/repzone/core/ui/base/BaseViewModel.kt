@@ -95,6 +95,7 @@ fun <S> BaseViewModel<S, *>.setLoading(isLoading: Boolean)
 /**
  * HasUiFrame implement eden state'ler için error durumunu ayarlar
  */
+@Suppress("UNCHECKED_CAST")
 fun <S> BaseViewModel<S, *>.setError(error: String?)
         where S : Any, S : HasUiFrame {
     updateStateInternal { currentState ->

@@ -28,7 +28,6 @@ import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.offsetAt
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
-import org.koin.core.logger.Logger
 import kotlin.time.Clock
 
 import kotlin.time.ExperimentalTime
@@ -53,12 +52,6 @@ class CustomerListRepositoryImpl(private val database: AppDatabase,
 
     //region Public Method
     override suspend fun getCustomerList(utcDate: Instant?): List<CustomerItemModel> {
-        val dbTest = DatabaseTest(iDatabaseMAnager.getSqlDriver())
-        dbTest.runAllTests()
-
-        val sdsd = SyncModuleEntitySamples(iDatabaseMAnager.getSqlDriver())
-        sdsd.chunkedBatchInsert()
-
         val activeStrint = iRouteAppointmentRepository.getActiveSprintInformation()
         val dontShowDatePart = iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.isActive == true && iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.visitPlanSchedules == VisitPlanSchedulesType.FLEXIBLE_DATES
         val onlyParents = iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.isActive == true && iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.groupByParentCustomer == OnOf.ON

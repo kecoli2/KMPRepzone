@@ -49,7 +49,8 @@ import com.repzone.presentation.legacy.navigation.LocalNavController
 import com.repzone.core.ui.viewmodel.splash.SplashScreenViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
-import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_min
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.img_generic_logo_min
 import repzonemobile.presentation_legacy.generated.resources.img_login_background
 
 @Composable
@@ -101,7 +102,7 @@ fun SplashScreenLegacy(onNavigateToLogin: () -> Unit, onNavigateToMain: () -> Un
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(repzonemobile.presentation_legacy.generated.resources.Res.drawable.img_generic_logo_min),
+                painter = painterResource(Res.drawable.img_generic_logo_min),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth(1f)

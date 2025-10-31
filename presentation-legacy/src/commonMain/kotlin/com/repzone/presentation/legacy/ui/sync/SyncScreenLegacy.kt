@@ -36,10 +36,10 @@ import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.util.getProgressPercentage
 import org.jetbrains.compose.resources.painterResource
 import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.img_generic_logo_min
 import repzonemobile.core.generated.resources.running
 import repzonemobile.core.generated.resources.sync_complete
 import repzonemobile.core.generated.resources.waiting
-import repzonemobile.presentation_legacy.generated.resources.img_generic_logo_min
 import repzonemobile.presentation_legacy.generated.resources.img_login_background
 
 
@@ -82,7 +82,7 @@ fun SyncScreenLegacy(onSyncCompleted: () -> Unit) = ViewModelHost<SyncViewModel>
             verticalArrangement = Arrangement.Center
         ) {
             Image(
-                painter = painterResource(repzonemobile.presentation_legacy.generated.resources.Res.drawable.img_generic_logo_min),
+                painter = painterResource(Res.drawable.img_generic_logo_min),
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxWidth(0.6f)

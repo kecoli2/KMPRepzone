@@ -1,3 +1,5 @@
+@file:OptIn(ExperimentalTime::class)
+
 package com.repzone.mobile
 
 import android.content.res.Configuration
@@ -9,9 +11,11 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.lifecycleScope
@@ -24,6 +28,7 @@ import com.repzone.core.ui.ui.settings.SettingsScreen
 import com.repzone.data.di.RepositoryModulePreview
 import com.repzone.database.di.DatabaseAndroidPreviewModule
 import com.repzone.database.di.DatabaseModulePreview
+import com.repzone.domain.model.CustomerItemModel
 import com.repzone.mobile.di.AndroidDIModulePreview
 import com.repzone.mobile.di.FirebaseMockAndroidModule
 import com.repzone.navigation.AppRouter
@@ -31,6 +36,8 @@ import com.repzone.network.di.NetworkModule
 import com.repzone.network.di.PlatformNetworkModule
 import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
+import com.repzone.presentation.legacy.ui.actionmenulist.CustomerSummary
+import com.repzone.presentation.legacy.ui.customerlist.CustomerCard
 import com.repzone.presentation.legacy.ui.customerlist.CustomerListScreenLegacy
 import com.repzone.sync.di.SyncModule
 import kotlinx.coroutines.launch
@@ -40,6 +47,7 @@ import org.koin.compose.koinInject
 import org.koin.core.context.GlobalContext.startKoin
 import org.koin.core.context.loadKoinModules
 import java.util.Locale
+import kotlin.time.ExperimentalTime
 
 class MainActivity : AppCompatActivity() {
     private val themeManager: ThemeManager by inject()
@@ -81,7 +89,7 @@ class MainActivity : AppCompatActivity() {
 private fun AppContent() {
     val themeManager: ThemeManager = koinInject()
     val currentLanguage by themeManager.currentLanguage.collectAsState()
-    androidx.compose.runtime.key(currentLanguage) {
+    key(currentLanguage) {
         AppTheme(themeManager = themeManager) {
             AppRouter()
         }
@@ -115,6 +123,36 @@ fun AppAndroidPreview() {
     var selectedGroups by remember { mutableStateOf<List<String>>(emptyList()) }
 
     AppTheme(themeManager) {
-        SettingsScreen()
+        /*CustomerCard(customer = CustomerItemModel(
+            customerId = 1,
+            visitId = 1,
+            iconIndex = null,
+            finishDate = null,
+            appointmentId = 1,
+            date = null,
+            tagRaw = null,
+            name = "Salih Yücel",
+            customerCode = "1",
+            customerGroupName = "Migros",
+            address = "TODO()",
+            latitude = null,
+            longitude = null,
+            addressType = null,
+            imageUri = null,
+            parentCustomerId = 1,
+            endDate = null,
+            customerBlocked = 1,
+            sprintId = 1,
+            dontShowDatePart = false,
+            swipeEnabled = false,
+            showCalendarInfo = false,
+            showDisplayClock = false,
+            displayOrder = 1,
+            showDisplayOrder = false,
+        ), modifier = Modifier ,themeManager = themeManager)*/
+        //CustomerSummary(null, themeManager)
+        CustomerListScreenLegacy {
+
+        }
     }
 }

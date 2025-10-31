@@ -39,7 +39,7 @@ data class SliderItem(
 )
 
 @Composable
-fun CustomerSummary(representSummary: RepresentSummary, themeManager: ThemeManager) {
+fun RepresentSummary(representSummary: RepresentSummary, themeManager: ThemeManager) {
     var selectedIndex by remember { mutableStateOf(0) }
     var dragOffset by remember { mutableStateOf(0f) }
 
