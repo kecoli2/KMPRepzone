@@ -7,16 +7,9 @@ import com.repzone.core.util.extensions.addDays
 import com.repzone.core.util.extensions.now
 import com.repzone.core.util.extensions.toInstant
 import com.repzone.core.util.extensions.toLong
-import com.repzone.data.sample.DatabaseTest
-import com.repzone.data.sample.SyncModuleEntitySamples
 import com.repzone.data.util.Mapper
-import com.repzone.data.util.toDomainList
-import com.repzone.database.AppDatabase
 import com.repzone.database.CustomerItemViewEntity
-import com.repzone.database.SyncModuleEntity
-import com.repzone.database.SyncModuleEntityMetadata
 import com.repzone.database.interfaces.IDatabaseManager
-import com.repzone.database.runtime.select
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.IEventReasonRepository
@@ -29,17 +22,15 @@ import kotlinx.datetime.offsetAt
 import kotlinx.datetime.plus
 import kotlinx.datetime.toLocalDateTime
 import kotlin.time.Clock
-
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-class CustomerListRepositoryImpl(private val database: AppDatabase,
-                                 private val iMobileModuleParameter: IMobileModuleParameterRepository,
+class CustomerListRepositoryImpl(private val iMobileModuleParameter: IMobileModuleParameterRepository,
                                  private val iRouteAppointmentRepository: IRouteAppointmentRepository,
                                  private val iEventReasonRepository: IEventReasonRepository,
                                  private val mapper: Mapper<CustomerItemViewEntity, CustomerItemModel>,
-                                 private val iDatabaseMAnager: IDatabaseManager
+                                 private val iDatabaseManager: IDatabaseManager
 ): ICustomerListRepository {
     //region Field
     //endregion
@@ -57,7 +48,7 @@ class CustomerListRepositoryImpl(private val database: AppDatabase,
         val onlyParents = iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.isActive == true && iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.groupByParentCustomer == OnOf.ON
         val swipeEnable = iEventReasonRepository.getEventReasonList(RepresentativeEventReasonType.NOVISIT).count() > 0
 
-        var listModel = database.customerItemViewEntityQueries.selectCustomerItemViewEntity(activeStrint?.id?.toLong(), onlyParents.toLong()).executeAsList().map {
+        var listModel = iDatabaseManager.getDatabase().customerItemViewEntityQueries.selectCustomerItemViewEntity(activeStrint?.id?.toLong(), onlyParents.toLong()).executeAsList().map {
             val domain = mapper.toDomain(it)
             domain.copy(
                 dontShowDatePart = dontShowDatePart,

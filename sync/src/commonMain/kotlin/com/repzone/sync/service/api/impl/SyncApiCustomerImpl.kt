@@ -1,6 +1,8 @@
 package com.repzone.sync.service.api.impl
 
+import com.repzone.core.util.extensions.toDateString
 import com.repzone.domain.model.SyncModuleModel
+import com.repzone.network.dto.CrmPriceListParameterDto
 import com.repzone.network.dto.CustomerDto
 import com.repzone.network.http.extensions.safePost
 import com.repzone.network.http.wrapper.ApiResult
@@ -8,15 +10,12 @@ import com.repzone.network.models.request.FilterModelRequest
 import com.repzone.sync.service.api.base.BaseSyncApiService
 import io.ktor.client.HttpClient
 import io.ktor.client.request.setBody
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class SyncApiCustomerImpl(client: HttpClient) : BaseSyncApiService<List<CustomerDto>>(client) {
 
     //region Public Method
-
-    override fun extractLastId(data: List<CustomerDto>): Int {
-        return data.lastOrNull()?.id ?: 0
-    }
-
     override fun getDataSize(data: List<CustomerDto>): Int {
         return data.size
     }
@@ -24,6 +23,13 @@ class SyncApiCustomerImpl(client: HttpClient) : BaseSyncApiService<List<Customer
     override suspend fun performApiCall(model: SyncModuleModel, requestModel: FilterModelRequest?): ApiResult<List<CustomerDto>> {
         return client.safePost<List<CustomerDto>>(model.requestUrl!!) {
             setBody(requestModel)
+        }
+    }
+
+    override fun onPageFetched(data: List<CustomerDto>, requestModel: FilterModelRequest?) {
+        data.lastOrNull().let {
+            requestModel?.lastModDate = it?.modificationDateUtc?.toEpochMilliseconds()?.toDateString("yyyy-MM-dd HH:mm:ss.fff") ?: ""
+            requestModel?.lastId = it?.id ?: 0
         }
     }
     //endregion

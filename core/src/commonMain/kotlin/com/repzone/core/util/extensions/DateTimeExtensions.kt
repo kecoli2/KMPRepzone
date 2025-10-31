@@ -167,6 +167,16 @@ fun Long.toDateString(
             append(local.minute.toString().padStart(2, '0'))
         }
 
+        "yyyy-MM-dd HH:mm:ss.fff" -> buildString {
+            append(local.year); append("-")
+            append(local.month.number.toString().padStart(2, '0')); append("-")
+            append(local.day.toString().padStart(2, '0')); append(" ")
+            append(local.hour.toString().padStart(2, '0')); append(":")
+            append(local.minute.toString().padStart(2, '0')); append(":")
+            append(local.second.toString().padStart(2, '0')); append(".")
+            append(local.nanosecond.div(1_000_000).toString().padStart(3, '0'))
+        }
+
         else -> local.toString()
     }
 }

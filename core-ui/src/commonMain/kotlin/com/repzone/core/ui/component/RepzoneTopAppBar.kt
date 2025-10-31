@@ -151,9 +151,9 @@ fun RepzoneTopAppBar(
             }
 
             // Eğer 3'ten az ikon varsa boşluk ekle (dengelemek için)
-            repeat(3 - minOf(rightIcons.size, 3)) {
+            /*repeat(3 - minOf(rightIcons.size, 3)) {
                 Spacer(modifier = Modifier.width(48.dp))
-            }
+            }*/
         }
     }
 }

@@ -29,7 +29,7 @@ import org.koin.dsl.module
 val SyncModule = module {
     single<ISyncFactory> { SyncJobFactory(get()) }
 
-    single { TransactionCoordinator(get(), get()) }
+    single { TransactionCoordinator(get()) }
 
     //region GENERAL
     single<ISyncManager>{ SyncManagerImpl(get(), iUserSession = get()) }

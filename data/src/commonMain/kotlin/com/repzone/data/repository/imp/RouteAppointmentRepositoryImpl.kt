@@ -1,10 +1,10 @@
 package com.repzone.data.repository.imp
 
-import com.repzone.database.AppDatabase
+import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.domain.repository.IRouteAppointmentRepository
 import com.repzone.domain.util.models.SprintInformation
 
-class RouteAppointmentRepositoryImpl(private val database: AppDatabase): IRouteAppointmentRepository {
+class RouteAppointmentRepositoryImpl(private val databaseManager: IDatabaseManager): IRouteAppointmentRepository {
     //region Field
     //endregion
 
@@ -15,11 +15,11 @@ class RouteAppointmentRepositoryImpl(private val database: AppDatabase): IRouteA
     //endregion
 
     //region Public Method
-    override fun getActiveSprintInformation(): SprintInformation {
+    override suspend fun getActiveSprintInformation(): SprintInformation {
         var maxId = 0
         var minRec: Long? = 0L
         var maxRec: Long? = 0L
-        val list = database.syncRouteAppointmentEntityQueries.selectByMaxSprintIdOrderStartDate().executeAsList()
+        val list = databaseManager.getDatabase().syncRouteAppointmentEntityQueries.selectByMaxSprintIdOrderStartDate().executeAsList()
 
         if(list.isNotEmpty()){
             maxId = list.first().SprintId?.toInt() ?: 0

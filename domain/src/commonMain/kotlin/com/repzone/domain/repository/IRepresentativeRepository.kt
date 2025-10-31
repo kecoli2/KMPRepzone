@@ -7,5 +7,5 @@ import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 interface IRepresentativeRepository {
-    fun getSummary(date: Instant?, routes: List<CustomerItemModel>): RepresentSummary
+    suspend fun getSummary(date: Instant?, routes: List<CustomerItemModel>): RepresentSummary
 }

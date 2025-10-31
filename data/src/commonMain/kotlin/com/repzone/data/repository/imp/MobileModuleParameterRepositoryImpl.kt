@@ -47,14 +47,16 @@ import com.repzone.data.util.getIntValue
 import com.repzone.data.util.getStringValue
 import com.repzone.database.SyncPackageCustomFieldProductEntity
 import com.repzone.database.SyncPackageCustomFieldProductEntityQueries
+import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.domain.model.MobileParameterModel
 import com.repzone.domain.model.SyncPackageCustomFieldProductModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.network.dto.PackageCustomFieldProductDto
+import kotlinx.coroutines.runBlocking
 import kotlin.time.ExperimentalTime
 
 class MobileModuleParameterRepositoryImpl(
-        private val syncPackageCustomFieldProductQueries: SyncPackageCustomFieldProductEntityQueries,
+        private val iDatabaseManager: IDatabaseManager,
         private val mapperCustomFieldProduct: MapperDto<SyncPackageCustomFieldProductEntity, SyncPackageCustomFieldProductModel, PackageCustomFieldProductDto>,
         private val iUserSession: IUserSession ): IMobileModuleParameterRepository {
 
@@ -182,7 +184,9 @@ class MobileModuleParameterRepositoryImpl(
 
     //region Private Method
     private fun getMobileModulePrameters(productId: Int): List<SyncPackageCustomFieldProductModel> {
-        return syncPackageCustomFieldProductQueries.selectBySyncPackageCustomFieldProductEntityProductId(productId.toLong()).executeAsList().map { mapperCustomFieldProduct.toDomain(it) }
+        return runBlocking {
+            iDatabaseManager.getDatabase().syncPackageCustomFieldProductEntityQueries.selectBySyncPackageCustomFieldProductEntityProductId(productId.toLong()).executeAsList().map { mapperCustomFieldProduct.toDomain(it) }
+        }
     }
 
     @OptIn(ExperimentalTime::class)

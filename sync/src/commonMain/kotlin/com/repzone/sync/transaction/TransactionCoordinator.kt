@@ -2,7 +2,7 @@ package com.repzone.sync.transaction
 
 import app.cash.sqldelight.db.SqlDriver
 import com.repzone.core.util.extensions.now
-import com.repzone.database.AppDatabase
+import com.repzone.database.interfaces.IDatabaseManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -10,6 +10,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlin.time.ExperimentalTime
@@ -18,8 +19,7 @@ import kotlin.time.ExperimentalTime
  * Tüm bulk insertleri sirali olacak sekilde isler
  */
 class TransactionCoordinator(
-    private val database: AppDatabase,
-    private val driver: SqlDriver,
+    private val iDatabaseManager: IDatabaseManager,
     private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)) {
     //region Field
     companion object {
@@ -122,7 +122,7 @@ class TransactionCoordinator(
         }
 
         try {
-            val result = database.transactionWithResult {
+            val result = iDatabaseManager.getDatabase().transactionWithResult {
                 when (operation.type) {
                     OperationType.CLEAR_AND_INSERT -> {
                         // Önce temizle
@@ -181,7 +181,9 @@ class TransactionCoordinator(
 
     private fun executeRawSql(sql: String) {
         try {
-            driver.execute(null, sql, 0)
+            runBlocking {
+                iDatabaseManager.getSqlDriver().execute(null, sql, 0)
+            }
         }catch (ex: Exception){
             println("Syntax Error Sql: ${sql} ")
             throw ex;
@@ -220,7 +222,7 @@ class TransactionCoordinator(
         }
 
         try {
-            val totalRecords = database.transactionWithResult {
+            val totalRecords = iDatabaseManager.getDatabase().transactionWithResult {
                 var recordCount = 0
 
                 compositeOp.operations.forEach { tableOp ->

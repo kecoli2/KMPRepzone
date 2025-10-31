@@ -24,6 +24,8 @@ import com.repzone.core.enums.ThemeMode
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.WindowWidthSizeClass
 import com.repzone.core.ui.manager.theme.common.ColorSchemeVariant
+import com.repzone.core.ui.platform.HandleBackPress
+import kotlinx.coroutines.flow.callbackFlow
 import org.jetbrains.compose.resources.stringResource
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.*
@@ -42,6 +44,7 @@ fun SettingsScreen(onBackClick: () -> Unit = {}) {
     var showLanguageDialog by remember { mutableStateOf(false) }
     var showThemeModeDialog by remember { mutableStateOf(false) }
     var showColorSchemeDialog by remember { mutableStateOf(false) }
+
 
     Scaffold(
         topBar = {
@@ -72,6 +75,9 @@ fun SettingsScreen(onBackClick: () -> Unit = {}) {
             )
         }
     ) { paddingValues ->
+        HandleBackPress {
+
+        }
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

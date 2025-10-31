@@ -2,6 +2,7 @@ package com.repzone.data.sample
 
 import app.cash.sqldelight.db.SqlDriver
 import com.repzone.core.util.extensions.now
+import com.repzone.database.CustomerItemViewEntity
 import com.repzone.database.SyncModuleEntity
 import com.repzone.database.runtime.*
 import kotlinx.coroutines.flow.first
@@ -455,6 +456,7 @@ class DatabaseTest(private val driver: SqlDriver) {
         val asc = driver.select<SyncModuleEntity> {
             orderBy { order("SyncType", desc = false) }
         }.toList()
+
         log("ORDER BY SyncType ASC: ${asc.size} results")
         log("  First: ${asc.firstOrNull()?.SyncType}, Last: ${asc.lastOrNull()?.SyncType}")
 

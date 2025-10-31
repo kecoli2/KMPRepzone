@@ -1,7 +1,12 @@
 package com.repzone.presentation.legacy.viewmodel.actionmenulist
 
-class ActionMenuListViewModel {
+import com.repzone.core.ui.base.BaseViewModel
+import com.repzone.domain.model.CustomerItemModel
+import com.repzone.domain.repository.IActionMenuRepository
+
+class ActionMenuListViewModel(private val iActionMenuRepository: IActionMenuRepository): BaseViewModel<ActionMenuListUiState, ActionMenuListViewModel.Event>(ActionMenuListUiState()) {
     //region Field
+    private var customer: CustomerItemModel? = null
     //endregion
 
     //region Properties
@@ -11,11 +16,59 @@ class ActionMenuListViewModel {
     //endregion
 
     //region Public Method
+    suspend fun prepareActions(customer: CustomerItemModel){
+        this.customer = customer
+        getActionMenuList()
+        getActionButtonList()
+    }
+
+    override fun onDispose() {
+        super.onDispose()
+    }
     //endregion
 
     //region Protected Method
     //endregion
 
     //region Private Method
+    suspend fun getActionMenuList(){
+        try {
+            updateState { currentState ->
+                currentState.copy(menuListState = ActionMenuListUiState.ActionMenuListState.Loading)
+            }
+            val actionMenuList = iActionMenuRepository.getActionMenuList(customer!!)
+            updateState { currentState ->
+                currentState.copy(menuListState = ActionMenuListUiState.ActionMenuListState.Success
+                , actionMenuList = actionMenuList)
+            }
+        }catch (ex: Exception){
+            updateState { currentState ->
+                currentState.copy(menuListState = ActionMenuListUiState.ActionMenuListState.Error(ex.message ?: "Unknown error"))
+            }
+        }
+    }
+    suspend fun getActionButtonList(){
+        try {
+            updateState { currentState ->
+                currentState.copy(buttonListState = ActionMenuListUiState.ActionMenuListState.Loading)
+            }
+            val actionMenuList = iActionMenuRepository.getActionButtonList(customer!!)
+            updateState { currentState ->
+                currentState.copy(buttonListState = ActionMenuListUiState.ActionMenuListState.Success
+                    , actionButtonList = actionMenuList)
+            }
+        }catch (ex: Exception){
+            updateState { currentState ->
+                currentState.copy(buttonListState = ActionMenuListUiState.ActionMenuListState.Error(ex.message ?: "Unknown error"))
+            }
+        }
+    }
     //endregion
+
+    //region Event
+    sealed class Event {
+        data class OnClickCustomer(val customer: CustomerItemModel) : Event()
+
+    }
+    //endregion Event
 }

@@ -2,7 +2,7 @@ package com.repzone.data.repository.imp
 
 import com.repzone.core.enums.OrderStatus
 import com.repzone.core.util.extensions.enumToLong
-import com.repzone.database.AppDatabase
+import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.model.RepresentSummary
 import com.repzone.domain.repository.IRepresentativeRepository
@@ -11,7 +11,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-class RepresentativeRepositoryImpl(private val database: AppDatabase,
+class RepresentativeRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                                    private val iRouteAppointmentRepository: IRouteAppointmentRepository): IRepresentativeRepository {
     //region Field
     //endregion
@@ -23,13 +23,13 @@ class RepresentativeRepositoryImpl(private val database: AppDatabase,
     //endregion
 
     //region Public Method
-    override fun getSummary(date: Instant?, routes: List<CustomerItemModel>) : RepresentSummary{
+    override suspend fun getSummary(date: Instant?, routes: List<CustomerItemModel>) : RepresentSummary{
         val activeSprint = iRouteAppointmentRepository.getActiveSprintInformation()
-        val sprintOrders = database.orderLogInformationEntityQueries.selectByOrderOrderDateAndStatus(activeSprint?.startDate, activeSprint?.endDate,
+        val sprintOrders = iDatabaseManager.getDatabase().orderLogInformationEntityQueries.selectByOrderOrderDateAndStatus(activeSprint?.startDate, activeSprint?.endDate,
             OrderStatus.SENT.enumToLong()).executeAsList()
-        val sprintRoutes = database.syncRouteAppointmentEntityQueries.selectBySyncRouteAppointmentEntitySprintIdAndState(activeSprint?.id?.toLong(),
+        val sprintRoutes = iDatabaseManager.getDatabase().syncRouteAppointmentEntityQueries.selectBySyncRouteAppointmentEntitySprintIdAndState(activeSprint?.id?.toLong(),
             OrderStatus.SENT.enumToLong()).executeAsList()
-        val sprintForms = database.formLogInformationEntityQueries.selectByFormLogInformationEntityStartAndDateAndStatus(activeSprint?.startDate, activeSprint?.endDate,
+        val sprintForms = iDatabaseManager.getDatabase().formLogInformationEntityQueries.selectByFormLogInformationEntityStartAndDateAndStatus(activeSprint?.startDate, activeSprint?.endDate,
             OrderStatus.SENT.enumToLong()).executeAsList()
 
         val summary = if (date != null){

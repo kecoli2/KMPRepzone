@@ -13,7 +13,7 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.SerializationException
 
 abstract class BaseSyncApiService<TDto : Any>(val client: HttpClient) : ISyncApiService<TDto> {
-    protected abstract fun extractLastId(data: TDto): Int
+    /*protected abstract fun extractLastId(data: TDto): Int*/
     protected abstract fun getDataSize(data: TDto): Int
 
     override suspend fun fetchAll(model: SyncModuleModel): ApiResult<TDto> {
@@ -46,7 +46,6 @@ abstract class BaseSyncApiService<TDto : Any>(val client: HttpClient) : ISyncApi
                         } else {
                             emit(ApiResult.Success(data))
                             hasMore = dataSize >= pageSize
-                            requestModel?.lastId = extractLastId(data)
                             onPageFetched(data, requestModel)
                         }
                     }
