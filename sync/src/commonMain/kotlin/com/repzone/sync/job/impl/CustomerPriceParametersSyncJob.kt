@@ -11,11 +11,14 @@ import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
 import com.repzone.core.enums.UserRole
 import com.repzone.core.model.ResourceUI
+import com.repzone.core.util.extensions.toDateString
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_fetched
 import repzonemobile.core.generated.resources.job_complate_saved
 import repzonemobile.core.generated.resources.job_customer_price_parameter
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class CustomerPriceParametersSyncJob(apiService: ISyncApiService<List<CrmPriceListParameterDto>>,
                                      bulkInsertService: IBulkInsertService<List<CrmPriceListParameterDto>>,
                                      syncModuleRepository: ISyncModuleRepository,
@@ -48,8 +51,12 @@ class CustomerPriceParametersSyncJob(apiService: ISyncApiService<List<CrmPriceLi
         )
     }
 
-    override fun extractLastId(dtoData: List<CrmPriceListParameterDto>): Long {
-        return dtoData.lastOrNull()?.id?.toLong() ?: 0L
+    override fun extractLastIdAndLastDate(dtoData: List<CrmPriceListParameterDto>, requestModel: FilterModelRequest?){
+        dtoData.lastOrNull()?.let {
+            requestModel?.lastId = it.id
+            requestModel?.lastModDate = it.modificationDateUtc?.toEpochMilliseconds()?.toDateString("yyyy-MM-dd HH:mm:ss.fff") ?: ""
+
+        }
     }
 
     override fun getDataSize(dtoData: List<CrmPriceListParameterDto>): Int {

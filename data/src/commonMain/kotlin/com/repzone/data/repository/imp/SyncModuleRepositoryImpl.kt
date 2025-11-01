@@ -38,7 +38,7 @@ class SyncModuleRepositoryImpl(
     }
 
     override suspend fun upsert(entity: SyncModuleModel) {
-        iDatabaseManager.getSqlDriver().insertOrReplace(entity)
+        iDatabaseManager.getSqlDriver().insertOrReplace(mapper.fromDomain(entity))
     }
     //endregion
 

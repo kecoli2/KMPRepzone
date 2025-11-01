@@ -11,14 +11,23 @@ import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
 import com.repzone.core.enums.UserRole
 import com.repzone.core.model.ResourceUI
+import com.repzone.core.util.extensions.toDateString
+import com.repzone.database.SyncCustomerEntity
+import com.repzone.database.interfaces.IDatabaseManager
+import com.repzone.database.runtime.selectAsFlow
+import com.repzone.database.runtime.selectFirstAsFlow
+import com.repzone.network.dto.CrmPriceListParameterDto
+import kotlinx.coroutines.runBlocking
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_fetched
 import repzonemobile.core.generated.resources.job_complate_saved
 import repzonemobile.core.generated.resources.job_email
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class CustomerEmailSyncJob(apiService: ISyncApiService<List<CustomerEmailDto>>,
                            bulkinsertService: IBulkInsertService<List<CustomerEmailDto>>,
-                           syncModuleRepository: ISyncModuleRepository,
+                           syncModuleRepository: ISyncModuleRepository
 ): BasePaginatedSyncJob<List<CustomerEmailDto>>(apiService, bulkinsertService, syncModuleRepository) {
     //region Field
     override val allowedRoles = setOf(UserRole.SALES_REP)
@@ -48,8 +57,12 @@ class CustomerEmailSyncJob(apiService: ISyncApiService<List<CustomerEmailDto>>,
         )
     }
 
-    override fun extractLastId(dtoData: List<CustomerEmailDto>): Long {
-        return dtoData.lastOrNull()?.id?.toLong() ?: 0
+    override fun extractLastIdAndLastDate(dtoData: List<CustomerEmailDto>, requestModel: FilterModelRequest?){
+        dtoData.lastOrNull()?.let {
+            requestModel?.lastId = it.id
+            requestModel?.lastModDate = it.modificationDateUtc?.toEpochMilliseconds()?.toDateString("yyyy-MM-dd HH:mm:ss.fff") ?: ""
+
+        }
     }
 
     override fun getDataSize(dtoData: List<CustomerEmailDto>): Int {

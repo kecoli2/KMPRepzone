@@ -11,11 +11,14 @@ import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
 import com.repzone.core.enums.UserRole
 import com.repzone.core.model.ResourceUI
+import com.repzone.core.util.extensions.toDateString
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_fetched
 import repzonemobile.core.generated.resources.job_complate_saved
 import repzonemobile.core.generated.resources.job_document_map
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class DocumentMapsSyncJob(apiService: ISyncApiService<List<DocumentMapModelDto>>,
                           bulkInsertService: IBulkInsertService<List<DocumentMapModelDto>>,
                           syncModuleRepository: ISyncModuleRepository,
@@ -48,8 +51,12 @@ class DocumentMapsSyncJob(apiService: ISyncApiService<List<DocumentMapModelDto>>
         )
     }
 
-    override fun extractLastId(dtoData: List<DocumentMapModelDto>): Long {
-        return dtoData.lastOrNull()?.id?.toLong() ?: 0
+    override fun extractLastIdAndLastDate(dtoData: List<DocumentMapModelDto>, requestModel: FilterModelRequest?){
+        dtoData.lastOrNull()?.let {
+            requestModel?.lastId = it.id
+            requestModel?.lastModDate = it.modificationDateUtc?.toEpochMilliseconds()?.toDateString("yyyy-MM-dd HH:mm:ss.fff") ?: ""
+
+        }
     }
 
     override fun getDataSize(dtoData: List<DocumentMapModelDto>): Int {

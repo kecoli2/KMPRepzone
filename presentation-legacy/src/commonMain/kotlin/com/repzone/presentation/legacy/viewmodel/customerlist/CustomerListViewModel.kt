@@ -2,7 +2,9 @@ package com.repzone.presentation.legacy.viewmodel.customerlist
 
 import com.repzone.core.enums.VisitPlanSchedulesType
 import com.repzone.core.interfaces.IPreferencesManager
+import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.base.BaseViewModel
+import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.IMobileModuleParameterRepository
@@ -25,7 +27,8 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                             private val iModuleParameterRepository: IMobileModuleParameterRepository,
                             private val iSyncManager: ISyncManager,
                             private var representRepository: IRepresentativeRepository,
-                            private val iPreferencesManager: IPreferencesManager
+                            private val iPreferencesManager: IPreferencesManager,
+                            private val iDatabaseManager: IDatabaseManager
 ): BaseViewModel<CustomerListScreenUiState, CustomerListViewModel.Event>(CustomerListScreenUiState()) {
     //region Field
     private var searchQuery: String = ""
@@ -104,6 +107,8 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
 
             is Event.LogOut -> {
                 scope.launch {
+
+                    iDatabaseManager.logout()
                     iPreferencesManager.setActiveUserCode(0)
                 }
             }

@@ -12,6 +12,8 @@ import com.repzone.sync.model.SyncJobType
 import com.repzone.core.enums.UserRole
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.model.ResourceUI
+import com.repzone.core.util.extensions.toDateString
+import com.repzone.network.dto.EventReasonDto
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_fetched
 import repzonemobile.core.generated.resources.job_complate_saved
@@ -50,8 +52,10 @@ class PakageCustomFieldSyncJob(apiService: ISyncApiService<List<PackageCustomFie
         )
     }
 
-    override fun extractLastId(dtoData: List<PackageCustomFieldDto>): Long {
-        return dtoData.lastOrNull()?.id?.toLong() ?: 0
+    override fun extractLastIdAndLastDate(dtoData: List<PackageCustomFieldDto>, requestModel: FilterModelRequest?){
+        dtoData.lastOrNull()?.let {
+            requestModel?.lastId = it.id
+        }
     }
 
     override fun getDataSize(dtoData: List<PackageCustomFieldDto>): Int {

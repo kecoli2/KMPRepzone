@@ -75,9 +75,6 @@ fun SettingsScreen(onBackClick: () -> Unit = {}) {
             )
         }
     ) { paddingValues ->
-        HandleBackPress {
-
-        }
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()

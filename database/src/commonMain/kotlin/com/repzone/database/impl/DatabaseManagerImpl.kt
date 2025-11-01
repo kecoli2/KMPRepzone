@@ -44,6 +44,7 @@ class DatabaseManagerImpl(private val driverFactory: DatabaseDriverFactory,
             databaseCache.remove(userId)
         }
         currentUserId = null
+        userSession.clearSession()
     }
 
     override suspend fun deleteUserData(userId: Int) {

@@ -62,7 +62,7 @@ abstract class BasePaginatedSyncJob<TDto : Any>(
     //endregion
 
     //region Abstract Methods
-    protected abstract fun extractLastId(dtoData: TDto): Long
+    protected abstract fun extractLastIdAndLastDate(dtoData: TDto, requestModel: FilterModelRequest?)
     protected abstract fun getDataSize(dtoData: TDto): Int
     //endregion
 
@@ -198,8 +198,7 @@ abstract class BasePaginatedSyncJob<TDto : Any>(
                     checkCancellation()
 
                     val inserted = bulkInsertService.upsertBatch(dtoData)
-                    val lastId = extractLastId(dtoData)
-                    requestFilter?.lastId = lastId.toInt()
+                    extractLastIdAndLastDate(dtoData,requestFilter)
 
                     totalInserted += inserted
                     onBatchProcessed(totalFetched, totalInserted)

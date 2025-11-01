@@ -184,7 +184,7 @@ object MetadataGenerator {
             .indent()
 
         schema.columns.forEachIndexed { index, column ->
-            codeBlock.add("%S to entity.%L", column.name, column.name)
+            codeBlock.add("%S to entity.%L", specialFieldName(column.name), column.name)
             if (index < schema.columns.size - 1) {
                 codeBlock.add(",\n")
             } else {

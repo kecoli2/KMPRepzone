@@ -11,11 +11,15 @@ import com.repzone.sync.job.base.BasePaginatedSyncJob
 import com.repzone.sync.model.SyncJobType
 import com.repzone.core.enums.UserRole
 import com.repzone.core.model.ResourceUI
+import com.repzone.core.util.extensions.toDateString
+import com.repzone.network.dto.ProductGroupDto
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_fetched
 import repzonemobile.core.generated.resources.job_complate_saved
 import repzonemobile.core.generated.resources.job_product_parameters
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class ProductSyncJob(apiService: ISyncApiService<List<ProductDto>>, bulkInsertService: IBulkInsertService<List<ProductDto>>, syncModuleRepository: ISyncModuleRepository)
     : BasePaginatedSyncJob<List<ProductDto>>(apiService, bulkInsertService, syncModuleRepository) {
 
@@ -47,8 +51,12 @@ class ProductSyncJob(apiService: ISyncApiService<List<ProductDto>>, bulkInsertSe
         )
     }
 
-    override fun extractLastId(dtoData: List<ProductDto>): Long {
-        return dtoData.lastOrNull()?.id?.toLong() ?: 0L
+    override fun extractLastIdAndLastDate(dtoData: List<ProductDto>, requestModel: FilterModelRequest?){
+        dtoData.lastOrNull()?.let {
+            requestModel?.lastId = it.id
+            requestModel?.lastModDate = it.modificationDateUtc?.toEpochMilliseconds()?.toDateString("yyyy-MM-dd HH:mm:ss.fff") ?: ""
+
+        }
     }
 
     override fun getDataSize(dtoData: List<ProductDto>): Int {

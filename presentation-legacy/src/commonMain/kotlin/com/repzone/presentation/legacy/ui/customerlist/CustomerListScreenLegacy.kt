@@ -312,7 +312,7 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                         TopBarAction(Icons.Default.Map, "Map",Color.White, {
 
                         }),
-                        TopBarAction(Icons.Default.Sync, "Timer",Color.White, {
+                        TopBarAction(Icons.Default.Sync, "Sync",Color.White, {
                             viewModel.onEvent(event = CustomerListViewModel.Event.StartSync)
                         }),
                     ),
