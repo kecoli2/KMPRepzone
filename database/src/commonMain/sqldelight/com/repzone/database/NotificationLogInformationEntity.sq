@@ -12,31 +12,3 @@ CREATE TABLE IF NOT EXISTS NotificationLogInformationEntity (
     Image TEXT,
     LogDate INTEGER
 );
-
-selectAllNotificationLogInformationEntity:
-SELECT * FROM NotificationLogInformationEntity;
-
-selectByNotificationLogInformationEntityId:
-SELECT * FROM NotificationLogInformationEntity WHERE Id = ?;
-
-insertNotificationLogInformationEntity:
-INSERT INTO NotificationLogInformationEntity
-VALUES ?;
-
-insertOrReplaceNotificationLogInformationEntity:
-INSERT OR REPLACE INTO NotificationLogInformationEntity
-VALUES ?;
-
-updateNotificationLogInformationEntity:
-UPDATE NotificationLogInformationEntity SET
-    Image = ?,
-    Footer = ?,
-    Header = ?,
-    Body = ?,
-    EventType = ?,
-    EventSource = ?,
-    LogDate = ?
-WHERE Id = ?;
-
-deleteNotificationLogInformationEntity:
-DELETE FROM NotificationLogInformationEntity WHERE Id = ?;

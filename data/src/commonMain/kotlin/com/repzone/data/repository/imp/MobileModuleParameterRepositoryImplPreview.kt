@@ -1,21 +1,6 @@
 package com.repzone.data.repository.imp
 
-import com.repzone.core.enums.AutoFilterByStock
-import com.repzone.core.enums.CustomerGPSUpdateType
-import com.repzone.core.enums.LeaveDurationLimitType
 import com.repzone.core.enums.ModuleProductIdsEnum
-import com.repzone.core.enums.OnOf
-import com.repzone.core.enums.OrganizationType
-import com.repzone.core.enums.PreviousDayVisitsType
-import com.repzone.core.enums.ShowDocumentLabelsOrderType
-import com.repzone.core.enums.ShowDocumentLabelsType
-import com.repzone.core.enums.ShowNearbyCustomersType
-import com.repzone.core.enums.ShowPaytermSelectionType
-import com.repzone.core.enums.StockEntryForm
-import com.repzone.core.enums.StoreDurationType
-import com.repzone.core.enums.UserSelectionType
-import com.repzone.core.enums.ViolationActionType
-import com.repzone.core.enums.VisitPlanSchedulesType
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.model.module.parameters.AttendanceTrackingParameters
 import com.repzone.core.model.module.parameters.BusinessIntelligenceParameters
@@ -38,16 +23,10 @@ import com.repzone.core.model.module.parameters.ReportsParameters
 import com.repzone.core.model.module.parameters.TaskManagmentParameters
 import com.repzone.core.model.module.parameters.VisitParameters
 import com.repzone.core.model.module.parameters.WorkingHoursParameters
-import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.MapperDto
-import com.repzone.data.util.getBooleanValue
-import com.repzone.data.util.getDateTimeValue
-import com.repzone.data.util.getEnumValue
-import com.repzone.data.util.getIntValue
-import com.repzone.data.util.getStringValue
 import com.repzone.database.SyncPackageCustomFieldProductEntity
-import com.repzone.database.SyncPackageCustomFieldProductEntityQueries
 import com.repzone.database.interfaces.IDatabaseManager
+import com.repzone.database.runtime.select
 import com.repzone.domain.model.MobileParameterModel
 import com.repzone.domain.model.SyncPackageCustomFieldProductModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
@@ -185,7 +164,9 @@ class MobileModuleParameterRepositoryImplPreview(
     //region Private Method
     private fun getMobileModulePrameters(productId: Int): List<SyncPackageCustomFieldProductModel> {
         return runBlocking {
-            iDatabaseManager.getDatabase().syncPackageCustomFieldProductEntityQueries.selectBySyncPackageCustomFieldProductEntityProductId(productId.toLong()).executeAsList().map { mapperCustomFieldProduct.toDomain(it) }
+            iDatabaseManager.getSqlDriver().select<SyncPackageCustomFieldProductEntity> { where {
+                criteria("ProductId", productId)
+            } }.toList().map {  mapperCustomFieldProduct.toDomain(it) }
         }
     }
 

@@ -10,29 +10,3 @@ CREATE TABLE IF NOT EXISTS VisitLogInformationEntity (
     RouteAppointmentId INTEGER,
     VisitUniqueId TEXT
 );
-
-selectAllVisitLogInformationEntity:
-SELECT * FROM VisitLogInformationEntity;
-
-selectByVisitLogInformationEntityId:
-SELECT * FROM VisitLogInformationEntity WHERE Id = ?;
-
-insertVisitLogInformationEntity:
-INSERT INTO VisitLogInformationEntity
-VALUES ?;
-
-insertOrReplaceVisitLogInformationEntity:
-INSERT OR REPLACE INTO VisitLogInformationEntity
-VALUES ?;
-
-updateVisitLogInformationEntity:
-UPDATE VisitLogInformationEntity SET
-    RestServiceTaskId = ?,
-    RouteAppointmentId = ?,
-    VisitUniqueId = ?,
-    CustomerName = ?,
-    RecordDate = ?
-WHERE Id = ?;
-
-deleteVisitLogInformationEntity:
-DELETE FROM VisitLogInformationEntity WHERE Id = ?;

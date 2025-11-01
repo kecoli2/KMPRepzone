@@ -9,24 +9,6 @@ import org.koin.dsl.module
 
 val DatabaseModule = module {
     single<IDatabaseManager>{ DatabaseManagerImpl(get(), get()) }
-
-/*    factory {
-        runBlocking {
-            get<IDatabaseManager>().getDatabase()
-        }
-    }
-
-    factory {
-        runBlocking {
-            var orginal = get<IDatabaseManager>().getSqlDriver()
-
-            if(BuildConfig.IS_DEBUG){
-                LoggingDriver(orginal, "SQLDelight", true)
-            }else{
-                orginal
-            }
-        }
-    }*/
 }
 
 val DatabaseModulePreview = module {

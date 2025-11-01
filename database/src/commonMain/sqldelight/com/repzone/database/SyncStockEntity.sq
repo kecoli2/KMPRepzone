@@ -13,32 +13,3 @@ CREATE TABLE IF NOT EXISTS SyncStockEntity (
     Stock REAL,
     UnitId INTEGER
 );
-
-selectAllSyncStockEntity:
-SELECT * FROM SyncStockEntity;
-
-selectBySyncStockEntityId:
-SELECT * FROM SyncStockEntity WHERE Id = ?;
-
-insertSyncStockEntity:
-INSERT INTO SyncStockEntity
-VALUES ?;
-
-insertOrReplaceSyncStockEntity:
-INSERT OR REPLACE INTO SyncStockEntity
-VALUES ?;
-
-updateSyncStockEntity:
-UPDATE SyncStockEntity SET
-    OrganizationId = ?,
-    ProductId = ?,
-    UnitId = ?,
-    Stock = ?,
-    OrderStock = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncStockEntity:
-DELETE FROM SyncStockEntity WHERE Id = ?;

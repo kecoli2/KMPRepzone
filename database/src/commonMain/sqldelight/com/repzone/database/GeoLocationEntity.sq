@@ -18,37 +18,3 @@ CREATE TABLE IF NOT EXISTS GeoLocationEntity (
     Speed REAL,
     Time INTEGER
 );
-
-selectAllGeoLocationEntity:
-SELECT * FROM GeoLocationEntity;
-
-selectByGeoLocationEntityId:
-SELECT * FROM GeoLocationEntity WHERE Id = ?;
-
-insertGeoLocationEntity:
-INSERT INTO GeoLocationEntity
-VALUES ?;
-
-insertOrReplaceGeoLocationEntity:
-INSERT OR REPLACE INTO GeoLocationEntity
-VALUES ?;
-
-updateGeoLocationEntity:
-UPDATE GeoLocationEntity SET
-    Latitude = ?,
-    Longitude = ?,
-    Time = ?,
-    Accuracy = ?,
-    Altitude = ?,
-    AltitudeAccuracy = ?,
-    Heading = ?,
-    Speed = ?,
-    RepresentativeId = ?,
-    DailyOperationType = ?,
-    Description = ?,
-    ReverseGeocoded = ?,
-    BatteryLevel = ?
-WHERE Id = ?;
-
-deleteGeoLocationEntity:
-DELETE FROM GeoLocationEntity WHERE Id = ?;

@@ -13,32 +13,3 @@ CREATE TABLE IF NOT EXISTS SyncProductPriceLinesEntity (
     State INTEGER,
     Vat REAL
 );
-
-selectAllSyncProductPriceLinesEntity:
-SELECT * FROM SyncProductPriceLinesEntity;
-
-selectBySyncProductPriceLinesEntityId:
-SELECT * FROM SyncProductPriceLinesEntity WHERE Id = ?;
-
-insertSyncProductPriceLinesEntity:
-INSERT INTO SyncProductPriceLinesEntity
-VALUES ?;
-
-insertOrReplaceSyncProductPriceLinesEntity:
-INSERT OR REPLACE INTO SyncProductPriceLinesEntity
-VALUES ?;
-
-updateSyncProductPriceLinesEntity:
-UPDATE SyncProductPriceLinesEntity SET
-    PriceListId = ?,
-    ProductId = ?,
-    ProductUnitId = ?,
-    Price = ?,
-    Vat = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncProductPriceLinesEntity:
-DELETE FROM SyncProductPriceLinesEntity WHERE Id = ?;

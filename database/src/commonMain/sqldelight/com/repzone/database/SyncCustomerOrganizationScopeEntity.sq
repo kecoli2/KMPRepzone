@@ -14,33 +14,3 @@ CREATE TABLE IF NOT EXISTS SyncCustomerOrganizationScopeEntity (
     SalesNotAllowed INTEGER,
     State INTEGER
 );
-
-selectAllSyncCustomerOrganizationScopeEntity:
-SELECT * FROM SyncCustomerOrganizationScopeEntity;
-
-selectBySyncCustomerOrganizationScopeEntityId:
-SELECT * FROM SyncCustomerOrganizationScopeEntity WHERE Id = ?;
-
-insertSyncCustomerOrganizationScopeEntity:
-INSERT INTO SyncCustomerOrganizationScopeEntity
-VALUES ?;
-
-insertOrReplaceSyncCustomerOrganizationScopeEntity:
-INSERT OR REPLACE INTO SyncCustomerOrganizationScopeEntity
-VALUES ?;
-
-updateSyncCustomerOrganizationScopeEntity:
-UPDATE SyncCustomerOrganizationScopeEntity SET
-    State = ?,
-    RecordDateUtc = ?,
-    ModificationDateUtc = ?,
-    CustomerId = ?,
-    OrganizationId = ?,
-    OrganizationName = ?,
-    ManufacturerId = ?,
-    Fulfillment = ?,
-    SalesNotAllowed = ?
-WHERE Id = ?;
-
-deleteSyncCustomerOrganizationScopeEntity:
-DELETE FROM SyncCustomerOrganizationScopeEntity WHERE Id = ?;

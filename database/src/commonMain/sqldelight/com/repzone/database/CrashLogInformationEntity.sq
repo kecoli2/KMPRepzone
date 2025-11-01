@@ -8,27 +8,3 @@ CREATE TABLE IF NOT EXISTS CrashLogInformationEntity (
     LogDate INTEGER,
     LogMessage TEXT
 );
-
-selectAllCrashLogInformationEntity:
-SELECT * FROM CrashLogInformationEntity;
-
-selectByCrashLogInformationEntityId:
-SELECT * FROM CrashLogInformationEntity WHERE Id = ?;
-
-insertCrashLogInformationEntity:
-INSERT INTO CrashLogInformationEntity
-VALUES ?;
-
-insertOrReplaceCrashLogInformationEntity:
-INSERT OR REPLACE INTO CrashLogInformationEntity
-VALUES ?;
-
-updateCrashLogInformationEntity:
-UPDATE CrashLogInformationEntity SET
-    LogDate = ?,
-    LogMessage = ?,
-    Level = ?
-WHERE Id = ?;
-
-deleteCrashLogInformationEntity:
-DELETE FROM CrashLogInformationEntity WHERE Id = ?;

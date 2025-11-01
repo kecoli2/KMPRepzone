@@ -17,36 +17,3 @@ CREATE TABLE IF NOT EXISTS SyncMessageUserEntity (
     RoleName TEXT,
     State INTEGER
 );
-
-selectAllSyncMessageUserEntity:
-SELECT * FROM SyncMessageUserEntity;
-
-selectBySyncMessageUserEntityId:
-SELECT * FROM SyncMessageUserEntity WHERE Id = ?;
-
-insertSyncMessageUserEntity:
-INSERT INTO SyncMessageUserEntity
-VALUES ?;
-
-insertOrReplaceSyncMessageUserEntity:
-INSERT OR REPLACE INTO SyncMessageUserEntity
-VALUES ?;
-
-updateSyncMessageUserEntity:
-UPDATE SyncMessageUserEntity SET
-    FirstName = ?,
-    LastName = ?,
-    CellPhone = ?,
-    Email = ?,
-    PhotoPath = ?,
-    RoleId = ?,
-    RoleName = ?,
-    OrganizationId = ?,
-    OrganizationName = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncMessageUserEntity:
-DELETE FROM SyncMessageUserEntity WHERE Id = ?;

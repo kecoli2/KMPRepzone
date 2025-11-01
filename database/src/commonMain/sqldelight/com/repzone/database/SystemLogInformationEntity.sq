@@ -8,27 +8,3 @@ CREATE TABLE IF NOT EXISTS SystemLogInformationEntity (
     RecordDate INTEGER,
     Region TEXT
 );
-
-selectAllSystemLogInformationEntity:
-SELECT * FROM SystemLogInformationEntity;
-
-selectBySystemLogInformationEntityId:
-SELECT * FROM SystemLogInformationEntity WHERE Id = ?;
-
-insertSystemLogInformationEntity:
-INSERT INTO SystemLogInformationEntity
-VALUES ?;
-
-insertOrReplaceSystemLogInformationEntity:
-INSERT OR REPLACE INTO SystemLogInformationEntity
-VALUES ?;
-
-updateSystemLogInformationEntity:
-UPDATE SystemLogInformationEntity SET
-    Region = ?,
-    Message = ?,
-    RecordDate = ?
-WHERE Id = ?;
-
-deleteSystemLogInformationEntity:
-DELETE FROM SystemLogInformationEntity WHERE Id = ?;

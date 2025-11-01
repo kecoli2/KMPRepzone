@@ -13,32 +13,3 @@ CREATE TABLE IF NOT EXISTS SyncCampaignMasterRuleEntity (
     RecordDateUtc INTEGER,
     State INTEGER
 );
-
-selectAllSyncCampaignMasterRuleEntity:
-SELECT * FROM SyncCampaignMasterRuleEntity;
-
-selectBySyncCampaignMasterRuleEntityId:
-SELECT * FROM SyncCampaignMasterRuleEntity WHERE Id = ?;
-
-insertSyncCampaignMasterRuleEntity:
-INSERT INTO SyncCampaignMasterRuleEntity
-VALUES ?;
-
-insertOrReplaceSyncCampaignMasterRuleEntity:
-INSERT OR REPLACE INTO SyncCampaignMasterRuleEntity
-VALUES ?;
-
-updateSyncCampaignMasterRuleEntity:
-UPDATE SyncCampaignMasterRuleEntity SET
-    CampaignMasterId = ?,
-    IsOr = ?,
-    Property = ?,
-    Operator = ?,
-    Discover = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncCampaignMasterRuleEntity:
-DELETE FROM SyncCampaignMasterRuleEntity WHERE Id = ?;

@@ -10,29 +10,3 @@ CREATE TABLE IF NOT EXISTS TaskVisitLogInformationEntity (
     TaskId INTEGER,
     VisitUniqueId TEXT
 );
-
-selectAllTaskVisitLogInformationEntity:
-SELECT * FROM TaskVisitLogInformationEntity;
-
-selectByTaskVisitLogInformationEntityId:
-SELECT * FROM TaskVisitLogInformationEntity WHERE Id = ?;
-
-insertTaskVisitLogInformationEntity:
-INSERT INTO TaskVisitLogInformationEntity
-VALUES ?;
-
-insertOrReplaceTaskVisitLogInformationEntity:
-INSERT OR REPLACE INTO TaskVisitLogInformationEntity
-VALUES ?;
-
-updateTaskVisitLogInformationEntity:
-UPDATE TaskVisitLogInformationEntity SET
-    VisitUniqueId = ?,
-    CustomerId = ?,
-    TaskId = ?,
-    StartDate = ?,
-    FinishDate = ?
-WHERE Id = ?;
-
-deleteTaskVisitLogInformationEntity:
-DELETE FROM TaskVisitLogInformationEntity WHERE Id = ?;

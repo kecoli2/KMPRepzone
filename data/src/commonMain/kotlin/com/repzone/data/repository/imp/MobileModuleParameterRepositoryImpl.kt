@@ -38,7 +38,6 @@ import com.repzone.core.model.module.parameters.ReportsParameters
 import com.repzone.core.model.module.parameters.TaskManagmentParameters
 import com.repzone.core.model.module.parameters.VisitParameters
 import com.repzone.core.model.module.parameters.WorkingHoursParameters
-import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.MapperDto
 import com.repzone.data.util.getBooleanValue
 import com.repzone.data.util.getDateTimeValue
@@ -46,8 +45,8 @@ import com.repzone.data.util.getEnumValue
 import com.repzone.data.util.getIntValue
 import com.repzone.data.util.getStringValue
 import com.repzone.database.SyncPackageCustomFieldProductEntity
-import com.repzone.database.SyncPackageCustomFieldProductEntityQueries
 import com.repzone.database.interfaces.IDatabaseManager
+import com.repzone.database.runtime.select
 import com.repzone.domain.model.MobileParameterModel
 import com.repzone.domain.model.SyncPackageCustomFieldProductModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
@@ -185,7 +184,9 @@ class MobileModuleParameterRepositoryImpl(
     //region Private Method
     private fun getMobileModulePrameters(productId: Int): List<SyncPackageCustomFieldProductModel> {
         return runBlocking {
-            iDatabaseManager.getDatabase().syncPackageCustomFieldProductEntityQueries.selectBySyncPackageCustomFieldProductEntityProductId(productId.toLong()).executeAsList().map { mapperCustomFieldProduct.toDomain(it) }
+            iDatabaseManager.getSqlDriver().select<SyncPackageCustomFieldProductEntity> { where {
+                criteria("ProductId", productId)
+            } }.toList().map {  mapperCustomFieldProduct.toDomain(it) }
         }
     }
 

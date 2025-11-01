@@ -1,6 +1,8 @@
 package com.repzone.data.repository.imp
 
+import com.repzone.database.SyncRouteAppointmentEntity
 import com.repzone.database.interfaces.IDatabaseManager
+import com.repzone.database.runtime.rawQueryToEntity
 import com.repzone.domain.repository.IRouteAppointmentRepository
 import com.repzone.domain.util.models.SprintInformation
 
@@ -19,7 +21,10 @@ class RouteAppointmentRepositoryImpl(private val databaseManager: IDatabaseManag
         var maxId = 0
         var minRec: Long? = 0L
         var maxRec: Long? = 0L
-        val list = databaseManager.getDatabase().syncRouteAppointmentEntityQueries.selectByMaxSprintIdOrderStartDate().executeAsList()
+        val list = databaseManager.getSqlDriver().rawQueryToEntity<SyncRouteAppointmentEntity>("SELECT *\n" +
+                "FROM SyncRouteAppointmentEntity\n" +
+                "WHERE SprintId = (SELECT MAX(SprintId) FROM SyncRouteAppointmentEntity)\n" +
+                "ORDER BY StartDate ASC;")
 
         if(list.isNotEmpty()){
             maxId = list.first().SprintId?.toInt() ?: 0

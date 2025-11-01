@@ -11,30 +11,3 @@ CREATE TABLE IF NOT EXISTS SyncRiskDueDayEntity (
     RecordDateUtc INTEGER,
     State INTEGER
 );
-
-selectAllSyncRiskDueDayEntity:
-SELECT * FROM SyncRiskDueDayEntity;
-
-selectBySyncRiskDueDayEntityId:
-SELECT * FROM SyncRiskDueDayEntity WHERE Id = ?;
-
-insertSyncRiskDueDayEntity:
-INSERT INTO SyncRiskDueDayEntity
-VALUES ?;
-
-insertOrReplaceSyncRiskDueDayEntity:
-INSERT OR REPLACE INTO SyncRiskDueDayEntity
-VALUES ?;
-
-updateSyncRiskDueDayEntity:
-UPDATE SyncRiskDueDayEntity SET
-    CustomerId = ?,
-    OrganizationId = ?,
-    LastInvoiceDate = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncRiskDueDayEntity:
-DELETE FROM SyncRiskDueDayEntity WHERE Id = ?;

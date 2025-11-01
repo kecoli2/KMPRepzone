@@ -14,33 +14,3 @@ CREATE TABLE IF NOT EXISTS SyncProductGroupEntity (
     Shared INTEGER,
     State INTEGER
 );
-
-selectAllSyncProductGroupEntity:
-SELECT * FROM SyncProductGroupEntity;
-
-selectBySyncProductGroupEntityId:
-SELECT * FROM SyncProductGroupEntity WHERE Id = ?;
-
-insertSyncProductGroupEntity:
-INSERT INTO SyncProductGroupEntity
-VALUES ?;
-
-insertOrReplaceSyncProductGroupEntity:
-INSERT OR REPLACE INTO SyncProductGroupEntity
-VALUES ?;
-
-updateSyncProductGroupEntity:
-UPDATE SyncProductGroupEntity SET
-    ParentId = ?,
-    OrganizationId = ?,
-    Name = ?,
-    Shared = ?,
-    IconIndex = ?,
-    PhotoPath = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncProductGroupEntity:
-DELETE FROM SyncProductGroupEntity WHERE Id = ?;

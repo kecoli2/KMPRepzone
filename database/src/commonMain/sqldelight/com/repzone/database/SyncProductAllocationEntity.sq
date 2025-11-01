@@ -16,35 +16,3 @@ CREATE TABLE IF NOT EXISTS SyncProductAllocationEntity (
     State INTEGER,
     UnitId INTEGER
 );
-
-selectAllSyncProductAllocationEntity:
-SELECT * FROM SyncProductAllocationEntity;
-
-selectBySyncProductAllocationEntityId:
-SELECT * FROM SyncProductAllocationEntity WHERE Id = ?;
-
-insertSyncProductAllocationEntity:
-INSERT INTO SyncProductAllocationEntity
-VALUES ?;
-
-insertOrReplaceSyncProductAllocationEntity:
-INSERT OR REPLACE INTO SyncProductAllocationEntity
-VALUES ?;
-
-updateSyncProductAllocationEntity:
-UPDATE SyncProductAllocationEntity SET
-    OrganizationId = ?,
-    Name = ?,
-    Begin = ?,
-    `End` = ?,
-    Scope = ?,
-    ProductId = ?,
-    UnitId = ?,
-    Quantity = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncProductAllocationEntity:
-DELETE FROM SyncProductAllocationEntity WHERE Id = ?;

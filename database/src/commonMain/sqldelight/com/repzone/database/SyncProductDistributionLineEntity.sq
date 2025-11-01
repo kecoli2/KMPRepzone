@@ -13,32 +13,3 @@ CREATE TABLE IF NOT EXISTS SyncProductDistributionLineEntity (
     RecordDateUtc INTEGER,
     State INTEGER
 );
-
-selectAllSyncProductDistributionLineEntity:
-SELECT * FROM SyncProductDistributionLineEntity;
-
-selectBySyncProductDistributionLineEntityId:
-SELECT * FROM SyncProductDistributionLineEntity WHERE Id = ?;
-
-insertSyncProductDistributionLineEntity:
-INSERT INTO SyncProductDistributionLineEntity
-VALUES ?;
-
-insertOrReplaceSyncProductDistributionLineEntity:
-INSERT OR REPLACE INTO SyncProductDistributionLineEntity
-VALUES ?;
-
-updateSyncProductDistributionLineEntity:
-UPDATE SyncProductDistributionLineEntity SET
-    DistributionId = ?,
-    ProductId = ?,
-    DisplayOrder = ?,
-    Color = ?,
-    MustHave = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncProductDistributionLineEntity:
-DELETE FROM SyncProductDistributionLineEntity WHERE Id = ?;

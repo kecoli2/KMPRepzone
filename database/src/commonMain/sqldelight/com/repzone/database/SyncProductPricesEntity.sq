@@ -15,34 +15,3 @@ CREATE TABLE IF NOT EXISTS SyncProductPricesEntity (
     State INTEGER,
     TenantId INTEGER
 );
-
-selectAllSyncProductPricesEntity:
-SELECT * FROM SyncProductPricesEntity;
-
-selectBySyncProductPricesEntityId:
-SELECT * FROM SyncProductPricesEntity WHERE Id = ?;
-
-insertSyncProductPricesEntity:
-INSERT INTO SyncProductPricesEntity
-VALUES ?;
-
-insertOrReplaceSyncProductPricesEntity:
-INSERT OR REPLACE INTO SyncProductPricesEntity
-VALUES ?;
-
-updateSyncProductPricesEntity:
-UPDATE SyncProductPricesEntity SET
-    TenantId = ?,
-    OrganizationId = ?,
-    Name = ?,
-    Description = ?,
-    Begin = ?,
-    `End` = ?,
-    ParentId = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncProductPricesEntity:
-DELETE FROM SyncProductPricesEntity WHERE Id = ?;

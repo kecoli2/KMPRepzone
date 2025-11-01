@@ -11,30 +11,3 @@ CREATE TABLE IF NOT EXISTS DynamicListItemsEntity (
     RecordDateUtc INTEGER,
     State INTEGER
 );
-
-selectAllDynamicListItemsEntity:
-SELECT * FROM DynamicListItemsEntity;
-
-selectByDynamicListItemsEntityId:
-SELECT * FROM DynamicListItemsEntity WHERE Id = ?;
-
-insertDynamicListItemsEntity:
-INSERT INTO DynamicListItemsEntity
-VALUES ?;
-
-insertOrReplaceDynamicListItemsEntity:
-INSERT OR REPLACE INTO DynamicListItemsEntity
-VALUES ?;
-
-updateDynamicListItemsEntity:
-UPDATE DynamicListItemsEntity SET
-    EntityId = ?,
-    DynamicListId = ?,
-    ItemType = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteDynamicListItemsEntity:
-DELETE FROM DynamicListItemsEntity WHERE Id = ?;

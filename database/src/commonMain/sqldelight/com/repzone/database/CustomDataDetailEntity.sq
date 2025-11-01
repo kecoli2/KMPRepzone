@@ -8,25 +8,3 @@ CREATE TABLE IF NOT EXISTS CustomDataDetailEntity (
     Value TEXT
 );
 
-selectAllCustomDataDetailEntity:
-SELECT * FROM CustomDataDetailEntity;
-
-selectByCustomDataDetailEntityId:
-SELECT * FROM CustomDataDetailEntity WHERE Id = ?;
-
-insertCustomDataDetailEntity:
-INSERT INTO CustomDataDetailEntity
-VALUES ?;
-
-insertOrReplaceCustomDataDetailEntity:
-INSERT OR REPLACE INTO CustomDataDetailEntity
-VALUES ?;
-
-updateCustomDataDetailEntity:
-UPDATE CustomDataDetailEntity SET
-    HeaderId = ?,
-    Value = ?
-WHERE Id = ?;
-
-deleteCustomDataDetailEntity:
-DELETE FROM CustomDataDetailEntity WHERE Id = ?;

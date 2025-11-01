@@ -13,32 +13,3 @@ CREATE TABLE IF NOT EXISTS SyncFeedbackCategoryEntity (
     State INTEGER,
     TenantId INTEGER
 );
-
-selectAllSyncFeedbackCategoryEntity:
-SELECT * FROM SyncFeedbackCategoryEntity;
-
-selectBySyncFeedbackCategoryEntityId:
-SELECT * FROM SyncFeedbackCategoryEntity WHERE Id = ?;
-
-insertSyncFeedbackCategoryEntity:
-INSERT INTO SyncFeedbackCategoryEntity
-VALUES ?;
-
-insertOrReplaceSyncFeedbackCategoryEntity:
-INSERT OR REPLACE INTO SyncFeedbackCategoryEntity
-VALUES ?;
-
-updateSyncFeedbackCategoryEntity:
-UPDATE SyncFeedbackCategoryEntity SET
-    TenantId = ?,
-    OrganizationId = ?,
-    Name = ?,
-    Description = ?,
-    ParentId = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncFeedbackCategoryEntity:
-DELETE FROM SyncFeedbackCategoryEntity WHERE Id = ?;

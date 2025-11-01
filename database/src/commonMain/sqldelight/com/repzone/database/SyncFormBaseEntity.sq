@@ -14,33 +14,3 @@ CREATE TABLE IF NOT EXISTS SyncFormBaseEntity (
     State INTEGER,
     VisibleOption INTEGER
 );
-
-selectAllSyncFormBaseEntity:
-SELECT * FROM SyncFormBaseEntity;
-
-selectBySyncFormBaseEntityId:
-SELECT * FROM SyncFormBaseEntity WHERE Id = ?;
-
-insertSyncFormBaseEntity:
-INSERT INTO SyncFormBaseEntity
-VALUES ?;
-
-insertOrReplaceSyncFormBaseEntity:
-INSERT OR REPLACE INTO SyncFormBaseEntity
-VALUES ?;
-
-updateSyncFormBaseEntity:
-UPDATE SyncFormBaseEntity SET
-    FormName = ?,
-    Description = ?,
-    Data = ?,
-    FormId = ?,
-    DocumentTypeId = ?,
-    VisibleOption = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncFormBaseEntity:
-DELETE FROM SyncFormBaseEntity WHERE Id = ?;

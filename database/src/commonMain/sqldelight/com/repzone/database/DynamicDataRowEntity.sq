@@ -7,15 +7,3 @@ CREATE TABLE IF NOT EXISTS DynamicDataRowEntity (
     RowValue TEXT,
     UtcLogDate INTEGER
 );
-
-selectAllDynamicDataRowEntity:
-SELECT * FROM DynamicDataRowEntity;
-
-insertDynamicDataRowEntity:
-INSERT INTO DynamicDataRowEntity
-VALUES ?;
-
-insertOrReplaceDynamicDataRowEntity:
-INSERT OR REPLACE INTO DynamicDataRowEntity
-VALUES ?;
-

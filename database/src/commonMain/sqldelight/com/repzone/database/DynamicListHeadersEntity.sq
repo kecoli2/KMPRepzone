@@ -13,32 +13,3 @@ CREATE TABLE IF NOT EXISTS DynamicListHeadersEntity (
     ShareStatus INTEGER,
     State INTEGER
 );
-
-selectAllDynamicListHeadersEntity:
-SELECT * FROM DynamicListHeadersEntity;
-
-selectByDynamicListHeadersEntityId:
-SELECT * FROM DynamicListHeadersEntity WHERE Id = ?;
-
-insertDynamicListHeadersEntity:
-INSERT INTO DynamicListHeadersEntity
-VALUES ?;
-
-insertOrReplaceDynamicListHeadersEntity:
-INSERT OR REPLACE INTO DynamicListHeadersEntity
-VALUES ?;
-
-updateDynamicListHeadersEntity:
-UPDATE DynamicListHeadersEntity SET
-    OrganizationId = ?,
-    Name = ?,
-    Description = ?,
-    ListType = ?,
-    ShareStatus = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteDynamicListHeadersEntity:
-DELETE FROM DynamicListHeadersEntity WHERE Id = ?;

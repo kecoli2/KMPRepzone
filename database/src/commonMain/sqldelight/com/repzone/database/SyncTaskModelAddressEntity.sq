@@ -17,36 +17,3 @@ CREATE TABLE IF NOT EXISTS SyncTaskModelAddressEntity (
     Street2 TEXT,
     TaskStepId INTEGER
 );
-
-selectAllSyncTaskModelAddressEntity:
-SELECT * FROM SyncTaskModelAddressEntity;
-
-selectBySyncTaskModelAddressEntityId:
-SELECT * FROM SyncTaskModelAddressEntity WHERE Id = ?;
-
-insertSyncTaskModelAddressEntity:
-INSERT INTO SyncTaskModelAddressEntity
-VALUES ?;
-
-insertOrReplaceSyncTaskModelAddressEntity:
-INSERT OR REPLACE INTO SyncTaskModelAddressEntity
-VALUES ?;
-
-updateSyncTaskModelAddressEntity:
-UPDATE SyncTaskModelAddressEntity SET
-    TaskStepId = ?,
-    Street1 = ?,
-    Street2 = ?,
-    City = ?,
-    District = ?,
-    Country = ?,
-    PostalCode = ?,
-    Latitude = ?,
-    Longitude = ?,
-    PhoneNumber = ?,
-    RelatedPerson = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncTaskModelAddressEntity:
-DELETE FROM SyncTaskModelAddressEntity WHERE Id = ?;

@@ -9,28 +9,3 @@ CREATE TABLE IF NOT EXISTS SyncTransitStockEntity (
     Stock REAL,
     UnitId INTEGER
 );
-
-selectAllSyncTransitStockEntity:
-SELECT * FROM SyncTransitStockEntity;
-
-selectBySyncTransitStockEntityId:
-SELECT * FROM SyncTransitStockEntity WHERE UniqueId = ?;
-
-insertSyncTransitStockEntity:
-INSERT INTO SyncTransitStockEntity
-VALUES ?;
-
-insertOrReplaceSyncTransitStockEntity:
-INSERT OR REPLACE INTO SyncTransitStockEntity
-VALUES ?;
-
-updateSyncTransitStockEntity:
-UPDATE SyncTransitStockEntity SET
-    OrganizationId = ?,
-    ProductId = ?,
-    UnitId = ?,
-    Stock = ?
-WHERE UniqueId = ?;
-
-deleteSyncTransitStockEntity:
-DELETE FROM SyncTransitStockEntity WHERE UniqueId = ?;

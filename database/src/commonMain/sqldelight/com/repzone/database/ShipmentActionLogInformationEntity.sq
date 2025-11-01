@@ -11,30 +11,3 @@ CREATE TABLE IF NOT EXISTS ShipmentActionLogInformationEntity (
     ShippingDocumentId TEXT,
     ShippingPlanId INTEGER
 );
-
-selectAllShipmentActionLogInformationEntity:
-SELECT * FROM ShipmentActionLogInformationEntity;
-
-selectByShipmentActionLogInformationEntityId:
-SELECT * FROM ShipmentActionLogInformationEntity WHERE Id = ?;
-
-insertShipmentActionLogInformationEntity:
-INSERT INTO ShipmentActionLogInformationEntity
-VALUES ?;
-
-insertOrReplaceShipmentActionLogInformationEntity:
-INSERT OR REPLACE INTO ShipmentActionLogInformationEntity
-VALUES ?;
-
-updateShipmentActionLogInformationEntity:
-UPDATE ShipmentActionLogInformationEntity SET
-    ShippingPlanId = ?,
-    ShippingDocumentId = ?,
-    ReasonId = ?,
-    ActionType = ?,
-    ActionDate = ?,
-    Description = ?
-WHERE Id = ?;
-
-deleteShipmentActionLogInformationEntity:
-DELETE FROM ShipmentActionLogInformationEntity WHERE Id = ?;

@@ -14,33 +14,3 @@ CREATE TABLE IF NOT EXISTS SyncCustomerGroupEntity (
     Shared INTEGER,
     State INTEGER
 );
-
-selectAllSyncCustomerGroupEntity:
-SELECT * FROM SyncCustomerGroupEntity;
-
-selectBySyncCustomerGroupEntityId:
-SELECT * FROM SyncCustomerGroupEntity WHERE Id = ?;
-
-insertSyncCustomerGroupEntity:
-INSERT INTO SyncCustomerGroupEntity
-VALUES ?;
-
-insertOrReplaceSyncCustomerGroupEntity:
-INSERT OR REPLACE INTO SyncCustomerGroupEntity
-VALUES ?;
-
-updateSyncCustomerGroupEntity:
-UPDATE SyncCustomerGroupEntity SET
-    Name = ?,
-    ParentId = ?,
-    OrganizationId = ?,
-    Shared = ?,
-    IsDefault = ?,
-    IconIndex = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncCustomerGroupEntity:
-DELETE FROM SyncCustomerGroupEntity WHERE Id = ?;

@@ -20,39 +20,3 @@ CREATE TABLE IF NOT EXISTS SyncTaskEntity (
     TaskSource INTEGER,
     Title TEXT
 );
-
-selectAllSyncTaskEntity:
-SELECT * FROM SyncTaskEntity;
-
-selectBySyncTaskEntityId:
-SELECT * FROM SyncTaskEntity WHERE Id = ?;
-
-insertSyncTaskEntity:
-INSERT INTO SyncTaskEntity
-VALUES ?;
-
-insertOrReplaceSyncTaskEntity:
-INSERT OR REPLACE INTO SyncTaskEntity
-VALUES ?;
-
-updateSyncTaskEntity:
-UPDATE SyncTaskEntity SET
-    OrganizationId = ?,
-    Title = ?,
-    BeginDate = ?,
-    EndDate = ?,
-    Note = ?,
-    Status = ?,
-    TargetType = ?,
-    TargetTags = ?,
-    TargetGroupId = ?,
-    Target = ?,
-    Customers = ?,
-    TaskSource = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncTaskEntity:
-DELETE FROM SyncTaskEntity WHERE Id = ?;

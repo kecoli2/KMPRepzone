@@ -8,27 +8,3 @@ CREATE TABLE IF NOT EXISTS HotSaleDailyInformationEntity (
     OperationTimeStamp INTEGER,
     OperationType INTEGER
 );
-
-selectAllHotSaleDailyInformationEntity:
-SELECT * FROM HotSaleDailyInformationEntity;
-
-selectByHotSaleDailyInformationEntityId:
-SELECT * FROM HotSaleDailyInformationEntity WHERE Id = ?;
-
-insertHotSaleDailyInformationEntity:
-INSERT INTO HotSaleDailyInformationEntity
-VALUES ?;
-
-insertOrReplaceHotSaleDailyInformationEntity:
-INSERT OR REPLACE INTO HotSaleDailyInformationEntity
-VALUES ?;
-
-updateHotSaleDailyInformationEntity:
-UPDATE HotSaleDailyInformationEntity SET
-    OperationDay = ?,
-    OperationTimeStamp = ?,
-    OperationType = ?
-WHERE Id = ?;
-
-deleteHotSaleDailyInformationEntity:
-DELETE FROM HotSaleDailyInformationEntity WHERE Id = ?;

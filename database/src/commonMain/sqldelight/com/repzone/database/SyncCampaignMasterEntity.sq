@@ -20,39 +20,3 @@ CREATE TABLE IF NOT EXISTS SyncCampaignMasterEntity (
     State INTEGER,
     Title TEXT
 );
-
-selectAllSyncCampaignMasterEntity:
-SELECT * FROM SyncCampaignMasterEntity;
-
-selectBySyncCampaignMasterEntityId:
-SELECT * FROM SyncCampaignMasterEntity WHERE Id = ?;
-
-insertSyncCampaignMasterEntity:
-INSERT INTO SyncCampaignMasterEntity
-VALUES ?;
-
-insertOrReplaceSyncCampaignMasterEntity:
-INSERT OR REPLACE INTO SyncCampaignMasterEntity
-VALUES ?;
-
-updateSyncCampaignMasterEntity:
-UPDATE SyncCampaignMasterEntity SET
-    Title = ?,
-    Start = ?,
-    `End` = ?,
-    DocumentTypes = ?,
-    GroupKey = ?,
-    GroupPriority = ?,
-    IsOptional = ?,
-    OrganizationId = ?,
-    MaxImplementationCount = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?,
-    ImplementationType = ?,
-    MaxImplementationAmount = ?,
-    ImplementationCalcType = ?
-WHERE Id = ?;
-
-deleteSyncCampaignMasterEntity:
-DELETE FROM SyncCampaignMasterEntity WHERE Id = ?;

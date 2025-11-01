@@ -11,30 +11,3 @@ CREATE TABLE IF NOT EXISTS SMSValidationLogInformationEntity (
     Success INTEGER,
     Verified INTEGER
 );
-
-selectAllSMSValidationLogInformationEntity:
-SELECT * FROM SMSValidationLogInformationEntity;
-
-selectBySMSValidationLogInformationEntityId:
-SELECT * FROM SMSValidationLogInformationEntity WHERE Id = ?;
-
-insertSMSValidationLogInformationEntity:
-INSERT INTO SMSValidationLogInformationEntity
-VALUES ?;
-
-insertOrReplaceSMSValidationLogInformationEntity:
-INSERT OR REPLACE INTO SMSValidationLogInformationEntity
-VALUES ?;
-
-updateSMSValidationLogInformationEntity:
-UPDATE SMSValidationLogInformationEntity SET
-    Data = ?,
-    RequestTime = ?,
-    ResponseTime = ?,
-    Success = ?,
-    Result = ?,
-    Verified = ?
-WHERE Id = ?;
-
-deleteSMSValidationLogInformationEntity:
-DELETE FROM SMSValidationLogInformationEntity WHERE Id = ?;

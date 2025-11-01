@@ -7,27 +7,3 @@ CREATE TABLE SyncModuleEntity (
     RequestType INTEGER,
     ModuleType INTEGER
 );
-
-selectAllSyncModuleEntity:
-SELECT * FROM SyncModuleEntity;
-
-selectBySyncModuleEntitySyncType:
-SELECT * FROM SyncModuleEntity WHERE SyncType = ? AND ModuleType = ?;
-
-insertSyncModuleEntity:
-INSERT INTO SyncModuleEntity
-VALUES ?;
-
-insertOrReplaceSyncModuleEntity:
-INSERT OR REPLACE INTO SyncModuleEntity
-VALUES ?;
-
-updateSyncModuleEntity:
-UPDATE SyncModuleEntity SET
-    RequestUrl = ?,
-    RequestFilter = ?,
-    LastSyncDate = ?
-WHERE SyncType = ? AND ModuleType = ?;
-
-deleteSyncModuleEntity:
-DELETE FROM SyncModuleEntity WHERE SyncType = ? AND ModuleType = ?;

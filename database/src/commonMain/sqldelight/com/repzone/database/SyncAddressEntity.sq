@@ -19,38 +19,3 @@ CREATE TABLE IF NOT EXISTS SyncAddressEntity (
     Street TEXT,
     Street2 TEXT
 );
-
-selectAllSyncAddressEntity:
-SELECT * FROM SyncAddressEntity;
-
-selectBySyncAddressEntityId:
-SELECT * FROM SyncAddressEntity WHERE Id = ?;
-
-insertSyncAddressEntity:
-INSERT INTO SyncAddressEntity
-VALUES ?;
-
-insertOrReplaceSyncAddressEntity:
-INSERT OR REPLACE INTO SyncAddressEntity
-VALUES ?;
-
-updateSyncAddressEntity:
-UPDATE SyncAddressEntity SET
-    CustomerId = ?,
-    Street = ?,
-    City = ?,
-    District = ?,
-    Latitude = ?,
-    Longitude = ?,
-    AddressType = ?,
-    AddressName = ?,
-    Contact = ?,
-    PhoneNumber = ?,
-    FaxNumber = ?,
-    Street2 = ?,
-    Country = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncAddressEntity:
-DELETE FROM SyncAddressEntity WHERE Id = ?;

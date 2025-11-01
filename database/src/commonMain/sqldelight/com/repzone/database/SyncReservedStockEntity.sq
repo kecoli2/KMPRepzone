@@ -9,28 +9,3 @@ CREATE TABLE IF NOT EXISTS SyncReservedStockEntity (
     Stock REAL,
     UnitId INTEGER
 );
-
-selectAllSyncReservedStockEntity:
-SELECT * FROM SyncReservedStockEntity;
-
-selectBySyncReservedStockEntityId:
-SELECT * FROM SyncReservedStockEntity WHERE UniqueId = ?;
-
-insertSyncReservedStockEntity:
-INSERT INTO SyncReservedStockEntity
-VALUES ?;
-
-insertOrReplaceSyncReservedStockEntity:
-INSERT OR REPLACE INTO SyncReservedStockEntity
-VALUES ?;
-
-updateSyncReservedStockEntity:
-UPDATE SyncReservedStockEntity SET
-    OrganizationId = ?,
-    ProductId = ?,
-    UnitId = ?,
-    Stock = ?
-WHERE UniqueId = ?;
-
-deleteSyncReservedStockEntity:
-DELETE FROM SyncReservedStockEntity WHERE UniqueId = ?;

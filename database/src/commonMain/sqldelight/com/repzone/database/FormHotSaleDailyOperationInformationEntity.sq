@@ -9,28 +9,3 @@ CREATE TABLE IF NOT EXISTS FormHotSaleDailyOperationInformationEntity (
     LogTimeStamp INTEGER,
     OperationDay INTEGER
 );
-
-selectAllFormHotSaleDailyOperationInformationEntity:
-SELECT * FROM FormHotSaleDailyOperationInformationEntity;
-
-selectByFormHotSaleDailyOperationInformationEntityId:
-SELECT * FROM FormHotSaleDailyOperationInformationEntity WHERE Id = ?;
-
-insertFormHotSaleDailyOperationInformationEntity:
-INSERT INTO FormHotSaleDailyOperationInformationEntity
-VALUES ?;
-
-insertOrReplaceFormHotSaleDailyOperationInformationEntity:
-INSERT OR REPLACE INTO FormHotSaleDailyOperationInformationEntity
-VALUES ?;
-
-updateFormHotSaleDailyOperationInformationEntity:
-UPDATE FormHotSaleDailyOperationInformationEntity SET
-    OperationDay = ?,
-    HotSaleDailyInformationId = ?,
-    FormId = ?,
-    LogTimeStamp = ?
-WHERE Id = ?;
-
-deleteFormHotSaleDailyOperationInformationEntity:
-DELETE FROM FormHotSaleDailyOperationInformationEntity WHERE Id = ?;

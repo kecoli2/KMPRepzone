@@ -17,36 +17,3 @@ CREATE TABLE IF NOT EXISTS SyncTenantDiscountEntity (
     State INTEGER,
     TenantId INTEGER
 );
-
-selectAllSyncTenantDiscountEntity:
-SELECT * FROM SyncTenantDiscountEntity;
-
-selectBySyncTenantDiscountEntityId:
-SELECT * FROM SyncTenantDiscountEntity WHERE Id = ?;
-
-insertSyncTenantDiscountEntity:
-INSERT INTO SyncTenantDiscountEntity
-VALUES ?;
-
-insertOrReplaceSyncTenantDiscountEntity:
-INSERT OR REPLACE INTO SyncTenantDiscountEntity
-VALUES ?;
-
-updateSyncTenantDiscountEntity:
-UPDATE SyncTenantDiscountEntity SET
-    TenantId = ?,
-    `Order` = ?,
-    DiscountType = ?,
-    LineEffectScopeType = ?,
-    IsDeletable = ?,
-    Name = ?,
-    Scope = ?,
-    MaxPercent = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?,
-    Reserved = ?
-WHERE Id = ?;
-
-deleteSyncTenantDiscountEntity:
-DELETE FROM SyncTenantDiscountEntity WHERE Id = ?;

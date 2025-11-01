@@ -12,31 +12,3 @@ CREATE TABLE IF NOT EXISTS SyncManufacturerParameterEntity (
     State INTEGER,
     TenantId INTEGER
 );
-
-selectAllSyncManufacturerParameterEntity:
-SELECT * FROM SyncManufacturerParameterEntity;
-
-selectBySyncManufacturerParameterEntityId:
-SELECT * FROM SyncManufacturerParameterEntity WHERE Id = ?;
-
-insertSyncManufacturerParameterEntity:
-INSERT INTO SyncManufacturerParameterEntity
-VALUES ?;
-
-insertOrReplaceSyncManufacturerParameterEntity:
-INSERT OR REPLACE INTO SyncManufacturerParameterEntity
-VALUES ?;
-
-updateSyncManufacturerParameterEntity:
-UPDATE SyncManufacturerParameterEntity SET
-    TenantId = ?,
-    OrganizationId = ?,
-    ManufacturerId = ?,
-    AllowedUnitIds = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncManufacturerParameterEntity:
-DELETE FROM SyncManufacturerParameterEntity WHERE Id = ?;

@@ -11,30 +11,3 @@ CREATE TABLE IF NOT EXISTS CollectionLogInformationEntity (
     RestServiceTaskId INTEGER,
     SumTotal REAL
 );
-
-selectAllCollectionLogInformationEntity:
-SELECT * FROM CollectionLogInformationEntity;
-
-selectByCollectionLogInformationEntityId:
-SELECT * FROM CollectionLogInformationEntity WHERE Id = ?;
-
-insertCollectionLogInformationEntity:
-INSERT INTO CollectionLogInformationEntity
-VALUES ?;
-
-insertOrReplaceCollectionLogInformationEntity:
-INSERT OR REPLACE INTO CollectionLogInformationEntity
-VALUES ?;
-
-updateCollectionLogInformationEntity:
-UPDATE CollectionLogInformationEntity SET
-    RestServiceTaskId = ?,
-    DocumentUniqueId = ?,
-    CustomerId = ?,
-    CollectionDate = ?,
-    SumTotal = ?,
-    Note = ?
-WHERE Id = ?;
-
-deleteCollectionLogInformationEntity:
-DELETE FROM CollectionLogInformationEntity WHERE Id = ?;

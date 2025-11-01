@@ -16,35 +16,3 @@ CREATE TABLE IF NOT EXISTS SyncAppListEntity (
     TenantId INTEGER,
     Url TEXT
 );
-
-selectAllSyncAppListEntity:
-SELECT * FROM SyncAppListEntity;
-
-selectBySyncAppListEntityId:
-SELECT * FROM SyncAppListEntity WHERE Id = ?;
-
-insertSyncAppListEntity:
-INSERT INTO SyncAppListEntity
-VALUES ?;
-
-insertOrReplaceSyncAppListEntity:
-INSERT OR REPLACE INTO SyncAppListEntity
-VALUES ?;
-
-updateSyncAppListEntity:
-UPDATE SyncAppListEntity SET
-    ApplicationId = ?,
-    Name = ?,
-    Code = ?,
-    Url = ?,
-    ClientKey = ?,
-    ClientSecretKey = ?,
-    TenantId = ?,
-    OrganizationId = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncAppListEntity:
-DELETE FROM SyncAppListEntity WHERE Id = ?;

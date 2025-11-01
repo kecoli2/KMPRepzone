@@ -2,7 +2,11 @@ package com.repzone.data.repository.imp
 
 import com.repzone.core.enums.OrderStatus
 import com.repzone.core.util.extensions.enumToLong
+import com.repzone.database.FormLogInformationEntity
+import com.repzone.database.OrderLogInformationEntity
+import com.repzone.database.SyncRouteAppointmentEntity
 import com.repzone.database.interfaces.IDatabaseManager
+import com.repzone.database.runtime.select
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.model.RepresentSummary
 import com.repzone.domain.repository.IRepresentativeRepository
@@ -25,12 +29,30 @@ class RepresentativeRepositoryImpl(private val iDatabaseManager: IDatabaseManage
     //region Public Method
     override suspend fun getSummary(date: Instant?, routes: List<CustomerItemModel>) : RepresentSummary{
         val activeSprint = iRouteAppointmentRepository.getActiveSprintInformation()
-        val sprintOrders = iDatabaseManager.getDatabase().orderLogInformationEntityQueries.selectByOrderOrderDateAndStatus(activeSprint?.startDate, activeSprint?.endDate,
-            OrderStatus.SENT.enumToLong()).executeAsList()
-        val sprintRoutes = iDatabaseManager.getDatabase().syncRouteAppointmentEntityQueries.selectBySyncRouteAppointmentEntitySprintIdAndState(activeSprint?.id?.toLong(),
-            OrderStatus.SENT.enumToLong()).executeAsList()
-        val sprintForms = iDatabaseManager.getDatabase().formLogInformationEntityQueries.selectByFormLogInformationEntityStartAndDateAndStatus(activeSprint?.startDate, activeSprint?.endDate,
-            OrderStatus.SENT.enumToLong()).executeAsList()
+        val sprintOrders = iDatabaseManager.getSqlDriver().select<OrderLogInformationEntity> {
+            where {
+
+                criteria("OrderDate", greaterThan = activeSprint?.startDate)
+                criteria("OrderDate", lessThan = activeSprint?.endDate)
+                criteria("Status", equal = OrderStatus.SENT.enumToLong())
+
+            }
+        }.toList()
+
+        val sprintRoutes = iDatabaseManager.getSqlDriver().select<SyncRouteAppointmentEntity> {
+            where {
+                criteria("SprintId", activeSprint?.id)
+                criteria("State", OrderStatus.SENT.enumToLong())
+            }
+        }.toList()
+
+        val sprintForms = iDatabaseManager.getSqlDriver().select<FormLogInformationEntity> {
+            where {
+                criteria("RecordDate", greaterThan = activeSprint?.startDate)
+                criteria("RecordDate", lessThan = activeSprint?.endDate)
+                criteria("Status", OrderStatus.SENT.enumToLong())
+            }
+        }.toList()
 
         val summary = if (date != null){
             RepresentSummary(

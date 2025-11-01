@@ -8,27 +8,3 @@ CREATE TABLE IF NOT EXISTS SyncDocumentMapProcessEntity (
     DocumentMapName TEXT,
     Name TEXT
 );
-
-selectAllSyncDocumentMapProcessEntity:
-SELECT * FROM SyncDocumentMapProcessEntity;
-
-selectBySyncDocumentMapProcessEntityId:
-SELECT * FROM SyncDocumentMapProcessEntity WHERE Id = ?;
-
-insertSyncDocumentMapProcessEntity:
-INSERT INTO SyncDocumentMapProcessEntity
-VALUES ?;
-
-insertOrReplaceSyncDocumentMapProcessEntity:
-INSERT OR REPLACE INTO SyncDocumentMapProcessEntity
-VALUES ?;
-
-updateSyncDocumentMapProcessEntity:
-UPDATE SyncDocumentMapProcessEntity SET
-    DocumentMapName = ?,
-    Name = ?,
-    DocProcessType = ?
-WHERE Id = ?;
-
-deleteSyncDocumentMapProcessEntity:
-DELETE FROM SyncDocumentMapProcessEntity WHERE Id = ?;

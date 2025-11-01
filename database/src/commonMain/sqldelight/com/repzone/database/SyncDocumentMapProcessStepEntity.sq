@@ -10,29 +10,3 @@ CREATE TABLE IF NOT EXISTS SyncDocumentMapProcessStepEntity (
     State INTEGER,
     StepOrder INTEGER
 );
-
-selectAllSyncDocumentMapProcessStepEntity:
-SELECT * FROM SyncDocumentMapProcessStepEntity;
-
-selectBySyncDocumentMapProcessStepEntityId:
-SELECT * FROM SyncDocumentMapProcessStepEntity WHERE Id = ?;
-
-insertSyncDocumentMapProcessStepEntity:
-INSERT INTO SyncDocumentMapProcessStepEntity
-VALUES ?;
-
-insertOrReplaceSyncDocumentMapProcessStepEntity:
-INSERT OR REPLACE INTO SyncDocumentMapProcessStepEntity
-VALUES ?;
-
-updateSyncDocumentMapProcessStepEntity:
-UPDATE SyncDocumentMapProcessStepEntity SET
-    ProcessId = ?,
-    Name = ?,
-    ObjectName = ?,
-    StepOrder = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncDocumentMapProcessStepEntity:
-DELETE FROM SyncDocumentMapProcessStepEntity WHERE Id = ?;

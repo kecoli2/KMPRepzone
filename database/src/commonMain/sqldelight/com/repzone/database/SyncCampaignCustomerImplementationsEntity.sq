@@ -11,30 +11,3 @@ CREATE TABLE IF NOT EXISTS SyncCampaignCustomerImplementationsEntity (
     RecordDateUtc INTEGER,
     State INTEGER
 );
-
-selectAllSyncCampaignCustomerImplementationsEntity:
-SELECT * FROM SyncCampaignCustomerImplementationsEntity;
-
-selectBySyncCampaignCustomerImplementationsEntityId:
-SELECT * FROM SyncCampaignCustomerImplementationsEntity WHERE Id = ?;
-
-insertSyncCampaignCustomerImplementationsEntity:
-INSERT INTO SyncCampaignCustomerImplementationsEntity
-VALUES ?;
-
-insertOrReplaceSyncCampaignCustomerImplementationsEntity:
-INSERT OR REPLACE INTO SyncCampaignCustomerImplementationsEntity
-VALUES ?;
-
-updateSyncCampaignCustomerImplementationsEntity:
-UPDATE SyncCampaignCustomerImplementationsEntity SET
-    CampaignMasterId = ?,
-    CustomerId = ?,
-    Count = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncCampaignCustomerImplementationsEntity:
-DELETE FROM SyncCampaignCustomerImplementationsEntity WHERE Id = ?;

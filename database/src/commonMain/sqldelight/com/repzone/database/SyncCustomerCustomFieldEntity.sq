@@ -13,32 +13,3 @@ CREATE TABLE IF NOT EXISTS SyncCustomerCustomFieldEntity (
     State INTEGER,
     Value TEXT
 );
-
-selectAllSyncCustomerCustomFieldEntity:
-SELECT * FROM SyncCustomerCustomFieldEntity;
-
-selectBySyncCustomerCustomFieldEntityId:
-SELECT * FROM SyncCustomerCustomFieldEntity WHERE Id = ?;
-
-insertSyncCustomerCustomFieldEntity:
-INSERT INTO SyncCustomerCustomFieldEntity
-VALUES ?;
-
-insertOrReplaceSyncCustomerCustomFieldEntity:
-INSERT OR REPLACE INTO SyncCustomerCustomFieldEntity
-VALUES ?;
-
-updateSyncCustomerCustomFieldEntity:
-UPDATE SyncCustomerCustomFieldEntity SET
-    ProductId = ?,
-    OrganizationId = ?,
-    FieldId = ?,
-    Value = ?,
-    EntityId = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncCustomerCustomFieldEntity:
-DELETE FROM SyncCustomerCustomFieldEntity WHERE Id = ?;

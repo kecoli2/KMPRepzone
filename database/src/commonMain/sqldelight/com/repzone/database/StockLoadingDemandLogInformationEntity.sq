@@ -9,28 +9,3 @@ CREATE TABLE IF NOT EXISTS StockLoadingDemandLogInformationEntity (
     TotalProductKind INTEGER,
     TotalProductQuantity REAL
 );
-
-selectAllStockLoadingDemandLogInformationEntity:
-SELECT * FROM StockLoadingDemandLogInformationEntity;
-
-selectByStockLoadingDemandLogInformationEntityId:
-SELECT * FROM StockLoadingDemandLogInformationEntity WHERE Id = ?;
-
-insertStockLoadingDemandLogInformationEntity:
-INSERT INTO StockLoadingDemandLogInformationEntity
-VALUES ?;
-
-insertOrReplaceStockLoadingDemandLogInformationEntity:
-INSERT OR REPLACE INTO StockLoadingDemandLogInformationEntity
-VALUES ?;
-
-updateStockLoadingDemandLogInformationEntity:
-UPDATE StockLoadingDemandLogInformationEntity SET
-    RestServiceTaskId = ?,
-    RecordDate = ?,
-    TotalProductKind = ?,
-    TotalProductQuantity = ?
-WHERE Id = ?;
-
-deleteStockLoadingDemandLogInformationEntity:
-DELETE FROM StockLoadingDemandLogInformationEntity WHERE Id = ?;

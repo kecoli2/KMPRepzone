@@ -13,32 +13,3 @@ CREATE TABLE IF NOT EXISTS SyncRepresentativeProductDistributionEntity (
     SalesReturnDistributionListId INTEGER,
     State INTEGER
 );
-
-selectAllSyncRepresentativeProductDistributionEntity:
-SELECT * FROM SyncRepresentativeProductDistributionEntity;
-
-selectBySyncRepresentativeProductDistributionEntityId:
-SELECT * FROM SyncRepresentativeProductDistributionEntity WHERE Id = ?;
-
-insertSyncRepresentativeProductDistributionEntity:
-INSERT INTO SyncRepresentativeProductDistributionEntity
-VALUES ?;
-
-insertOrReplaceSyncRepresentativeProductDistributionEntity:
-INSERT OR REPLACE INTO SyncRepresentativeProductDistributionEntity
-VALUES ?;
-
-updateSyncRepresentativeProductDistributionEntity:
-UPDATE SyncRepresentativeProductDistributionEntity SET
-    GroupId = ?,
-    SalesDistributionListId = ?,
-    SalesReturnDistributionListId = ?,
-    GroupSalesDistributionListId = ?,
-    GroupSalesReturnDistributionListId = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncRepresentativeProductDistributionEntity:
-DELETE FROM SyncRepresentativeProductDistributionEntity WHERE Id = ?;

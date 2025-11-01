@@ -18,37 +18,3 @@ CREATE TABLE IF NOT EXISTS SyncFeedbackListEntity (
     UserId INTEGER,
     UserName TEXT
 );
-
-selectAllSyncFeedbackListEntity:
-SELECT * FROM SyncFeedbackListEntity;
-
-selectBySyncFeedbackListEntityId:
-SELECT * FROM SyncFeedbackListEntity WHERE Id = ?;
-
-insertSyncFeedbackListEntity:
-INSERT INTO SyncFeedbackListEntity
-VALUES ?;
-
-insertOrReplaceSyncFeedbackListEntity:
-INSERT OR REPLACE INTO SyncFeedbackListEntity
-VALUES ?;
-
-updateSyncFeedbackListEntity:
-UPDATE SyncFeedbackListEntity SET
-    OrganizationId = ?,
-    OrganizationName = ?,
-    Message = ?,
-    UserId = ?,
-    UserName = ?,
-    CategoryId = ?,
-    CategoryName = ?,
-    LastFeedbackDate = ?,
-    ParentId = ?,
-    RootId = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncFeedbackListEntity:
-DELETE FROM SyncFeedbackListEntity WHERE Id = ?;

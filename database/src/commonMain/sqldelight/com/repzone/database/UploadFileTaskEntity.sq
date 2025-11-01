@@ -9,28 +9,3 @@ CREATE TABLE IF NOT EXISTS UploadFileTaskEntity (
     Status INTEGER,
     StoreFileName TEXT
 );
-
-selectAllUploadFileTaskEntity:
-SELECT * FROM UploadFileTaskEntity;
-
-selectByUploadFileTaskEntityId:
-SELECT * FROM UploadFileTaskEntity WHERE Id = ?;
-
-insertUploadFileTaskEntity:
-INSERT INTO UploadFileTaskEntity
-VALUES ?;
-
-insertOrReplaceUploadFileTaskEntity:
-INSERT OR REPLACE INTO UploadFileTaskEntity
-VALUES ?;
-
-updateUploadFileTaskEntity:
-UPDATE UploadFileTaskEntity SET
-    FilePath = ?,
-    AzurePath = ?,
-    Status = ?,
-    StoreFileName = ?
-WHERE Id = ?;
-
-deleteUploadFileTaskEntity:
-DELETE FROM UploadFileTaskEntity WHERE Id = ?;

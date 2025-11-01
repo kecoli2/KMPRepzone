@@ -11,30 +11,3 @@ CREATE TABLE IF NOT EXISTS CampaignMasterResultRequiredProductEntity (
     RecordDateUtc INTEGER,
     State INTEGER
 );
-
-selectAllCampaignMasterResultRequiredProductEntity:
-SELECT * FROM CampaignMasterResultRequiredProductEntity;
-
-selectByCampaignMasterResultRequiredProductEntityId:
-SELECT * FROM CampaignMasterResultRequiredProductEntity WHERE Id = ?;
-
-insertCampaignMasterResultRequiredProductEntity:
-INSERT INTO CampaignMasterResultRequiredProductEntity
-VALUES ?;
-
-insertOrReplaceCampaignMasterResultRequiredProductEntity:
-INSERT OR REPLACE INTO CampaignMasterResultRequiredProductEntity
-VALUES ?;
-
-updateCampaignMasterResultRequiredProductEntity:
-UPDATE CampaignMasterResultRequiredProductEntity SET
-    ProductId = ?,
-    Quantity = ?,
-    CampaignMasterResultId = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteCampaignMasterResultRequiredProductEntity:
-DELETE FROM CampaignMasterResultRequiredProductEntity WHERE Id = ?;

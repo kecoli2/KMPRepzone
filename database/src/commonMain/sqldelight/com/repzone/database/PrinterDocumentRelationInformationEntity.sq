@@ -10,29 +10,3 @@ CREATE TABLE IF NOT EXISTS PrinterDocumentRelationInformationEntity (
     PrinterType INTEGER,
     State INTEGER
 );
-
-selectAllPrinterDocumentRelationInformationEntity:
-SELECT * FROM PrinterDocumentRelationInformationEntity;
-
-selectByPrinterDocumentRelationInformationEntityId:
-SELECT * FROM PrinterDocumentRelationInformationEntity WHERE DocumentMapId = ?;
-
-insertPrinterDocumentRelationInformationEntity:
-INSERT INTO PrinterDocumentRelationInformationEntity
-VALUES ?;
-
-insertOrReplacePrinterDocumentRelationInformationEntity:
-INSERT OR REPLACE INTO PrinterDocumentRelationInformationEntity
-VALUES ?;
-
-updatePrinterDocumentRelationInformationEntity:
-UPDATE PrinterDocumentRelationInformationEntity SET
-    PrinterName = ?,
-    PrinterAddress = ?,
-    State = ?,
-    PrinterType = ?,
-    PaperWidth = ?
-WHERE DocumentMapId = ?;
-
-deletePrinterDocumentRelationInformationEntity:
-DELETE FROM PrinterDocumentRelationInformationEntity WHERE DocumentMapId = ?;

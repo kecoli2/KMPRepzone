@@ -12,31 +12,3 @@ CREATE TABLE IF NOT EXISTS StockTransactionLogInformationEntity (
     TransactionDate INTEGER,
     WarehouseType INTEGER
 );
-
-selectAllStockTransactionLogInformationEntity:
-SELECT * FROM StockTransactionLogInformationEntity;
-
-selectByStockTransactionLogInformationEntityId:
-SELECT * FROM StockTransactionLogInformationEntity WHERE Id = ?;
-
-insertStockTransactionLogInformationEntity:
-INSERT INTO StockTransactionLogInformationEntity
-VALUES ?;
-
-insertOrReplaceStockTransactionLogInformationEntity:
-INSERT OR REPLACE INTO StockTransactionLogInformationEntity
-VALUES ?;
-
-updateStockTransactionLogInformationEntity:
-UPDATE StockTransactionLogInformationEntity SET
-    TransactionDate = ?,
-    ProductId = ?,
-    Amount = ?,
-    Direction = ?,
-    DocumentGroup = ?,
-    ReferenceId = ?,
-    WarehouseType = ?
-WHERE Id = ?;
-
-deleteStockTransactionLogInformationEntity:
-DELETE FROM StockTransactionLogInformationEntity WHERE Id = ?;

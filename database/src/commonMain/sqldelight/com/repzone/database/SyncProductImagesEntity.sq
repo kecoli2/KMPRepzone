@@ -11,30 +11,3 @@ CREATE TABLE IF NOT EXISTS SyncProductImagesEntity (
     RecordDateUtc INTEGER,
     State INTEGER
 );
-
-selectAllSyncProductImagesEntity:
-SELECT * FROM SyncProductImagesEntity;
-
-selectBySyncProductImagesEntityId:
-SELECT * FROM SyncProductImagesEntity WHERE Id = ?;
-
-insertSyncProductImagesEntity:
-INSERT INTO SyncProductImagesEntity
-VALUES ?;
-
-insertOrReplaceSyncProductImagesEntity:
-INSERT OR REPLACE INTO SyncProductImagesEntity
-VALUES ?;
-
-updateSyncProductImagesEntity:
-UPDATE SyncProductImagesEntity SET
-    FileId = ?,
-    ProductId = ?,
-    ImageUrl = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncProductImagesEntity:
-DELETE FROM SyncProductImagesEntity WHERE Id = ?;

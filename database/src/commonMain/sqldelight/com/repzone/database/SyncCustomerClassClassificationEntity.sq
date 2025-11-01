@@ -13,32 +13,3 @@ CREATE TABLE IF NOT EXISTS SyncCustomerClassClassificationEntity (
     ShareStatus INTEGER,
     State INTEGER
 );
-
-selectAllSyncCustomerClassClassificationEntity:
-SELECT * FROM SyncCustomerClassClassificationEntity;
-
-selectBySyncCustomerClassClassificationEntityId:
-SELECT * FROM SyncCustomerClassClassificationEntity WHERE Id = ?;
-
-insertSyncCustomerClassClassificationEntity:
-INSERT INTO SyncCustomerClassClassificationEntity
-VALUES ?;
-
-insertOrReplaceSyncCustomerClassClassificationEntity:
-INSERT OR REPLACE INTO SyncCustomerClassClassificationEntity
-VALUES ?;
-
-updateSyncCustomerClassClassificationEntity:
-UPDATE SyncCustomerClassClassificationEntity SET
-    ClassificationId = ?,
-    ClassificationName = ?,
-    CustomerId = ?,
-    OrganizationId = ?,
-    ShareStatus = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncCustomerClassClassificationEntity:
-DELETE FROM SyncCustomerClassClassificationEntity WHERE Id = ?;

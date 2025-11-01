@@ -11,33 +11,3 @@ CREATE TABLE IF NOT EXISTS SyncEventReasonEntity (
     State INTEGER,
     Tags TEXT
 );
-
-selectAllSyncEventReasonEntity:
-SELECT * FROM SyncEventReasonEntity;
-
-selectBySyncEventReasonEntityId:
-SELECT * FROM SyncEventReasonEntity WHERE Id = ?;
-
-selectBySyncEventReasonEntityStateNotEqualAndReasonTypeEqual:
-SELECT * FROM SyncEventReasonEntity WHERE State != ? AND ReasonType = ?;
-
-insertSyncEventReasonEntity:
-INSERT INTO SyncEventReasonEntity
-VALUES ?;
-
-insertOrReplaceSyncEventReasonEntity:
-INSERT OR REPLACE INTO SyncEventReasonEntity
-VALUES ?;
-
-updateSyncEventReasonEntity:
-UPDATE SyncEventReasonEntity SET
-    Name = ?,
-    Tags = ?,
-    ReasonType = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncEventReasonEntity:
-DELETE FROM SyncEventReasonEntity WHERE Id = ?;

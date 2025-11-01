@@ -19,38 +19,3 @@ CREATE TABLE IF NOT EXISTS TaskLogInformationEntity (
     VisitId INTEGER,
     VisitUniqueId TEXT
 );
-
-selectAllTaskLogInformationEntity:
-SELECT * FROM TaskLogInformationEntity;
-
-selectByTaskLogInformationEntityId:
-SELECT * FROM TaskLogInformationEntity WHERE Id = ?;
-
-insertTaskLogInformationEntity:
-INSERT INTO TaskLogInformationEntity
-VALUES ?;
-
-insertOrReplaceTaskLogInformationEntity:
-INSERT OR REPLACE INTO TaskLogInformationEntity
-VALUES ?;
-
-updateTaskLogInformationEntity:
-UPDATE TaskLogInformationEntity SET
-    TaskId = ?,
-    StepId = ?,
-    Latitude = ?,
-    Longitude = ?,
-    FormId = ?,
-    FileUrl = ?,
-    Date = ?,
-    Status = ?,
-    Note = ?,
-    CustomerId = ?,
-    VisitId = ?,
-    VisitUniqueId = ?,
-    UniqueId = ?,
-    FormDataUniqueId = ?
-WHERE Id = ?;
-
-deleteTaskLogInformationEntity:
-DELETE FROM TaskLogInformationEntity WHERE Id = ?;

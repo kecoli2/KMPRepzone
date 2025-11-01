@@ -15,34 +15,3 @@ CREATE TABLE IF NOT EXISTS SyncRepresentativeAllocationEntity (
     Scope INTEGER,
     State INTEGER
 );
-
-selectAllSyncRepresentativeAllocationEntity:
-SELECT * FROM SyncRepresentativeAllocationEntity;
-
-selectBySyncRepresentativeAllocationEntityId:
-SELECT * FROM SyncRepresentativeAllocationEntity WHERE Id = ?;
-
-insertSyncRepresentativeAllocationEntity:
-INSERT INTO SyncRepresentativeAllocationEntity
-VALUES ?;
-
-insertOrReplaceSyncRepresentativeAllocationEntity:
-INSERT OR REPLACE INTO SyncRepresentativeAllocationEntity
-VALUES ?;
-
-updateSyncRepresentativeAllocationEntity:
-UPDATE SyncRepresentativeAllocationEntity SET
-    OrganizationId = ?,
-    Name = ?,
-    Begin = ?,
-    `End` = ?,
-    Scope = ?,
-    RepresentativeId = ?,
-    Amount = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncRepresentativeAllocationEntity:
-DELETE FROM SyncRepresentativeAllocationEntity WHERE Id = ?;

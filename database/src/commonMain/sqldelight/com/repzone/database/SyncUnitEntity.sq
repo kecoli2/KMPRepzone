@@ -11,30 +11,3 @@ CREATE TABLE IF NOT EXISTS SyncUnitEntity (
     State INTEGER,
     TenantId INTEGER
 );
-
-selectAllSyncUnitEntity:
-SELECT * FROM SyncUnitEntity;
-
-selectBySyncUnitEntityId:
-SELECT * FROM SyncUnitEntity WHERE Id = ?;
-
-insertSyncUnitEntity:
-INSERT INTO SyncUnitEntity
-VALUES ?;
-
-insertOrReplaceSyncUnitEntity:
-INSERT OR REPLACE INTO SyncUnitEntity
-VALUES ?;
-
-updateSyncUnitEntity:
-UPDATE SyncUnitEntity SET
-    TenantId = ?,
-    Name = ?,
-    IsVisible = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncUnitEntity:
-DELETE FROM SyncUnitEntity WHERE Id = ?;

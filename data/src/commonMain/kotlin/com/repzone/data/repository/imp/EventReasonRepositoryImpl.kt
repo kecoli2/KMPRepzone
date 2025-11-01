@@ -3,7 +3,9 @@ package com.repzone.data.repository.imp
 import com.repzone.core.enums.RepresentativeEventReasonType
 import com.repzone.core.util.extensions.enumToLong
 import com.repzone.database.AppDatabase
+import com.repzone.database.SyncEventReasonEntity
 import com.repzone.database.interfaces.IDatabaseManager
+import com.repzone.database.runtime.select
 import com.repzone.domain.repository.IEventReasonRepository
 import com.repzone.domain.util.models.EventReasonCode
 import kotlinx.coroutines.runBlocking
@@ -21,7 +23,10 @@ class EventReasonRepositoryImpl(private var iDatabaseManager: IDatabaseManager):
     //region Public Method
     override fun getEventReasonList(type: RepresentativeEventReasonType): List<EventReasonCode> {
         return runBlocking {
-            iDatabaseManager.getDatabase().syncEventReasonEntityQueries.selectBySyncEventReasonEntityStateNotEqualAndReasonTypeEqual(4, type.enumToLong()).executeAsList().map {
+            iDatabaseManager.getSqlDriver().select<SyncEventReasonEntity> { where {
+                criteria("State", notEqual = 4)
+                criteria("ReasonType", equal = type.enumToLong())
+            }}.toList().map {
                 EventReasonCode(
                     id = it.Id.toInt(),
                     name = it.Name,

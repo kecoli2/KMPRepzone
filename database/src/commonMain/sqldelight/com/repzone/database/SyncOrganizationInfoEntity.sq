@@ -17,36 +17,3 @@ CREATE TABLE IF NOT EXISTS SyncOrganizationInfoEntity (
     Street2 TEXT,
     Title TEXT
 );
-
-selectAllSyncOrganizationInfoEntity:
-SELECT * FROM SyncOrganizationInfoEntity;
-
-selectBySyncOrganizationInfoEntityId:
-SELECT * FROM SyncOrganizationInfoEntity WHERE Id = ?;
-
-insertSyncOrganizationInfoEntity:
-INSERT INTO SyncOrganizationInfoEntity
-VALUES ?;
-
-insertOrReplaceSyncOrganizationInfoEntity:
-INSERT OR REPLACE INTO SyncOrganizationInfoEntity
-VALUES ?;
-
-updateSyncOrganizationInfoEntity:
-UPDATE SyncOrganizationInfoEntity SET
-    Name = ?,
-    City = ?,
-    Country = ?,
-    Street1 = ?,
-    Street2 = ?,
-    PostalCode = ?,
-    District = ?,
-    PhoneNumber = ?,
-    FaxNumber = ?,
-    LogoPath = ?,
-    Title = ?,
-    IsEOrganization = ?
-WHERE Id = ?;
-
-deleteSyncOrganizationInfoEntity:
-DELETE FROM SyncOrganizationInfoEntity WHERE Id = ?;

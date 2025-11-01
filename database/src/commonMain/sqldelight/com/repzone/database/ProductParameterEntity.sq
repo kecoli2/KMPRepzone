@@ -10,15 +10,3 @@ CREATE TABLE IF NOT EXISTS ProductParameterEntity (
     OrganizationId INTEGER,
     ProductId INTEGER
 );
-
-selectAllProductParameterEntity:
-SELECT * FROM ProductParameterEntity;
-
-insertProductParameterEntity:
-INSERT INTO ProductParameterEntity
-VALUES ?;
-
-insertOrReplaceProductParameterEntity:
-INSERT OR REPLACE INTO ProductParameterEntity
-VALUES ?;
-

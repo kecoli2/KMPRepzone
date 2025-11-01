@@ -118,9 +118,7 @@ import com.repzone.data.repository.imp.ActionMenuRepositoryImpl
 import com.repzone.data.repository.imp.CustomerListRepositoryImpl
 import com.repzone.data.repository.imp.CustomerRepositoryImpl
 import com.repzone.data.repository.imp.EventReasonRepositoryImpl
-import com.repzone.data.repository.imp.MobileModuleParameterRepositoryImpl
 import com.repzone.data.repository.imp.MobileModuleParameterRepositoryImplPreview
-import com.repzone.data.repository.imp.ProductRepositoryImpl
 import com.repzone.data.repository.imp.RepresentativeRepositoryImpl
 import com.repzone.data.repository.imp.RouteAppointmentRepositoryImpl
 import com.repzone.data.repository.imp.SyncModuleRepositoryImpl
@@ -357,7 +355,6 @@ import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.ICustomerRepository
 import com.repzone.domain.repository.IEventReasonRepository
 import com.repzone.domain.repository.IMobileModuleParameterRepository
-import com.repzone.domain.repository.IProductRepository
 import com.repzone.domain.repository.IRepresentativeRepository
 import com.repzone.domain.repository.IRouteAppointmentRepository
 import com.repzone.domain.repository.ISyncModuleRepository
@@ -381,7 +378,6 @@ val RepositoryModulePreview = module {
     //region REPOSITORY
     single<ICustomerRepository> { CustomerRepositoryImpl(get(named("CustomerEntityDbMapperInterface")), get()) }
     single<ICustomerListRepository> { CustomerListRepositoryImpl(get(), get(), get(), get(named("CustomerItemViewEntityDbMapper")), get()) }
-    single<IProductRepository> { ProductRepositoryImpl(get(named("ProductEntityDbMapperInterface")), get()) }
     single<ISyncModuleRepository> { SyncModuleRepositoryImpl(get(named("SyncModuleEntityDbMapper")), get()) }
     single<IMobileModuleParameterRepository>{ MobileModuleParameterRepositoryImplPreview(get(), get(named("SyncPackageCustomFieldProductEntityDbMapper")), get()) }
     factory<IRepresentativeRepository>{ RepresentativeRepositoryImpl(get(), get()) }

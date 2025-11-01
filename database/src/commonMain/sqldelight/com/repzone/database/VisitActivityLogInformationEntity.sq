@@ -9,28 +9,3 @@ CREATE TABLE IF NOT EXISTS VisitActivityLogInformationEntity (
     VisitActivityId INTEGER,
     VisitId INTEGER
 );
-
-selectAllVisitActivityLogInformationEntity:
-SELECT * FROM VisitActivityLogInformationEntity;
-
-selectByVisitActivityLogInformationEntityId:
-SELECT * FROM VisitActivityLogInformationEntity WHERE Id = ?;
-
-insertVisitActivityLogInformationEntity:
-INSERT INTO VisitActivityLogInformationEntity
-VALUES ?;
-
-insertOrReplaceVisitActivityLogInformationEntity:
-INSERT OR REPLACE INTO VisitActivityLogInformationEntity
-VALUES ?;
-
-updateVisitActivityLogInformationEntity:
-UPDATE VisitActivityLogInformationEntity SET
-    VisitActivityId = ?,
-    VisitId = ?,
-    ActionDate = ?,
-    ActionType = ?
-WHERE Id = ?;
-
-deleteVisitActivityLogInformationEntity:
-DELETE FROM VisitActivityLogInformationEntity WHERE Id = ?;

@@ -14,33 +14,3 @@ CREATE TABLE IF NOT EXISTS SyncProductUnitParameterEntity (
     RecordDateUtc INTEGER,
     State INTEGER
 );
-
-selectAllSyncProductUnitParameterEntity:
-SELECT * FROM SyncProductUnitParameterEntity;
-
-selectBySyncProductUnitParameterEntityId:
-SELECT * FROM SyncProductUnitParameterEntity WHERE Id = ?;
-
-insertSyncProductUnitParameterEntity:
-INSERT INTO SyncProductUnitParameterEntity
-VALUES ?;
-
-insertOrReplaceSyncProductUnitParameterEntity:
-INSERT OR REPLACE INTO SyncProductUnitParameterEntity
-VALUES ?;
-
-updateSyncProductUnitParameterEntity:
-UPDATE SyncProductUnitParameterEntity SET
-    ProductId = ?,
-    ProductUnitId = ?,
-    MinOrderQuantity = ?,
-    MaxOrderQuantity = ?,
-    EntityType = ?,
-    EntityId = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncProductUnitParameterEntity:
-DELETE FROM SyncProductUnitParameterEntity WHERE Id = ?;

@@ -14,33 +14,3 @@ CREATE TABLE IF NOT EXISTS RestServiceTaskEntity (
     Result TEXT,
     Status INTEGER
 );
-
-selectAllRestServiceTaskEntity:
-SELECT * FROM RestServiceTaskEntity;
-
-selectByRestServiceTaskEntityId:
-SELECT * FROM RestServiceTaskEntity WHERE Id = ?;
-
-insertRestServiceTaskEntity:
-INSERT INTO RestServiceTaskEntity
-VALUES ?;
-
-insertOrReplaceRestServiceTaskEntity:
-INSERT OR REPLACE INTO RestServiceTaskEntity
-VALUES ?;
-
-updateRestServiceTaskEntity:
-UPDATE RestServiceTaskEntity SET
-    RequestObject = ?,
-    RequestType = ?,
-    MethodPath = ?,
-    CallType = ?,
-    Status = ?,
-    Result = ?,
-    ActionName = ?,
-    CreatedTime = ?,
-    RequestObjectUniqueID = ?
-WHERE Id = ?;
-
-deleteRestServiceTaskEntity:
-DELETE FROM RestServiceTaskEntity WHERE Id = ?;

@@ -11,15 +11,3 @@ CREATE TABLE IF NOT EXISTS SyncStepAttributeEntity (
     Value TEXT,
     ValueType INTEGER
 );
-
-selectAllSyncStepAttributeEntity:
-SELECT * FROM SyncStepAttributeEntity;
-
-insertSyncStepAttributeEntity:
-INSERT INTO SyncStepAttributeEntity
-VALUES ?;
-
-insertOrReplaceSyncStepAttributeEntity:
-INSERT OR REPLACE INTO SyncStepAttributeEntity
-VALUES ?;
-

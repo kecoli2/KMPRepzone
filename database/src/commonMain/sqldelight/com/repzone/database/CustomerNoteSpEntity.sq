@@ -19,38 +19,3 @@ CREATE TABLE IF NOT EXISTS CustomerNoteSpEntity (
     UserId INTEGER,
     UserName TEXT
 );
-
-selectAllCustomerNoteSpEntity:
-SELECT * FROM CustomerNoteSpEntity;
-
-selectByCustomerNoteSpEntityId:
-SELECT * FROM CustomerNoteSpEntity WHERE Id = ?;
-
-insertCustomerNoteSpEntity:
-INSERT INTO CustomerNoteSpEntity
-VALUES ?;
-
-insertOrReplaceCustomerNoteSpEntity:
-INSERT OR REPLACE INTO CustomerNoteSpEntity
-VALUES ?;
-
-updateCustomerNoteSpEntity:
-UPDATE CustomerNoteSpEntity SET
-    CustomerId = ?,
-    OrganizationId = ?,
-    NoteTypeId = ?,
-    BeginDate = ?,
-    EndDate = ?,
-    IsPrivate = ?,
-    Note = ?,
-    UserId = ?,
-    UserName = ?,
-    RecordDateUtc = ?,
-    ModificationDateUtc = ?,
-    State = ?,
-    Status = ?,
-    PackageId = ?
-WHERE Id = ?;
-
-deleteCustomerNoteSpEntity:
-DELETE FROM CustomerNoteSpEntity WHERE Id = ?;

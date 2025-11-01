@@ -14,33 +14,3 @@ CREATE TABLE IF NOT EXISTS SyncVisitActivityDefinitionEntity (
     RepresentativeTags TEXT,
     State INTEGER
 );
-
-selectAllSyncVisitActivityDefinitionEntity:
-SELECT * FROM SyncVisitActivityDefinitionEntity;
-
-selectBySyncVisitActivityDefinitionEntityId:
-SELECT * FROM SyncVisitActivityDefinitionEntity WHERE Id = ?;
-
-insertSyncVisitActivityDefinitionEntity:
-INSERT INTO SyncVisitActivityDefinitionEntity
-VALUES ?;
-
-insertOrReplaceSyncVisitActivityDefinitionEntity:
-INSERT OR REPLACE INTO SyncVisitActivityDefinitionEntity
-VALUES ?;
-
-updateSyncVisitActivityDefinitionEntity:
-UPDATE SyncVisitActivityDefinitionEntity SET
-    CustomerTags = ?,
-    RepresentativeTags = ?,
-    FormTags = ?,
-    Name = ?,
-    Descriptions = ?,
-    `Order` = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncVisitActivityDefinitionEntity:
-DELETE FROM SyncVisitActivityDefinitionEntity WHERE Id = ?;

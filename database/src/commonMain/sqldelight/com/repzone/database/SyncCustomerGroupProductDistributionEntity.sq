@@ -16,35 +16,3 @@ CREATE TABLE IF NOT EXISTS SyncCustomerGroupProductDistributionEntity (
     RecordDateUtc INTEGER,
     State INTEGER
 );
-
-selectAllSyncCustomerGroupProductDistributionEntity:
-SELECT * FROM SyncCustomerGroupProductDistributionEntity;
-
-selectBySyncCustomerGroupProductDistributionEntityId:
-SELECT * FROM SyncCustomerGroupProductDistributionEntity WHERE Id = ?;
-
-insertSyncCustomerGroupProductDistributionEntity:
-INSERT INTO SyncCustomerGroupProductDistributionEntity
-VALUES ?;
-
-insertOrReplaceSyncCustomerGroupProductDistributionEntity:
-INSERT OR REPLACE INTO SyncCustomerGroupProductDistributionEntity
-VALUES ?;
-
-updateSyncCustomerGroupProductDistributionEntity:
-UPDATE SyncCustomerGroupProductDistributionEntity SET
-    OrganizationId = ?,
-    ProductSalesDistributionListId = ?,
-    ProductSalesReturnDistributionListId = ?,
-    PriceSalesDistributionListId = ?,
-    PriceSalesReturnDistributionListId = ?,
-    PriceSalesDamagedListId = ?,
-    PricePurchaseReturnDamagedListId = ?,
-    MustStockListId = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncCustomerGroupProductDistributionEntity:
-DELETE FROM SyncCustomerGroupProductDistributionEntity WHERE Id = ?;

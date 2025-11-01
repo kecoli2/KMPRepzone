@@ -94,7 +94,7 @@ object MetadataGenerator {
         return CodeBlock.builder()
             .add("%T(\n", ClassName("com.repzone.database.runtime", "ColumnMetadata"))
             .indent()
-            .add("name = %S,\n", column.name)
+            .add("name = %S,\n", specialFieldName(column.name))
             .add("type = %T.%L,\n", columnTypeEnum, column.type)
             .add("isNullable = %L,\n", !column.isNotNull)
             .add("isPrimaryKey = %L,\n", column.isPrimaryKey)
@@ -227,4 +227,9 @@ object MetadataGenerator {
             else -> "NO_ACTION"
         }
     }
+
+    private fun specialFieldName(fieldName: String): String {
+        return "`${fieldName}`"
+    }
+
 }

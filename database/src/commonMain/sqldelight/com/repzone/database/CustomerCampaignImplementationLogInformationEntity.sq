@@ -8,27 +8,3 @@ CREATE TABLE IF NOT EXISTS CustomerCampaignImplementationLogInformationEntity (
     Count INTEGER,
     CustomerId INTEGER
 );
-
-selectAllCustomerCampaignImplementationLogInformationEntity:
-SELECT * FROM CustomerCampaignImplementationLogInformationEntity;
-
-selectByCustomerCampaignImplementationLogInformationEntityId:
-SELECT * FROM CustomerCampaignImplementationLogInformationEntity WHERE Id = ?;
-
-insertCustomerCampaignImplementationLogInformationEntity:
-INSERT INTO CustomerCampaignImplementationLogInformationEntity
-VALUES ?;
-
-insertOrReplaceCustomerCampaignImplementationLogInformationEntity:
-INSERT OR REPLACE INTO CustomerCampaignImplementationLogInformationEntity
-VALUES ?;
-
-updateCustomerCampaignImplementationLogInformationEntity:
-UPDATE CustomerCampaignImplementationLogInformationEntity SET
-    CampaignMasterId = ?,
-    CustomerId = ?,
-    Count = ?
-WHERE Id = ?;
-
-deleteCustomerCampaignImplementationLogInformationEntity:
-DELETE FROM CustomerCampaignImplementationLogInformationEntity WHERE Id = ?;

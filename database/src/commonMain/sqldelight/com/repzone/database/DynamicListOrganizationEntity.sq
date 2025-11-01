@@ -11,30 +11,3 @@ CREATE TABLE IF NOT EXISTS DynamicListOrganizationEntity (
     RecordDateUtc INTEGER,
     State INTEGER
 );
-
-selectAllDynamicListOrganizationEntity:
-SELECT * FROM DynamicListOrganizationEntity;
-
-selectByDynamicListOrganizationEntityId:
-SELECT * FROM DynamicListOrganizationEntity WHERE Id = ?;
-
-insertDynamicListOrganizationEntity:
-INSERT INTO DynamicListOrganizationEntity
-VALUES ?;
-
-insertOrReplaceDynamicListOrganizationEntity:
-INSERT OR REPLACE INTO DynamicListOrganizationEntity
-VALUES ?;
-
-updateDynamicListOrganizationEntity:
-UPDATE DynamicListOrganizationEntity SET
-    CanUse = ?,
-    OrganizationId = ?,
-    DynamicListId = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteDynamicListOrganizationEntity:
-DELETE FROM DynamicListOrganizationEntity WHERE Id = ?;

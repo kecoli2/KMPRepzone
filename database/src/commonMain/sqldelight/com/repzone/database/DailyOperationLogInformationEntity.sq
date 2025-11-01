@@ -12,31 +12,3 @@ CREATE TABLE IF NOT EXISTS DailyOperationLogInformationEntity (
     RepzoneLeaveRequestUniqueId TEXT,
     Type INTEGER
 );
-
-selectAllDailyOperationLogInformationEntity:
-SELECT * FROM DailyOperationLogInformationEntity;
-
-selectByDailyOperationLogInformationEntityId:
-SELECT * FROM DailyOperationLogInformationEntity WHERE Id = ?;
-
-insertDailyOperationLogInformationEntity:
-INSERT INTO DailyOperationLogInformationEntity
-VALUES ?;
-
-insertOrReplaceDailyOperationLogInformationEntity:
-INSERT OR REPLACE INTO DailyOperationLogInformationEntity
-VALUES ?;
-
-updateDailyOperationLogInformationEntity:
-UPDATE DailyOperationLogInformationEntity SET
-    Date = ?,
-    LocalTime = ?,
-    Type = ?,
-    Description = ?,
-    BatteryLevel = ?,
-    RepzoneLeaveRequestId = ?,
-    RepzoneLeaveRequestUniqueId = ?
-WHERE Id = ?;
-
-deleteDailyOperationLogInformationEntity:
-DELETE FROM DailyOperationLogInformationEntity WHERE Id = ?;

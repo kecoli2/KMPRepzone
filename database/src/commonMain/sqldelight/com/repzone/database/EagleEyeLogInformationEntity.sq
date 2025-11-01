@@ -8,27 +8,3 @@ CREATE TABLE IF NOT EXISTS EagleEyeLogInformationEntity (
     LocDate INTEGER,
     Status INTEGER
 );
-
-selectAllEagleEyeLogInformationEntity:
-SELECT * FROM EagleEyeLogInformationEntity;
-
-selectByEagleEyeLogInformationEntityId:
-SELECT * FROM EagleEyeLogInformationEntity WHERE Id = ?;
-
-insertEagleEyeLogInformationEntity:
-INSERT INTO EagleEyeLogInformationEntity
-VALUES ?;
-
-insertOrReplaceEagleEyeLogInformationEntity:
-INSERT OR REPLACE INTO EagleEyeLogInformationEntity
-VALUES ?;
-
-updateEagleEyeLogInformationEntity:
-UPDATE EagleEyeLogInformationEntity SET
-    Data = ?,
-    LocDate = ?,
-    Status = ?
-WHERE Id = ?;
-
-deleteEagleEyeLogInformationEntity:
-DELETE FROM EagleEyeLogInformationEntity WHERE Id = ?;

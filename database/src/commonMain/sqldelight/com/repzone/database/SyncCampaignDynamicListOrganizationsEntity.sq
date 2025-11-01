@@ -12,31 +12,3 @@ CREATE TABLE IF NOT EXISTS SyncCampaignDynamicListOrganizationsEntity (
     State INTEGER,
     TenantId INTEGER
 );
-
-selectAllSyncCampaignDynamicListOrganizationsEntity:
-SELECT * FROM SyncCampaignDynamicListOrganizationsEntity;
-
-selectBySyncCampaignDynamicListOrganizationsEntityId:
-SELECT * FROM SyncCampaignDynamicListOrganizationsEntity WHERE Id = ?;
-
-insertSyncCampaignDynamicListOrganizationsEntity:
-INSERT INTO SyncCampaignDynamicListOrganizationsEntity
-VALUES ?;
-
-insertOrReplaceSyncCampaignDynamicListOrganizationsEntity:
-INSERT OR REPLACE INTO SyncCampaignDynamicListOrganizationsEntity
-VALUES ?;
-
-updateSyncCampaignDynamicListOrganizationsEntity:
-UPDATE SyncCampaignDynamicListOrganizationsEntity SET
-    TenantId = ?,
-    OrganizationId = ?,
-    CampaignMasterId = ?,
-    DynamicListId = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncCampaignDynamicListOrganizationsEntity:
-DELETE FROM SyncCampaignDynamicListOrganizationsEntity WHERE Id = ?;

@@ -14,33 +14,3 @@ CREATE TABLE IF NOT EXISTS SyncPaymentPlanEntity (
     State INTEGER,
     TenantId INTEGER
 );
-
-selectAllSyncPaymentPlanEntity:
-SELECT * FROM SyncPaymentPlanEntity;
-
-selectBySyncPaymentPlanEntityId:
-SELECT * FROM SyncPaymentPlanEntity WHERE Id = ?;
-
-insertSyncPaymentPlanEntity:
-INSERT INTO SyncPaymentPlanEntity
-VALUES ?;
-
-insertOrReplaceSyncPaymentPlanEntity:
-INSERT OR REPLACE INTO SyncPaymentPlanEntity
-VALUES ?;
-
-updateSyncPaymentPlanEntity:
-UPDATE SyncPaymentPlanEntity SET
-    TenantId = ?,
-    Name = ?,
-    EdiCode = ?,
-    IsDefault = ?,
-    Ids = ?,
-    Code = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncPaymentPlanEntity:
-DELETE FROM SyncPaymentPlanEntity WHERE Id = ?;

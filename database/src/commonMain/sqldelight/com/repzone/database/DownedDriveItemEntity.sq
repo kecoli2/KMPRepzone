@@ -7,26 +7,3 @@ CREATE TABLE IF NOT EXISTS DownedDriveItemEntity (
     DownloadedPath TEXT,
     DriveItemJson TEXT
 );
-
-selectAllDownedDriveItemEntity:
-SELECT * FROM DownedDriveItemEntity;
-
-selectByDownedDriveItemEntityId:
-SELECT * FROM DownedDriveItemEntity WHERE UniqueId = ?;
-
-insertDownedDriveItemEntity:
-INSERT INTO DownedDriveItemEntity
-VALUES ?;
-
-insertOrReplaceDownedDriveItemEntity:
-INSERT OR REPLACE INTO DownedDriveItemEntity
-VALUES ?;
-
-updateDownedDriveItemEntity:
-UPDATE DownedDriveItemEntity SET
-    DriveItemJson = ?,
-    DownloadedPath = ?
-WHERE UniqueId = ?;
-
-deleteDownedDriveItemEntity:
-DELETE FROM DownedDriveItemEntity WHERE UniqueId = ?;

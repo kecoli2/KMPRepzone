@@ -12,31 +12,3 @@ CREATE TABLE IF NOT EXISTS SyncManufacturerRepresentativesEntity (
     SalesNotAllowed INTEGER,
     State INTEGER
 );
-
-selectAllSyncManufacturerRepresentativesEntity:
-SELECT * FROM SyncManufacturerRepresentativesEntity;
-
-selectBySyncManufacturerRepresentativesEntityId:
-SELECT * FROM SyncManufacturerRepresentativesEntity WHERE Id = ?;
-
-insertSyncManufacturerRepresentativesEntity:
-INSERT INTO SyncManufacturerRepresentativesEntity
-VALUES ?;
-
-insertOrReplaceSyncManufacturerRepresentativesEntity:
-INSERT OR REPLACE INTO SyncManufacturerRepresentativesEntity
-VALUES ?;
-
-updateSyncManufacturerRepresentativesEntity:
-UPDATE SyncManufacturerRepresentativesEntity SET
-    RepresentativeId = ?,
-    ManufacturerId = ?,
-    Fulfillment = ?,
-    SalesNotAllowed = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncManufacturerRepresentativesEntity:
-DELETE FROM SyncManufacturerRepresentativesEntity WHERE Id = ?;

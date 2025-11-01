@@ -15,34 +15,3 @@ CREATE TABLE IF NOT EXISTS SyncDynamicPageReportEntity (
     Requested INTEGER,
     State INTEGER
 );
-
-selectAllSyncDynamicPageReportEntity:
-SELECT * FROM SyncDynamicPageReportEntity;
-
-selectBySyncDynamicPageReportEntityId:
-SELECT * FROM SyncDynamicPageReportEntity WHERE Id = ?;
-
-insertSyncDynamicPageReportEntity:
-INSERT INTO SyncDynamicPageReportEntity
-VALUES ?;
-
-insertOrReplaceSyncDynamicPageReportEntity:
-INSERT OR REPLACE INTO SyncDynamicPageReportEntity
-VALUES ?;
-
-updateSyncDynamicPageReportEntity:
-UPDATE SyncDynamicPageReportEntity SET
-    Name = ?,
-    Category = ?,
-    Code = ?,
-    Description = ?,
-    Requested = ?,
-    QuickAccessShow = ?,
-    QuickAccessOrder = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncDynamicPageReportEntity:
-DELETE FROM SyncDynamicPageReportEntity WHERE Id = ?;

@@ -12,31 +12,3 @@ CREATE TABLE IF NOT EXISTS SyncOrganizationEntity (
     RelationId INTEGER,
     State INTEGER
 );
-
-selectAllSyncOrganizationEntity:
-SELECT * FROM SyncOrganizationEntity;
-
-selectBySyncOrganizationEntityId:
-SELECT * FROM SyncOrganizationEntity WHERE Id = ?;
-
-insertSyncOrganizationEntity:
-INSERT INTO SyncOrganizationEntity
-VALUES ?;
-
-insertOrReplaceSyncOrganizationEntity:
-INSERT OR REPLACE INTO SyncOrganizationEntity
-VALUES ?;
-
-updateSyncOrganizationEntity:
-UPDATE SyncOrganizationEntity SET
-    RelationId = ?,
-    IsParent = ?,
-    Name = ?,
-    ParentId = ?,
-    ModificationDateUtc = ?,
-    RecordDateUtc = ?,
-    State = ?
-WHERE Id = ?;
-
-deleteSyncOrganizationEntity:
-DELETE FROM SyncOrganizationEntity WHERE Id = ?;

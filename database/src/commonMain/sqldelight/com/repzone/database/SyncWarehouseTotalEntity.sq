@@ -7,15 +7,3 @@ CREATE TABLE IF NOT EXISTS SyncWarehouseTotalEntity (
     ProductId INTEGER,
     Stock REAL
 );
-
-selectAllSyncWarehouseTotalEntity:
-SELECT * FROM SyncWarehouseTotalEntity;
-
-insertSyncWarehouseTotalEntity:
-INSERT INTO SyncWarehouseTotalEntity
-VALUES ?;
-
-insertOrReplaceSyncWarehouseTotalEntity:
-INSERT OR REPLACE INTO SyncWarehouseTotalEntity
-VALUES ?;
-

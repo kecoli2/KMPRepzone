@@ -1,7 +1,11 @@
 package com.repzone.data.repository.imp
 
 import com.repzone.data.mapper.CustomerEntityDbMapper
+import com.repzone.database.SyncCustomerEntity
 import com.repzone.database.interfaces.IDatabaseManager
+import com.repzone.database.runtime.delete
+import com.repzone.database.runtime.insertOrReplace
+import com.repzone.database.runtime.select
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.repository.ICustomerRepository
 
@@ -9,23 +13,27 @@ class CustomerRepositoryImpl(private val mapper: CustomerEntityDbMapper,
                              private val iDatabaseManager: IDatabaseManager): ICustomerRepository {
     //region Public Method
     override suspend fun deleteById(id: Long) {
-        iDatabaseManager.getDatabase().syncCustomerEntityQueries.deleteSyncCustomerEntity(id)
+        iDatabaseManager.getSqlDriver().delete<SyncCustomerEntity> {
+            where { criteria("Id", equal = id) }
+        }
     }
 
     override suspend fun getAll(): List<SyncCustomerModel> {
-        return iDatabaseManager.getDatabase().syncCustomerEntityQueries.selectAllSyncCustomerEntity().executeAsList().map { mapper.toDomain(it) }
+        return  iDatabaseManager.getSqlDriver().select<SyncCustomerEntity>{}.toList().map {  mapper.toDomain(it)}
     }
 
     override suspend fun getById(id: Long): SyncCustomerModel? {
-        return iDatabaseManager.getDatabase().syncCustomerEntityQueries.selectBySyncCustomerEntityId(id).executeAsOneOrNull()?.let { mapper.toDomain(it) }
+        return iDatabaseManager.getSqlDriver().select<SyncCustomerEntity>{where {
+            criteria("Id", id)
+        }}.firstOrNull()?.let {  mapper.toDomain(it)}
     }
 
     override suspend fun upsert(entity: SyncCustomerModel) {
-        iDatabaseManager.getDatabase().syncCustomerEntityQueries.insertOrReplaceSyncCustomerEntity(mapper.fromDomain (entity))
+        iDatabaseManager.getSqlDriver().insertOrReplace(entity)
     }
 
     override suspend fun pending(): List<SyncCustomerModel> {
-        return iDatabaseManager.getDatabase().syncCustomerEntityQueries.selectAllSyncCustomerEntity() .executeAsList().map { mapper.toDomain(it) }
+        return  iDatabaseManager.getSqlDriver().select<SyncCustomerEntity>{}.toList().map {  mapper.toDomain(it)}
     }
     //endregion
 

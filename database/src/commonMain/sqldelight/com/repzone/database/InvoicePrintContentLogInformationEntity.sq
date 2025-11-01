@@ -7,26 +7,3 @@ CREATE TABLE IF NOT EXISTS InvoicePrintContentLogInformationEntity (
     PrintContent TEXT,
     SessionId TEXT
 );
-
-selectAllInvoicePrintContentLogInformationEntity:
-SELECT * FROM InvoicePrintContentLogInformationEntity;
-
-selectByInvoicePrintContentLogInformationEntityId:
-SELECT * FROM InvoicePrintContentLogInformationEntity WHERE Id = ?;
-
-insertInvoicePrintContentLogInformationEntity:
-INSERT INTO InvoicePrintContentLogInformationEntity
-VALUES ?;
-
-insertOrReplaceInvoicePrintContentLogInformationEntity:
-INSERT OR REPLACE INTO InvoicePrintContentLogInformationEntity
-VALUES ?;
-
-updateInvoicePrintContentLogInformationEntity:
-UPDATE InvoicePrintContentLogInformationEntity SET
-    SessionId = ?,
-    PrintContent = ?
-WHERE Id = ?;
-
-deleteInvoicePrintContentLogInformationEntity:
-DELETE FROM InvoicePrintContentLogInformationEntity WHERE Id = ?;

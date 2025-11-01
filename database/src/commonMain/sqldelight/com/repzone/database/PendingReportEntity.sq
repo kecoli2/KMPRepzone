@@ -6,25 +6,3 @@ CREATE TABLE IF NOT EXISTS PendingReportEntity (
     ProductId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     PendingAmount REAL
 );
-
-selectAllPendingReportEntity:
-SELECT * FROM PendingReportEntity;
-
-selectByPendingReportEntityId:
-SELECT * FROM PendingReportEntity WHERE ProductId = ?;
-
-insertPendingReportEntity:
-INSERT INTO PendingReportEntity
-VALUES ?;
-
-insertOrReplacePendingReportEntity:
-INSERT OR REPLACE INTO PendingReportEntity
-VALUES ?;
-
-updatePendingReportEntity:
-UPDATE PendingReportEntity SET
-    PendingAmount = ?
-WHERE ProductId = ?;
-
-deletePendingReportEntity:
-DELETE FROM PendingReportEntity WHERE ProductId = ?;
