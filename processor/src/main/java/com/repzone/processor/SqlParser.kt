@@ -233,7 +233,7 @@ object SqlParser {
         val upperDef = cleanDefinition.uppercase()
 
         return ColumnSchema(
-            name = columnName,
+            name = SqlKeywordEscaper.escapeColumnName(columnName),
             type = mapSqlType(columnType),
             isPrimaryKey = upperDef.contains("PRIMARY KEY"),
             isNotNull = upperDef.contains("NOT NULL"),
@@ -255,7 +255,7 @@ object SqlParser {
         inlinePattern.findAll(cleanedBlock).forEach { match ->
             val columnName = match.groupValues[1]
             val refTable = match.groupValues[2]
-            val refColumn = match.groupValues[3]
+            val refColumn = SqlKeywordEscaper.escapeColumnName(match.groupValues[3])
             val onDelete = match.groupValues.getOrNull(4)?.uppercase() ?: "NO ACTION"
             val onUpdate = match.groupValues.getOrNull(5)?.uppercase() ?: "NO ACTION"
 
@@ -273,7 +273,7 @@ object SqlParser {
         tableLevelPattern.findAll(cleanedBlock).forEach { match ->
             val columnName = match.groupValues[1]
             val refTable = match.groupValues[2]
-            val refColumn = match.groupValues[3]
+            val refColumn = SqlKeywordEscaper.escapeColumnName(match.groupValues[3])
             val onDelete = match.groupValues.getOrNull(4)?.uppercase() ?: "NO ACTION"
             val onUpdate = match.groupValues.getOrNull(5)?.uppercase() ?: "NO ACTION"
 

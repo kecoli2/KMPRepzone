@@ -69,7 +69,7 @@ object EntityMapperGenerator {
         // Entity fields'ları schema'dan al
         val entityFields = schema.columns.map { column ->
             EntityField(
-                name = column.name,
+                name = column.name.replace("`", ""),
                 type = mapSqlTypeToKotlinType(column.type ?: "TEXT"),
                 isNullable = !column.isNotNull
             )

@@ -20,46 +20,46 @@ class CriteriaBuilder {
     ) {
         when {
             equal != null -> {
-                conditions.add(FieldCondition(field, "=", equal))
+                conditions.add(FieldCondition(field.escapeIfReserved(), "=", equal))
             }
             notEqual != null -> {
-                conditions.add(FieldCondition(field, "!=", notEqual))
+                conditions.add(FieldCondition(field.escapeIfReserved(), "!=", notEqual))
             }
             like != null -> {
-                conditions.add(FieldCondition(field, "LIKE", like))
+                conditions.add(FieldCondition(field.escapeIfReserved(), "LIKE", like))
             }
             notLike != null -> {
-                conditions.add(FieldCondition(field, "NOT LIKE", notLike))
+                conditions.add(FieldCondition(field.escapeIfReserved(), "NOT LIKE", notLike))
             }
             greaterThan != null -> {
-                conditions.add(FieldCondition(field, ">", greaterThan))
+                conditions.add(FieldCondition(field.escapeIfReserved(), ">", greaterThan))
             }
             greaterThanOrEqual != null -> {
-                conditions.add(FieldCondition(field, ">=", greaterThanOrEqual))
+                conditions.add(FieldCondition(field.escapeIfReserved(), ">=", greaterThanOrEqual))
             }
             lessThan != null -> {
-                conditions.add(FieldCondition(field, "<", lessThan))
+                conditions.add(FieldCondition(field.escapeIfReserved(), "<", lessThan))
             }
             lessThanOrEqual != null -> {
-                conditions.add(FieldCondition(field, "<=", lessThanOrEqual))
+                conditions.add(FieldCondition(field.escapeIfReserved(), "<=", lessThanOrEqual))
             }
             isNull != null -> {
                 conditions.add(
                     FieldCondition(
-                        field,
+                        field.escapeIfReserved(),
                         if (isNull) "IS NULL" else "IS NOT NULL",
                         null
                     )
                 )
             }
             In != null -> {
-                conditions.add(InCondition(field, In, false))
+                conditions.add(InCondition(field.escapeIfReserved(), In, false))
             }
             notIn != null -> {
-                conditions.add(InCondition(field, notIn, true))
+                conditions.add(InCondition(field.escapeIfReserved(), notIn, true))
             }
             between != null -> {
-                conditions.add(BetweenCondition(field, between.first, between.second))
+                conditions.add(BetweenCondition(field.escapeIfReserved(), between.first, between.second))
             }
         }
     }

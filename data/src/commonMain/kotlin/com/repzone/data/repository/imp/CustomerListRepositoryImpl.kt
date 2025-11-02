@@ -9,7 +9,10 @@ import com.repzone.core.util.extensions.toInstant
 import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
 import com.repzone.database.CustomerItemViewEntity
+import com.repzone.database.SyncEventReasonEntity
 import com.repzone.database.interfaces.IDatabaseManager
+import com.repzone.database.runtime.rawQueryToEntity
+import com.repzone.database.runtime.select
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.IEventReasonRepository

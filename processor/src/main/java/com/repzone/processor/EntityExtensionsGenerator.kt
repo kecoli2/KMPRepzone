@@ -65,7 +65,7 @@ object EntityExtensionsGenerator {
             appendLine("fun $entityName.toValuesList(): List<Any?> = listOf(")
             schema.columns.forEachIndexed { index, column ->
                 val comma = if (index < schema.columns.size - 1) "," else ""
-                appendLine("    this.${column.name}$comma")
+                appendLine("    this.${column.name.replace("`", "")}$comma")
             }
             appendLine(")")
             appendLine()

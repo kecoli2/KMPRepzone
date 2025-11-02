@@ -95,7 +95,7 @@ inline fun <reified T : Any> SqlDriver.sum(
         ""
     }
 
-    val sql = "SELECT SUM($field) FROM ${metadata.tableName}$whereClause"
+    val sql = "SELECT SUM(${field.escapeIfReserved()}) FROM ${metadata.tableName}$whereClause"
 
     // Logging
     if (BuildConfig.IS_DEBUG) {
@@ -165,7 +165,7 @@ inline fun <reified T : Any> SqlDriver.avg(
         ""
     }
 
-    val sql = "SELECT AVG($field) FROM ${metadata.tableName}$whereClause"
+    val sql = "SELECT AVG(${field.escapeIfReserved()}) FROM ${metadata.tableName}$whereClause"
 
     // Logging
     if (BuildConfig.IS_DEBUG) {
@@ -235,7 +235,7 @@ inline fun <reified T : Any> SqlDriver.maxLong(
         ""
     }
 
-    val sql = "SELECT MAX($field) FROM ${metadata.tableName}$whereClause"
+    val sql = "SELECT MAX(${field.escapeIfReserved()}) FROM ${metadata.tableName}$whereClause"
 
     // Logging
     if (BuildConfig.IS_DEBUG) {
@@ -305,7 +305,7 @@ inline fun <reified T : Any> SqlDriver.maxDouble(
         ""
     }
 
-    val sql = "SELECT MAX($field) FROM ${metadata.tableName}$whereClause"
+    val sql = "SELECT MAX(${field.escapeIfReserved()}) FROM ${metadata.tableName}$whereClause"
 
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()
@@ -373,7 +373,7 @@ inline fun <reified T : Any> SqlDriver.maxString(
         ""
     }
 
-    val sql = "SELECT MAX($field) FROM ${metadata.tableName}$whereClause"
+    val sql = "SELECT MAX(${field.escapeIfReserved()}) FROM ${metadata.tableName}$whereClause"
 
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()
@@ -441,7 +441,7 @@ inline fun <reified T : Any> SqlDriver.minLong(
         ""
     }
 
-    val sql = "SELECT MIN($field) FROM ${metadata.tableName}$whereClause"
+    val sql = "SELECT MIN(${field.escapeIfReserved()}) FROM ${metadata.tableName}$whereClause"
 
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()
@@ -510,7 +510,7 @@ inline fun <reified T : Any> SqlDriver.minDouble(
         ""
     }
 
-    val sql = "SELECT MIN($field) FROM ${metadata.tableName}$whereClause"
+    val sql = "SELECT MIN(${field.escapeIfReserved()}) FROM ${metadata.tableName}$whereClause"
 
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()
@@ -578,7 +578,7 @@ inline fun <reified T : Any> SqlDriver.minString(
         ""
     }
 
-    val sql = "SELECT MIN($field) FROM ${metadata.tableName}$whereClause"
+    val sql = "SELECT MIN(${field.escapeIfReserved()}) FROM ${metadata.tableName}$whereClause"
 
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()

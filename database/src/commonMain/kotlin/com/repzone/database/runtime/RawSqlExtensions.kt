@@ -8,6 +8,7 @@ import com.repzone.core.config.BuildConfig
 import com.repzone.core.platform.Logger
 import com.repzone.core.util.extensions.now
 import com.repzone.core.util.extensions.toInstant
+import com.repzone.database.runtime.SqlKeywordEscaper.escapeKeywordsInQuery
 import kotlin.time.ExperimentalTime
 
 // Raw SQL query - Generic result
@@ -24,7 +25,7 @@ fun SqlDriver.rawQuery(
 
         executeQuery(
             identifier = null,
-            sql = sql,
+            sql = sql.escapeKeywordsInQuery(),
             mapper = { cursor ->
                 while (cursor.next().value) {
                     val row = mutableMapOf<String, Any?>()
@@ -63,7 +64,7 @@ fun SqlDriver.rawQuery(
 
     executeQuery(
         identifier = null,
-        sql = sql,
+        sql = sql.escapeKeywordsInQuery(),
         mapper = { cursor ->
             while (cursor.next().value) {
                 val row = mutableMapOf<String, Any?>()
@@ -103,13 +104,13 @@ inline fun <reified T : Any> SqlDriver.rawQueryToEntity(
     // Logging
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()
-        SqlQueryLogger.logRawQuery(sql, params.toList())
+        SqlQueryLogger.logRawQuery(sql.escapeKeywordsInQuery(), params.toList())
 
         val results = mutableListOf<T>()
 
         executeQuery(
             identifier = null,
-            sql = sql,
+            sql = sql.escapeKeywordsInQuery(),
             mapper = { cursor ->
                 while (cursor.next().value) {
                     val entity = metadata.createInstance(SqlDelightCursor(cursor)) as T
@@ -135,7 +136,7 @@ inline fun <reified T : Any> SqlDriver.rawQueryToEntity(
 
     executeQuery(
         identifier = null,
-        sql = sql,
+        sql = sql.escapeKeywordsInQuery(),
         mapper = { cursor ->
             while (cursor.next().value) {
                 val entity = metadata.createInstance(SqlDelightCursor(cursor)) as T
@@ -161,11 +162,11 @@ fun SqlDriver.rawExecute(
     // Logging
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()
-        SqlQueryLogger.logRawQuery(sql, params.toList())
+        SqlQueryLogger.logRawQuery(sql.escapeKeywordsInQuery(), params.toList())
 
         val result = execute(
             identifier = null,
-            sql = sql,
+            sql = sql.escapeKeywordsInQuery(),
             parameters = params.size
         ) {
             params.forEachIndexed { index, value ->
@@ -182,7 +183,7 @@ fun SqlDriver.rawExecute(
 
     return execute(
         identifier = null,
-        sql = sql,
+        sql = sql.escapeKeywordsInQuery(),
         parameters = params.size
     ) {
         params.forEachIndexed { index, value ->
@@ -199,13 +200,13 @@ fun SqlDriver.rawQueryScalar(
     // Logging
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()
-        SqlQueryLogger.logRawQuery(sql, params.toList())
+        SqlQueryLogger.logRawQuery(sql.escapeKeywordsInQuery(), params.toList())
 
         var result: Any? = null
 
         executeQuery(
             identifier = null,
-            sql = sql,
+            sql = sql.escapeKeywordsInQuery(),
             mapper = { cursor ->
                 if (cursor.next().value) {
                     result = cursor.getString(0)
@@ -230,7 +231,7 @@ fun SqlDriver.rawQueryScalar(
 
     executeQuery(
         identifier = null,
-        sql = sql,
+        sql = sql.escapeKeywordsInQuery(),
         mapper = { cursor ->
             if (cursor.next().value) {
                 result = cursor.getString(0)
@@ -255,13 +256,13 @@ fun SqlDriver.rawCount(
     // Logging
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()
-        SqlQueryLogger.logRawQuery(sql, params.toList())
+        SqlQueryLogger.logRawQuery(sql.escapeKeywordsInQuery(), params.toList())
 
         var count = 0L
 
         executeQuery(
             identifier = null,
-            sql = sql,
+            sql = sql.escapeKeywordsInQuery(),
             mapper = { cursor ->
                 if (cursor.next().value) {
                     count = cursor.getLong(0) ?: 0L
@@ -286,7 +287,7 @@ fun SqlDriver.rawCount(
 
     executeQuery(
         identifier = null,
-        sql = sql,
+        sql = sql.escapeKeywordsInQuery(),
         mapper = { cursor ->
             if (cursor.next().value) {
                 count = cursor.getLong(0) ?: 0L
@@ -311,13 +312,13 @@ fun SqlDriver.rawAggregate(
     // Logging
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()
-        SqlQueryLogger.logRawQuery(sql, params.toList())
+        SqlQueryLogger.logRawQuery(sql.escapeKeywordsInQuery(), params.toList())
 
         var result = 0.0
 
         executeQuery(
             identifier = null,
-            sql = sql,
+            sql = sql.escapeKeywordsInQuery(),
             mapper = { cursor ->
                 if (cursor.next().value) {
                     result = cursor.getDouble(0) ?: 0.0
@@ -342,7 +343,7 @@ fun SqlDriver.rawAggregate(
 
     executeQuery(
         identifier = null,
-        sql = sql,
+        sql = sql.escapeKeywordsInQuery(),
         mapper = { cursor ->
             if (cursor.next().value) {
                 result = cursor.getDouble(0) ?: 0.0

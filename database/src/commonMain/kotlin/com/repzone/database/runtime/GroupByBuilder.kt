@@ -5,7 +5,7 @@ class GroupByBuilder {
     internal var havingCondition: Condition = NoCondition
 
     fun groupBy(vararg fields: String) {
-        groupByFields.addAll(fields)
+        groupByFields.addAll(SqlKeywordEscaper.escapeColumnNames(*fields))
     }
 
     fun having(block: CriteriaBuilder.() -> Unit) {

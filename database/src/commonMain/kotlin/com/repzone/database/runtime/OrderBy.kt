@@ -16,7 +16,7 @@ class OrderByBuilder {
     fun order(field: String, desc: Boolean = false) {
         orderSpecs.add(
             OrderSpec(
-                field = field,
+                field = field.escapeIfReserved(),
                 direction = if (desc) OrderDirection.DESC else OrderDirection.ASC
             )
         )
