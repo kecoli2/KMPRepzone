@@ -21,6 +21,15 @@ actual fun rememberLocaleConfiguration(languageCode: String): AppLocale {
 
 private fun updateLocale(context: Context, languageCode: String) {
     // Modern yöntem - AppCompatDelegate kullan
-    val localeList = LocaleListCompat.forLanguageTags(languageCode)
+    val countryCode = getCountryCode(languageCode)
+    val localeList = LocaleListCompat.forLanguageTags("$languageCode-$countryCode")
     AppCompatDelegate.setApplicationLocales(localeList)
+}
+
+private fun getCountryCode(languageCode: String): String {
+    return when (languageCode) {
+        "tr" -> "TR"
+        "en" -> "US"
+        else -> "US"
+    }
 }
