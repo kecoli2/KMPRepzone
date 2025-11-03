@@ -75,14 +75,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun updateAppLocaleAndRecreate(languageCode: String) {
-        val localeList = LocaleListCompat.forLanguageTags(languageCode)
+        // Dil koduna göre ülke kodunu belirle
+        val locale = when (languageCode) {
+            "tr" -> Locale("tr", "TR") // Türkçe - Türkiye
+            "en" -> Locale("en", "US") // İngilizce - Amerika
+            "de" -> Locale("de", "DE") // Almanca - Almanya
+            "fr" -> Locale("fr", "FR") // Fransızca - Fransa
+            "es" -> Locale("es", "ES") // İspanyolca - İspanya
+            "ar" -> Locale("ar", "SA") // Arapça - Suudi Arabistan
+            else -> Locale(languageCode)
+        }
+
+        // AppCompat için locale ayarla
+        val localeList = LocaleListCompat.forLanguageTags("${locale.language}-${locale.country}")
         AppCompatDelegate.setApplicationLocales(localeList)
-        val locale = Locale(languageCode)
+
+        // Default locale'i ayarla
         Locale.setDefault(locale)
+
+        // Configuration'ı güncelle
         val config = Configuration(resources.configuration)
         config.setLocale(locale)
+
         @Suppress("DEPRECATION")
         resources.updateConfiguration(config, resources.displayMetrics)
+
         recreate()
     }
 

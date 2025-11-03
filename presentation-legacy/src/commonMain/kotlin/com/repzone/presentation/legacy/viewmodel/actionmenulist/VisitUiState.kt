@@ -5,14 +5,18 @@ import com.repzone.core.model.UiFrame
 import com.repzone.domain.util.models.ActionButtonListItem
 import com.repzone.domain.util.models.ActionMenuListItem
 
-data class ActionMenuListUiState(
+data class VisitUiState(
     override val uiFrame: UiFrame = UiFrame(),
     val actionMenuList: List<ActionMenuListItem> = emptyList(),
     val actionButtonList: List<ActionButtonListItem> = emptyList(),
     val menuListState: ActionMenuListState = ActionMenuListState.Initial,
-    val buttonListState: ActionMenuListState = ActionMenuListState.Initial
+    val buttonListState: ActionMenuListState = ActionMenuListState.Initial,
+    val visibleBalanceText : Boolean = true,
+    val customerBalance: Double = 0.0,
+    val customerRiskBalance: Double = 0.0,
+    val appoinmentDescription : String = ""
 ): HasUiFrame {
-    override fun copyWithUiFrame(newUiFrame: UiFrame): ActionMenuListUiState {
+    override fun copyWithUiFrame(newUiFrame: UiFrame): VisitUiState {
         return copy(uiFrame = uiFrame)
     }
 

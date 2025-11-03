@@ -1,5 +1,6 @@
 package com.repzone.presentation.legacy.navigation
 
+import com.repzone.domain.model.CustomerItemModel
 import kotlinx.serialization.Serializable
 
 sealed interface LegacyScreen {
@@ -32,4 +33,7 @@ sealed interface LegacyScreen {
 
     @Serializable
     data object SettingsScreen: LegacyScreen
+
+    @Serializable
+    data object VisitScreen: LegacyScreen
 }

@@ -31,4 +31,6 @@ data class CustomerItemModel(
     val showDisplayClock: Boolean = false,
     val displayOrder: Int? = null,
     val showDisplayOrder: Boolean = false) {
+
+    var isECustomer: Boolean = false
 }

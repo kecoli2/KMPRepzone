@@ -4,7 +4,7 @@ import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.IActionMenuRepository
 
-class ActionMenuListViewModel(private val iActionMenuRepository: IActionMenuRepository): BaseViewModel<ActionMenuListUiState, ActionMenuListViewModel.Event>(ActionMenuListUiState()) {
+class VisitViewModel(private val iActionMenuRepository: IActionMenuRepository): BaseViewModel<VisitUiState, VisitViewModel.Event>(VisitUiState()) {
     //region Field
     private var customer: CustomerItemModel? = null
     //endregion
@@ -34,32 +34,32 @@ class ActionMenuListViewModel(private val iActionMenuRepository: IActionMenuRepo
     suspend fun getActionMenuList(){
         try {
             updateState { currentState ->
-                currentState.copy(menuListState = ActionMenuListUiState.ActionMenuListState.Loading)
+                currentState.copy(menuListState = VisitUiState.ActionMenuListState.Loading)
             }
             val actionMenuList = iActionMenuRepository.getActionMenuList(customer!!)
             updateState { currentState ->
-                currentState.copy(menuListState = ActionMenuListUiState.ActionMenuListState.Success
+                currentState.copy(menuListState = VisitUiState.ActionMenuListState.Success
                 , actionMenuList = actionMenuList)
             }
         }catch (ex: Exception){
             updateState { currentState ->
-                currentState.copy(menuListState = ActionMenuListUiState.ActionMenuListState.Error(ex.message ?: "Unknown error"))
+                currentState.copy(menuListState = VisitUiState.ActionMenuListState.Error(ex.message ?: "Unknown error"))
             }
         }
     }
     suspend fun getActionButtonList(){
         try {
             updateState { currentState ->
-                currentState.copy(buttonListState = ActionMenuListUiState.ActionMenuListState.Loading)
+                currentState.copy(buttonListState = VisitUiState.ActionMenuListState.Loading)
             }
             val actionMenuList = iActionMenuRepository.getActionButtonList(customer!!)
             updateState { currentState ->
-                currentState.copy(buttonListState = ActionMenuListUiState.ActionMenuListState.Success
+                currentState.copy(buttonListState = VisitUiState.ActionMenuListState.Success
                     , actionButtonList = actionMenuList)
             }
         }catch (ex: Exception){
             updateState { currentState ->
-                currentState.copy(buttonListState = ActionMenuListUiState.ActionMenuListState.Error(ex.message ?: "Unknown error"))
+                currentState.copy(buttonListState = VisitUiState.ActionMenuListState.Error(ex.message ?: "Unknown error"))
             }
         }
     }

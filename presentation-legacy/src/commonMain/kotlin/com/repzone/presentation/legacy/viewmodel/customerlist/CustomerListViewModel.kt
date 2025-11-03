@@ -7,6 +7,7 @@ import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.core.ui.base.resetUiFrame
 import com.repzone.database.interfaces.IDatabaseManager
+import com.repzone.domain.model.CustomerByParrentModel
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.IMobileModuleParameterRepository
@@ -101,9 +102,11 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                 iPreferencesManager.setActiveUserCode(0)
             }
 
-            is Event.onClickCustomerItem -> {
-
+            is Event.OnClickCustomerItem -> {
+                onClickedCustomer(event.selectedCustomer)
             }
+
+            else -> {}
         }
     }
     //endregion
@@ -112,7 +115,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
     //endregion
 
     //region Private Method
-    private suspend fun clearFilters() {
+    private fun clearFilters() {
         updateState { currentState ->
             currentState.copy(
                 selectedFilterGroups = emptyList(),
@@ -121,10 +124,10 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         }
         applyFilters(emptyList(), CustomerSortOption.DATE_ASC)
     }
-    private suspend fun applyFilters(selectedGroups: List<String>, sortOption: CustomerSortOption) {
+    private fun applyFilters(selectedGroups: List<String>, sortOption: CustomerSortOption) {
         updateState { currentState ->
             currentState.copy(
-                customerListState = CustomerListScreenUiState.CustomerListState.Loading
+                customerListState = CustomerListState.Loading
             )
         }
 
@@ -155,9 +158,9 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
             currentState.copy(
                 filteredCustomers = filtered,
                 customerListState = if (filtered.isEmpty()) {
-                    CustomerListScreenUiState.CustomerListState.Empty
+                    CustomerListState.Empty
                 } else {
-                    CustomerListScreenUiState.CustomerListState.Success
+                    CustomerListState.Success
                 },
                 // Seçili filtreleri state'e kaydet
                 selectedFilterGroups = selectedGroups,
@@ -168,7 +171,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
     private suspend fun loadCustomerList(date: Instant?) {
         updateState { currentState ->
             currentState.copy(
-                customerListState = CustomerListScreenUiState.CustomerListState.Loading
+                customerListState = CustomerListState.Loading
             )
         }
         try {
@@ -177,9 +180,9 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
             updateState { currentState ->
                 currentState.copy(
                     customerListState = if (list.isEmpty()) {
-                        CustomerListScreenUiState.CustomerListState.Empty
+                        CustomerListState.Empty
                     } else {
-                        CustomerListScreenUiState.CustomerListState.Success
+                        CustomerListState.Success
                     },
                     allCustomers = list,
                     activeCustomerGroup = prepareCustomerGroup(list),
@@ -190,7 +193,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         } catch (e: Exception) {
             updateState { currentState ->
                 currentState.copy(
-                    customerListState = CustomerListScreenUiState.CustomerListState.Error(
+                    customerListState = CustomerListState.Error(
                         e.message ?: "Unknown error"
                     )
                 )
@@ -244,19 +247,22 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         }
         return grpoupList
     }
-    private suspend fun onClickedCustomer(itemModel: CustomerItemModel){
+    private suspend fun onClickedCustomer(selectedCustomer: CustomerItemModel){
         try {
             updateState { currentState->
                 currentState.copy(uiFrame = currentState.uiFrame.copy(true))
             }
 
             if(iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.groupByParentCustomer == OnOf.ON){
-
+                val parentData = iCustomerListRepository.getAllByParrent(selectedCustomer)
+                if(parentData.parrentCustomers.isNotEmpty()){
+                   emitEvent(Event.ShowDialogParentCustomer(parentData))
+                }else{
+                    emitEvent(Event.NavigateVisitPage(selectedCustomer))
+                }
+                return
             }
-
-
-
-
+            emitEvent(Event.NavigateVisitPage(selectedCustomer))
         }catch (ex: Exception){
             updateState { currentState->
                 currentState.copy(uiFrame = currentState.uiFrame.copy(false, ex.message))
@@ -278,8 +284,9 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         data class ApplyFilter(val selectedGroups: List<String>, val sortOption: CustomerSortOption) : Event()
         data object ClearFilters : Event()
         data object LogOut: Event()
-
-        data class onClickCustomerItem(val selectedCustomer: CustomerItemModel): Event()
+        data class OnClickCustomerItem(val selectedCustomer: CustomerItemModel): Event()
+        data class ShowDialogParentCustomer(val selectedCustomer: CustomerByParrentModel): Event()
+        data class NavigateVisitPage(val selectedCustomer: CustomerItemModel): Event()
     }
     //endregion Event
 }

@@ -37,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,17 +58,32 @@ import com.repzone.core.ui.component.RepzoneTopAppBar
 import com.repzone.core.ui.component.TopBarAction
 import com.repzone.core.ui.component.TopBarLeftIcon
 import com.repzone.core.ui.manager.theme.ThemeManager
+import com.repzone.core.ui.platform.HandleBackPress
+import com.repzone.core.util.extensions.fromResource
+import com.repzone.core.util.extensions.isToday
+import com.repzone.core.util.extensions.isTomorrow
+import com.repzone.core.util.extensions.toDateString
+import com.repzone.core.util.extensions.toDayName
+import com.repzone.core.util.extensions.toMoney
 import com.repzone.domain.model.CustomerItemModel
+import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.util.enums.ActionButtonType
 import com.repzone.domain.util.models.ActionButtonListItem
-import com.repzone.presentation.legacy.viewmodel.actionmenulist.ActionMenuListViewModel
-import kotlinx.coroutines.launch
+import com.repzone.presentation.legacy.viewmodel.actionmenulist.VisitUiState
+import com.repzone.presentation.legacy.viewmodel.actionmenulist.VisitViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.customerbalanceheader
+import repzonemobile.core.generated.resources.ecustomerinfo
 import repzonemobile.core.generated.resources.image_not_found
+import repzonemobile.core.generated.resources.routedescriptionheader
+import repzonemobile.core.generated.resources.routetoday
+import repzonemobile.core.generated.resources.routetomorrow
+import kotlin.time.ExperimentalTime
 
 @Composable
-fun VisitScreenLegacy(customer: CustomerItemModel?) = ViewModelHost<ActionMenuListViewModel> { viewModel ->
+fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = ViewModelHost<VisitViewModel> { viewModel ->
     val themeManager: ThemeManager = koinInject()
     val uiState by viewModel.state.collectAsState()
     val scope = rememberCoroutineScope()
@@ -96,7 +112,11 @@ fun VisitScreenLegacy(customer: CustomerItemModel?) = ViewModelHost<ActionMenuLi
 
 
     LaunchedEffect(Unit){
-        viewModel.prepareActions(customer!!)
+        viewModel.prepareActions(customer)
+    }
+
+    HandleBackPress {
+        onBackClick()
     }
 
     Scaffold { paddingValues ->
@@ -108,8 +128,7 @@ fun VisitScreenLegacy(customer: CustomerItemModel?) = ViewModelHost<ActionMenuLi
                 themeManager = themeManager,
                 leftIconType = TopBarLeftIcon.Back(
                     onClick = {
-                        scope.launch {
-                        }
+                        onBackClick()
                     }
                 ),
                 rightIcons = listOf(
@@ -118,20 +137,9 @@ fun VisitScreenLegacy(customer: CustomerItemModel?) = ViewModelHost<ActionMenuLi
                     })
                 ),
             )
-            /*Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(2.dp)
-                    .graphicsLayer {
-                        shadowElevation = 6f
-                        shape = RectangleShape
-                        clip = false
-                    }
-                    .background(Color.Gray.copy(alpha = 0.4f))
-            )*/
 
             //Customer Summary
-            CustomerSummary(customer = customer, themeManager = themeManager)
+            CustomerSummary(customer = customer, themeManager = themeManager, uiState)
 
             Box(modifier = Modifier
                 .fillMaxWidth(),
@@ -169,8 +177,26 @@ fun VisitScreenLegacy(customer: CustomerItemModel?) = ViewModelHost<ActionMenuLi
     }
 }
 
+@OptIn(ExperimentalTime::class)
 @Composable
-fun CustomerSummary(customer: CustomerItemModel?, themeManager: ThemeManager){
+fun CustomerSummary(customer: CustomerItemModel, themeManager: ThemeManager, visitUiState: VisitUiState){
+    val iModuleParameters: IMobileModuleParameterRepository = koinInject()
+
+    val formattedDateStart = remember(customer.date) {
+        customer.date?.toEpochMilliseconds()?.toDateString("HH:mm") ?: ""
+    }
+
+    val formattedDate2 = remember(customer.date) {
+        customer.endDate?.toEpochMilliseconds()?.toDateString("HH:mm") ?: ""
+    }
+
+    val dayDesc =
+        when {
+            customer.date?.toEpochMilliseconds()?.isToday() == true -> repzonemobile.core.generated.resources.Res.string.routetoday.fromResource()
+            customer.date?.toEpochMilliseconds()?.isTomorrow() == true -> repzonemobile.core.generated.resources.Res.string.routetomorrow.fromResource()
+            else -> customer.date?.toDayName() ?: ""
+        }
+
     Box(
         modifier = Modifier.fillMaxWidth()
             .wrapContentHeight()
@@ -220,37 +246,44 @@ fun CustomerSummary(customer: CustomerItemModel?, themeManager: ThemeManager){
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start)
             {
-                Text(
-                    text = "Customer Name : Salih Yücel",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = themeManager.getCurrentColorScheme().colorPalet.white,
-                    maxLines = 1,
-                    fontWeight = FontWeight.Bold,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Text(
-                    text = "Müşteri Kodu : 145778456",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = themeManager.getCurrentColorScheme().colorPalet.white,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                customer.name?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.titleSmall,
+                        color = themeManager.getCurrentColorScheme().colorPalet.white,
+                        maxLines = 1,
+                        fontWeight = FontWeight.Bold,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                customer.customerCode?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = themeManager.getCurrentColorScheme().colorPalet.white,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
 
-                Text(
-                    text = "Gaziemir Gazikent Mah 678 Sok No: 1 D blok Daire 1",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = themeManager.getCurrentColorScheme().colorPalet.white,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Text(
-                    text = "Bakiye: 285.00 / Limit: 215.00",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = themeManager.getCurrentColorScheme().colorPalet.white,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                customer.address?.let {
+                    Text(
+                        text = it,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = themeManager.getCurrentColorScheme().colorPalet.white,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                if(visitUiState.visibleBalanceText){
+                    Text(
+                        text = "${Res.string.customerbalanceheader.fromResource()} ${visitUiState.customerBalance.toMoney()} / ${visitUiState.customerRiskBalance.toMoney()}",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = themeManager.getCurrentColorScheme().colorPalet.white,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
 
                 Row(modifier = Modifier
                     .fillMaxWidth()
@@ -265,7 +298,7 @@ fun CustomerSummary(customer: CustomerItemModel?, themeManager: ThemeManager){
                     )
                     Text(
                         modifier = Modifier.padding(start = 8.dp),
-                        text = "Cuma 31 Ekim 08:30-09:00",
+                        text = "${formattedDateStart}-${formattedDate2}",
                         style = MaterialTheme.typography.bodySmall,
                         color = themeManager.getCurrentColorScheme().colorPalet.white,
                         maxLines = 1,
@@ -274,7 +307,7 @@ fun CustomerSummary(customer: CustomerItemModel?, themeManager: ThemeManager){
                 }
 
                 Text(
-                    text = "Rota Açıklaması: Rota Açıklaması",
+                    text = Res.string.routedescriptionheader.fromResource() + " ${visitUiState.appoinmentDescription}",
                     modifier = Modifier.padding(top = 8.dp),
                     style = MaterialTheme.typography.titleSmall,
                     color = themeManager.getCurrentColorScheme().colorPalet.white,
@@ -283,14 +316,15 @@ fun CustomerSummary(customer: CustomerItemModel?, themeManager: ThemeManager){
                     overflow = TextOverflow.Ellipsis
                 )
 
-                Text(
-                    text = "Bakiye: 285.00 / Limit: 215.00",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = themeManager.getCurrentColorScheme().colorPalet.white,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-
+                if(customer.isECustomer){
+                    Text(
+                        text = Res.string.ecustomerinfo.fromResource(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = themeManager.getCurrentColorScheme().colorPalet.white,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
             }
         }
 

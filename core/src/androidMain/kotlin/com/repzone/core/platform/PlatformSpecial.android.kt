@@ -12,7 +12,8 @@ actual fun isInPreview(): Boolean {
 
 actual class CurrencyFormatter actual constructor() {
     actual fun format(amount: Double): String {
-        return NumberFormat.getCurrencyInstance(Locale.getDefault())
+        val value = NumberFormat.getCurrencyInstance(Locale.getDefault())
             .format(amount)
+        return value
     }
 }

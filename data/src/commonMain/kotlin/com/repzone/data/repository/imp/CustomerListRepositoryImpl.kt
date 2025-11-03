@@ -13,6 +13,7 @@ import com.repzone.database.SyncEventReasonEntity
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.database.runtime.rawQueryToEntity
 import com.repzone.database.runtime.select
+import com.repzone.domain.model.CustomerByParrentModel
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.IEventReasonRepository
@@ -109,6 +110,25 @@ class CustomerListRepositoryImpl(private val iMobileModuleParameter: IMobileModu
         }
 
         return listModel
+    }
+
+    override suspend fun getAllByParrent(selectedCustomer: CustomerItemModel): CustomerByParrentModel {
+        val listParrent = iDatabaseManager.getSqlDriver().select<CustomerItemViewEntity> {
+            where {
+                criteria("SprintId", selectedCustomer.sprintId)
+                criteria("ParentCustomerId", selectedCustomer.parentCustomerId)
+            }
+            orderBy {
+                order("Date")
+            }
+            groupBy {
+                groupBy("AppointmentId")
+            }
+        }.toList().map {
+            mapper.toDomain(it)
+        }
+
+        return CustomerByParrentModel(selectedCustomer, listParrent)
     }
 
     //endregion

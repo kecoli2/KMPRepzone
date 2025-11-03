@@ -133,7 +133,7 @@ import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
 @Composable
-fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> Unit) = ViewModelHost<CustomerListViewModel> { viewModel ->
+fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> Unit, onCustomerClick: (CustomerItemModel) -> Unit) = ViewModelHost<CustomerListViewModel> { viewModel ->
     val themeManager: ThemeManager = koinInject()
     val iUserSessionInfo: IUserSession = koinInject()
     val uiState by viewModel.state.collectAsState()
@@ -152,6 +152,19 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
     val userNameSurName by remember { mutableStateOf("${iUserSessionInfo.getActiveSession()?.firstName} ${iUserSessionInfo.getActiveSession()?.lastName}") }
     val userMail by remember { mutableStateOf(iUserSessionInfo.getActiveSession()?.email ?: "") }
 
+
+    LaunchedEffect(Unit){
+        viewModel.events.collect { event ->
+            when(event){
+                is CustomerListViewModel.Event.NavigateVisitPage ->{
+                    onCustomerClick(event.selectedCustomer)
+                }
+                else -> {
+
+                }
+            }
+        }
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -503,7 +516,15 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                         items = customerList,
                         key = { _, customer -> "${customer.customerId}-${customer.date}" }
                     ) { index, customer ->
-                        CustomerCard(customer = customer, themeManager = themeManager, modifier = Modifier)
+                        CustomerCard(customer = customer, themeManager = themeManager, modifier = Modifier, onCustomerClick = {
+                            viewModel.scope.launch {
+                                viewModel.onEvent(
+                                    CustomerListViewModel.Event.OnClickCustomerItem(
+                                        customer
+                                    )
+                                )
+                            }
+                        })
                         HorizontalDivider()
                     }
                 }
@@ -603,10 +624,13 @@ fun getNavigationItems(): List<NavigationItem>{
 
 @OptIn(ExperimentalTime::class)
 @Composable
-fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, themeManager: ThemeManager) {
+fun CustomerCard(customer: CustomerItemModel,
+                 modifier: Modifier = Modifier,
+                 themeManager: ThemeManager,
+                 onCustomerClick: (CustomerItemModel) -> Unit = {}) {
     Surface(
-        modifier = modifier.height(80.dp).clickable{
-            println("Customer clicked")
+        modifier = modifier.height(80.dp).clickable {
+            onCustomerClick(customer)
         },
         color = MaterialTheme.colorScheme.surface
     ) {
@@ -713,7 +737,7 @@ fun CustomerCard(customer: CustomerItemModel, modifier: Modifier = Modifier, the
                     )
 
                     Text(
-                        text = "${formattedDateStart}-${formattedDate2}",
+                            text = "${formattedDateStart}-${formattedDate2}",
                         fontWeight = FontWeight.Light,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,

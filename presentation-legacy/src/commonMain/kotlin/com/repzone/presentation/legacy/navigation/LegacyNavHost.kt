@@ -1,10 +1,11 @@
 package com.repzone.presentation.legacy.navigation
 
-import androidx.compose.animation.AnimatedContentTransitionScope
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -14,10 +15,13 @@ import androidx.navigation.compose.rememberNavController
 import com.repzone.core.ui.component.selectiondialog.sample.ExampleUsageScreen
 import com.repzone.core.ui.ui.settings.SettingsScreen
 import com.repzone.core.ui.util.enum.NavigationItemType
+import com.repzone.presentation.legacy.navigation.NavigationSharedStateHolder
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
 import com.repzone.presentation.legacy.ui.customerlist.CustomerListScreenLegacy
 import com.repzone.presentation.legacy.ui.splash.SplashScreenLegacy
 import com.repzone.presentation.legacy.ui.sync.SyncScreenLegacy
+import com.repzone.presentation.legacy.ui.visit.VisitScreenLegacy
+import org.koin.compose.koinInject
 
 @Composable
 fun LegacyNavHost(
@@ -33,7 +37,7 @@ fun LegacyNavHost(
         ) {
 
             // ============ AUTH GRAPH ============
-            navigation<LegacyScreen.AuthGraph>(startDestination = LegacyScreen.TestScreen  //
+            navigation<LegacyScreen.AuthGraph>(startDestination = LegacyScreen.Splash  //
             ) {
                 composable<LegacyScreen.Splash> {
                     SplashScreenLegacy(
@@ -79,6 +83,7 @@ fun LegacyNavHost(
                 }
 
                 composable<LegacyScreen.CustomerList> {
+                    val sharedHolder : NavigationSharedStateHolder = koinInject()
                     CustomerListScreenLegacy({ type ->
                         when(type) {
                             NavigationItemType.GENERAL_SETTINGS -> {
@@ -94,12 +99,33 @@ fun LegacyNavHost(
 
                             else -> { /* TODO */ }
                         }
+                    }, onCustomerClick = {
+                        sharedHolder.setSelectedActiveCustomer(it)
+                        navController.navigate(LegacyScreen.VisitScreen)
                     })
                 }
 
                 composable<LegacyScreen.SettingsScreen> {
                     SettingsScreen {
                         navController.navigateUp()
+                    }
+                }
+
+                composable<LegacyScreen.VisitScreen> {
+                    val navigationState: NavigationSharedStateHolder = koinInject()
+                    val selectedCustomer by navigationState.selectedCustomer.collectAsState()
+
+                    selectedCustomer?.let {
+                        VisitScreenLegacy(it,
+                            onBackClick = {
+                                navController.navigateUp()
+                            })
+                    }
+
+                    DisposableEffect(Unit) {
+                        onDispose {
+                            navigationState.clearCustomer()
+                        }
                     }
                 }
             }
