@@ -313,7 +313,9 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
 
                         }),
                         TopBarAction(Icons.Default.Sync, "Sync",Color.White, {
-                            viewModel.onEvent(event = CustomerListViewModel.Event.StartSync)
+                            viewModel.scope.launch {
+                                viewModel.onEvent(event = CustomerListViewModel.Event.StartSync)
+                            }
                         }),
                     ),
                 )
@@ -338,7 +340,10 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                         value = searchQuery,
                         onValueChange = {
                                 searchQuery = it
-                                viewModel.onEvent(CustomerListViewModel.Event.FilterCustomerList(searchQuery))
+                                viewModel.scope.launch {
+                                    viewModel.onEvent(CustomerListViewModel.Event.FilterCustomerList(searchQuery))
+
+                                }
                             },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -357,7 +362,9 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                         keyboardActions = KeyboardActions(
                             onSearch = {
                                 println("Search: $searchQuery")
-                                viewModel.onEvent(CustomerListViewModel.Event.FilterCustomerList(searchQuery))
+                                viewModel.scope.launch {
+                                    viewModel.onEvent(CustomerListViewModel.Event.FilterCustomerList(searchQuery))
+                                }
                                 focusManager.clearFocus()
                             }
                         ),
@@ -394,7 +401,9 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                                         onClick = {
                                             searchQuery = ""
                                             focusManager.clearFocus()
-                                            viewModel.onEvent(CustomerListViewModel.Event.FilterCustomerList(searchQuery)) },
+                                            viewModel.scope.launch {
+                                                viewModel.onEvent(CustomerListViewModel.Event.FilterCustomerList(searchQuery)) }
+                                            },
                                         modifier = Modifier.size(32.dp)
                                     ) {
                                         Icon(
@@ -424,11 +433,15 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                         selectedSort = selectedSort,
                         onSortChange = { /* Sadece local state güncellenecek */ },
                         onApplyFilters = {groups, short ->
-                            viewModel.onEvent(CustomerListViewModel.Event.ApplyFilter(groups, short))
+                            viewModel.scope.launch {
+                                viewModel.onEvent(CustomerListViewModel.Event.ApplyFilter(groups, short))
+                            }
                             showFilterSheet = false
                         } ,
                         onClearFilters = {
-                            viewModel.onEvent(CustomerListViewModel.Event.ClearFilters)
+                            viewModel.scope.launch {
+                                viewModel.onEvent(CustomerListViewModel.Event.ClearFilters)
+                            }
                             showFilterSheet = false
                         },
                         customerGroups = uiState.activeCustomerGroup

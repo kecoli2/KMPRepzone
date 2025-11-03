@@ -856,4 +856,5 @@
     <string name="expanded">Expanded (Tablet Yatay)</string>
     <string name="settings">Ayarlar</string>
     <string name="back">Geri</string>
+    <string name="list_empty">Gösterilecek kayıt bulunamadı...</string>
 </resources>

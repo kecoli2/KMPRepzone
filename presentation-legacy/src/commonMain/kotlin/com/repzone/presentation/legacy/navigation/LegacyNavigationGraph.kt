@@ -19,6 +19,9 @@ sealed interface LegacyScreen {
     data object Splash : LegacyScreen
 
     @Serializable
+    data object TestScreen : LegacyScreen
+
+    @Serializable
     data class ForgotPassword(val email: String? = null) : LegacyScreen
 
     // ============ MAIN SCREENS ============

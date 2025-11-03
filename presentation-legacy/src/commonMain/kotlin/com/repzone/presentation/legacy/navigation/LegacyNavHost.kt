@@ -11,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import com.repzone.core.ui.component.selectiondialog.sample.ExampleUsageScreen
 import com.repzone.core.ui.ui.settings.SettingsScreen
 import com.repzone.core.ui.util.enum.NavigationItemType
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
@@ -26,13 +27,13 @@ fun LegacyNavHost(
     CompositionLocalProvider(LocalNavController provides navController) {
         NavHost(
             navController = navController,
-            startDestination = LegacyScreen.AuthGraph,  // 👈 Splash'tan başla
+            startDestination = LegacyScreen.AuthGraph,
             modifier = modifier.fillMaxSize(),
             // ... transitions ...
         ) {
 
             // ============ AUTH GRAPH ============
-            navigation<LegacyScreen.AuthGraph>(startDestination = LegacyScreen.Splash  // 👈 Auth graph'ın başlangıcı
+            navigation<LegacyScreen.AuthGraph>(startDestination = LegacyScreen.TestScreen  //
             ) {
                 composable<LegacyScreen.Splash> {
                     SplashScreenLegacy(
@@ -58,6 +59,10 @@ fun LegacyNavHost(
                             }
                         }
                     )
+                }
+
+                composable<LegacyScreen.TestScreen> {
+                    ExampleUsageScreen()
                 }
             }
 

@@ -56,6 +56,7 @@ data class CustomerListScreenUiState(
         data object Loading : CustomerListState()
         data object Empty : CustomerListState()
         data object Success : CustomerListState()
+
         data class Error(val message: String) : CustomerListState()
     }
 }

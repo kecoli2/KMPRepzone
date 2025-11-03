@@ -1,9 +1,11 @@
 package com.repzone.presentation.legacy.viewmodel.customerlist
 
+import com.repzone.core.enums.OnOf
 import com.repzone.core.enums.VisitPlanSchedulesType
 import com.repzone.core.interfaces.IPreferencesManager
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.base.BaseViewModel
+import com.repzone.core.ui.base.resetUiFrame
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
@@ -11,6 +13,7 @@ import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.repository.IRepresentativeRepository
 import com.repzone.presentation.legacy.model.CustomerGroup
 import com.repzone.presentation.legacy.model.enum.CustomerSortOption
+import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListScreenUiState.CustomerListState
 import com.repzone.sync.interfaces.ISyncManager
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
@@ -46,71 +49,60 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
     //endregion
 
     //region Public Method
-    fun onEvent(event: Event) {
+    suspend fun onEvent(event: Event) {
         when(event){
             is Event.StartSync -> {
                 updateState { currentState ->
                     currentState.copy(isSyncInProgress = true)
                 }
-                scope.launch {
-                    iSyncManager.startSpecificJobs(listOf(SyncJobType.COMMON_MODULES, SyncJobType.ROUTE))
-                    iSyncManager.allJobsStatus.collect { jobStatuses ->
-                        when(jobStatuses[SyncJobType.COMMON_MODULES]){
-                            is SyncJobStatus.Idle,
-                            is SyncJobStatus.Failed,
-                            is SyncJobStatus.Success -> {
-                                updateState { currentState ->
-                                    currentState.copy(isSyncInProgress = false)
-                                }
-                                updateUiWithPermissions()
-                                // Sync tamamlandıktan sonra listeyi yenile
-                                loadCustomerList(state.value.selectedDate)
+                iSyncManager.startSpecificJobs(listOf(SyncJobType.COMMON_MODULES, SyncJobType.ROUTE))
+                iSyncManager.allJobsStatus.collect { jobStatuses ->
+                    when(jobStatuses[SyncJobType.COMMON_MODULES]){
+                        is SyncJobStatus.Idle,
+                        is SyncJobStatus.Failed,
+                        is SyncJobStatus.Success -> {
+                            updateState { currentState ->
+                                currentState.copy(isSyncInProgress = false)
                             }
-                            else -> {}
+                            updateUiWithPermissions()
+                            // Sync tamamlandıktan sonra listeyi yenile
+                            loadCustomerList(state.value.selectedDate)
                         }
+                        else -> {}
                     }
                 }
             }
 
             is Event.LoadCustomerList -> {
-                scope.launch {
-                    updateState { currentState ->
-                        currentState.copy(selectedDate = event.date)
-                    }
-                    loadCustomerList(event.date)
+                updateState { currentState ->
+                    currentState.copy(selectedDate = event.date)
                 }
+                loadCustomerList(event.date)
             }
 
             is Event.FilterCustomerList -> {
-                scope.launch {
-                    filterCustomerList(event.query)
-                }
+                filterCustomerList(event.query)
             }
 
             is Event.RefreshCustomerList -> {
-                scope.launch {
-                    loadCustomerList(state.value.selectedDate)
-                }
+                loadCustomerList(state.value.selectedDate)
             }
 
             is Event.ApplyFilter -> {
-                scope.launch {
-                    applyFilters(event.selectedGroups, event.sortOption)
-                }
+                applyFilters(event.selectedGroups, event.sortOption)
             }
 
             is Event.ClearFilters -> {
-                scope.launch {
-                    clearFilters()
-                }
+                clearFilters()
             }
 
             is Event.LogOut -> {
-                scope.launch {
+                iDatabaseManager.logout()
+                iPreferencesManager.setActiveUserCode(0)
+            }
 
-                    iDatabaseManager.logout()
-                    iPreferencesManager.setActiveUserCode(0)
-                }
+            is Event.onClickCustomerItem -> {
+
             }
         }
     }
@@ -173,7 +165,6 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
             )
         }
     }
-
     private suspend fun loadCustomerList(date: Instant?) {
         updateState { currentState ->
             currentState.copy(
@@ -206,12 +197,10 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
             }
         }
     }
-
     private suspend fun filterCustomerList(query: String) {
         searchQuery = query
         applyFilters(state.value.selectedFilterGroups, state.value.selectedSortOption)
     }
-
     private fun updateUiWithPermissions() {
         //region Reports Module
         val isActive = iModuleParameterRepository.getReportsParameters()?.isActive ?: false
@@ -249,12 +238,34 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
 
         //endregion Update Ui State
     }
-
     private fun prepareCustomerGroup(list: List<CustomerItemModel>): List<CustomerGroup> {
         val grpoupList = list.filter { it.customerGroupName?.isNotEmpty() == true }.groupBy { it.customerGroupName }.map { (group, _) ->
             CustomerGroup(group!!, group)
         }
         return grpoupList
+    }
+    private suspend fun onClickedCustomer(itemModel: CustomerItemModel){
+        try {
+            updateState { currentState->
+                currentState.copy(uiFrame = currentState.uiFrame.copy(true))
+            }
+
+            if(iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.groupByParentCustomer == OnOf.ON){
+
+            }
+
+
+
+
+        }catch (ex: Exception){
+            updateState { currentState->
+                currentState.copy(uiFrame = currentState.uiFrame.copy(false, ex.message))
+            }
+        }finally {
+            updateState { currentState->
+                currentState.copy(uiFrame = currentState.uiFrame.copy(false, null))
+            }
+        }
     }
     //endregion
 
@@ -267,6 +278,8 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         data class ApplyFilter(val selectedGroups: List<String>, val sortOption: CustomerSortOption) : Event()
         data object ClearFilters : Event()
         data object LogOut: Event()
+
+        data class onClickCustomerItem(val selectedCustomer: CustomerItemModel): Event()
     }
     //endregion Event
 }

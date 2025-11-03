@@ -8,6 +8,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -15,10 +17,19 @@ import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.lifecycleScope
 import com.repzone.core.di.CoreModule
+import com.repzone.core.ui.component.selectiondialog.GenericPopupList
+import com.repzone.core.ui.component.selectiondialog.SelectionMode
+import com.repzone.core.ui.component.selectiondialog.sample.CustomerRow
+import com.repzone.core.ui.component.selectiondialog.sample.CustomerSample
+import com.repzone.core.ui.component.selectiondialog.sample.ExampleUsageScreen
+import com.repzone.core.ui.component.selectiondialog.sample.ProductSample
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.di.CoreUiModule
 import com.repzone.core.ui.manager.theme.AppTheme
@@ -146,7 +157,7 @@ fun AppAndroidPreview() {
             displayOrder = 1,
             showDisplayOrder = false,
         ), modifier = Modifier ,themeManager = themeManager)*/
-         VisitScreenLegacy(customer = CustomerItemModel(
+         /*VisitScreenLegacy(customer = CustomerItemModel(
              customerId = 1,
              visitId = 1,
              iconIndex = null,
@@ -172,7 +183,50 @@ fun AppAndroidPreview() {
              showDisplayClock = false,
              displayOrder = 1,
              showDisplayOrder = false)
-         )
+         )*/
+        var showCustomerDialog by remember { mutableStateOf(true) }
+        var showProductBottomSheet by remember { mutableStateOf(false) }
+        var selectedCustomer by remember { mutableStateOf<CustomerSample?>(null) }
+        var selectedProducts by remember { mutableStateOf<List<ProductSample>>(emptyList()) }
+        val customers = remember {
+            listOf(
+                CustomerSample(1, "Ahmet Yılmaz", "ahmet@example.com", "+90 532 123 4567"),
+                CustomerSample(2, "Ayşe Demir", "ayse@example.com", "+90 533 234 5678"),
+                CustomerSample(3, "Mehmet Kaya", "mehmet@example.com", "+90 534 345 6789"),
+                CustomerSample(4, "Fatma Şahin", "fatma@example.com", "+90 535 456 7890"),
+                CustomerSample(5, "Ali Çelik", "ali@example.com", "+90 536 567 8901")
+            )
+        }
+        Surface(
+            shape = MaterialTheme.shapes.large,
+            tonalElevation = 6.dp,
+            color = themeManager.getCurrentColorScheme().colorPalet.secondary20
+
+        ) {
+            GenericPopupList(
+                items = customers,
+                selectionMode = SelectionMode.SINGLE,
+                selectedItems = selectedCustomer?.let { listOf(it) },
+                itemContent = { customer, isSelected ->
+                    CustomerRow(customer = customer, isSelected = isSelected)
+                },
+                itemKey = { it.id },
+                searchEnabled = true,
+                searchPredicate = { customer, query ->
+                    customer.name.contains(query, ignoreCase = true) ||
+                            customer.email.contains(query, ignoreCase = true) ||
+                            customer.phone.contains(query, ignoreCase = true)
+                },
+                searchPlaceholder = "Müşteri ara...",
+                confirmButtonText = "Seç",
+                cancelButtonText = "İptal",
+                onConfirm = { selected ->
+                    selectedCustomer = selected.firstOrNull()
+                    showCustomerDialog = false
+                },
+                onDismiss = { showCustomerDialog = false }
+            )
+        }
 
     }
 }
