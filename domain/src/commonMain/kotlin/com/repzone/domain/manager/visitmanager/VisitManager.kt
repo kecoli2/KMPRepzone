@@ -12,7 +12,7 @@ import com.repzone.domain.util.models.ActionMenuListItem
 
 class VisitManager(private val iVisitRepository: IVisitRepository,
                    private val iModuleParameters: IMobileModuleParameterRepository,
-    private val getVisitMenulist: GetVisitMenuListUseCase
+    private val getVisitMenuUseCase: GetVisitMenuListUseCase
 ): IVisitManager {
     //region Field
     private var customerItemModel: CustomerItemModel? = null
@@ -26,11 +26,8 @@ class VisitManager(private val iVisitRepository: IVisitRepository,
 
     //region Public Method
     override suspend fun prepareVisitMenu(): Result<Pair<List<ActionMenuListItem>, List<ActionButtonListItem>>> {
-        getVisitMenulist.invoke(customerItemModel!!).fold(
+        getVisitMenuUseCase.invoke(customerItemModel!!).fold(
             onSuccess = {
-
-
-
                 return Result.Success(it)
             },
             onError = {

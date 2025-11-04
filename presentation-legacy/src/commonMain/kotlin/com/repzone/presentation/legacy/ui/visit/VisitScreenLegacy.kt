@@ -112,7 +112,7 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
 
 
     LaunchedEffect(Unit){
-        viewModel.prepareActions(customer)
+        viewModel.initiliaze(customer)
     }
 
     HandleBackPress {

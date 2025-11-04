@@ -8,9 +8,8 @@ import com.repzone.domain.manager.visitmanager.IVisitManager
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.repository.IVisitRepository
-import com.repzone.domain.usecase.visit.GetVisitMenuListUseCase
 
-class VisitViewModel(private val iActionMenuRepository: IVisitRepository,
+class VisitViewModel(private val iVisitRepository: IVisitRepository,
                      private val iModuleParameters: IMobileModuleParameterRepository,
                     private val iVisitManager: IVisitManager): BaseViewModel<VisitUiState, VisitViewModel.Event>(VisitUiState()) {
     //region Field
@@ -21,28 +20,41 @@ class VisitViewModel(private val iActionMenuRepository: IVisitRepository,
     //endregion
 
     //region Constructor
+    suspend fun initiliaze(customers: CustomerItemModel){
+        customer = customers
+        iVisitManager.initiliaze(customers).fold(
+            onSuccess = {
+                prepareUiParameters()
+                prepareActions()
+            },
+            onError = {
+                setError(it)
+            }
+        )
+    }
     //endregion
 
     //region Public Method
-    suspend fun prepareActions(customer: CustomerItemModel){
+    suspend fun prepareActions(){
         try {
             updateState { currentState ->
                 currentState.copy(uiFrame = currentState.uiFrame.withLoading())
             }
-            this.customer = customer
             prepareUiParameters()
-            iVisitManager.prepareVisitMenu(customer).fold(
-                onSuccess = {
-                    updateState { currentState ->
-                        currentState.copy(menuListState = VisitUiState.ActionMenuListState.Success
-                            , actionMenuList = getVisitMenulist.getActionMenuList()
-                        , actionButtonList = getVisitMenulist.getActionButtonList())
+            customer?.let {
+                iVisitManager.prepareVisitMenu().fold(
+                    onSuccess = { (actionMenulist, actionButtonList) ->
+                        updateState { currentState ->
+                            currentState.copy(menuListState = VisitUiState.ActionMenuListState.Success
+                                , actionMenuList = actionMenulist
+                                , actionButtonList = actionButtonList)
+                        }
+                    },
+                    onError = {
+                        setError(it)
                     }
-                },
-                onError = {
-                    setError(it)
-                }
-            )
+                )
+            }
         }catch (ex:Exception){
             setError(ex.message)
         }finally {

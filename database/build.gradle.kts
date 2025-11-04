@@ -118,10 +118,6 @@ tasks.configureEach {
     }
 }
 //region REGISTER TASKS
-/*tasks.withType<KotlinCompile>().configureEach {
-    dependsOn("kspCommonMainKotlinMetadata")
-}*/
-
 tasks.register("generateDomainModels") {
     group = "generation"
     description = "Generate domain models from SQLDelight entities"
@@ -135,10 +131,17 @@ tasks.register("generateDomainModels") {
         // SQLDelight'ın generate ettiği Entity'lerin yolu
         val entityDir = file("build/generated/sqldelight/code/AppDatabase/commonMain/com/repzone/database")
 
-        // Model'lerin yazılacağı klasör (src altında, böylece kalıcı olur)
-        val modelDir = file("src/commonMain/kotlin/${modelPackage.replace('.', '/')}")
+        // Domain modülünün path'ini project'ten al
+        val domainProject = project.rootProject.findProject(":domain")
+        if (domainProject == null) {
+            println("Domain module not found!")
+            return@doLast
+        }
+
+        val modelDir = File(domainProject.projectDir, "src/commonMain/kotlin/${modelPackage.replace('.', '/')}")
 
         if (!entityDir.exists()) {
+            println("Entity directory not found: ${entityDir.absolutePath}")
             return@doLast
         }
 
@@ -149,14 +152,20 @@ tasks.register("generateDomainModels") {
         entityDir.walkTopDown()
             .filter { it.isFile && it.extension == "kt" && it.name.endsWith("Entity.kt") }
             .forEach { entityFile ->
-                val entityContent = entityFile.readText()
-                val modelContent = convertEntityToModel(entityContent, modelPackage)
-
-                // Model dosya adını oluştur
                 val modelFileName = entityFile.name.replace("Entity.kt", "Model.kt")
                 val modelFile = File(modelDir, modelFileName)
 
+                // Eğer model dosyası zaten varsa atla
+                if (modelFile.exists()) {
+                    println("Skipping already existing model: ${modelFile.name}")
+                    return@forEach
+                }
+
+                val entityContent = entityFile.readText()
+                val modelContent = convertEntityToModel(entityContent, modelPackage)
+
                 modelFile.writeText(modelContent)
+                println("Generated model: ${modelFile.name}")
             }
     }
 }
