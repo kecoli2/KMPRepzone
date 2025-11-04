@@ -1,13 +1,13 @@
 package com.repzone.data.repository.imp
 
-import com.repzone.data.util.Mapper
+import com.repzone.data.mapper.VisitEntityDbMapper
 import com.repzone.database.VisitEntity
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.database.runtime.select
-import com.repzone.domain.model.VisitModel
+import com.repzone.domain.model.VisitInformation
 import com.repzone.domain.repository.IVisitRepository
 
-class VisitRepositoryImpl(private val iDatabaseManager: IDatabaseManager, private val mapper: Mapper<VisitEntity, VisitModel>): IVisitRepository {
+class VisitRepositoryImpl(private val iDatabaseManager: IDatabaseManager, private val mapper: VisitEntityDbMapper): IVisitRepository {
     //region Field
     //endregion
 
@@ -22,7 +22,7 @@ class VisitRepositoryImpl(private val iDatabaseManager: IDatabaseManager, privat
 
     //region Private Method
     //endregion
-    override suspend fun getActiveVisit(): VisitModel? {
+    override suspend fun getActiveVisit(): VisitInformation? {
         val visit = iDatabaseManager.getSqlDriver().select<VisitEntity> {
             where {
                 criteria("Finish", isNull = true)
@@ -32,7 +32,7 @@ class VisitRepositoryImpl(private val iDatabaseManager: IDatabaseManager, privat
         return if(visit == null){
             null
         }else{
-            mapper.toDomain(visit)
+            mapper.toDomainVisitInformation(visit)
         }
     }
 }

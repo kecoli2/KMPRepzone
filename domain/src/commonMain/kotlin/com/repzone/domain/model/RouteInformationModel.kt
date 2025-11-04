@@ -15,7 +15,7 @@ data class RouteInformationModel(
   val code: String?,
   val customerGroupName: String?,
   val customerOrganizationId: Long?,
-  val customerTagStr: String?,
+  val customerTagStr: List<String>? = emptyList(),
   val customerRisk: Double?,
   val customerBalance: Double?,
   val isECustomer: Long?,

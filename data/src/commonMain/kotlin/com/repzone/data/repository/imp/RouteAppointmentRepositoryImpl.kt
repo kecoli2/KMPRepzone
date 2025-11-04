@@ -1,12 +1,21 @@
 package com.repzone.data.repository.imp
 
+import com.repzone.data.mapper.RouteInformationViewEntityDbMapper
+import com.repzone.data.util.Mapper
+import com.repzone.database.RouteInformationViewEntity
 import com.repzone.database.SyncRouteAppointmentEntity
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.database.runtime.rawQueryToEntity
+import com.repzone.database.runtime.select
+import com.repzone.domain.model.RouteInformationModel
 import com.repzone.domain.repository.IRouteAppointmentRepository
 import com.repzone.domain.util.models.SprintInformation
 
-class RouteAppointmentRepositoryImpl(private val databaseManager: IDatabaseManager): IRouteAppointmentRepository {
+class RouteAppointmentRepositoryImpl(
+    private val databaseManager: IDatabaseManager,
+    private val mapper: RouteInformationViewEntityDbMapper
+
+): IRouteAppointmentRepository {
     //region Field
     //endregion
 
@@ -42,8 +51,18 @@ class RouteAppointmentRepositoryImpl(private val databaseManager: IDatabaseManag
     }
 
 
-    override suspend fun getRouteInformation(appointmentId: Long) {
+    override suspend fun getRouteInformation(appointmentId: Long): RouteInformationModel? {
+        val db = databaseManager.getSqlDriver().select<RouteInformationViewEntity> {
+            where {
+                criteria("AppointmentId", appointmentId)
+            }
+        }.firstOrNull()
 
+        return if (db == null){
+            null
+        }else{
+            mapper.toDomain(db)
+        }
     }
     //endregion
 

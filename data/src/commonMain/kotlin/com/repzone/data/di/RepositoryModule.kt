@@ -26,10 +26,10 @@ val RepositoryModule = module {
     single<ICustomerListRepository> { CustomerListRepositoryImpl(get(), get(), get(), get(named("CustomerItemViewEntityDbMapper")),  get()) }
     single<ISyncModuleRepository> { SyncModuleRepositoryImpl(get(named("SyncModuleEntityDbMapper")), get()) }
     single<IMobileModuleParameterRepository>{ MobileModuleParameterRepositoryImpl(get(), get(named("SyncPackageCustomFieldProductEntityDbMapper")), get()) }
-    single<IRouteAppointmentRepository> { RouteAppointmentRepositoryImpl(get()) }
+    single<IRouteAppointmentRepository> { RouteAppointmentRepositoryImpl(get(), get()) }
     single<IEventReasonRepository> { EventReasonRepositoryImpl(get()) }
     factory<IRepresentativeRepository>{ RepresentativeRepositoryImpl(get(), get()) }
-    factory<IVisitRepository>{ VisitRepositoryImpl(get(), get(named("VisitEntityDbMapper"))) }
+    factory<IVisitRepository>{ VisitRepositoryImpl(get(), get()) }
     //endregion REPOSITORY
 
     //region DBMAPPERS
@@ -49,6 +49,7 @@ val RepositoryModule = module {
 
     //region MobileRoute
     single<MapperDto<SyncRouteAppointmentEntity, SyncRouteAppointmentModel, RouteDto>>(named("SyncRouteAppointmentEntityDbMapper")) { SyncRouteAppointmentEntityDbMapper() }
+    single { RouteInformationViewEntityDbMapper() }
     //endregion MobileRoute
 
     //region Adress
@@ -477,7 +478,7 @@ val RepositoryModule = module {
     //endregion
 
     //region Visit
-    single<Mapper<VisitEntity, VisitModel>>(named("VisitEntityDbMapper")) { VisitEntityDbMapper() }
+    single { VisitEntityDbMapper() }
     //endregion
 
     //region VisitActivityDefinition

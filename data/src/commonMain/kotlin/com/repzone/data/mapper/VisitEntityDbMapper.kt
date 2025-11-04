@@ -1,8 +1,10 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.util.extensions.toBoolean
 import com.repzone.core.util.extensions.toInstant
 import com.repzone.data.util.Mapper
 import com.repzone.database.VisitEntity
+import com.repzone.domain.model.VisitInformation
 import com.repzone.domain.model.VisitModel
 import kotlin.time.ExperimentalTime
 
@@ -50,6 +52,25 @@ class VisitEntityDbMapper : Mapper<VisitEntity, VisitModel> {
             Start = domain.start?.toEpochMilliseconds(),
             VisitNote = domain.visitNote,
             VisitType = domain.visitType
+        )
+    }
+
+    fun toDomainVisitInformation(from: VisitEntity): VisitInformation{
+        return VisitInformation(
+            appointmentId = from.AppointmentId ?: 0L,
+            visitId = from.Id,
+            guid = from.Guid,
+            longitude = from.Longitude,
+            latitude = from.Latitude,
+            start = from.Start?.toInstant(),
+            orderIds = from.OrderIdsRaw,
+            formIds = from.FormIdsRaw,
+            isItOnRoute = from.IsItOnRoute?.toBoolean() ?: false,
+            isItOnTime = from.IsItOnTime?.toBoolean() ?: false,
+            isItOnLocation = from.IsItOnLocation?.toBoolean() ?: false,
+            distanceFromCustomerLocation = from.DistanceFromCustomerLocation?.toInt() ?: 0,
+            visitType = from.VisitType?.toInt() ?: 0,
+            selectedCustomerOrganizationId = from.SelectedCustomerOrganizationId?.toInt() ?: 0
         )
     }
     //endregion

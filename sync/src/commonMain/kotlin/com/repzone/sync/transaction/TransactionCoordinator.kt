@@ -202,7 +202,7 @@ class TransactionCoordinator(
     }
 
     private fun buildBulkInsertSql(operation: DatabaseOperation): String {
-        val columns = operation.columns.joinToString(", ") { "`$it`" }
+        val columns = operation.columns.joinToString(", ")
         val values = operation.values.joinToString(", ")
         return "INSERT INTO ${operation.tableName} ($columns) VALUES $values"
     }
@@ -280,13 +280,13 @@ class TransactionCoordinator(
     }
 
     private fun buildBulkInsertSqlFromTableOp(tableOp: TableOperation): String {
-        val columns = tableOp.columns.joinToString(", ") { "`$it`" }
+        val columns = tableOp.columns.joinToString(", ")
         val values = tableOp.values.joinToString(", ")
         return "INSERT INTO ${tableOp.tableName} ($columns) VALUES $values"
     }
 
     private fun buildBulkUpsertSqlFromTableOp(tableOp: TableOperation): String {
-        val columns = tableOp.columns.joinToString(", ") { "`$it`" }
+        val columns = tableOp.columns.joinToString(", ")
         val values = tableOp.values.joinToString(", ")
         return "INSERT OR REPLACE INTO ${tableOp.tableName} ($columns) VALUES $values"
     }

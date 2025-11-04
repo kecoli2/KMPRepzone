@@ -381,9 +381,9 @@ val RepositoryModulePreview = module {
     single<ISyncModuleRepository> { SyncModuleRepositoryImpl(get(named("SyncModuleEntityDbMapper")), get()) }
     single<IMobileModuleParameterRepository>{ MobileModuleParameterRepositoryImplPreview(get(), get(named("SyncPackageCustomFieldProductEntityDbMapper")), get()) }
     factory<IRepresentativeRepository>{ RepresentativeRepositoryImpl(get(), get()) }
-    single<IRouteAppointmentRepository> { RouteAppointmentRepositoryImpl(get()) }
+    single<IRouteAppointmentRepository> { RouteAppointmentRepositoryImpl(get(), get()) }
     single<IEventReasonRepository> { EventReasonRepositoryImpl(get()) }
-    factory<IVisitRepository>{ VisitRepositoryImpl(get(), get(named("VisitEntityDbMapper"))) }
+    factory<IVisitRepository>{ VisitRepositoryImpl(get(), get()) }
     //endregion REPOSITORY
 
     //region DBMAPPERS
@@ -831,7 +831,7 @@ val RepositoryModulePreview = module {
     //endregion
 
     //region Visit
-    single<Mapper<VisitEntity, VisitModel>>(named("VisitEntityDbMapper")) { VisitEntityDbMapper() }
+    single { VisitEntityDbMapper() }
     //endregion
 
     //region VisitActivityDefinition

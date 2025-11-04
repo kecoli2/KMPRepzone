@@ -4,18 +4,25 @@ import com.repzone.domain.common.DomainException
 import com.repzone.domain.common.Result
 import com.repzone.domain.common.fold
 import com.repzone.domain.model.CustomerItemModel
+import com.repzone.domain.model.RouteInformationModel
+import com.repzone.domain.model.VisitInformation
+import com.repzone.domain.model.VisitModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.repository.IVisitRepository
+import com.repzone.domain.usecase.visit.GetRouteInformationUseCase
 import com.repzone.domain.usecase.visit.GetVisitMenuListUseCase
 import com.repzone.domain.util.models.VisitButtonItem
 import com.repzone.domain.util.models.VisitActionItem
 
 class VisitManager(private val iVisitRepository: IVisitRepository,
                    private val iModuleParameters: IMobileModuleParameterRepository,
-    private val getVisitMenuUseCase: GetVisitMenuListUseCase
+    private val getVisitMenuUseCase: GetVisitMenuListUseCase,
+    private val getRouteInformationUseCase: GetRouteInformationUseCase
 ): IVisitManager {
     //region Field
     private var customerItemModel: CustomerItemModel? = null
+    private var routeInformation : RouteInformationModel? = null
+    private var visitInformation: VisitInformation? = null
     //endregion
 
     //region Properties
@@ -39,6 +46,15 @@ class VisitManager(private val iVisitRepository: IVisitRepository,
     override suspend fun initiliaze(customer: CustomerItemModel): Result<Unit> {
         return try {
             customerItemModel = customer
+            getRouteInformationUseCase.invoke(customer).fold(
+                onSuccess = {
+                    routeInformation = it
+                },
+                onError = {
+                    return Result.Error(it)
+                }
+            )
+            visitInformation = iVisitRepository.getActiveVisit()
             Result.Success(Unit)
         }catch (ex: DomainException){
             Result.Error(ex)
