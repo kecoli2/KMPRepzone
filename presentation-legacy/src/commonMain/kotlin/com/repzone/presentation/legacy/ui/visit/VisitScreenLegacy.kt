@@ -68,7 +68,7 @@ import com.repzone.core.util.extensions.toMoney
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.util.enums.ActionButtonType
-import com.repzone.domain.util.models.ActionButtonListItem
+import com.repzone.domain.util.models.VisitButtonItem
 import com.repzone.presentation.legacy.viewmodel.visit.VisitUiState
 import com.repzone.presentation.legacy.viewmodel.visit.VisitViewModel
 import org.jetbrains.compose.resources.painterResource
@@ -308,7 +308,7 @@ fun CustomerSummary(customer: CustomerItemModel, themeManager: ThemeManager, vis
 }
 
 @Composable
-fun ActionButton(item: ActionButtonListItem, themeManager: ThemeManager ,onClick: () -> Unit) {
+fun ActionButton(item: VisitButtonItem, themeManager: ThemeManager, onClick: () -> Unit) {
     Box(
         modifier = Modifier.size(48.dp)
     ) {

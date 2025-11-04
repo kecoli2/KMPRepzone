@@ -6,23 +6,23 @@ import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.common.Result
 import com.repzone.domain.util.enums.ActionButtonType
-import com.repzone.domain.util.models.ActionButtonListItem
-import com.repzone.domain.util.models.ActionMenuListItem
+import com.repzone.domain.util.models.VisitButtonItem
+import com.repzone.domain.util.models.VisitActionItem
 
 class GetVisitMenuListUseCase(
     private val iModuleParameters: IMobileModuleParameterRepository
 
 ) {
     //region Field
-    private var actionMenuList: List<ActionMenuListItem> = emptyList()
-    private var actionButtonList: ArrayList<ActionButtonListItem> = arrayListOf()
+    private var actionMenuList: List<VisitActionItem> = emptyList()
+    private var actionButtonList: ArrayList<VisitButtonItem> = arrayListOf()
     //endregion
 
     //region Properties
     //endregion
 
     //region Constructor
-    suspend operator fun invoke(customer: CustomerItemModel): Result<Pair<List<ActionMenuListItem>, List<ActionButtonListItem>>> {
+    suspend operator fun invoke(customer: CustomerItemModel): Result<Pair<List<VisitActionItem>, List<VisitButtonItem>>> {
         return try{
             prepareActionButtonList()
             prepareActionMenuItemList()
@@ -45,14 +45,14 @@ class GetVisitMenuListUseCase(
 
         if(iModuleParameters.getModule().drive){
             actionButtonList.add(
-                ActionButtonListItem(
+                VisitButtonItem(
                     actionType = ActionButtonType.DRIVE,
                 )
             )
         }
         if(iModuleParameters.getModule().qlikReport){
             actionButtonList.add(
-                ActionButtonListItem(
+                VisitButtonItem(
                     actionType = ActionButtonType.REPORT,
                 )
             )
@@ -61,7 +61,7 @@ class GetVisitMenuListUseCase(
         if((iModuleParameters.getOrdersParameters()?.isActive == true && iModuleParameters.getOrdersParameters()?.allowDraft == true) &&
             (iModuleParameters.getCustomMobileFormsParameters()?.isActive == true && iModuleParameters.getCustomMobileFormsParameters()?.allowDraft == true)){
             actionButtonList.add(
-                ActionButtonListItem(
+                VisitButtonItem(
                     actionType = ActionButtonType.ORDER_LOG,
                 )
             )
@@ -71,7 +71,7 @@ class GetVisitMenuListUseCase(
            // MAP
             if (it.isActive && it.navigation == OnOf.ON) {
                 actionButtonList.add(
-                    ActionButtonListItem(
+                    VisitButtonItem(
                         actionType = ActionButtonType.MAP,
                     )
                 )
@@ -80,7 +80,7 @@ class GetVisitMenuListUseCase(
             // CUSTOMER NOTE
             if(it.isActive && (it.customerNoteEntry == OnOf.ON || it.visitNoteEntry == OnOf.ON)){
                 actionButtonList.add(
-                    ActionButtonListItem(
+                    VisitButtonItem(
                         actionType = ActionButtonType.NOTES,
                     )
                 )

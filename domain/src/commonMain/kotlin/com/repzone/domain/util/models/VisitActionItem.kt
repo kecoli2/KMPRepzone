@@ -3,7 +3,7 @@ package com.repzone.domain.util.models
 import com.repzone.domain.util.enums.ActionMenuGroup
 import com.repzone.domain.util.enums.ActionType
 
-data class ActionMenuListItem(
+data class VisitActionItem(
     val actionType: ActionType,
     val actionId: Int? = null,
     val title: String,

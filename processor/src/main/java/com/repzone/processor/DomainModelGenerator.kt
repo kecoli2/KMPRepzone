@@ -33,7 +33,7 @@ object DomainModelGenerator {
             "${schema.tableName}Entity"
         }
 
-        val modelName = entityName.replace("Entity", "Model")
+        val modelName = entityName.replace("Entity", "Model").replace("View", "")
         val modelPackage = "com.repzone.domain.model"
 
         logger.info("Model: $modelName, Entity: $entityName")

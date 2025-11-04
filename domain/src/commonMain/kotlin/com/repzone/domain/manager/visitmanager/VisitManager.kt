@@ -7,8 +7,8 @@ import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.repository.IVisitRepository
 import com.repzone.domain.usecase.visit.GetVisitMenuListUseCase
-import com.repzone.domain.util.models.ActionButtonListItem
-import com.repzone.domain.util.models.ActionMenuListItem
+import com.repzone.domain.util.models.VisitButtonItem
+import com.repzone.domain.util.models.VisitActionItem
 
 class VisitManager(private val iVisitRepository: IVisitRepository,
                    private val iModuleParameters: IMobileModuleParameterRepository,
@@ -25,7 +25,7 @@ class VisitManager(private val iVisitRepository: IVisitRepository,
     //endregion
 
     //region Public Method
-    override suspend fun prepareVisitMenu(): Result<Pair<List<ActionMenuListItem>, List<ActionButtonListItem>>> {
+    override suspend fun prepareVisitMenu(): Result<Pair<List<VisitActionItem>, List<VisitButtonItem>>> {
         getVisitMenuUseCase.invoke(customerItemModel!!).fold(
             onSuccess = {
                 return Result.Success(it)

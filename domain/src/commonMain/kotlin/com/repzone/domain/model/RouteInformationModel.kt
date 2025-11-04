@@ -1,9 +1,13 @@
 package com.repzone.domain.model
 
-data class RouteInformationViewModel(
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
+
+@OptIn(ExperimentalTime::class)
+data class RouteInformationModel(
   val appointmentId: Long,
-  val start: Long?,
-  val end: Long?,
+  val start: Instant?,
+  val end: Instant?,
   val customerId: Long?,
   val description: String?,
   val customerName: String?,

@@ -2,13 +2,13 @@ package com.repzone.presentation.legacy.viewmodel.visit
 
 import com.repzone.core.model.HasUiFrame
 import com.repzone.core.model.UiFrame
-import com.repzone.domain.util.models.ActionButtonListItem
-import com.repzone.domain.util.models.ActionMenuListItem
+import com.repzone.domain.util.models.VisitButtonItem
+import com.repzone.domain.util.models.VisitActionItem
 
 data class VisitUiState(
     override val uiFrame: UiFrame = UiFrame(),
-    val actionMenuList: List<ActionMenuListItem> = emptyList(),
-    val actionButtonList: List<ActionButtonListItem> = emptyList(),
+    val actionMenuList: List<VisitActionItem> = emptyList(),
+    val actionButtonList: List<VisitButtonItem> = emptyList(),
     val menuListState: ActionMenuListState = ActionMenuListState.Initial,
     val buttonListState: ActionMenuListState = ActionMenuListState.Initial,
     val visibleBalanceText : Boolean = true,

@@ -2,12 +2,12 @@ package com.repzone.data.mapper
 
 import com.repzone.data.util.Mapper
 import com.repzone.database.SellerNoteViewEntity
-import com.repzone.domain.model.SellerNoteViewModel
+import com.repzone.domain.model.SellerNoteModel
 
-class SellerNoteViewEntityDbMapper : Mapper<SellerNoteViewEntity, SellerNoteViewModel> {
+class SellerNoteViewEntityDbMapper : Mapper<SellerNoteViewEntity, SellerNoteModel> {
     //region Public Method
-    override fun toDomain(from: SellerNoteViewEntity): SellerNoteViewModel {
-        return SellerNoteViewModel(
+    override fun toDomain(from: SellerNoteViewEntity): SellerNoteModel {
+        return SellerNoteModel(
             customerNoteId = from.CustomerNoteId,
             noteTaker = from.NoteTaker,
             beginDate = from.BeginDate,
@@ -21,7 +21,7 @@ class SellerNoteViewEntityDbMapper : Mapper<SellerNoteViewEntity, SellerNoteView
         )
     }
 
-    override fun fromDomain(domain: SellerNoteViewModel): SellerNoteViewEntity {
+    override fun fromDomain(domain: SellerNoteModel): SellerNoteViewEntity {
         return SellerNoteViewEntity(
             CustomerNoteId = domain.customerNoteId,
             NoteTaker = domain.noteTaker,

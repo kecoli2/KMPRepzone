@@ -1,6 +1,6 @@
 package com.repzone.domain.model
 
-data class SellerNoteViewModel(
+data class SellerNoteModel(
   val customerNoteId: Long,
   val noteTaker: String?,
   val beginDate: Long?,

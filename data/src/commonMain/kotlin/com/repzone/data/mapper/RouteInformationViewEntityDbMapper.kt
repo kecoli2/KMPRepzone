@@ -1,16 +1,19 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.util.extensions.toInstant
 import com.repzone.data.util.Mapper
 import com.repzone.database.RouteInformationViewEntity
-import com.repzone.domain.model.RouteInformationViewModel
+import com.repzone.domain.model.RouteInformationModel
+import kotlin.time.ExperimentalTime
 
-class RouteInformationViewEntityDbMapper : Mapper<RouteInformationViewEntity, RouteInformationViewModel> {
+@OptIn(ExperimentalTime::class)
+class RouteInformationViewEntityDbMapper : Mapper<RouteInformationViewEntity, RouteInformationModel> {
     //region Public Method
-    override fun toDomain(from: RouteInformationViewEntity): RouteInformationViewModel {
-        return RouteInformationViewModel(
+    override fun toDomain(from: RouteInformationViewEntity): RouteInformationModel {
+        return RouteInformationModel(
             appointmentId = from.AppointmentId,
-            start = from.Start,
-            end = from.End,
+            start = from.Start?.toInstant(),
+            end = from.End?.toInstant(),
             customerId = from.CustomerId,
             description = from.Description,
             customerName = from.CustomerName,
@@ -33,11 +36,11 @@ class RouteInformationViewEntityDbMapper : Mapper<RouteInformationViewEntity, Ro
         )
     }
 
-    override fun fromDomain(domain: RouteInformationViewModel): RouteInformationViewEntity {
+    override fun fromDomain(domain: RouteInformationModel): RouteInformationViewEntity {
         return RouteInformationViewEntity(
             AppointmentId = domain.appointmentId,
-            Start = domain.start,
-            End = domain.end,
+            Start = domain.start?.toEpochMilliseconds(),
+            End = domain.end?.toEpochMilliseconds(),
             CustomerId = domain.customerId,
             Description = domain.description,
             CustomerName = domain.customerName,
