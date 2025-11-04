@@ -96,10 +96,10 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
             actionType = ActionButtonType.LOCATION,
         ),
         ActionButtonListItem(
-            actionType = ActionButtonType.LIST,
+            actionType = ActionButtonType.ORDER_LOG,
         ),
         ActionButtonListItem(
-            actionType = ActionButtonType.FOLDER,
+            actionType = ActionButtonType.DRIVE,
         ),
         ActionButtonListItem(
             actionType = ActionButtonType.REPORT,
@@ -377,8 +377,8 @@ fun getIconForActionType(type: ActionButtonType): ImageVector {
         ActionButtonType.VISITING_START -> Icons.Default.PlayArrow
         ActionButtonType.VISITING_END -> Icons.Default.Stop
         ActionButtonType.LOCATION -> Icons.Default.LocationOn
-        ActionButtonType.LIST -> Icons.Default.List
-        ActionButtonType.FOLDER -> Icons.Default.Folder
+        ActionButtonType.ORDER_LOG -> Icons.Default.List
+        ActionButtonType.DRIVE -> Icons.Default.Folder
         ActionButtonType.REPORT -> Icons.Default.Assessment
         ActionButtonType.NOTES -> Icons.Default.Note
     }

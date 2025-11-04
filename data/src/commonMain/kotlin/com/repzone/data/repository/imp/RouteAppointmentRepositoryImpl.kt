@@ -40,6 +40,11 @@ class RouteAppointmentRepositoryImpl(private val databaseManager: IDatabaseManag
         )
 
     }
+
+
+    override suspend fun getRouteInformation(appointmentId: Long) {
+
+    }
     //endregion
 
     //region Protected Method

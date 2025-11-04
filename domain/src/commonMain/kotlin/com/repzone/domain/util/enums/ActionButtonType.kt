@@ -4,8 +4,8 @@ enum class ActionButtonType {
     VISITING_START,
     VISITING_END,
     LOCATION,
-    LIST,
-    FOLDER,
+    ORDER_LOG,
+    DRIVE,
     REPORT,
     NOTES
 }

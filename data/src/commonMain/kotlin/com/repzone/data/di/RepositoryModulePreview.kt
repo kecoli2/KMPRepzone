@@ -114,7 +114,7 @@ import com.repzone.data.mapper.UploadFileTaskEntityDbMapper
 import com.repzone.data.mapper.VisitActivityLogInformationEntityDbMapper
 import com.repzone.data.mapper.VisitEntityDbMapper
 import com.repzone.data.mapper.VisitLogInformationEntityDbMapper
-import com.repzone.data.repository.imp.ActionMenuRepositoryImpl
+import com.repzone.data.repository.imp.VisitRepositoryImpl
 import com.repzone.data.repository.imp.CustomerListRepositoryImpl
 import com.repzone.data.repository.imp.CustomerRepositoryImpl
 import com.repzone.data.repository.imp.EventReasonRepositoryImpl
@@ -350,7 +350,7 @@ import com.repzone.domain.model.UploadFileTaskModel
 import com.repzone.domain.model.VisitActivityLogInformationModel
 import com.repzone.domain.model.VisitLogInformationModel
 import com.repzone.domain.model.VisitModel
-import com.repzone.domain.repository.IActionMenuRepository
+import com.repzone.domain.repository.IVisitRepository
 import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.ICustomerRepository
 import com.repzone.domain.repository.IEventReasonRepository
@@ -383,7 +383,7 @@ val RepositoryModulePreview = module {
     factory<IRepresentativeRepository>{ RepresentativeRepositoryImpl(get(), get()) }
     single<IRouteAppointmentRepository> { RouteAppointmentRepositoryImpl(get()) }
     single<IEventReasonRepository> { EventReasonRepositoryImpl(get()) }
-    factory<IActionMenuRepository>{ ActionMenuRepositoryImpl(get()) }
+    factory<IVisitRepository>{ VisitRepositoryImpl(get(), get(named("VisitEntityDbMapper"))) }
     //endregion REPOSITORY
 
     //region DBMAPPERS

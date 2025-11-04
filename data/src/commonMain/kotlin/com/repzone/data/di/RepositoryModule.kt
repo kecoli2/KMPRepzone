@@ -1,7 +1,7 @@
 package com.repzone.data.di
 
 import com.repzone.data.mapper.*
-import com.repzone.data.repository.imp.ActionMenuRepositoryImpl
+import com.repzone.data.repository.imp.VisitRepositoryImpl
 import com.repzone.data.repository.imp.EventReasonRepositoryImpl
 import com.repzone.data.repository.imp.CustomerListRepositoryImpl
 import com.repzone.data.repository.imp.CustomerRepositoryImpl
@@ -29,7 +29,7 @@ val RepositoryModule = module {
     single<IRouteAppointmentRepository> { RouteAppointmentRepositoryImpl(get()) }
     single<IEventReasonRepository> { EventReasonRepositoryImpl(get()) }
     factory<IRepresentativeRepository>{ RepresentativeRepositoryImpl(get(), get()) }
-    factory<IActionMenuRepository>{ ActionMenuRepositoryImpl(get()) }
+    factory<IVisitRepository>{ VisitRepositoryImpl(get(), get(named("VisitEntityDbMapper"))) }
     //endregion REPOSITORY
 
     //region DBMAPPERS

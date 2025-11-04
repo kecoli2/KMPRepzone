@@ -2,6 +2,7 @@ package com.repzone.core.ui.base
 
 import com.repzone.core.model.HasUiFrame
 import com.repzone.core.model.UiFrame
+import com.repzone.domain.common.DomainException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -103,6 +104,19 @@ fun <S> BaseViewModel<S, *>.setError(error: String?)
             currentState.uiFrame.copy(
                 isLoading = false,
                 error = error
+            )
+        ) as S
+    }
+}
+
+@Suppress("UNCHECKED_CAST")
+fun <S> BaseViewModel<S, *>.setError(error: DomainException)
+        where S : Any, S : HasUiFrame {
+    updateStateInternal { currentState ->
+        currentState.copyWithUiFrame(
+            currentState.uiFrame.copy(
+                isLoading = false,
+                domainException = error
             )
         ) as S
     }

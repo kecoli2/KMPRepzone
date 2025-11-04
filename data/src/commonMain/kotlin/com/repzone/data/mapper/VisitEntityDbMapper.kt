@@ -1,9 +1,12 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.util.extensions.toInstant
 import com.repzone.data.util.Mapper
 import com.repzone.database.VisitEntity
 import com.repzone.domain.model.VisitModel
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class VisitEntityDbMapper : Mapper<VisitEntity, VisitModel> {
     //region Public Method
     override fun toDomain(from: VisitEntity): VisitModel {
@@ -12,7 +15,7 @@ class VisitEntityDbMapper : Mapper<VisitEntity, VisitModel> {
             appointmentExceptionId = from.AppointmentExceptionId,
             appointmentId = from.AppointmentId,
             distanceFromCustomerLocation = from.DistanceFromCustomerLocation,
-            finish = from.Finish,
+            finish = from.Finish?.toInstant(),
             formIdsRaw = from.FormIdsRaw,
             guid = from.Guid,
             isItOnLocation = from.IsItOnLocation,
@@ -22,7 +25,7 @@ class VisitEntityDbMapper : Mapper<VisitEntity, VisitModel> {
             longitude = from.Longitude,
             orderIdsRaw = from.OrderIdsRaw,
             selectedCustomerOrganizationId = from.SelectedCustomerOrganizationId,
-            start = from.Start,
+            start = from.Start?.toInstant(),
             visitNote = from.VisitNote,
             visitType = from.VisitType
         )
@@ -34,7 +37,7 @@ class VisitEntityDbMapper : Mapper<VisitEntity, VisitModel> {
             AppointmentExceptionId = domain.appointmentExceptionId,
             AppointmentId = domain.appointmentId,
             DistanceFromCustomerLocation = domain.distanceFromCustomerLocation,
-            Finish = domain.finish,
+            Finish = domain.finish?.toEpochMilliseconds(),
             FormIdsRaw = domain.formIdsRaw,
             Guid = domain.guid,
             IsItOnLocation = domain.isItOnLocation,
@@ -44,7 +47,7 @@ class VisitEntityDbMapper : Mapper<VisitEntity, VisitModel> {
             Longitude = domain.longitude,
             OrderIdsRaw = domain.orderIdsRaw,
             SelectedCustomerOrganizationId = domain.selectedCustomerOrganizationId,
-            Start = domain.start,
+            Start = domain.start?.toEpochMilliseconds(),
             VisitNote = domain.visitNote,
             VisitType = domain.visitType
         )

@@ -17,7 +17,7 @@ interface HasUiFrame {
 
 // UiFrame data class
 @OptIn(ExperimentalTime::class)
-data class UiFrame(val isLoading: Boolean = false, val error: String? = null, val errorStringRes: StringResource? = null, private val formatArgs: List<Any> = emptyList()) {
+data class UiFrame(val isLoading: Boolean = false, val error: String? = null, val domainException: Any? = null, val errorStringRes: StringResource? = null, private val formatArgs: List<Any> = emptyList()) {
 
     @Composable
     fun getError(): String? {

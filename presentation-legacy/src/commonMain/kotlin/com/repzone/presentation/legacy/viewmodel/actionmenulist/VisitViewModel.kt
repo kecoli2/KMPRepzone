@@ -1,10 +1,18 @@
 package com.repzone.presentation.legacy.viewmodel.actionmenulist
 
 import com.repzone.core.ui.base.BaseViewModel
+import com.repzone.core.ui.base.setError
+import com.repzone.core.ui.base.withLoading
+import com.repzone.domain.common.fold
+import com.repzone.domain.manager.visitmanager.IVisitManager
 import com.repzone.domain.model.CustomerItemModel
-import com.repzone.domain.repository.IActionMenuRepository
+import com.repzone.domain.repository.IMobileModuleParameterRepository
+import com.repzone.domain.repository.IVisitRepository
+import com.repzone.domain.usecase.visit.GetVisitMenuListUseCase
 
-class VisitViewModel(private val iActionMenuRepository: IActionMenuRepository): BaseViewModel<VisitUiState, VisitViewModel.Event>(VisitUiState()) {
+class VisitViewModel(private val iActionMenuRepository: IVisitRepository,
+                     private val iModuleParameters: IMobileModuleParameterRepository,
+                    private val iVisitManager: IVisitManager): BaseViewModel<VisitUiState, VisitViewModel.Event>(VisitUiState()) {
     //region Field
     private var customer: CustomerItemModel? = null
     //endregion
@@ -17,9 +25,33 @@ class VisitViewModel(private val iActionMenuRepository: IActionMenuRepository): 
 
     //region Public Method
     suspend fun prepareActions(customer: CustomerItemModel){
-        this.customer = customer
-        getActionMenuList()
-        getActionButtonList()
+        try {
+            updateState { currentState ->
+                currentState.copy(uiFrame = currentState.uiFrame.withLoading())
+            }
+            this.customer = customer
+            prepareUiParameters()
+            iVisitManager.prepareVisitMenu(customer).fold(
+                onSuccess = {
+                    updateState { currentState ->
+                        currentState.copy(menuListState = VisitUiState.ActionMenuListState.Success
+                            , actionMenuList = getVisitMenulist.getActionMenuList()
+                        , actionButtonList = getVisitMenulist.getActionButtonList())
+                    }
+                },
+                onError = {
+                    setError(it)
+                }
+            )
+        }catch (ex:Exception){
+            setError(ex.message)
+        }finally {
+            updateState { currentState ->
+                currentState.copy(uiFrame = currentState.uiFrame.copy(
+                    false
+                ))
+            }
+        }
     }
 
     override fun onDispose() {
@@ -31,35 +63,10 @@ class VisitViewModel(private val iActionMenuRepository: IActionMenuRepository): 
     //endregion
 
     //region Private Method
-    suspend fun getActionMenuList(){
-        try {
+    private fun prepareUiParameters(){
+        if(!iModuleParameters.getModule().order){
             updateState { currentState ->
-                currentState.copy(menuListState = VisitUiState.ActionMenuListState.Loading)
-            }
-            val actionMenuList = iActionMenuRepository.getActionMenuList(customer!!)
-            updateState { currentState ->
-                currentState.copy(menuListState = VisitUiState.ActionMenuListState.Success
-                , actionMenuList = actionMenuList)
-            }
-        }catch (ex: Exception){
-            updateState { currentState ->
-                currentState.copy(menuListState = VisitUiState.ActionMenuListState.Error(ex.message ?: "Unknown error"))
-            }
-        }
-    }
-    suspend fun getActionButtonList(){
-        try {
-            updateState { currentState ->
-                currentState.copy(buttonListState = VisitUiState.ActionMenuListState.Loading)
-            }
-            val actionMenuList = iActionMenuRepository.getActionButtonList(customer!!)
-            updateState { currentState ->
-                currentState.copy(buttonListState = VisitUiState.ActionMenuListState.Success
-                    , actionButtonList = actionMenuList)
-            }
-        }catch (ex: Exception){
-            updateState { currentState ->
-                currentState.copy(buttonListState = VisitUiState.ActionMenuListState.Error(ex.message ?: "Unknown error"))
+                currentState.copy(visibleBalanceText = false)
             }
         }
     }

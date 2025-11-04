@@ -1,0 +1,31 @@
+CREATE VIEW IF NOT EXISTS RouteInformationViewEntity AS
+SELECT
+    CAST(R.Id AS INTEGER) AppointmentId,
+    CAST(R.StartDate AS INTEGER) Start,
+    CAST(R.EndDate AS INTEGER) End,
+    CAST(R.CustomerId AS INTEGER) CustomerId,
+    CAST(R.Description AS TEXT) Description,
+    CAST(C.Name AS TEXT) CustomerName,
+    CAST(C.PhotoPath AS TEXT) PhotoUrl,
+    CAST(C.Code AS TEXT) Code,
+    CAST(C.GroupName AS TEXT) CustomerGroupName,
+    CAST(C.OrganizationId AS INTEGER) CustomerOrganizationId,
+    CAST(C.Tags AS TEXT) CustomerTagStr,
+    CAST(C.Risk AS REAL) CustomerRisk,
+    CAST(C.Balance AS REAL) CustomerBalance,
+    CAST(C.IsECustomer AS INTEGER) IsECustomer,
+    CAST(C.Blocked AS INTEGER) Blocked,
+    CAST(C.GroupId AS INTEGER) CustomerGroupId,
+    CAST(A.Id AS INTEGER) AddressId,
+    CAST(A.Latitude AS REAL) Latitude,
+    CAST(A.Longitude AS REAL) Longitude,
+    CAST(A.Street AS TEXT) Street,
+    CAST(A.City AS TEXT) City,
+    CAST(A.District AS TEXT) District
+FROM SyncRouteAppointmentEntity R
+INNER JOIN SyncCustomerEntity C ON R.CustomerId = C.Id
+LEFT JOIN SyncAddressEntity A0 ON A0.CustomerId = C.Id AND A0.AddressType = 0
+LEFT JOIN SyncAddressEntity A4 ON A4.CustomerId = C.Id AND A4.AddressType = 4
+LEFT JOIN SyncAddressEntity A2 ON A2.CustomerId = C.Id AND A2.AddressType = 2
+LEFT JOIN SyncAddressEntity A ON A.Id = COALESCE(A0.Id, A4.Id, A2.Id)
+WHERE A.Id IS NOT NULL AND A.State != 4;
