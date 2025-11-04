@@ -38,6 +38,7 @@ class EntityMetadataProcessor(
 
         // 3. SQLDelight entity'leri bul ve tip bilgilerini al
         val entityTypeMap = mutableMapOf<String, Map<String, Boolean>>()
+        val entityClassMap = mutableMapOf<String, KSClassDeclaration>()
 
         logger.info("Searching for SQLDelight entities in KSP...")
         var foundCount = 0
@@ -55,6 +56,7 @@ class EntityMetadataProcessor(
                             propName to isNullable
                         }
                     entityTypeMap[className] = propertyNullability
+                    entityClassMap[className] = classDecl
                     logger.info("✓ Found entity: $className with ${propertyNullability.size} properties")
 
                     // Debug: Her property'yi logla
@@ -77,12 +79,27 @@ class EntityMetadataProcessor(
                     "${schema.tableName}Entity"
                 }
 
+                // VIEW ise entity class'ından kolonları al
+                val finalSchema = if (schema.isView) {
+                    val entityClass = entityClassMap[entityName]
+                    if (entityClass != null) {
+                        logger.info("✓ VIEW detected: $entityName, extracting columns from entity class")
+                        val columnsFromEntity = extractColumnsFromEntity(entityClass, logger)
+                        schema.copy(columns = columnsFromEntity)
+                    } else {
+                        logger.warn("⚠ VIEW entity not found in KSP: $entityName, using schema columns")
+                        schema
+                    }
+                } else {
+                    schema
+                }
+
                 // Entity'nin gerçek nullable bilgilerini al
                 val propertyNullability = entityTypeMap[entityName]
 
                 logger.info("=" .repeat(70))
                 logger.info("Processing: $entityName")
-                logger.info("Is View: ${schema.isView}")
+                logger.info("Is View: ${finalSchema.isView}")
                 logger.info("Has property nullability: ${propertyNullability != null}")
 
                 if (propertyNullability != null) {
@@ -95,19 +112,19 @@ class EntityMetadataProcessor(
                     logger.warn("  Will use schema info (isNotNull) as fallback")
                 }
 
-                logger.info("Schema columns (${schema.columns.size} columns):")
-                schema.columns.forEach { col ->
-                    logger.info("  ${col.name}: isNotNull=${col.isNotNull}")
+                logger.info("Schema columns (${finalSchema.columns.size} columns):")
+                finalSchema.columns.forEach { col ->
+                    logger.info("  ${col.name}: type=${col.type}, isNotNull=${col.isNotNull}")
                 }
                 logger.info("=" .repeat(70))
 
                 MetadataGenerator.generate(
-                    schema = schema,
+                    schema = finalSchema,
                     propertyNullability = propertyNullability,
                     codeGenerator = codeGenerator,
                     logger = logger
                 )
-                logger.info("✓ Generated metadata for ${schema.tableName}")
+                logger.info("✓ Generated metadata for ${finalSchema.tableName}")
             } catch (e: Exception) {
                 logger.error("✗ Failed to generate metadata for ${schema.tableName}: ${e.message}")
                 e.printStackTrace()
@@ -199,6 +216,47 @@ class EntityMetadataProcessor(
         files.forEach { logger.info("  Found: ${it.name}") }
 
         return files
+    }
+
+    private fun extractColumnsFromEntity(
+        entityClass: KSClassDeclaration,
+        logger: KSPLogger
+    ): List<com.repzone.processor.ColumnSchema> {
+        logger.info("Extracting columns from entity: ${entityClass.simpleName.asString()}")
+
+        val columns = entityClass.getAllProperties().map { property ->
+            val propName = property.simpleName.asString()
+            val propType = property.type.resolve()
+            val isNullable = propType.isMarkedNullable
+
+            val sqlType = mapKotlinTypeToSql(propType)
+
+            logger.info("  Property: $propName -> SQL Type: $sqlType, Nullable: $isNullable")
+
+            com.repzone.processor.ColumnSchema(
+                name = propName,
+                type = sqlType,
+                isPrimaryKey = false,  // VIEW'larda PK yok
+                isNotNull = !isNullable,
+                isAutoIncrement = false,
+                defaultValue = null,
+                foreignKey = null
+            )
+        }.toList()
+
+        logger.info("✓ Extracted ${columns.size} columns from entity")
+        return columns
+    }
+
+    private fun mapKotlinTypeToSql(ksType: KSType): String {
+        return when (ksType.declaration.simpleName.asString()) {
+            "String" -> "TEXT"
+            "Long", "Int" -> "INTEGER"
+            "Double", "Float" -> "REAL"
+            "ByteArray" -> "BLOB"
+            "Boolean" -> "INTEGER"
+            else -> "TEXT"
+        }
     }
 }
 
