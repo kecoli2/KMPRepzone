@@ -29,18 +29,6 @@ class VisitRepositoryImpl(private val iDatabaseManager: IDatabaseManager, privat
                 criteria("Finish", isNull = true)
             }
         }.firstOrNull()
-
-        iDatabaseManager.getSqlDriver().selectAsFlow<VisitEntity> {
-            where {
-                criteria("Finish", isNull = true)
-            }
-        }.collect {
-            it.firstOrNull()
-        }
-
-
-
-
         return if(visit == null){
             null
         }else{
