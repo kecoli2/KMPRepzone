@@ -5,6 +5,7 @@ import com.repzone.domain.common.DomainException
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.common.Result
+import com.repzone.domain.model.VisitInformation
 import com.repzone.domain.util.enums.ActionButtonType
 import com.repzone.domain.util.models.VisitButtonItem
 import com.repzone.domain.util.models.VisitActionItem
@@ -22,9 +23,9 @@ class GetVisitMenuListUseCase(
     //endregion
 
     //region Constructor
-    suspend operator fun invoke(customer: CustomerItemModel): Result<Pair<List<VisitActionItem>, List<VisitButtonItem>>> {
+    suspend operator fun invoke(customer: CustomerItemModel, visitInformation: VisitInformation?): Result<Pair<List<VisitActionItem>, List<VisitButtonItem>>> {
         return try{
-            prepareActionButtonList()
+            prepareActionButtonList(visitInformation, customer)
             prepareActionMenuItemList()
             Result.Success(Pair(actionMenuList, actionButtonList))
         }catch (ex: Exception){
@@ -40,8 +41,28 @@ class GetVisitMenuListUseCase(
     //endregion
 
     //region Private Method
-    private fun prepareActionButtonList(){
+    private fun prepareActionButtonList(
+        visitInformation: VisitInformation?,
+        customer: CustomerItemModel
+    ) {
         actionButtonList.clear()
+        if(visitInformation == null){
+            actionButtonList.add(
+                VisitButtonItem(
+                    actionType = ActionButtonType.VISITING_START,
+                )
+            )
+        }else{
+            if (visitInformation.appointmentId == customer.appointmentId){
+                VisitButtonItem(
+                    actionType = ActionButtonType.VISITING_END,
+                )
+            }else{
+                VisitButtonItem(
+                    actionType = ActionButtonType.VISITING_START,
+                )
+            }
+        }
 
         if(iModuleParameters.getModule().drive){
             actionButtonList.add(

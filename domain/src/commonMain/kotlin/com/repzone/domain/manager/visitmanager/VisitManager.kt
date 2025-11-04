@@ -33,7 +33,7 @@ class VisitManager(private val iVisitRepository: IVisitRepository,
 
     //region Public Method
     override suspend fun prepareVisitMenu(): Result<Pair<List<VisitActionItem>, List<VisitButtonItem>>> {
-        getVisitMenuUseCase.invoke(customerItemModel!!).fold(
+        getVisitMenuUseCase.invoke(customerItemModel!!, visitInformation).fold(
             onSuccess = {
                 return Result.Success(it)
             },
