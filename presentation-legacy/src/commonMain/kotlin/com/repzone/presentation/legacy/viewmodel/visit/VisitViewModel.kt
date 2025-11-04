@@ -9,8 +9,7 @@ import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.repository.IVisitRepository
 
-class VisitViewModel(private val iVisitRepository: IVisitRepository,
-                     private val iModuleParameters: IMobileModuleParameterRepository,
+class VisitViewModel(private val iModuleParameters: IMobileModuleParameterRepository,
                     private val iVisitManager: IVisitManager): BaseViewModel<VisitUiState, VisitViewModel.Event>(VisitUiState()) {
     //region Field
     private var customer: CustomerItemModel? = null
@@ -40,7 +39,6 @@ class VisitViewModel(private val iVisitRepository: IVisitRepository,
             updateState { currentState ->
                 currentState.copy(uiFrame = currentState.uiFrame.withLoading())
             }
-            prepareUiParameters()
             customer?.let {
                 iVisitManager.prepareVisitMenu().fold(
                     onSuccess = { (actionMenulist, actionButtonList) ->

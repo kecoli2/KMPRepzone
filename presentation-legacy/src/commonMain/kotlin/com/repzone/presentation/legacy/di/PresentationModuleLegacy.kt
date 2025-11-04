@@ -25,7 +25,7 @@ val PresentationModuleLegacy = module {
     factory { SplashScreenViewModel(get(), get()) }
     factory { SyncViewModel(get(),get(),get()) }
     factory { CustomerListViewModel(get(), get(), get(), get(), get(), get()) }
-    factory { VisitViewModel(get(), get(), get()) }
+    factory { VisitViewModel(get(), get()) }
     factory<IVisitManager> { VisitManager(get(), get(), get(), get()) }
 
     //region Use Case

@@ -1,6 +1,5 @@
 package com.repzone.presentation.legacy.ui.customerlist
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -31,7 +30,6 @@ import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.DocumentScanner
 import androidx.compose.material.icons.filled.EditNotifications
 import androidx.compose.material.icons.filled.Map
-import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.ModeComment
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Person
@@ -118,7 +116,6 @@ import repzonemobile.core.generated.resources.eagleeyelogstitle
 import repzonemobile.core.generated.resources.exit
 import repzonemobile.core.generated.resources.generalsettings
 import repzonemobile.core.generated.resources.image_not_found
-import repzonemobile.core.generated.resources.img_generic_logo_min
 import repzonemobile.core.generated.resources.notificationlogpagetitle
 import repzonemobile.core.generated.resources.onlinehubtitle
 import repzonemobile.core.generated.resources.profile
@@ -128,7 +125,6 @@ import repzonemobile.core.generated.resources.routepagetasksbtntext
 import repzonemobile.core.generated.resources.routesearchcustomer
 import repzonemobile.core.generated.resources.routetoday
 import repzonemobile.core.generated.resources.routetomorrow
-import repzonemobile.presentation_legacy.generated.resources.Res
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -462,16 +458,18 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                 }
 
                 LaunchedEffect(selectedTab){
-                    when(selectedTab) {
-                        0 -> { //TODAY
-                            viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(now().toInstant()))
-                        }
-                        1 -> { // TOMORROW
-                            val date = now().toInstant().addDays(1)
-                            viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(date))
-                        }
-                        2 -> {// OTHERS
-                            viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(null))
+                    launch {
+                        when(selectedTab) {
+                            0 -> { //TODAY
+                                viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(now().toInstant()))
+                            }
+                            1 -> { // TOMORROW
+                                val date = now().toInstant().addDays(1)
+                                viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(date))
+                            }
+                            2 -> {// OTHERS
+                                viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(null))
+                            }
                         }
                     }
                 }

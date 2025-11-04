@@ -36,4 +36,5 @@ sealed interface LegacyScreen {
 
     @Serializable
     data object VisitScreen: LegacyScreen
+    data object ExampleUsageScreen : LegacyScreen
 }

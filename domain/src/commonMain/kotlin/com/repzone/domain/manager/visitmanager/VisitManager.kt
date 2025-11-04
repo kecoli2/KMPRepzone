@@ -6,7 +6,6 @@ import com.repzone.domain.common.fold
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.model.RouteInformationModel
 import com.repzone.domain.model.VisitInformation
-import com.repzone.domain.model.VisitModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.repository.IVisitRepository
 import com.repzone.domain.usecase.visit.GetRouteInformationUseCase
@@ -33,7 +32,7 @@ class VisitManager(private val iVisitRepository: IVisitRepository,
 
     //region Public Method
     override suspend fun prepareVisitMenu(): Result<Pair<List<VisitActionItem>, List<VisitButtonItem>>> {
-        getVisitMenuUseCase.invoke(customerItemModel!!, visitInformation).fold(
+        getVisitMenuUseCase.invoke(customerItemModel!!, visitInformation, routeInformation).fold(
             onSuccess = {
                 return Result.Success(it)
             },

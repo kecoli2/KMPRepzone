@@ -5,6 +5,7 @@ import com.repzone.domain.common.DomainException
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.common.Result
+import com.repzone.domain.model.RouteInformationModel
 import com.repzone.domain.model.VisitInformation
 import com.repzone.domain.util.enums.ActionButtonType
 import com.repzone.domain.util.models.VisitButtonItem
@@ -23,7 +24,11 @@ class GetVisitMenuListUseCase(
     //endregion
 
     //region Constructor
-    suspend operator fun invoke(customer: CustomerItemModel, visitInformation: VisitInformation?): Result<Pair<List<VisitActionItem>, List<VisitButtonItem>>> {
+    suspend operator fun invoke(
+        customer: CustomerItemModel,
+        visitInformation: VisitInformation?,
+        routeInformation: RouteInformationModel?
+    ): Result<Pair<List<VisitActionItem>, List<VisitButtonItem>>> {
         return try{
             prepareActionButtonList(visitInformation, customer)
             prepareActionMenuItemList()
@@ -89,7 +94,7 @@ class GetVisitMenuListUseCase(
         }
 
         iModuleParameters.getGeofenceRouteTrackingParameters()?.let {
-           // MAP
+           //TODO() MAP off olur ise listeden kaldır
             if (it.isActive && it.navigation == OnOf.ON) {
                 actionButtonList.add(
                     VisitButtonItem(

@@ -156,8 +156,6 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
 @OptIn(ExperimentalTime::class)
 @Composable
 fun CustomerSummary(customer: CustomerItemModel, themeManager: ThemeManager, visitUiState: VisitUiState){
-    val iModuleParameters: IMobileModuleParameterRepository = koinInject()
-
     val formattedDateStart = remember(customer.date) {
         customer.date?.toEpochMilliseconds()?.toDateString("HH:mm") ?: ""
     }
@@ -168,8 +166,8 @@ fun CustomerSummary(customer: CustomerItemModel, themeManager: ThemeManager, vis
 
     val dayDesc =
         when {
-            customer.date?.toEpochMilliseconds()?.isToday() == true -> repzonemobile.core.generated.resources.Res.string.routetoday.fromResource()
-            customer.date?.toEpochMilliseconds()?.isTomorrow() == true -> repzonemobile.core.generated.resources.Res.string.routetomorrow.fromResource()
+            customer.date?.toEpochMilliseconds()?.isToday() == true -> Res.string.routetoday.fromResource()
+            customer.date?.toEpochMilliseconds()?.isTomorrow() == true -> Res.string.routetomorrow.fromResource()
             else -> customer.date?.toDayName() ?: ""
         }
 
@@ -197,7 +195,7 @@ fun CustomerSummary(customer: CustomerItemModel, themeManager: ThemeManager, vis
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center,
-                    error = painterResource(repzonemobile.core.generated.resources.Res.drawable.image_not_found),
+                    error = painterResource(Res.drawable.image_not_found),
                     onError = {
                         println("Error: ${it.result.throwable.message}")
                     },

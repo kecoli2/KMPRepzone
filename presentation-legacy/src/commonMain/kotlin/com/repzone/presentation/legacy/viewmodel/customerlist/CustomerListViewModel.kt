@@ -18,6 +18,8 @@ import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListScreen
 import com.repzone.sync.interfaces.ISyncManager
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -50,63 +52,65 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
     //endregion
 
     //region Public Method
-    suspend fun onEvent(event: Event) {
-        when(event){
-            is Event.StartSync -> {
-                updateState { currentState ->
-                    currentState.copy(isSyncInProgress = true)
-                }
-                iSyncManager.startSpecificJobs(listOf(SyncJobType.COMMON_MODULES, SyncJobType.ROUTE))
-                iSyncManager.allJobsStatus.collect { jobStatuses ->
-                    when(jobStatuses[SyncJobType.COMMON_MODULES]){
-                        is SyncJobStatus.Idle,
-                        is SyncJobStatus.Failed,
-                        is SyncJobStatus.Success -> {
-                            updateState { currentState ->
-                                currentState.copy(isSyncInProgress = false)
+    fun onEvent(event: Event) {
+        scope.launch(Dispatchers.IO){
+            when(event){
+                is Event.StartSync -> {
+                    updateState { currentState ->
+                        currentState.copy(isSyncInProgress = true)
+                    }
+                    iSyncManager.startSpecificJobs(listOf(SyncJobType.COMMON_MODULES, SyncJobType.ROUTE))
+                    iSyncManager.allJobsStatus.collect { jobStatuses ->
+                        when(jobStatuses[SyncJobType.COMMON_MODULES]){
+                            is SyncJobStatus.Idle,
+                            is SyncJobStatus.Failed,
+                            is SyncJobStatus.Success -> {
+                                updateState { currentState ->
+                                    currentState.copy(isSyncInProgress = false)
+                                }
+                                updateUiWithPermissions()
+                                // Sync tamamlandıktan sonra listeyi yenile
+                                loadCustomerList(state.value.selectedDate)
                             }
-                            updateUiWithPermissions()
-                            // Sync tamamlandıktan sonra listeyi yenile
-                            loadCustomerList(state.value.selectedDate)
+                            else -> {}
                         }
-                        else -> {}
                     }
                 }
-            }
 
-            is Event.LoadCustomerList -> {
-                updateState { currentState ->
-                    currentState.copy(selectedDate = event.date)
+                is Event.LoadCustomerList -> {
+                    updateState { currentState ->
+                        currentState.copy(selectedDate = event.date)
+                    }
+                    loadCustomerList(event.date)
                 }
-                loadCustomerList(event.date)
-            }
 
-            is Event.FilterCustomerList -> {
-                filterCustomerList(event.query)
-            }
+                is Event.FilterCustomerList -> {
+                    filterCustomerList(event.query)
+                }
 
-            is Event.RefreshCustomerList -> {
-                loadCustomerList(state.value.selectedDate)
-            }
+                is Event.RefreshCustomerList -> {
+                    loadCustomerList(state.value.selectedDate)
+                }
 
-            is Event.ApplyFilter -> {
-                applyFilters(event.selectedGroups, event.sortOption)
-            }
+                is Event.ApplyFilter -> {
+                    applyFilters(event.selectedGroups, event.sortOption)
+                }
 
-            is Event.ClearFilters -> {
-                clearFilters()
-            }
+                is Event.ClearFilters -> {
+                    clearFilters()
+                }
 
-            is Event.LogOut -> {
-                iDatabaseManager.logout()
-                iPreferencesManager.setActiveUserCode(0)
-            }
+                is Event.LogOut -> {
+                    iDatabaseManager.logout()
+                    iPreferencesManager.setActiveUserCode(0)
+                }
 
-            is Event.OnClickCustomerItem -> {
-                onClickedCustomer(event.selectedCustomer)
-            }
+                is Event.OnClickCustomerItem -> {
+                    onClickedCustomer(event.selectedCustomer)
+                }
 
-            else -> {}
+                else -> {}
+            }
         }
     }
     //endregion

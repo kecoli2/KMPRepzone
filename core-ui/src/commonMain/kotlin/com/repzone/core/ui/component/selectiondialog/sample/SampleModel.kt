@@ -265,7 +265,7 @@ fun ExampleUsageScreen() {
                 items = customers,
                 searchQuery = searchQuery,
                 onSearchQueryChange = { searchQuery = it },
-                selectionMode = SelectionMode.SINGLE,
+                selectionMode = SelectionMode.MULTIPLE,
                 selectedItems = selectedCustomer?.let { listOf(it) },
                 itemContent = { customer, isSelected ->
                     CustomerRow(customer = customer, isSelected = isSelected)

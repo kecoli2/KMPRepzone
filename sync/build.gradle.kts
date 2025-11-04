@@ -32,6 +32,7 @@ kotlin {
                 implementation(libs.kotlinx.serialization.json)
                 implementation(compose.runtime)
                 implementation(compose.components.resources)
+                implementation(libs.kotlinx.datetime)
 
                 // Project Dependcy
                 implementation(projects.core)

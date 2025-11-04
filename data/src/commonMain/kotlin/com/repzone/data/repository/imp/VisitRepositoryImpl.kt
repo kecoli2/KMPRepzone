@@ -4,6 +4,7 @@ import com.repzone.data.mapper.VisitEntityDbMapper
 import com.repzone.database.VisitEntity
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.database.runtime.select
+import com.repzone.database.runtime.selectAsFlow
 import com.repzone.domain.model.VisitInformation
 import com.repzone.domain.repository.IVisitRepository
 
@@ -28,6 +29,17 @@ class VisitRepositoryImpl(private val iDatabaseManager: IDatabaseManager, privat
                 criteria("Finish", isNull = true)
             }
         }.firstOrNull()
+
+        iDatabaseManager.getSqlDriver().selectAsFlow<VisitEntity> {
+            where {
+                criteria("Finish", isNull = true)
+            }
+        }.collect {
+            it.firstOrNull()
+        }
+
+
+
 
         return if(visit == null){
             null

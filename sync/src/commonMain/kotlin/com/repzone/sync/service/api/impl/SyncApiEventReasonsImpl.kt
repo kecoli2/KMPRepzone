@@ -10,6 +10,7 @@ import com.repzone.network.models.request.FilterModelRequest
 import com.repzone.sync.service.api.base.BaseSyncApiService
 import io.ktor.client.HttpClient
 import io.ktor.client.request.setBody
+import kotlinx.datetime.TimeZone
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -27,7 +28,8 @@ class SyncApiEventReasonsImpl(client: HttpClient) : BaseSyncApiService<List<Even
 
     override fun onPageFetched(data: List<EventReasonDto>, requestModel: FilterModelRequest?) {
         data.lastOrNull().let {
-            requestModel?.lastModDate = it?.modificationDateUtc?.toEpochMilliseconds()?.toDateString("yyyy-MM-dd HH:mm:ss.fff") ?: ""
+            requestModel?.lastModDate = it?.modificationDateUtc?.toEpochMilliseconds()?.toDateString("yyyy-MM-dd HH:mm:ss.fff",
+                TimeZone.UTC) ?: ""
             requestModel?.lastId = it?.id ?: 0
         }
     }
