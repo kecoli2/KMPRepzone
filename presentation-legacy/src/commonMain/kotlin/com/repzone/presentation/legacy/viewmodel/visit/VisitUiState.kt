@@ -1,4 +1,4 @@
-package com.repzone.presentation.legacy.viewmodel.actionmenulist
+package com.repzone.presentation.legacy.viewmodel.visit
 
 import com.repzone.core.model.HasUiFrame
 import com.repzone.core.model.UiFrame

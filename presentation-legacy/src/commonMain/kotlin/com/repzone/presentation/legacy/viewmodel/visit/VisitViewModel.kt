@@ -1,4 +1,4 @@
-package com.repzone.presentation.legacy.viewmodel.actionmenulist
+package com.repzone.presentation.legacy.viewmodel.visit
 
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.core.ui.base.setError

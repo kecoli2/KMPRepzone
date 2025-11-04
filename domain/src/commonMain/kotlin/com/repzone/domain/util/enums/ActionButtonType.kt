@@ -3,7 +3,7 @@ package com.repzone.domain.util.enums
 enum class ActionButtonType {
     VISITING_START,
     VISITING_END,
-    LOCATION,
+    MAP,
     ORDER_LOG,
     DRIVE,
     REPORT,

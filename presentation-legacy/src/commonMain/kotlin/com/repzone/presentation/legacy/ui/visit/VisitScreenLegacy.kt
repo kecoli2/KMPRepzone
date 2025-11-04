@@ -69,8 +69,8 @@ import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.util.enums.ActionButtonType
 import com.repzone.domain.util.models.ActionButtonListItem
-import com.repzone.presentation.legacy.viewmodel.actionmenulist.VisitUiState
-import com.repzone.presentation.legacy.viewmodel.actionmenulist.VisitViewModel
+import com.repzone.presentation.legacy.viewmodel.visit.VisitUiState
+import com.repzone.presentation.legacy.viewmodel.visit.VisitViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import repzonemobile.core.generated.resources.Res
@@ -87,30 +87,6 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
     val themeManager: ThemeManager = koinInject()
     val uiState by viewModel.state.collectAsState()
     val scope = rememberCoroutineScope()
-    //val buttonList = uiState.actionButtonList
-    val buttonList = listOf(
-        ActionButtonListItem(
-            actionType = ActionButtonType.VISITING_START,
-        ),
-        ActionButtonListItem(
-            actionType = ActionButtonType.LOCATION,
-        ),
-        ActionButtonListItem(
-            actionType = ActionButtonType.ORDER_LOG,
-        ),
-        ActionButtonListItem(
-            actionType = ActionButtonType.DRIVE,
-        ),
-        ActionButtonListItem(
-            actionType = ActionButtonType.REPORT,
-        ),
-        ActionButtonListItem(
-            actionType = ActionButtonType.NOTES,
-            badgeCount = 2
-        )
-    )
-
-
     LaunchedEffect(Unit){
         viewModel.initiliaze(customer)
     }
@@ -150,7 +126,7 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     contentPadding = PaddingValues(horizontal = 16.dp),
                 ) {
-                    items(buttonList) { item ->
+                    items(uiState.actionButtonList) { item ->
                         ActionButton(
                             item = item,
                             themeManager = themeManager,
@@ -376,7 +352,7 @@ fun getIconForActionType(type: ActionButtonType): ImageVector {
     return when (type) {
         ActionButtonType.VISITING_START -> Icons.Default.PlayArrow
         ActionButtonType.VISITING_END -> Icons.Default.Stop
-        ActionButtonType.LOCATION -> Icons.Default.LocationOn
+        ActionButtonType.MAP -> Icons.Default.LocationOn
         ActionButtonType.ORDER_LOG -> Icons.Default.List
         ActionButtonType.DRIVE -> Icons.Default.Folder
         ActionButtonType.REPORT -> Icons.Default.Assessment

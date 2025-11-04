@@ -5,7 +5,6 @@ import com.repzone.domain.common.DomainException
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.common.Result
-import com.repzone.domain.repository.IVisitRepository
 import com.repzone.domain.util.enums.ActionButtonType
 import com.repzone.domain.util.models.ActionButtonListItem
 import com.repzone.domain.util.models.ActionMenuListItem
@@ -69,13 +68,24 @@ class GetVisitMenuListUseCase(
         }
 
         iModuleParameters.getGeofenceRouteTrackingParameters()?.let {
+           // MAP
             if (it.isActive && it.navigation == OnOf.ON) {
                 actionButtonList.add(
                     ActionButtonListItem(
-                        actionType = ActionButtonType.ORDER_LOG,
+                        actionType = ActionButtonType.MAP,
                     )
                 )
             }
+
+            // CUSTOMER NOTE
+            if(it.isActive && (it.customerNoteEntry == OnOf.ON || it.visitNoteEntry == OnOf.ON)){
+                actionButtonList.add(
+                    ActionButtonListItem(
+                        actionType = ActionButtonType.NOTES,
+                    )
+                )
+            }
+
         }
     }
 

@@ -1,0 +1,15 @@
+CREATE VIEW IF NOT EXISTS SellerNoteViewEntity AS
+SELECT
+    CN.Id AS CustomerNoteId,
+    CN.UserName AS NoteTaker,
+    CN.BeginDate,
+    CN.EndDate,
+    CN.Status,
+    CN.Note AS NoteDescription,
+    C.Code AS CustomerCode,
+    C.Name AS CustomerName,
+    ER.Name AS NoteType,
+    CN.CustomerId
+FROM CustomerNoteSpEntity CN
+INNER JOIN SyncCustomerEntity C ON CN.CustomerId = C.Id
+INNER JOIN SyncEventReasonEntity ER ON CN.NoteTypeId = ER.Id;

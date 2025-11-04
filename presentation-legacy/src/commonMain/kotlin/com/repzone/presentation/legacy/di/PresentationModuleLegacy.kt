@@ -10,7 +10,7 @@ import com.repzone.domain.manager.visitmanager.IVisitManager
 import com.repzone.domain.manager.visitmanager.VisitManager
 import com.repzone.domain.usecase.visit.GetVisitMenuListUseCase
 import com.repzone.presentation.legacy.navigation.NavigationSharedStateHolder
-import com.repzone.presentation.legacy.viewmodel.actionmenulist.VisitViewModel
+import com.repzone.presentation.legacy.viewmodel.visit.VisitViewModel
 import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListViewModel
 import com.repzone.presentation.legacy.viewmodel.sync.SyncTestViewModel
 import org.koin.core.module.dsl.factoryOf
