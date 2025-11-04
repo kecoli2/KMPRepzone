@@ -172,6 +172,20 @@ class EntityMetadataProcessor(
             }
         }
 
+        // 8. Domain Models generate et
+
+        if (schemas.isNotEmpty()) {
+            try {
+                DomainModelGenerator.generate(
+                    schemas = schemas,
+                    logger = logger
+                )
+                logger.info("✓ Generated domain models for ${schemas.size} entities")
+            } catch (e: Exception) {
+                logger.error("✗ Failed to generate domain models: ${e.message}")
+            }
+        }
+
         return emptyList()
     }
 
