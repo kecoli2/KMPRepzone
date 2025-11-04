@@ -105,6 +105,7 @@ import com.repzone.core.util.extensions.toDateString
 import com.repzone.core.util.extensions.toDayName
 import com.repzone.core.util.extensions.toInstant
 import com.repzone.domain.model.CustomerItemModel
+import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListScreenUiState
 import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
@@ -522,7 +523,7 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                                     )
                                 )
                             }
-                        })
+                        }, uiState = uiState)
                         HorizontalDivider()
                     }
                 }
@@ -625,10 +626,13 @@ fun getNavigationItems(): List<NavigationItem>{
 fun CustomerCard(customer: CustomerItemModel,
                  modifier: Modifier = Modifier,
                  themeManager: ThemeManager,
-                 onCustomerClick: (CustomerItemModel) -> Unit = {}) {
+                 onCustomerClick: (CustomerItemModel) -> Unit = {}, uiState : CustomerListScreenUiState
+) {
     Surface(
         modifier = modifier.height(80.dp).clickable {
-            onCustomerClick(customer)
+            if (uiState.customerListState != CustomerListScreenUiState.CustomerListState.Loading){
+                onCustomerClick(customer)
+            }
         },
         color = MaterialTheme.colorScheme.surface
     ) {
