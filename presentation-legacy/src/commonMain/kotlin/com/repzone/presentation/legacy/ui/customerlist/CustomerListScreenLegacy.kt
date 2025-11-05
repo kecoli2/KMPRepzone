@@ -163,6 +163,9 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                 }
             }
         }
+    }
+
+    LaunchedEffect(Unit){
         if (isInitialLoad) {
             when(selectedTab) {
                 0 -> viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(now().toInstant()))
