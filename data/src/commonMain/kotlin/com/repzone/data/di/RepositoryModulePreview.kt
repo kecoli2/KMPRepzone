@@ -35,6 +35,7 @@ import com.repzone.data.mapper.ProductEntityDtoDbMapper
 import com.repzone.data.mapper.ProductParameterEntityDbMapper
 import com.repzone.data.mapper.ProductParameterv4EntityDbMapper
 import com.repzone.data.mapper.RestServiceTaskEntityDbMapper
+import com.repzone.data.mapper.RouteInformationViewEntityDbMapper
 import com.repzone.data.mapper.SMSValidationLogInformationEntityDbMapper
 import com.repzone.data.mapper.ShipmentActionLogInformationEntityDbMapper
 import com.repzone.data.mapper.StockLoadingDemandLogInformationEntityDbMapper
@@ -376,10 +377,11 @@ import org.koin.dsl.module
 val RepositoryModulePreview = module {
 
     //region REPOSITORY
-    single<ICustomerRepository> { CustomerRepositoryImpl(get(named("CustomerEntityDbMapperInterface")), get()) }
-    single<ICustomerListRepository> { CustomerListRepositoryImpl(get(), get(), get(), get(named("CustomerItemViewEntityDbMapper")), get()) }
-    single<ISyncModuleRepository> { SyncModuleRepositoryImpl(get(named("SyncModuleEntityDbMapper")), get()) }
-    single<IMobileModuleParameterRepository>{ MobileModuleParameterRepositoryImplPreview(get(), get(named("SyncPackageCustomFieldProductEntityDbMapper")), get()) }
+    single<ICustomerRepository> { CustomerRepositoryImpl(get(), get()) }
+    single<ICustomerListRepository> { CustomerListRepositoryImpl(get(),
+        get(), get(), get(), get()) }
+    single<ISyncModuleRepository> { SyncModuleRepositoryImpl(get(), get()) }
+    single<IMobileModuleParameterRepository>{ MobileModuleParameterRepositoryImplPreview(get(), get(), get()) }
     factory<IRepresentativeRepository>{ RepresentativeRepositoryImpl(get(), get()) }
     single<IRouteAppointmentRepository> { RouteAppointmentRepositoryImpl(get(), get()) }
     single<IEventReasonRepository> { EventReasonRepositoryImpl(get()) }
@@ -388,21 +390,22 @@ val RepositoryModulePreview = module {
 
     //region DBMAPPERS
     //region Customer
-    single<MapperDto<SyncCustomerEntity, SyncCustomerModel, CustomerDto>>(named("CustomerEntityDbMapperInterface")) { CustomerEntityDbMapper() }
-    single{ CustomerEntityDbMapper() }
-    single<Mapper<CustomerItemViewEntity, CustomerItemModel>>(named("CustomerItemViewEntityDbMapper")) { CustomerItemViewEntityDbMapper() }
+    single { CustomerEntityDbMapper() }
+    single { CustomerEntityDbMapper() }
+    single { CustomerItemViewEntityDbMapper() }
     //endregion
 
     //region Product
-    single<Mapper<SyncProductEntity, SyncProductModel>>(named("ProductEntityDbMapperInterface")) { ProductEntityDbMapper() }
+    single { ProductEntityDbMapper() }
     //endregion
 
     //region SyncModule
-    single<Mapper<SyncModuleEntity, SyncModuleModel>>(named("SyncModuleEntityDbMapper")) { SyncModuleEntityDbMapper() }
+    single { SyncModuleEntityDbMapper() }
     //endregion
 
     //region MobileRoute
-    single<MapperDto<SyncRouteAppointmentEntity, SyncRouteAppointmentModel, RouteDto>>(named("SyncRouteAppointmentEntityDbMapper")) { SyncRouteAppointmentEntityDbMapper() }
+    single { SyncRouteAppointmentEntityDbMapper() }
+    single { RouteInformationViewEntityDbMapper() }
     //endregion MobileRoute
 
     //region Adress
@@ -417,417 +420,415 @@ val RepositoryModulePreview = module {
     //endregion
 
     //region AppList
-    single<Mapper<SyncAppListEntity, SyncAppListModel>>(named("SyncAppListEntityDbMapper")) { SyncAppListEntityDbMapper() }
+    single { SyncAppListEntityDbMapper() }
     //endregion
 
     //region AppSetting
-    single<Mapper<AppSettingEntity, AppSettingModel>>(named("AppSettingEntityDbMapper")) { AppSettingEntityDbMapper() }
+    single { AppSettingEntityDbMapper() }
     //endregion
 
     //region CampaignCustomerImplementations
-    single<Mapper<SyncCampaignCustomerImplementationsEntity, SyncCampaignCustomerImplementationsModel>>(named("SyncCampaignCustomerImplementationsEntityDbMapper")) { SyncCampaignCustomerImplementationsEntityDbMapper() }
+    single { SyncCampaignCustomerImplementationsEntityDbMapper() }
     //endregion
 
     //region CampaignDynamicListOrganizations
-    single<Mapper<SyncCampaignDynamicListOrganizationsEntity, SyncCampaignDynamicListOrganizationsModel>>(named("SyncCampaignDynamicListOrganizationsEntityDbMapper")) { SyncCampaignDynamicListOrganizationsEntityDbMapper() }
+    single { SyncCampaignDynamicListOrganizationsEntityDbMapper() }
     //endregion
 
     //region CampaignMaster
-    single<Mapper<SyncCampaignMasterEntity, SyncCampaignMasterModel>>(named("SyncCampaignMasterEntityDbMapper")) { SyncCampaignMasterEntityDbMapper() }
+    single { SyncCampaignMasterEntityDbMapper() }
     //endregion
 
     //region CampaignMasterResult
-    single<Mapper<SyncCampaignMasterResultEntity, SyncCampaignMasterResultModel>>(named("SyncCampaignMasterResultEntityDbMapper")) { SyncCampaignMasterResultEntityDbMapper() }
+    single { SyncCampaignMasterResultEntityDbMapper() }
     //endregion
 
     //region CampaignMasterResultRequiredProduct
-    single<Mapper<CampaignMasterResultRequiredProductEntity, CampaignMasterResultRequiredProductModel>>(named("CampaignMasterResultRequiredProductEntityDbMapper")) { CampaignMasterResultRequiredProductEntityDbMapper() }
+    single { CampaignMasterResultRequiredProductEntityDbMapper() }
     //endregion
 
     //region CampaignMasterRule
-    single<Mapper<SyncCampaignMasterRuleEntity, SyncCampaignMasterRuleModel>>(named("SyncCampaignMasterRuleEntityDbMapper")) { SyncCampaignMasterRuleEntityDbMapper() }
+    single { SyncCampaignMasterRuleEntityDbMapper() }
     //endregion
 
     //region CampaignOrganization
-    single<Mapper<SyncCampaignOrganizationEntity, SyncCampaignOrganizationModel>>(named("SyncCampaignOrganizationEntityDbMapper")) { SyncCampaignOrganizationEntityDbMapper() }
+    single { SyncCampaignOrganizationEntityDbMapper() }
     //endregion
 
     //region CampaignResultRule
-    single<Mapper<SyncCampaignResultRuleEntity, SyncCampaignResultRuleModel>>(named("SyncCampaignResultRuleEntityDbMapper")) { SyncCampaignResultRuleEntityDbMapper() }
+    single { SyncCampaignResultRuleEntityDbMapper() }
     //endregion
 
     //region CollectionLogInformation
-    single<Mapper<CollectionLogInformationEntity, CollectionLogInformationModel>>(named("CollectionLogInformationEntityDbMapper")) { CollectionLogInformationEntityDbMapper() }
+    single { CollectionLogInformationEntityDbMapper() }
     //endregion
 
     //region CrashLogInformation
-    single<Mapper<CrashLogInformationEntity, CrashLogInformationModel>>(named("CrashLogInformationEntityDbMapper")) { CrashLogInformationEntityDbMapper() }
+    single { CrashLogInformationEntityDbMapper() }
     //endregion
 
     //region CrmPriceListParameter
-    single<MapperDto<SyncCrmPriceListParameterEntity, SyncCrmPriceListParameterModel, CrmPriceListParameterDto>>(named("SyncCrmPriceListParameterEntityDbMapper")) { SyncCrmPriceListParameterEntityDbMapper() }
+    single { SyncCrmPriceListParameterEntityDbMapper() }
     //endregion
 
     //region CustomDataDetail
-    single<Mapper<CustomDataDetailEntity, CustomDataDetailModel>>(named("CustomDataDetailEntityDbMapper")) { CustomDataDetailEntityDbMapper() }
+    single { CustomDataDetailEntityDbMapper() }
     //endregion
 
     //region CustomDataHeader
-    single<Mapper<CustomDataHeaderEntity, CustomDataHeaderModel>>(named("CustomDataHeaderEntityDbMapper")) { CustomDataHeaderEntityDbMapper() }
+    single { CustomDataHeaderEntityDbMapper() }
     //endregion
 
     //region CustomerCampaignImplementationLogInformation
-    single<Mapper<CustomerCampaignImplementationLogInformationEntity, CustomerCampaignImplementationLogInformationModel>>(named("CustomerCampaignImplementationLogInformationEntityDbMapper")) { CustomerCampaignImplementationLogInformationEntityDbMapper() }
+    single { CustomerCampaignImplementationLogInformationEntityDbMapper() }
     //endregion
 
     //region CustomerCategoryClassification
-    single<Mapper<SyncCustomerCategoryClassificationEntity, SyncCustomerCategoryClassificationModel>>(named("SyncCustomerCategoryClassificationEntityDbMapper")) { SyncCustomerCategoryClassificationEntityDbMapper() }
+    single { SyncCustomerCategoryClassificationEntityDbMapper() }
     //endregion
 
     //region CustomerChannelClassification
-    single<Mapper<SyncCustomerChannelClassificationEntity, SyncCustomerChannelClassificationModel>>(named("SyncCustomerChannelClassificationEntityDbMapper")) { SyncCustomerChannelClassificationEntityDbMapper() }
+    single { SyncCustomerChannelClassificationEntityDbMapper() }
     //endregion
 
     //region CustomerClassClassification
-    single<Mapper<SyncCustomerClassClassificationEntity, SyncCustomerClassClassificationModel>>(named("SyncCustomerClassClassificationEntityDbMapper")) { SyncCustomerClassClassificationEntityDbMapper() }
+    single { SyncCustomerClassClassificationEntityDbMapper() }
     //endregion
 
     //region CustomerCustomField
-    single<Mapper<SyncCustomerCustomFieldEntity, SyncCustomerCustomFieldModel>>(named("SyncCustomerCustomFieldEntityDbMapper")) { SyncCustomerCustomFieldEntityDbMapper() }
+    single { SyncCustomerCustomFieldEntityDbMapper() }
     //endregion
 
     //region CustomerEmail
-    single<MapperDto<SyncCustomerEmailEntity, SyncCustomerEmailModel, CustomerEmailDto>>(named("SyncCustomerEmailEntityDbMapper")) { SyncCustomerEmailEntityDbMapper() }
+    single { SyncCustomerEmailEntityDbMapper() }
     //endregion
 
     //region CustomerGroup
-    single<MapperDto<SyncCustomerGroupEntity, SyncCustomerGroupModel, CustomerGroupDto>>(named("SyncCustomerGroupEntityDbMapper")) { SyncCustomerGroupEntityDbMapper() }
+    single { SyncCustomerGroupEntityDbMapper() }
     //endregion
 
     //region CustomerGroupProductDistribution
-    single<Mapper<SyncCustomerGroupProductDistributionEntity, SyncCustomerGroupProductDistributionModel>>(named("SyncCustomerGroupProductDistributionEntityDbMapper")) { SyncCustomerGroupProductDistributionEntityDbMapper() }
+    single { SyncCustomerGroupProductDistributionEntityDbMapper() }
     //endregion
 
     //region CustomerNoteSp
-    single<Mapper<CustomerNoteSpEntity, CustomerNoteSpModel>>(named("CustomerNoteSpEntityDbMapper")) { CustomerNoteSpEntityDbMapper() }
+    single { CustomerNoteSpEntityDbMapper() }
     //endregion
 
     //region CustomerOrganizationScope
-    single<Mapper<SyncCustomerOrganizationScopeEntity, SyncCustomerOrganizationScopeModel>>(named("SyncCustomerOrganizationScopeEntityDbMapper")) { SyncCustomerOrganizationScopeEntityDbMapper() }
+    single { SyncCustomerOrganizationScopeEntityDbMapper() }
     //endregion
 
     //region CustomerProductDistribution
-    single<Mapper<SyncCustomerProductDistributionEntity, SyncCustomerProductDistributionModel>>(named("SyncCustomerProductDistributionEntityDbMapper")) { SyncCustomerProductDistributionEntityDbMapper() }
+    single { SyncCustomerProductDistributionEntityDbMapper() }
     //endregion
 
     //region CustomerSegmentClassification
-    single<Mapper<SyncCustomerSegmentClassificationEntity, SyncCustomerSegmentClassificationModel>>(named("SyncCustomerSegmentClassificationEntityDbMapper")) { SyncCustomerSegmentClassificationEntityDbMapper() }
+    single { SyncCustomerSegmentClassificationEntityDbMapper() }
     //endregion
 
     //region DailyOperationLogInformation
-    single<Mapper<DailyOperationLogInformationEntity, DailyOperationLogInformationModel>>(named("DailyOperationLogInformationEntityDbMapper")) { DailyOperationLogInformationEntityDbMapper() }
+    single { DailyOperationLogInformationEntityDbMapper() }
     //endregion
 
     //region DocumentMap
-    single<MapperDto<SyncDocumentMapEntity, SyncDocumentMapModel, DocumentMapModelDto>>(named("SyncDocumentMapEntityDbMapper")) { SyncDocumentMapEntityDbMapper() }
+    single { SyncDocumentMapEntityDbMapper() }
     //endregion
 
     //region DocumentMapDocNumberInformation
-    single<Mapper<DocumentMapDocNumberInformationEntity, DocumentMapDocNumberInformationModel>>(named("DocumentMapDocNumberInformationEntityDbMapper")) { DocumentMapDocNumberInformationEntityDbMapper() }
+    single { DocumentMapDocNumberInformationEntityDbMapper() }
     //endregion
 
     //region DocumentMapProcess
-    single<MapperDto<SyncDocumentMapProcessEntity, SyncDocumentMapProcessModel, DocumentMapProcessDto>>(named("SyncDocumentMapProcessEntityDbMapper")) { SyncDocumentMapProcessEntityDbMapper() }
-    single{ SyncDocumentMapProcessEntityDbMapper() }
+    single { SyncDocumentMapProcessEntityDbMapper() }
     //endregion
 
     //region DocumentMapProcessStep
-    single<MapperDto<SyncDocumentMapProcessStepEntity, SyncDocumentMapProcessStepModel, DocumentMapProcessStepDto>>(named("SyncDocumentMapProcessStepEntityDbMapper")) { SyncDocumentMapProcessStepEntityDbMapper() }
     single { SyncDocumentMapProcessStepEntityDbMapper() }
     //endregion
 
     //region DocumentOrganization
-    single<Mapper<SyncDocumentOrganizationEntity, SyncDocumentOrganizationModel>>(named("SyncDocumentOrganizationEntityDbMapper")) { SyncDocumentOrganizationEntityDbMapper() }
+    single { SyncDocumentOrganizationEntityDbMapper() }
     //endregion
 
     //region DownedDriveItem
-    single<Mapper<DownedDriveItemEntity, DownedDriveItemModel>>(named("DownedDriveItemEntityDbMapper")) { DownedDriveItemEntityDbMapper() }
+    single { DownedDriveItemEntityDbMapper() }
     //endregion
 
     //region DynamicDataRow
-    single<Mapper<DynamicDataRowEntity, DynamicDataRowModel>>(named("DynamicDataRowEntityDbMapper")) { DynamicDataRowEntityDbMapper() }
+    single { DynamicDataRowEntityDbMapper() }
     //endregion
 
     //region DynamicDataRowModelv2
-    single<Mapper<DynamicDataRowModelv2Entity, DynamicDataRowModelv2Model>>(named("DynamicDataRowModelv2EntityDbMapper")) { DynamicDataRowModelv2EntityDbMapper() }
+    single { DynamicDataRowModelv2EntityDbMapper() }
     //endregion
 
     //region DynamicListHeaders
-    single<Mapper<DynamicListHeadersEntity, DynamicListHeadersModel>>(named("DynamicListHeadersEntityDbMapper")) { DynamicListHeadersEntityDbMapper() }
+    single { DynamicListHeadersEntityDbMapper() }
     //endregion
 
     //region DynamicListItems
-    single<Mapper<DynamicListItemsEntity, DynamicListItemsModel>>(named("DynamicListItemsEntityDbMapper")) { DynamicListItemsEntityDbMapper() }
+    single { DynamicListItemsEntityDbMapper() }
     //endregion
 
     //region DynamicListOrganization
-    single<Mapper<DynamicListOrganizationEntity, DynamicListOrganizationModel>>(named("DynamicListOrganizationEntityDbMapper")) { DynamicListOrganizationEntityDbMapper() }
+    single { DynamicListOrganizationEntityDbMapper() }
     //endregion
 
     //region DynamicPageReport
-    single<MapperDto<SyncDynamicPageReportEntity, SyncDynamicPageReportModel, DynamicPageReportDto>>(named("SyncDynamicPageReportEntityDbMapper")) { SyncDynamicPageReportEntityDbMapper() }
+    single { SyncDynamicPageReportEntityDbMapper() }
     //endregion
 
     //region EagleEyeLogInformation
-    single<Mapper<EagleEyeLogInformationEntity, EagleEyeLogInformationModel>>(named("EagleEyeLogInformationEntityDbMapper")) { EagleEyeLogInformationEntityDbMapper() }
+    single { EagleEyeLogInformationEntityDbMapper() }
     //endregion
 
     //region EventReason
-    single<MapperDto<SyncEventReasonEntity, SyncEventReasonModel, EventReasonDto>>(named("SyncEventReasonEntityDbMapper")) { SyncEventReasonEntityDbMapper() }
+    single { SyncEventReasonEntityDbMapper() }
     //endregion
 
     //region FeedbackCategory
-    single<Mapper<SyncFeedbackCategoryEntity, SyncFeedbackCategoryModel>>(named("SyncFeedbackCategoryEntityDbMapper")) { SyncFeedbackCategoryEntityDbMapper() }
+    single { SyncFeedbackCategoryEntityDbMapper() }
     //endregion
 
     //region FeedbackList
-    single<Mapper<SyncFeedbackListEntity, SyncFeedbackListModel>>(named("SyncFeedbackListEntityDbMapper")) { SyncFeedbackListEntityDbMapper() }
+    single { SyncFeedbackListEntityDbMapper() }
     //endregion
 
     //region FormBase
-    single<Mapper<SyncFormBaseEntity, SyncFormBaseModel>>(named("SyncFormBaseEntityDbMapper")) { SyncFormBaseEntityDbMapper() }
+    single { SyncFormBaseEntityDbMapper() }
     //endregion
 
     //region FormHotSaleDailyOperationInformation
-    single<Mapper<FormHotSaleDailyOperationInformationEntity, FormHotSaleDailyOperationInformationModel>>(named("FormHotSaleDailyOperationInformationEntityDbMapper")) { FormHotSaleDailyOperationInformationEntityDbMapper() }
+    single { FormHotSaleDailyOperationInformationEntityDbMapper() }
     //endregion
 
     //region FormLogInformation
-    single<Mapper<FormLogInformationEntity, FormLogInformationModel>>(named("FormLogInformationEntityDbMapper")) { FormLogInformationEntityDbMapper() }
+    single { FormLogInformationEntityDbMapper() }
     //endregion
 
     //region Game
-    single<Mapper<SyncGameEntity, SyncGameModel>>(named("SyncGameEntityDbMapper")) { SyncGameEntityDbMapper() }
+    single { SyncGameEntityDbMapper() }
     //endregion
 
     //region GeoLocation
-    single<Mapper<GeoLocationEntity, GeoLocationModel>>(named("GeoLocationEntityDbMapper")) { GeoLocationEntityDbMapper() }
+    single { GeoLocationEntityDbMapper() }
     //endregion
 
     //region HotSaleDailyInformation
-    single<Mapper<HotSaleDailyInformationEntity, HotSaleDailyInformationModel>>(named("HotSaleDailyInformationEntityDbMapper")) { HotSaleDailyInformationEntityDbMapper() }
+    single { HotSaleDailyInformationEntityDbMapper() }
     //endregion
 
     //region InventoryCountLogInformation
-    single<Mapper<InventoryCountLogInformationEntity, InventoryCountLogInformationModel>>(named("InventoryCountLogInformationEntityDbMapper")) { InventoryCountLogInformationEntityDbMapper() }
+    single { InventoryCountLogInformationEntityDbMapper() }
     //endregion
 
     //region InvoicePrintContentLogInformation
-    single<Mapper<InvoicePrintContentLogInformationEntity, InvoicePrintContentLogInformationModel>>(named("InvoicePrintContentLogInformationEntityDbMapper")) { InvoicePrintContentLogInformationEntityDbMapper() }
+    single { InvoicePrintContentLogInformationEntityDbMapper() }
     //endregion
 
     //region ManufacturerCustomers
-    single<Mapper<SyncManufacturerCustomersEntity, SyncManufacturerCustomersModel>>(named("SyncManufacturerCustomersEntityDbMapper")) { SyncManufacturerCustomersEntityDbMapper() }
+    single { SyncManufacturerCustomersEntityDbMapper() }
     //endregion
 
     //region ManufacturerParameter
-    single<Mapper<SyncManufacturerParameterEntity, SyncManufacturerParameterModel>>(named("SyncManufacturerParameterEntityDbMapper")) { SyncManufacturerParameterEntityDbMapper() }
+    single { SyncManufacturerParameterEntityDbMapper() }
     //endregion
 
     //region ManufacturerRepresentatives
-    single<Mapper<SyncManufacturerRepresentativesEntity, SyncManufacturerRepresentativesModel>>(named("SyncManufacturerRepresentativesEntityDbMapper")) { SyncManufacturerRepresentativesEntityDbMapper() }
+    single { SyncManufacturerRepresentativesEntityDbMapper() }
     //endregion
 
     //region Manufacturers
-    single<Mapper<SyncManufacturersEntity, SyncManufacturersModel>>(named("SyncManufacturersEntityDbMapper")) { SyncManufacturersEntityDbMapper() }
+    single { SyncManufacturersEntityDbMapper() }
     //endregion
 
     //region MessageUser
-    single<Mapper<SyncMessageUserEntity, SyncMessageUserModel>>(named("SyncMessageUserEntityDbMapper")) { SyncMessageUserEntityDbMapper() }
+    single { SyncMessageUserEntityDbMapper() }
     //endregion
 
     //region Module
-    single<Mapper<SyncModuleEntity, SyncModuleModel>>(named("SyncModuleEntityDbMapper")) { SyncModuleEntityDbMapper() }
+    single { SyncModuleEntityDbMapper() }
     //endregion
 
     //region NotificationLogInformation
-    single<Mapper<NotificationLogInformationEntity, NotificationLogInformationModel>>(named("NotificationLogInformationEntityDbMapper")) { NotificationLogInformationEntityDbMapper() }
+    single { NotificationLogInformationEntityDbMapper() }
     //endregion
 
     //region OrderLogInformation
-    single<Mapper<OrderLogInformationEntity, OrderLogInformationModel>>(named("OrderLogInformationEntityDbMapper")) { OrderLogInformationEntityDbMapper() }
+    single { OrderLogInformationEntityDbMapper() }
     //endregion
 
     //region Organization
-    single<Mapper<SyncOrganizationEntity, SyncOrganizationModel>>(named("SyncOrganizationEntityDbMapper")) { SyncOrganizationEntityDbMapper() }
+    single { SyncOrganizationEntityDbMapper() }
     //endregion
 
     //region OrganizationInfo
-    single<Mapper<SyncOrganizationInfoEntity, SyncOrganizationInfoModel>>(named("SyncOrganizationInfoEntityDbMapper")) { SyncOrganizationInfoEntityDbMapper() }
+    single { SyncOrganizationInfoEntityDbMapper() }
     //endregion
 
     //region PackageCustomField
-    single<MapperDto<SyncPackageCustomFieldEntity, SyncPackageCustomFieldModel, PackageCustomFieldDto>>(named("SyncPackageCustomFieldEntityDbMapper")) { SyncPackageCustomFieldEntityDbMapper() }
+    single { SyncPackageCustomFieldEntityDbMapper() }
     //endregion
 
     //region PackageCustomFieldProduct
-    single<MapperDto<SyncPackageCustomFieldProductEntity, SyncPackageCustomFieldProductModel, PackageCustomFieldProductDto>>(named("SyncPackageCustomFieldProductEntityDbMapper")) { SyncPackageCustomFieldProductEntityDbMapper() }
+    single { SyncPackageCustomFieldProductEntityDbMapper() }
     //endregion
 
     //region PaymentPlan
-    single<Mapper<SyncPaymentPlanEntity, SyncPaymentPlanModel>>(named("SyncPaymentPlanEntityDbMapper")) { SyncPaymentPlanEntityDbMapper() }
+    single { SyncPaymentPlanEntityDbMapper() }
     //endregion
 
     //region PaymentTransactionLogInformation
-    single<Mapper<PaymentTransactionLogInformationEntity, PaymentTransactionLogInformationModel>>(named("PaymentTransactionLogInformationEntityDbMapper")) { PaymentTransactionLogInformationEntityDbMapper() }
+    single { PaymentTransactionLogInformationEntityDbMapper() }
     //endregion
 
     //region PendingReport
-    single<Mapper<PendingReportEntity, PendingReportModel>>(named("PendingReportEntityDbMapper")) { PendingReportEntityDbMapper() }
+    single { PendingReportEntityDbMapper() }
     //endregion
 
     //region PrinterDocumentRelationInformation
-    single<Mapper<PrinterDocumentRelationInformationEntity, PrinterDocumentRelationInformationModel>>(named("PrinterDocumentRelationInformationEntityDbMapper")) { PrinterDocumentRelationInformationEntityDbMapper() }
+    single { PrinterDocumentRelationInformationEntityDbMapper() }
     //endregion
 
     //region ProductAllocation
-    single<Mapper<SyncProductAllocationEntity, SyncProductAllocationModel>>(named("SyncProductAllocationEntityDbMapper")) { SyncProductAllocationEntityDbMapper() }
+    single { SyncProductAllocationEntityDbMapper() }
     //endregion
 
     //region ProductCustomField
-    single<Mapper<SyncProductCustomFieldEntity, SyncProductCustomFieldModel>>(named("SyncProductCustomFieldEntityDbMapper")) { SyncProductCustomFieldEntityDbMapper() }
+    single { SyncProductCustomFieldEntityDbMapper() }
     //endregion
 
     //region ProductDistribution
-    single<Mapper<SyncProductDistributionEntity, SyncProductDistributionModel>>(named("SyncProductDistributionEntityDbMapper")) { SyncProductDistributionEntityDbMapper() }
+    single { SyncProductDistributionEntityDbMapper() }
     //endregion
 
     //region ProductDistributionLine
-    single<Mapper<SyncProductDistributionLineEntity, SyncProductDistributionLineModel>>(named("SyncProductDistributionLineEntityDbMapper")) { SyncProductDistributionLineEntityDbMapper() }
+    single { SyncProductDistributionLineEntityDbMapper() }
     //endregion
 
     //region ProductGroup
-    single<Mapper<SyncProductGroupEntity, SyncProductGroupModel>>(named("SyncProductGroupEntityDbMapper")) { SyncProductGroupEntityDbMapper() }
+    single { SyncProductGroupEntityDbMapper() }
     //endregion
 
     //region ProductImages
-    single<Mapper<SyncProductImagesEntity, SyncProductImagesModel>>(named("SyncProductImagesEntityDbMapper")) { SyncProductImagesEntityDbMapper() }
+    single { SyncProductImagesEntityDbMapper() }
     //endregion
 
     //region ProductParameter
-    single<Mapper<ProductParameterEntity, ProductParameterModel>>(named("ProductParameterEntityDbMapper")) { ProductParameterEntityDbMapper() }
+    single { ProductParameterEntityDbMapper() }
     //endregion
 
     //region ProductParameterv4
-    single<Mapper<ProductParameterv4Entity, ProductParameterv4Model>>(named("ProductParameterv4EntityDbMapper")) { ProductParameterv4EntityDbMapper() }
+    single { ProductParameterv4EntityDbMapper() }
     //endregion
 
     //region ProductPriceLines
-    single<Mapper<SyncProductPriceLinesEntity, SyncProductPriceLinesModel>>(named("SyncProductPriceLinesEntityDbMapper")) { SyncProductPriceLinesEntityDbMapper() }
+    single { SyncProductPriceLinesEntityDbMapper() }
     //endregion
 
     //region ProductPrices
-    single<Mapper<SyncProductPricesEntity, SyncProductPricesModel>>(named("SyncProductPricesEntityDbMapper")) { SyncProductPricesEntityDbMapper() }
+    single { SyncProductPricesEntityDbMapper() }
     //endregion
 
     //region ProductUnit
-    single<Mapper<SyncProductUnitEntity, SyncProductUnitModel>>(named("SyncProductUnitEntityDbMapper")) { SyncProductUnitEntityDbMapper() }
+    single { SyncProductUnitEntityDbMapper() }
     //endregion
 
     //region ProductUnitParameter
-    single<Mapper<SyncProductUnitParameterEntity, SyncProductUnitParameterModel>>(named("SyncProductUnitParameterEntityDbMapper")) { SyncProductUnitParameterEntityDbMapper() }
+    single { SyncProductUnitParameterEntityDbMapper() }
     //endregion
 
     //region RepresentativeAllocation
-    single<Mapper<SyncRepresentativeAllocationEntity, SyncRepresentativeAllocationModel>>(named("SyncRepresentativeAllocationEntityDbMapper")) { SyncRepresentativeAllocationEntityDbMapper() }
+    single { SyncRepresentativeAllocationEntityDbMapper() }
     //endregion
 
     //region RepresentativeCustomField
-    single<Mapper<SyncRepresentativeCustomFieldEntity, SyncRepresentativeCustomFieldModel>>(named("SyncRepresentativeCustomFieldEntityDbMapper")) { SyncRepresentativeCustomFieldEntityDbMapper() }
+    single { SyncRepresentativeCustomFieldEntityDbMapper() }
     //endregion
 
     //region RepresentativeProductDistribution
-    single<Mapper<SyncRepresentativeProductDistributionEntity, SyncRepresentativeProductDistributionModel>>(named("SyncRepresentativeProductDistributionEntityDbMapper")) { SyncRepresentativeProductDistributionEntityDbMapper() }
+    single { SyncRepresentativeProductDistributionEntityDbMapper() }
     //endregion
 
     //region ReservedStock
-    single<Mapper<SyncReservedStockEntity, SyncReservedStockModel>>(named("SyncReservedStockEntityDbMapper")) { SyncReservedStockEntityDbMapper() }
+    single  { SyncReservedStockEntityDbMapper() }
     //endregion
 
     //region RestServiceTask
-    single<Mapper<RestServiceTaskEntity, RestServiceTaskModel>>(named("RestServiceTaskEntityDbMapper")) { RestServiceTaskEntityDbMapper() }
+    single  { RestServiceTaskEntityDbMapper() }
     //endregion
 
     //region RiskDueDay
-    single<Mapper<SyncRiskDueDayEntity, SyncRiskDueDayModel>>(named("SyncRiskDueDayEntityDbMapper")) { SyncRiskDueDayEntityDbMapper() }
+    single { SyncRiskDueDayEntityDbMapper() }
     //endregion
 
     //region SMSValidationLogInformation
-    single<Mapper<SMSValidationLogInformationEntity, SMSValidationLogInformationModel>>(named("SMSValidationLogInformationEntityDbMapper")) { SMSValidationLogInformationEntityDbMapper() }
+    single { SMSValidationLogInformationEntityDbMapper() }
     //endregion
 
     //region ShipmentActionLogInformation
-    single<Mapper<ShipmentActionLogInformationEntity, ShipmentActionLogInformationModel>>(named("ShipmentActionLogInformationEntityDbMapper")) { ShipmentActionLogInformationEntityDbMapper() }
+    single { ShipmentActionLogInformationEntityDbMapper() }
     //endregion
 
     //region StepAttribute
-    single<Mapper<SyncStepAttributeEntity, SyncStepAttributeModel>>(named("SyncStepAttributeEntityDbMapper")) { SyncStepAttributeEntityDbMapper() }
+    single { SyncStepAttributeEntityDbMapper() }
     //endregion
 
     //region Stock
-    single<Mapper<SyncStockEntity, SyncStockModel>>(named("SyncStockEntityDbMapper")) { SyncStockEntityDbMapper() }
+    single { SyncStockEntityDbMapper() }
     //endregion
 
     //region StockApprovalLogInformation
-    single<Mapper<SyncStockApprovalLogInformationEntity, SyncStockApprovalLogInformationModel>>(named("SyncStockApprovalLogInformationEntityDbMapper")) { SyncStockApprovalLogInformationEntityDbMapper() }
+    single { SyncStockApprovalLogInformationEntityDbMapper() }
     //endregion
 
     //region StockLoadingDemandLogInformation
-    single<Mapper<StockLoadingDemandLogInformationEntity, StockLoadingDemandLogInformationModel>>(named("StockLoadingDemandLogInformationEntityDbMapper")) { StockLoadingDemandLogInformationEntityDbMapper() }
+    single { StockLoadingDemandLogInformationEntityDbMapper() }
     //endregion
 
     //region StockTransactionLogInformation
-    single<Mapper<StockTransactionLogInformationEntity, StockTransactionLogInformationModel>>(named("StockTransactionLogInformationEntityDbMapper")) { StockTransactionLogInformationEntityDbMapper() }
+    single { StockTransactionLogInformationEntityDbMapper() }
     //endregion
 
     //region SystemLogInformation
-    single<Mapper<SystemLogInformationEntity, SystemLogInformationModel>>(named("SystemLogInformationEntityDbMapper")) { SystemLogInformationEntityDbMapper() }
+    single { SystemLogInformationEntityDbMapper() }
     //endregion
 
     //region Task
-    single<Mapper<SyncTaskEntity, SyncTaskModel>>(named("SyncTaskEntityDbMapper")) { SyncTaskEntityDbMapper() }
+    single { SyncTaskEntityDbMapper() }
     //endregion
 
     //region TaskLogInformation
-    single<Mapper<TaskLogInformationEntity, TaskLogInformationModel>>(named("TaskLogInformationEntityDbMapper")) { TaskLogInformationEntityDbMapper() }
+    single { TaskLogInformationEntityDbMapper() }
     //endregion
 
     //region TaskModelAddress
-    single<Mapper<SyncTaskModelAddressEntity, SyncTaskModelAddressModel>>(named("SyncTaskModelAddressEntityDbMapper")) { SyncTaskModelAddressEntityDbMapper() }
+    single { SyncTaskModelAddressEntityDbMapper() }
     //endregion
 
     //region TaskStep
-    single<Mapper<SyncTaskStepEntity, SyncTaskStepModel>>(named("SyncTaskStepEntityDbMapper")) { SyncTaskStepEntityDbMapper() }
+    single { SyncTaskStepEntityDbMapper() }
     //endregion
 
     //region TaskVisitLogInformation
-    single<Mapper<TaskVisitLogInformationEntity, TaskVisitLogInformationModel>>(named("TaskVisitLogInformationEntityDbMapper")) { TaskVisitLogInformationEntityDbMapper() }
+    single { TaskVisitLogInformationEntityDbMapper() }
     //endregion
 
     //region TenantDiscount
-    single<Mapper<SyncTenantDiscountEntity, SyncTenantDiscountModel>>(named("SyncTenantDiscountEntityDbMapper")) { SyncTenantDiscountEntityDbMapper() }
+    single { SyncTenantDiscountEntityDbMapper() }
     //endregion
 
     //region TransitStock
-    single<Mapper<SyncTransitStockEntity, SyncTransitStockModel>>(named("SyncTransitStockEntityDbMapper")) { SyncTransitStockEntityDbMapper() }
+    single { SyncTransitStockEntityDbMapper() }
     //endregion
 
     //region Unit
-    single<Mapper<SyncUnitEntity, SyncUnitModel>>(named("SyncUnitEntityDbMapper")) { SyncUnitEntityDbMapper() }
+    single { SyncUnitEntityDbMapper() }
     //endregion
 
     //region UploadFileTask
-    single<Mapper<UploadFileTaskEntity, UploadFileTaskModel>>(named("UploadFileTaskEntityDbMapper")) { UploadFileTaskEntityDbMapper() }
+    single { UploadFileTaskEntityDbMapper() }
     //endregion
 
     //region Visit
@@ -835,23 +836,23 @@ val RepositoryModulePreview = module {
     //endregion
 
     //region VisitActivityDefinition
-    single<Mapper<SyncVisitActivityDefinitionEntity, SyncVisitActivityDefinitionModel>>(named("SyncVisitActivityDefinitionEntityDbMapper")) { SyncVisitActivityDefinitionEntityDbMapper() }
+    single { SyncVisitActivityDefinitionEntityDbMapper() }
     //endregion
 
     //region VisitActivityLogInformation
-    single<Mapper<VisitActivityLogInformationEntity, VisitActivityLogInformationModel>>(named("VisitActivityLogInformationEntityDbMapper")) { VisitActivityLogInformationEntityDbMapper() }
+    single { VisitActivityLogInformationEntityDbMapper() }
     //endregion
 
     //region VisitLogInformation
-    single<Mapper<VisitLogInformationEntity, VisitLogInformationModel>>(named("VisitLogInformationEntityDbMapper")) { VisitLogInformationEntityDbMapper() }
+    single { VisitLogInformationEntityDbMapper() }
     //endregion
 
     //region Warehouse
-    single<Mapper<SyncWarehouseEntity, SyncWarehouseModel>>(named("SyncWarehouseEntityDbMapper")) { SyncWarehouseEntityDbMapper() }
+    single { SyncWarehouseEntityDbMapper() }
     //endregion
 
     //region WarehouseTotal
-    single<Mapper<SyncWarehouseTotalEntity, SyncWarehouseTotalModel>>(named("SyncWarehouseTotalEntityDbMapper")) { SyncWarehouseTotalEntityDbMapper() }
+    single { SyncWarehouseTotalEntityDbMapper() }
     //endregion
     //endregion DBMAPPERS
 }

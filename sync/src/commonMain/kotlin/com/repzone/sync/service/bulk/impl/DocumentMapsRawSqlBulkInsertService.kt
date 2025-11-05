@@ -2,6 +2,7 @@ package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.model.ResourceUI
 import com.repzone.core.util.extensions.fromResource
+import com.repzone.data.mapper.SyncDocumentMapEntityDbMapper
 import com.repzone.data.mapper.SyncDocumentMapProcessEntityDbMapper
 import com.repzone.data.mapper.SyncDocumentMapProcessStepEntityDbMapper
 import com.repzone.data.util.MapperDto
@@ -20,7 +21,7 @@ import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_template_desc
 import repzonemobile.core.generated.resources.job_document_map
 
-class DocumentMapsRawSqlBulkInsertService(private val mapperDocument: MapperDto<SyncDocumentMapEntity, SyncDocumentMapModel, DocumentMapModelDto>,
+class DocumentMapsRawSqlBulkInsertService(private val mapperDocument: SyncDocumentMapEntityDbMapper,
                                           private val mapperProcess: SyncDocumentMapProcessEntityDbMapper,
                                           private val mapperProcessStep: SyncDocumentMapProcessStepEntityDbMapper, coordinator: TransactionCoordinator
 ): CompositeRawSqlBulkInsertService<List<DocumentMapModelDto>>(coordinator) {

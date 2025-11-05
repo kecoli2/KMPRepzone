@@ -38,7 +38,7 @@ import com.repzone.core.model.module.parameters.ReportsParameters
 import com.repzone.core.model.module.parameters.TaskManagmentParameters
 import com.repzone.core.model.module.parameters.VisitParameters
 import com.repzone.core.model.module.parameters.WorkingHoursParameters
-import com.repzone.data.util.MapperDto
+import com.repzone.data.mapper.SyncPackageCustomFieldProductEntityDbMapper
 import com.repzone.data.util.getBooleanValue
 import com.repzone.data.util.getDateTimeValue
 import com.repzone.data.util.getEnumValue
@@ -50,14 +50,13 @@ import com.repzone.database.runtime.select
 import com.repzone.domain.model.MobileParameterModel
 import com.repzone.domain.model.SyncPackageCustomFieldProductModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
-import com.repzone.network.dto.PackageCustomFieldProductDto
 import kotlinx.coroutines.runBlocking
 import kotlin.time.ExperimentalTime
 
 class MobileModuleParameterRepositoryImpl(
-        private val iDatabaseManager: IDatabaseManager,
-        private val mapperCustomFieldProduct: MapperDto<SyncPackageCustomFieldProductEntity, SyncPackageCustomFieldProductModel, PackageCustomFieldProductDto>,
-        private val iUserSession: IUserSession ): IMobileModuleParameterRepository {
+    private val iDatabaseManager: IDatabaseManager,
+    private val mapperCustomFieldProduct: SyncPackageCustomFieldProductEntityDbMapper,
+    private val iUserSession: IUserSession ): IMobileModuleParameterRepository {
 
     //region Fields
       private var parametersMap : MutableMap<ModuleProductIdsEnum, Any> = mutableMapOf()

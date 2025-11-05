@@ -2,6 +2,7 @@ package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.model.ResourceUI
 import com.repzone.core.util.extensions.fromResource
+import com.repzone.data.mapper.SyncEventReasonEntityDbMapper
 import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncEventReasonEntity
 import com.repzone.database.SyncEventReasonEntityMetadata
@@ -16,8 +17,8 @@ import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_template_desc
 import repzonemobile.core.generated.resources.job_module
 
-class EventReasonsRawSqlBulkInsertService(private val mapper: MapperDto<SyncEventReasonEntity, SyncEventReasonModel, EventReasonDto>,
-    coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<EventReasonDto>>(coordinator) {
+class EventReasonsRawSqlBulkInsertService(private val mapper: SyncEventReasonEntityDbMapper,
+                                          coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<EventReasonDto>>(coordinator) {
     //region Public Method
     override fun buildCompositeOperation(items: List<EventReasonDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val eventReasons = items.map { mapper.fromDto(it) }

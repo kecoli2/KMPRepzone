@@ -38,7 +38,7 @@ val SyncModule = module {
 
     //region ROUTEDATA
     single<IBulkInsertService<List<RouteDto>>>(named("routeDataBulkInsert")) {
-        RouteDataRawSqlBulkInsertService(get(named("SyncRouteAppointmentEntityDbMapper")), get())
+        RouteDataRawSqlBulkInsertService(get(), get())
     }
     single<ISyncApiService<List<RouteDto>>>(named("routeDataSyncApi")){ SyncApiRouteDataImpl(get()) }
     //endregion ROUTEDATA
@@ -68,42 +68,42 @@ val SyncModule = module {
     //region CUSTOMER EMAIL
     single<ISyncApiService<List<CustomerEmailDto>>>(named("customerEmailImpl")){ SyncApiCustomerEmailImpl(get()) }
     single<IBulkInsertService<List<CustomerEmailDto>>>(named("customerEmailBulkInsert")){ CustomerEmailRawSqlBulkInsertService(
-        get(named("SyncCustomerEmailEntityDbMapper")),
+        get(),
         get()) }
     //endregion CUSTOMER EMAIL
 
     //region CUSTOMER PRICE PARAMETERS
     single<ISyncApiService<List<CrmPriceListParameterDto>>>(named("customerPriceParametersImpl")){ SyncApiCustomerPriceParametersImpl(get()) }
     single<IBulkInsertService<List<CrmPriceListParameterDto>>>(named("customerEmailBulkInsert")){
-        CustomerPriceParameterslRawSqlBulkInsertService(get(named("SyncCrmPriceListParameterEntityDbMapper")), get()) }
+        CustomerPriceParameterslRawSqlBulkInsertService(get(), get()) }
     //endregion CUSTOMER PRICE PARAMETERS
 
     //region CUSTOMER GROUP PRICE PARAMETERS
     single<ISyncApiService<List<CrmPriceListParameterDto>>>(named("customerGroupPriceParametersImpl")){ SyncApiCustomerGroupPriceParametersImpl(get()) }
     single<IBulkInsertService<List<CrmPriceListParameterDto>>>(named("customerGroupEmailBulkInsert")){ CustomerGroupPriceParameterslRawSqlBulkInsertService(
-        get(named("SyncCrmPriceListParameterEntityDbMapper")),
+        get(),
         get()) }
     //endregion CUSTOMER GROUP PRICE PARAMETERS
 
     //region COMMON MODULES
     single<ISyncApiService<List<PackageCustomFieldDto>>>(named("syncModulesImpl")){ SyncApiModulesImpl(get()) }
     single<IBulkInsertService<List<PackageCustomFieldDto>>>(named("syncModulesBulkInsert")){ ModulesRawSqlBulkInsertService(
-        get(named("SyncPackageCustomFieldEntityDbMapper")),
-        get(named("SyncPackageCustomFieldProductEntityDbMapper")),
+        get(),
+        get(),
         get()) }
     //endregion COMMON MODULES
 
     //region COMMON REASONS
     single<ISyncApiService<List<EventReasonDto>>>(named("syncApiEventReasonsImpl")){ SyncApiEventReasonsImpl(get()) }
     single<IBulkInsertService<List<EventReasonDto>>>(named("syncEventReasonBulkInsert")){ EventReasonsRawSqlBulkInsertService(
-        get(named("SyncEventReasonEntityDbMapper")),
+        get(),
         get()) }
     //endregion COMMON REASONS
 
     //region COMMON DOCUMENT
     single<ISyncApiService<List<DocumentMapModelDto>>>(named("syncApiDocumentMapsImpl")) { SyncApiDocumentMapsImpl(get()) }
     single<IBulkInsertService<List<DocumentMapModelDto>>>(named("syncDocumentMapsRawSqlBulkInsertService")){ DocumentMapsRawSqlBulkInsertService(
-        get(named("SyncDocumentMapEntityDbMapper")),
+        get(),
         get(),
         get(),
         get()) }
@@ -112,7 +112,7 @@ val SyncModule = module {
     //region COMMON DYNAMIC PAGES
     single<ISyncApiService<List<DynamicPageReportDto>>>(named("syncApiDynamicPageReportImpl")) { SyncApiDynamicPageReportImpl(get()) }
     single<IBulkInsertService<List<DynamicPageReportDto>>>(named("syncDynamicPageReportRawSqlBulkInsertService")) { DynamicPageReportRawSqlBulkInsertService(
-        get(named("SyncDynamicPageReportEntityDbMapper")),
+        get(),
         get()) }
     //endregion COMMON DYNAMIC PAGES
 

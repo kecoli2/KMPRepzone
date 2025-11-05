@@ -2,7 +2,7 @@ package com.repzone.data.repository.imp
 
 import com.repzone.core.enums.UIModule
 import com.repzone.core.util.extensions.enumToLong
-import com.repzone.data.util.Mapper
+import com.repzone.data.mapper.SyncModuleEntityDbMapper
 import com.repzone.database.SyncModuleEntity
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.database.runtime.delete
@@ -12,7 +12,7 @@ import com.repzone.domain.model.SyncModuleModel
 import com.repzone.domain.repository.ISyncModuleRepository
 
 class SyncModuleRepositoryImpl(
-    private val mapper: Mapper<SyncModuleEntity, SyncModuleModel>,
+    private val mapper: SyncModuleEntityDbMapper,
     private val iDatabaseManager: IDatabaseManager): ISyncModuleRepository {
     //region Public Method
     override suspend fun deleteById(id: Long, module: UIModule) {

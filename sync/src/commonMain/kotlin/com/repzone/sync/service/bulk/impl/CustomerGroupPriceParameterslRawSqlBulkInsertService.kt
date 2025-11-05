@@ -3,6 +3,7 @@ package com.repzone.sync.service.bulk.impl
 import com.repzone.core.enums.CrmParameterEntityType
 import com.repzone.core.model.ResourceUI
 import com.repzone.core.util.extensions.fromResource
+import com.repzone.data.mapper.SyncCrmPriceListParameterEntityDbMapper
 import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncCrmPriceListParameterEntity
 import com.repzone.database.SyncCrmPriceListParameterEntityMetadata
@@ -17,7 +18,7 @@ import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_template_desc
 import repzonemobile.core.generated.resources.job_customer_price
 
-class CustomerGroupPriceParameterslRawSqlBulkInsertService(private val mapper: MapperDto<SyncCrmPriceListParameterEntity, SyncCrmPriceListParameterModel, CrmPriceListParameterDto>,
+class CustomerGroupPriceParameterslRawSqlBulkInsertService(private val mapper: SyncCrmPriceListParameterEntityDbMapper,
                                                            coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<CrmPriceListParameterDto>>(coordinator) {
     //region Public Method
     override fun buildCompositeOperation(items: List<CrmPriceListParameterDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {

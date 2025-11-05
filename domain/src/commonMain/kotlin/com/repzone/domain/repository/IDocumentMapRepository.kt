@@ -16,13 +16,13 @@ interface IDocumentMapRepository {
     suspend fun getAll(orgId: Int): List<SyncDocumentMapModel>
     suspend fun get(name: String, orgId: Int) : SyncDocumentMapModel
     suspend fun get(id: Int, orgId: Int) : SyncDocumentMapModel
-    suspend fun getProcessBy(documentMapName: String, type: DocProcessType): SyncDocumentMapProcessModel
+    suspend fun getProcessBy(documentMapName: String, type: DocProcessType): SyncDocumentMapProcessModel?
     suspend fun getOrderedStepsOfProcessesById(processId: Int): List<SyncDocumentMapProcessStepModel>
     suspend fun doesExistsDocumentMapById(id: Int): Boolean
     suspend fun insertOrReplaceDocumentMapWithPrinterAddress(id : Int, address: String, name: String,printerType : Int, paperWidth: Int)
     suspend fun getAllDocumentTypes(): List<SyncDocumentMapModel>
     suspend fun getPrinters(): List<PrinterListItem>
-    suspend fun getPrinterInfoByDocumentId(id: Int): PrinterDocumentRelationInformationModel
+    suspend fun getPrinterInfoByDocumentId(id: Int): PrinterDocumentRelationInformationModel?
     suspend fun clearPrinterRelations(printerAdress: String)
     suspend fun getAnyPrinterInfo(): PrinterDocumentRelationInformationModel?
     suspend fun getDocNumberByDocumentMapId(documentMapId: Int): DocumentMapDocNumberInformationModel

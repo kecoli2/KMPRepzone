@@ -7,6 +7,7 @@ import com.repzone.core.util.extensions.addDays
 import com.repzone.core.util.extensions.now
 import com.repzone.core.util.extensions.toInstant
 import com.repzone.core.util.extensions.toLong
+import com.repzone.data.mapper.CustomerItemViewEntityDbMapper
 import com.repzone.data.util.Mapper
 import com.repzone.database.CustomerItemViewEntity
 import com.repzone.database.SyncEventReasonEntity
@@ -33,7 +34,7 @@ import kotlin.time.Instant
 class CustomerListRepositoryImpl(private val iMobileModuleParameter: IMobileModuleParameterRepository,
                                  private val iRouteAppointmentRepository: IRouteAppointmentRepository,
                                  private val iEventReasonRepository: IEventReasonRepository,
-                                 private val mapper: Mapper<CustomerItemViewEntity, CustomerItemModel>,
+                                 private val mapper: CustomerItemViewEntityDbMapper,
                                  private val iDatabaseManager: IDatabaseManager
 ): ICustomerListRepository {
     //region Field

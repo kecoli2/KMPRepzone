@@ -2,6 +2,8 @@ package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.model.ResourceUI
 import com.repzone.core.util.extensions.fromResource
+import com.repzone.data.mapper.SyncPackageCustomFieldEntityDbMapper
+import com.repzone.data.mapper.SyncPackageCustomFieldProductEntityDbMapper
 import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncPackageCustomFieldEntity
 import com.repzone.database.SyncPackageCustomFieldEntityMetadata
@@ -20,8 +22,8 @@ import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_template_desc
 import repzonemobile.core.generated.resources.job_product_group
 
-class ModulesRawSqlBulkInsertService(private val mapperCustomField: MapperDto<SyncPackageCustomFieldEntity, SyncPackageCustomFieldModel, PackageCustomFieldDto>,
-    private val mapperCustomFieldProduct: MapperDto<SyncPackageCustomFieldProductEntity, SyncPackageCustomFieldProductModel, PackageCustomFieldProductDto>, coordinator: TransactionCoordinator)
+class ModulesRawSqlBulkInsertService(private val mapperCustomField: SyncPackageCustomFieldEntityDbMapper,
+                                     private val mapperCustomFieldProduct: SyncPackageCustomFieldProductEntityDbMapper, coordinator: TransactionCoordinator)
     : CompositeRawSqlBulkInsertService<List<PackageCustomFieldDto>>(coordinator) {
     //region Public Method
     override fun buildCompositeOperation(items: List<PackageCustomFieldDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {

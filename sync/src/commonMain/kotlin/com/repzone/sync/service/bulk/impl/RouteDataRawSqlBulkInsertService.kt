@@ -2,6 +2,7 @@ package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.model.ResourceUI
 import com.repzone.core.util.extensions.fromResource
+import com.repzone.data.mapper.SyncRouteAppointmentEntityDbMapper
 import com.repzone.data.util.MapperDto
 
 import com.repzone.database.SyncRouteAppointmentEntity
@@ -17,7 +18,7 @@ import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_template_desc
 import repzonemobile.core.generated.resources.job_rota
 
-class RouteDataRawSqlBulkInsertService(private val dbMapper: MapperDto<SyncRouteAppointmentEntity, SyncRouteAppointmentModel, RouteDto>,
+class RouteDataRawSqlBulkInsertService(private val dbMapper: SyncRouteAppointmentEntityDbMapper,
                                        coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<RouteDto>>(coordinator) {
     //region Public Method
     override fun buildCompositeOperation(items: List<RouteDto>, includeClears: Boolean, useUpsert: Boolean,): CompositeOperation {
