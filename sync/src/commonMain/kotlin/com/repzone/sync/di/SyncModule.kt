@@ -61,7 +61,7 @@ val SyncModule = module {
     //region CUSTOMER GROUP
     single<ISyncApiService<List<CustomerGroupDto>>>(named("customerGroupImpl")){ SyncApiCustomerGroupImpl( get()) }
     single<IBulkInsertService<List<CustomerGroupDto>>>(named("customerGrouplBulkInsert")){ CustomerGroupRawSqlBulkInsertService(
-        get(named("SyncCustomerGroupEntityDbMapper")),
+        get(),
         get()) }
     //endregion CUSTOMER GROUP
 

@@ -2,6 +2,7 @@ package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.model.ResourceUI
 import com.repzone.core.util.extensions.fromResource
+import com.repzone.data.mapper.SyncCustomerGroupEntityDbMapper
 import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncCustomerGroupEntity
 import com.repzone.database.SyncCustomerGroupEntityMetadata
@@ -16,7 +17,7 @@ import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_template_desc
 import repzonemobile.core.generated.resources.job_customer_group
 
-class CustomerGroupRawSqlBulkInsertService(private val mapper: MapperDto<SyncCustomerGroupEntity, SyncCustomerGroupModel, CustomerGroupDto>,
+class CustomerGroupRawSqlBulkInsertService(private val mapper: SyncCustomerGroupEntityDbMapper,
                                            coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<CustomerGroupDto>>(coordinator) {
     //region Public Method
     override fun buildCompositeOperation(items: List<CustomerGroupDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {

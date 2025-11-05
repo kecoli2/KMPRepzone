@@ -25,8 +25,8 @@ interface IDocumentMapRepository {
     suspend fun getPrinterInfoByDocumentId(id: Int): PrinterDocumentRelationInformationModel?
     suspend fun clearPrinterRelations(printerAdress: String)
     suspend fun getAnyPrinterInfo(): PrinterDocumentRelationInformationModel?
-    suspend fun getDocNumberByDocumentMapId(documentMapId: Int): DocumentMapDocNumberInformationModel
-    suspend fun getDocNumberByDocumentGroup(documentGroup: DocumentTypeGroup): DocumentMapDocNumberInformationModel
+    suspend fun getDocNumberByDocumentMapId(documentMapId: Int): DocumentMapDocNumberInformationModel?
+    suspend fun getDocNumberByDocumentGroup(documentGroup: DocumentTypeGroup): DocumentMapDocNumberInformationModel?
     suspend fun setDocumentNumberByDocumentGroup(documentGroup: DocumentTypeGroup ,prefix: String, number: Int, postfix: String, documentMapId: Int = 0)
     suspend fun logInvoicePrintContent(content: String, sessionId: String)
     suspend fun logCollectionPrintContent(content: String, sessionId: String)

@@ -2,9 +2,11 @@ package com.repzone.network.di
 import com.repzone.core.config.BuildConfig
 import com.repzone.core.enums.UIModule
 import com.repzone.core.interfaces.ITokenProvider
+import com.repzone.network.api.ICommonApiController
 import com.repzone.network.api.ITokenApiController
 import com.repzone.network.http.HttpClientFactory
 import com.repzone.network.http.NetworkConfig
+import com.repzone.network.http.impl.CommonApiControllerImpl
 import com.repzone.network.http.impl.TokenApiControllerImpl
 import com.repzone.network.http.impl.TokenProviderImpl
 import io.ktor.client.HttpClient
@@ -25,4 +27,5 @@ val NetworkModule = module {
     }
 
     factory<ITokenApiController> { TokenApiControllerImpl(get()) }
+    factory<ICommonApiController> { CommonApiControllerImpl(get()) }
 }

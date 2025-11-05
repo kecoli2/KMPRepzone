@@ -5,10 +5,14 @@ import com.repzone.core.enums.DocumentTypeGroup
 import com.repzone.core.enums.NumberTemplateType
 import com.repzone.core.enums.PrinterDeviceType
 import com.repzone.core.model.PrinterListItem
+import com.repzone.data.mapper.DocumentMapDocNumberInformationEntityDbMapper
 import com.repzone.data.mapper.PrinterDocumentRelationInformationEntityDbMapper
 import com.repzone.data.mapper.SyncDocumentMapEntityDbMapper
 import com.repzone.data.mapper.SyncDocumentMapProcessEntityDbMapper
 import com.repzone.data.mapper.SyncDocumentMapProcessStepEntityDbMapper
+import com.repzone.database.CollectionPrintContentLogInformationEntity
+import com.repzone.database.DocumentMapDocNumberInformationEntity
+import com.repzone.database.InvoicePrintContentLogInformationEntity
 import com.repzone.database.PrinterDocumentRelationInformationEntity
 import com.repzone.database.SyncDocumentMapEntity
 import com.repzone.database.SyncDocumentMapProcessEntity
@@ -16,9 +20,11 @@ import com.repzone.database.SyncDocumentMapProcessStepEntity
 import com.repzone.database.SyncDocumentOrganizationEntity
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.database.runtime.count
+import com.repzone.database.runtime.insert
 import com.repzone.database.runtime.insertOrReplace
 import com.repzone.database.runtime.rawExecute
 import com.repzone.database.runtime.select
+import com.repzone.database.runtime.update
 import com.repzone.domain.model.DocumentMapDocNumberInformationModel
 import com.repzone.domain.model.DocumentNumberAndPrefix
 import com.repzone.domain.model.LastDocumentModel
@@ -27,12 +33,16 @@ import com.repzone.domain.model.SyncDocumentMapModel
 import com.repzone.domain.model.SyncDocumentMapProcessModel
 import com.repzone.domain.model.SyncDocumentMapProcessStepModel
 import com.repzone.domain.repository.IDocumentMapRepository
+import com.repzone.network.api.ICommonApiController
+import com.repzone.network.http.wrapper.ApiResult
 
 class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                                 private val mapperDocumentMap: SyncDocumentMapEntityDbMapper,
                                 private val mapperDocumentProcess: SyncDocumentMapProcessEntityDbMapper,
                                 private val mapperDcomentMapProcessStep: SyncDocumentMapProcessStepEntityDbMapper,
-    private val mapperPrinterDocumentRelationInformationEntity: PrinterDocumentRelationInformationEntityDbMapper
+                                private val mapperPrinterDocumentRelationInformationEntity: PrinterDocumentRelationInformationEntityDbMapper,
+                                private val mapperNumberDocument: DocumentMapDocNumberInformationEntityDbMapper,
+                                private val iCommonApi: ICommonApiController
 ): IDocumentMapRepository {
 
     //region Public Method
@@ -238,31 +248,121 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
     }
 
     override suspend fun getAnyPrinterInfo(): PrinterDocumentRelationInformationModel? {
-        TODO("Not yet implemented")
+        return iDatabaseManager.getSqlDriver().select<PrinterDocumentRelationInformationEntity> {
+            where {
+                criteria("State", equal = 1)
+            }
+        }.firstOrNull()?.let {
+            mapperPrinterDocumentRelationInformationEntity.toDomain(it)
+        }
     }
 
-    override suspend fun getDocNumberByDocumentMapId(documentMapId: Int): DocumentMapDocNumberInformationModel {
-        TODO("Not yet implemented")
+    override suspend fun getDocNumberByDocumentMapId(documentMapId: Int): DocumentMapDocNumberInformationModel? {
+        var numberInfoWithId = iDatabaseManager.getSqlDriver().select<DocumentMapDocNumberInformationEntity> {
+            where {
+                criteria("DocumentMapId", equal = documentMapId)
+                criteria("State", notEqual = 4)
+            }
+        }.firstOrNull()?.let {
+            mapperNumberDocument.toDomain(it)
+        }
+
+        if(numberInfoWithId == null){
+            if(documentMapId == 13 || documentMapId == 29){
+                numberInfoWithId = getDocNumberByDocumentGroup(DocumentTypeGroup.INVOICE)
+            }else if (documentMapId == 0 || documentMapId == 30){
+                numberInfoWithId = getDocNumberByDocumentGroup(DocumentTypeGroup.DISPATCH)
+            }
+        }
+
+        return numberInfoWithId
     }
 
-    override suspend fun getDocNumberByDocumentGroup(documentGroup: DocumentTypeGroup): DocumentMapDocNumberInformationModel {
-        TODO("Not yet implemented")
+    override suspend fun getDocNumberByDocumentGroup(documentGroup: DocumentTypeGroup): DocumentMapDocNumberInformationModel? {
+        return iDatabaseManager.getSqlDriver().select<DocumentMapDocNumberInformationEntity> {
+            where {
+                criteria("DocumentGroup", equal = documentGroup.ordinal)
+                criteria("State", notEqual = 4)
+                criteria("DocumentMapId", 0)
+            }
+        }.firstOrNull()?.let {
+            mapperNumberDocument.toDomain(it)
+        }
     }
 
     override suspend fun setDocumentNumberByDocumentGroup(documentGroup: DocumentTypeGroup, prefix: String, number: Int, postfix: String, documentMapId: Int) {
-        TODO("Not yet implemented")
+        var currentNumber = iDatabaseManager.getSqlDriver().select<DocumentMapDocNumberInformationEntity> {
+            where {
+                criteria("DocumentType", equal = documentGroup.ordinal)
+                criteria("State", notEqual = 4)
+                criteria("DocumentMapId", equal = documentMapId)
+            }
+        }.firstOrNull()
+
+        if(currentNumber != null){
+            currentNumber = currentNumber.copy(
+                DocumentNumberPrefix = prefix,
+                DocumentNumberBody = number.toLong(),
+                DocumentNumberPostfix = postfix
+            )
+            iDatabaseManager.getSqlDriver().update(currentNumber)
+
+        }else{
+            var newEntry = DocumentMapDocNumberInformationEntity(
+                Id = 0L,
+                DocumentMapId = 0,
+                DocumentNumberBody = number.toLong(),
+                DocumentNumberPostfix = postfix,
+                DocumentNumberPrefix = prefix,
+                DocumentType = null,
+                State = 0
+            )
+
+            if(documentMapId > 0){
+                newEntry = newEntry.copy(
+                    DocumentMapId = documentMapId.toLong()
+                )
+            }
+            iDatabaseManager.getSqlDriver().insert(newEntry)
+
+        }
     }
 
     override suspend fun logInvoicePrintContent(content: String, sessionId: String) {
-        TODO("Not yet implemented")
+        val entity = InvoicePrintContentLogInformationEntity(
+            Id = 0,
+            PrintContent = content,
+            SessionId = sessionId
+        )
+        iDatabaseManager.getSqlDriver().insert(entity)
     }
 
     override suspend fun logCollectionPrintContent(content: String, sessionId: String) {
-        TODO("Not yet implemented")
+        val entity = CollectionPrintContentLogInformationEntity(
+            Id = 0,
+            PrintContent = content,
+            SessionId = sessionId
+        )
+        iDatabaseManager.getSqlDriver().insert(entity)
     }
 
+    /***
+     * todo() Burda request common apiye bakılacak
+     */
     override suspend fun getADocumentNumberFromAPI(docGroupType: Int, docTypeId: Int, numberTemplateType: NumberTemplateType) {
-        TODO("Not yet implemented")
+        val result = iCommonApi.getDocNumber(docGroupType, docTypeId, numberTemplateType)
+        when(result){
+            is ApiResult.Success -> {
+
+            }
+            else -> {
+            }
+        }
+
+        //var prepareDocNumber = prepareDocNumber(MobileLastDocumentModel)
+
+
+
     }
 
     override suspend fun fetchLastDocumentNumber(docGroupType: Int, docTypeId: Int) {

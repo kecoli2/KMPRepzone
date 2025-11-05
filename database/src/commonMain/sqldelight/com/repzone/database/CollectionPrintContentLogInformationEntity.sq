@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS CollectionPrintContentLogInformationEntity (
+    Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    SessionId TEXT,
+    PrintContent TEXT
+);

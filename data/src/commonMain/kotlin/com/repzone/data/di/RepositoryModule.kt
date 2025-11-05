@@ -44,7 +44,14 @@ val RepositoryModule = module {
     single<IEventReasonRepository> { EventReasonRepositoryImpl(get()) }
     factory<IRepresentativeRepository>{ RepresentativeRepositoryImpl(get(), get()) }
     factory<IVisitRepository>{ VisitRepositoryImpl(get(), get()) }
-    factory<IDocumentMapRepository>{ DocumentMapRepositoryImpl(get()) }
+    factory<IDocumentMapRepository>{ DocumentMapRepositoryImpl(get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get(),
+        get())
+    }
     //endregion REPOSITORY
 
     //region DBMAPPERS
