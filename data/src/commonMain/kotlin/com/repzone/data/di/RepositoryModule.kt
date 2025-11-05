@@ -5,6 +5,7 @@ import com.repzone.data.repository.imp.VisitRepositoryImpl
 import com.repzone.data.repository.imp.EventReasonRepositoryImpl
 import com.repzone.data.repository.imp.CustomerListRepositoryImpl
 import com.repzone.data.repository.imp.CustomerRepositoryImpl
+import com.repzone.data.repository.imp.DocumentMapRepositoryImpl
 import com.repzone.data.repository.imp.MobileModuleParameterRepositoryImpl
 import com.repzone.data.repository.imp.RepresentativeRepositoryImpl
 import com.repzone.data.repository.imp.RouteAppointmentRepositoryImpl
@@ -30,6 +31,7 @@ val RepositoryModule = module {
     single<IEventReasonRepository> { EventReasonRepositoryImpl(get()) }
     factory<IRepresentativeRepository>{ RepresentativeRepositoryImpl(get(), get()) }
     factory<IVisitRepository>{ VisitRepositoryImpl(get(), get()) }
+    factory<IDocumentMapRepository>{ DocumentMapRepositoryImpl(get()) }
     //endregion REPOSITORY
 
     //region DBMAPPERS

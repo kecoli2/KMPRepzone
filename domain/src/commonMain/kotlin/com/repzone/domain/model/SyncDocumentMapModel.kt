@@ -1,26 +1,34 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.DocumentTypeGroup
+import com.repzone.core.enums.IoType
+import com.repzone.core.enums.SalesOperationType
+import com.repzone.core.enums.WarehouseType
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
+
+@OptIn(ExperimentalTime::class)
 data class SyncDocumentMapModel(
   val id: Long,
   val description: String?,
   val documentHeader: String?,
-  val documentTypeGroup: Long?,
-  val ioType: Long?,
-  val isElectronicDocument: Long?,
-  val isFulfillment: Long?,
+  val documentTypeGroup: DocumentTypeGroup,
+  val ioType: IoType,
+  val isElectronicDocument: Boolean,
+  val isFulfillment: Boolean,
   val lang: String?,
   val logoPathUrl: String?,
-  val logoSelection: Long?,
-  val minMaxControl: Long?,
-  val modificationDateUtc: Long?,
+  val logoSelection: Int?,
+  val minMaxControl: Boolean,
+  val modificationDateUtc: Instant?,
   val name: String?,
   val note: String?,
-  val operationType: Long?,
+  val operationType: SalesOperationType,
   val printerTemplatePath: String?,
-  val printQrCode: Long?,
-  val recordDateUtc: Long?,
+  val printQrCode: Boolean,
+  val recordDateUtc: Instant,
   val state: Long?,
   val uniqueIdCaption: String?,
-  val useFinancialLogo: Long?,
-  val warehouseType: Long?,
+  val useFinancialLogo: Boolean,
+  val warehouseType: WarehouseType,
 )
