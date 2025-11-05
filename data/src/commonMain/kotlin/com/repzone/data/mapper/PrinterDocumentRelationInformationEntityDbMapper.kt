@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.PrinterDeviceType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.PrinterDocumentRelationInformationEntity
 import com.repzone.domain.model.PrinterDocumentRelationInformationModel
@@ -12,7 +15,7 @@ class PrinterDocumentRelationInformationEntityDbMapper : Mapper<PrinterDocumentR
             paperWidth = from.PaperWidth,
             printerAddress = from.PrinterAddress,
             printerName = from.PrinterName,
-            printerType = from.PrinterType,
+            printerType = from.PrinterType?.toEnum<PrinterDeviceType>() ?: PrinterDeviceType.DOTMATRIX,
             state = from.State
         )
     }
@@ -23,7 +26,7 @@ class PrinterDocumentRelationInformationEntityDbMapper : Mapper<PrinterDocumentR
             PaperWidth = domain.paperWidth,
             PrinterAddress = domain.printerAddress,
             PrinterName = domain.printerName,
-            PrinterType = domain.printerType,
+            PrinterType = domain.printerType.enumToLong(),
             State = domain.state
         )
     }

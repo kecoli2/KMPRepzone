@@ -24,6 +24,8 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
     var groupByBuilder: GroupByBuilder? = null
         internal set
 
+    private val joins = mutableListOf<JoinConfig>()
+
     fun where(block: CriteriaBuilder.() -> Unit) {
         val builder = CriteriaBuilder()
         builder.block()
@@ -55,6 +57,31 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
      * Build SQL query string (for logging)
      */
     private fun buildSQL(params: MutableList<Any?>): String {
+
+        // SELECT kısmı - JOIN varsa joined kolonları da ekle
+        val selectColumns = mutableListOf<String>()
+
+        // Ana tablo kolonları
+        selectColumns.addAll(metadata.columns.map { "${metadata.tableName}.${it.name}" })
+
+        // JOIN'lerden kolonlar
+        joins.forEach { join ->
+            if (join.selectedColumns.isNotEmpty()) {
+                val alias = join.getTableAlias()
+                selectColumns.addAll(join.selectedColumns.map { "$alias.$it" })
+            }
+        }
+
+        val selectClause = selectColumns.joinToString(", ")
+
+        // FROM kısmı
+        var sql = "SELECT $selectClause FROM ${metadata.tableName}"
+
+        // JOIN'leri ekle
+        joins.forEach { join ->
+            sql += " ${join.toSQL(params)}"
+        }
+
         // Build WHERE clause
         val whereClause = if (whereCondition != NoCondition) {
             " WHERE ${whereCondition.toSQL(params)}"
@@ -96,8 +123,7 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
         val offsetClause = offsetValue?.let { " OFFSET $it" } ?: ""
 
         // Final SQL
-        return "SELECT ${metadata.columns.joinToString(", ") { it.name }} " +
-                "FROM ${metadata.tableName}" +
+        return sql +
                 whereClause +
                 groupByClause +
                 havingClause +
@@ -127,7 +153,6 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
 
         return executeQuery(sql, params)
     }
-
     private fun executeQuery(sql: String, params: List<Any?>): List<T> {
         val results = mutableListOf<T>()
 
@@ -186,7 +211,6 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
 
         return result
     }
-
     private fun executeSingleQuery(sql: String, params: List<Any?>): T? {
         var result: T? = null
 
@@ -211,6 +235,76 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
 
     fun first(): T {
         return firstOrNull() ?: throw NoSuchElementException("No entity found")
+    }
+
+    // INNER JOIN
+    internal inline fun <reified J : Any> innerJoin(
+        leftColumn: String,
+        rightColumn: String,
+        noinline block: (JoinBuilder.() -> Unit)? = null
+    ): SelectBuilder<T> {
+        val joinMetadata = EntityMetadataRegistry.get<J>()
+        val builder = JoinBuilder(
+            joinType = JoinType.INNER,
+            tableName = joinMetadata.tableName,
+            leftColumn = "${metadata.tableName}.$leftColumn",
+            rightColumn = "${joinMetadata.tableName}.$rightColumn"
+        )
+        block?.invoke(builder)
+        joins.add(builder.build())
+        return this
+    }
+
+    // LEFT JOIN
+    internal inline fun <reified J : Any> leftJoin(
+        leftColumn: String,
+        rightColumn: String,
+        noinline block: (JoinBuilder.() -> Unit)? = null
+    ): SelectBuilder<T> {
+        val joinMetadata = EntityMetadataRegistry.get<J>()
+        val builder = JoinBuilder(
+            joinType = JoinType.LEFT,
+            tableName = joinMetadata.tableName,
+            leftColumn = "${metadata.tableName}.$leftColumn",
+            rightColumn = "${joinMetadata.tableName}.$rightColumn"
+        )
+        block?.invoke(builder)
+        joins.add(builder.build())
+        return this
+    }
+
+    // RIGHT JOIN
+    internal inline fun <reified J : Any> rightJoin(
+        leftColumn: String,
+        rightColumn: String,
+        noinline block: (JoinBuilder.() -> Unit)? = null
+    ): SelectBuilder<T> {
+        val joinMetadata = EntityMetadataRegistry.get<J>()
+        val builder = JoinBuilder(
+            joinType = JoinType.RIGHT,
+            tableName = joinMetadata.tableName,
+            leftColumn = "${metadata.tableName}.$leftColumn",
+            rightColumn = "${joinMetadata.tableName}.$rightColumn"
+        )
+        block?.invoke(builder)
+        joins.add(builder.build())
+        return this
+    }
+
+    // CROSS JOIN
+    internal inline fun <reified J : Any> crossJoin(
+        noinline block: (JoinBuilder.() -> Unit)? = null
+    ): SelectBuilder<T> {
+        val joinMetadata = EntityMetadataRegistry.get<J>()
+        val builder = JoinBuilder(
+            joinType = JoinType.CROSS,
+            tableName = joinMetadata.tableName,
+            leftColumn = "",
+            rightColumn = ""
+        )
+        block?.invoke(builder)
+        joins.add(builder.build())
+        return this
     }
 
 }

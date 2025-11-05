@@ -1,6 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.DocProcessType
 import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncDocumentMapProcessEntity
 import com.repzone.domain.model.SyncDocumentMapProcessModel
@@ -11,7 +13,7 @@ class SyncDocumentMapProcessEntityDbMapper : MapperDto<SyncDocumentMapProcessEnt
     override fun toDomain(from: SyncDocumentMapProcessEntity): SyncDocumentMapProcessModel {
         return SyncDocumentMapProcessModel(
             id = from.Id,
-            docProcessType = from.DocProcessType,
+            docProcessType = from.DocProcessType?.toEnum<DocProcessType>() ?: DocProcessType.EMPTY,
             documentMapName = from.DocumentMapName,
             name = from.Name
         )
@@ -20,7 +22,7 @@ class SyncDocumentMapProcessEntityDbMapper : MapperDto<SyncDocumentMapProcessEnt
     override fun fromDomain(domain: SyncDocumentMapProcessModel): SyncDocumentMapProcessEntity {
         return SyncDocumentMapProcessEntity(
             Id = domain.id,
-            DocProcessType = domain.docProcessType,
+            DocProcessType = domain.docProcessType.enumToLong(),
             DocumentMapName = domain.documentMapName,
             Name = domain.name
         )
