@@ -135,11 +135,12 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
     val iUserSessionInfo: IUserSession = koinInject()
     val uiState by viewModel.state.collectAsState()
     var selectedTab by rememberSaveable  { mutableIntStateOf(2) }
+    var previousTab by rememberSaveable { mutableIntStateOf(selectedTab) }
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var selectedItemIndex by rememberSaveable { mutableStateOf(-1) }
     val drawerItems = getNavigationItems()
-    var searchQuery by remember { mutableStateOf("") }
+    var searchQuery by rememberSaveable { mutableStateOf("") }
     val focusManager = LocalFocusManager.current
     var showFilterSheet by remember { mutableStateOf(false) }
     val selectedGroups = uiState.selectedFilterGroups
@@ -148,6 +149,7 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
     val representSummary = uiState.representSummary
     val userNameSurName by remember { mutableStateOf("${iUserSessionInfo.getActiveSession()?.firstName} ${iUserSessionInfo.getActiveSession()?.lastName}") }
     val userMail by remember { mutableStateOf(iUserSessionInfo.getActiveSession()?.email ?: "") }
+    var isInitialLoad by rememberSaveable { mutableStateOf(true) }
 
 
     LaunchedEffect(Unit){
@@ -160,6 +162,34 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
 
                 }
             }
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        if (isInitialLoad) {
+            when(selectedTab) {
+                0 -> viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(now().toInstant()))
+                1 -> {
+                    val date = now().toInstant().addDays(1)
+                    viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(date))
+                }
+                2 -> viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(null))
+            }
+            isInitialLoad = false
+        }
+    }
+
+    LaunchedEffect(selectedTab) {
+        if (!isInitialLoad && selectedTab != previousTab) {
+            when(selectedTab) {
+                0 -> viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(now().toInstant()))
+                1 -> {
+                    val date = now().toInstant().addDays(1)
+                    viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(date))
+                }
+                2 -> viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(null))
+            }
+            previousTab = selectedTab
         }
     }
 
@@ -458,76 +488,69 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                     )
                 }
 
-                LaunchedEffect(selectedTab){
-                    launch {
-                        when(selectedTab) {
-                            0 -> { //TODAY
-                                viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(now().toInstant()))
-                            }
-                            1 -> { // TOMORROW
-                                val date = now().toInstant().addDays(1)
-                                viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(date))
-                            }
-                            2 -> {// OTHERS
-                                viewModel.onEvent(CustomerListViewModel.Event.LoadCustomerList(null))
-                            }
-                        }
+                CustomerListLoadingHandler(
+                    customerListState = uiState.customerListState,
+                    themeManager = themeManager,
+                    onRetry = {
+                        // Retry butonu için
+                        viewModel.onEvent(
+                            CustomerListViewModel.Event.LoadCustomerList(uiState.selectedDate)
+                        )
                     }
-                }
-
-                // LazyColumn içinde kaybolacak alan + Tab + content
-                LazyColumn(modifier = Modifier.fillMaxSize().weight(1f)) {
-                    // Kaybolacak Alan
-                    item {
-                        if(uiState.isDashboardActive){
-                            Surface(
-                                modifier = Modifier.fillMaxWidth().height(180.dp),
-                                color = themeManager.getCurrentColorScheme().colorPalet.primary60
-                            ) {
-                                RepresentSummary(representSummary, themeManager)
-                            }
-                        }
-                    }
-
-                    // Tab Layout - Sticky
-                    if (uiState.isTabActive) {
-                        stickyHeader {
-                            PrimaryTabRow(selectedTabIndex = selectedTab,) {
-                                repeat(3) { index ->
-                                    Tab(
-                                        selected = selectedTab == index,
-                                        onClick = { selectedTab = index },
-                                        text = {
-                                            when(index +1){
-                                                1 -> Text(repzonemobile.core.generated.resources.Res.string.routetoday.fromResource())
-                                                2 -> Text(repzonemobile.core.generated.resources.Res.string.routetomorrow.fromResource())
-                                                3 -> Text(repzonemobile.core.generated.resources.Res.string.routeothers.fromResource())
-                                            }
-                                        },
-                                        unselectedContentColor = MaterialTheme.colorScheme.outlineVariant
-                                    )
+                ) {
+                    // LazyColumn içinde kaybolacak alan + Tab + content
+                    LazyColumn(modifier = Modifier.fillMaxSize().weight(1f)) {
+                        // Kaybolacak Alan
+                        item {
+                            if(uiState.isDashboardActive){
+                                Surface(
+                                    modifier = Modifier.fillMaxWidth().height(180.dp),
+                                    color = themeManager.getCurrentColorScheme().colorPalet.primary60
+                                ) {
+                                    RepresentSummary(representSummary, themeManager)
                                 }
                             }
                         }
-                    }
 
-                    itemsIndexed(
-                        items = customerList,
-                        key = { _, customer -> "${customer.customerId}-${customer.date}" }
-                    ) { index, customer ->
-                        CustomerCard(customer = customer, themeManager = themeManager, modifier = Modifier, onCustomerClick = {
-                            viewModel.scope.launch {
-                                viewModel.onEvent(
-                                    CustomerListViewModel.Event.OnClickCustomerItem(
-                                        customer
-                                    )
-                                )
+                        // Tab Layout - Sticky
+                        if (uiState.isTabActive) {
+                            stickyHeader {
+                                PrimaryTabRow(selectedTabIndex = selectedTab,) {
+                                    repeat(3) { index ->
+                                        Tab(
+                                            selected = selectedTab == index,
+                                            onClick = { selectedTab = index },
+                                            text = {
+                                                when(index +1){
+                                                    1 -> Text(repzonemobile.core.generated.resources.Res.string.routetoday.fromResource())
+                                                    2 -> Text(repzonemobile.core.generated.resources.Res.string.routetomorrow.fromResource())
+                                                    3 -> Text(repzonemobile.core.generated.resources.Res.string.routeothers.fromResource())
+                                                }
+                                            },
+                                            unselectedContentColor = MaterialTheme.colorScheme.outlineVariant
+                                        )
+                                    }
+                                }
                             }
-                        }, uiState = uiState)
-                        HorizontalDivider()
+                        }
+
+                        itemsIndexed(
+                            items = customerList,
+                            key = { _, customer -> "${customer.customerId}-${customer.date}" }
+                        ) { index, customer ->
+                            CustomerCard(customer = customer, themeManager = themeManager, modifier = Modifier, onCustomerClick = {
+                                viewModel.scope.launch {
+                                    viewModel.onEvent(
+                                        CustomerListViewModel.Event.OnClickCustomerItem(
+                                            customer
+                                        )
+                                    )
+                                }
+                            }, uiState = uiState)
+                            HorizontalDivider()
+                        }
                     }
                 }
-
                 // BOTTOM ROW - TASKS + CHAT
                 Row(
                     modifier = Modifier

@@ -25,6 +25,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -119,7 +120,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
     //endregion
 
     //region Private Method
-    private fun clearFilters() {
+    private suspend fun clearFilters() {
         updateState { currentState ->
             currentState.copy(
                 selectedFilterGroups = emptyList(),
@@ -128,48 +129,50 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         }
         applyFilters(emptyList(), CustomerSortOption.DATE_ASC)
     }
-    private fun applyFilters(selectedGroups: List<String>, sortOption: CustomerSortOption) {
-        updateState { currentState ->
-            currentState.copy(
-                customerListState = CustomerListState.Loading
-            )
-        }
-
-        var filtered = if (searchQuery.isBlank()) {
-            state.value.allCustomers
-        } else {
-            state.value.allCustomers.filter { customer ->
-                customer.name?.contains(searchQuery, ignoreCase = true) == true ||
-                        customer.customerCode?.contains(searchQuery, ignoreCase = true) == true || customer.customerId.toString().contains(searchQuery, ignoreCase = true)
+    private suspend fun applyFilters(selectedGroups: List<String>, sortOption: CustomerSortOption) {
+        withContext(Dispatchers.Default){
+            updateState { currentState ->
+                currentState.copy(
+                    customerListState = CustomerListState.Loading
+                )
             }
-        }
 
-        updateState { currentState ->
-            if (selectedGroups.isNotEmpty()) {
-                filtered = filtered.filter { customer ->
-                    selectedGroups.contains(customer.customerGroupName)
+            var filtered = if (searchQuery.isBlank()) {
+                state.value.allCustomers
+            } else {
+                state.value.allCustomers.filter { customer ->
+                    customer.name?.contains(searchQuery, ignoreCase = true) == true ||
+                            customer.customerCode?.contains(searchQuery, ignoreCase = true) == true || customer.customerId.toString().contains(searchQuery, ignoreCase = true)
                 }
             }
 
-            // 2. Sıralama uygula
-            filtered = when (sortOption) {
-                CustomerSortOption.NAME_ASC -> filtered.sortedBy { it.name?.lowercase() }
-                CustomerSortOption.NAME_DESC -> filtered.sortedByDescending { it.name?.lowercase() }
-                CustomerSortOption.DATE_ASC -> filtered.sortedBy { it.date?.toEpochMilliseconds() }
-                CustomerSortOption.DATE_DESC -> filtered.sortedByDescending { it.date?.toEpochMilliseconds() }
-            }
+            updateState { currentState ->
+                if (selectedGroups.isNotEmpty()) {
+                    filtered = filtered.filter { customer ->
+                        selectedGroups.contains(customer.customerGroupName)
+                    }
+                }
 
-            currentState.copy(
-                filteredCustomers = filtered,
-                customerListState = if (filtered.isEmpty()) {
-                    CustomerListState.Empty
-                } else {
-                    CustomerListState.Success
-                },
-                // Seçili filtreleri state'e kaydet
-                selectedFilterGroups = selectedGroups,
-                selectedSortOption = sortOption
-            )
+                // 2. Sıralama uygula
+                filtered = when (sortOption) {
+                    CustomerSortOption.NAME_ASC -> filtered.sortedBy { it.name?.lowercase() }
+                    CustomerSortOption.NAME_DESC -> filtered.sortedByDescending { it.name?.lowercase() }
+                    CustomerSortOption.DATE_ASC -> filtered.sortedBy { it.date?.toEpochMilliseconds() }
+                    CustomerSortOption.DATE_DESC -> filtered.sortedByDescending { it.date?.toEpochMilliseconds() }
+                }
+
+                currentState.copy(
+                    filteredCustomers = filtered,
+                    customerListState = if (filtered.isEmpty()) {
+                        CustomerListState.Empty
+                    } else {
+                        CustomerListState.Success
+                    },
+                    // Seçili filtreleri state'e kaydet
+                    selectedFilterGroups = selectedGroups,
+                    selectedSortOption = sortOption
+                )
+            }
         }
     }
     private suspend fun loadCustomerList(date: Instant?) {

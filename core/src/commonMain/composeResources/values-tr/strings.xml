@@ -858,4 +858,5 @@
     <string name="back">Geri</string>
     <string name="list_empty">Gösterilecek kayıt bulunamadı...</string>
     <string name= "ecustomerinfo"> Bu müşteri e-fatura mükellefidir</string>
+    <string name= "loading">Yükleniyor</string>
 </resources>
