@@ -6,7 +6,10 @@ import com.repzone.core.interfaces.IPreferencesManager
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.core.ui.base.resetUiFrame
+import com.repzone.database.SyncCustomerEntity
+import com.repzone.database.SyncRouteAppointmentEntity
 import com.repzone.database.interfaces.IDatabaseManager
+import com.repzone.database.runtime.select
 import com.repzone.domain.model.CustomerByParrentModel
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
@@ -211,6 +214,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         searchQuery = query
         applyFilters(state.value.selectedFilterGroups, state.value.selectedSortOption)
     }
+
     private fun updateUiWithPermissions() {
         //region Reports Module
         val isActive = iModuleParameterRepository.getReportsParameters()?.isActive ?: false

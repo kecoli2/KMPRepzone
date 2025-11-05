@@ -8,7 +8,7 @@ import com.repzone.core.util.extensions.toInstant
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver: SqlDriver) {
+class SelectBuilder<T>(public val metadata: EntityMetadata, private val driver: SqlDriver) {
     var whereCondition: Condition = NoCondition
         internal set
 
@@ -24,7 +24,7 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
     var groupByBuilder: GroupByBuilder? = null
         internal set
 
-    private val joins = mutableListOf<JoinConfig>()
+    val joins = mutableListOf<JoinConfig>()
 
     fun where(block: CriteriaBuilder.() -> Unit) {
         val builder = CriteriaBuilder()
@@ -67,7 +67,7 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
         // JOIN'lerden kolonlar
         joins.forEach { join ->
             if (join.selectedColumns.isNotEmpty()) {
-                val alias = join.getTableAlias()
+                val alias = join.effectiveTableAlias  // alias varsa onu kullan
                 selectColumns.addAll(join.selectedColumns.map { "$alias.$it" })
             }
         }
@@ -238,7 +238,7 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
     }
 
     // INNER JOIN
-    internal inline fun <reified J : Any> innerJoin(
+    inline fun <reified J : Any> innerJoin(
         leftColumn: String,
         rightColumn: String,
         noinline block: (JoinBuilder.() -> Unit)? = null
@@ -256,7 +256,7 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
     }
 
     // LEFT JOIN
-    internal inline fun <reified J : Any> leftJoin(
+    inline fun <reified J : Any> leftJoin(
         leftColumn: String,
         rightColumn: String,
         noinline block: (JoinBuilder.() -> Unit)? = null
@@ -274,7 +274,7 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
     }
 
     // RIGHT JOIN
-    internal inline fun <reified J : Any> rightJoin(
+    inline fun <reified J : Any> rightJoin(
         leftColumn: String,
         rightColumn: String,
         noinline block: (JoinBuilder.() -> Unit)? = null
@@ -292,7 +292,7 @@ class SelectBuilder<T>(private val metadata: EntityMetadata, private val driver:
     }
 
     // CROSS JOIN
-    internal inline fun <reified J : Any> crossJoin(
+    inline fun <reified J : Any> crossJoin(
         noinline block: (JoinBuilder.() -> Unit)? = null
     ): SelectBuilder<T> {
         val joinMetadata = EntityMetadataRegistry.get<J>()

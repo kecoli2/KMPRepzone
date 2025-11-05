@@ -47,13 +47,29 @@ data class JoinConfig(
     val selectedColumns: List<String> = emptyList(),
     val additionalConditions: Condition = NoCondition
 ) {
+    val effectiveTableAlias: String
+        get() = tableAliasName ?: tableName
+
     fun toSQL(params: MutableList<Any?>): String {
-        val alias = tableAliasName ?: tableName
+        val alias = effectiveTableAlias
         val table = if (tableAliasName != null) "$tableName AS $tableAliasName" else tableName
 
-        var sql = "${joinType.sql} $table ON $leftColumn = $rightColumn"
+        // ✅ DÜZELTME: rightColumn'da alias kullan
+        val rightColumnWithAlias = if (tableAliasName != null) {
+            // Eğer rightColumn "SyncCustomerEntity.Id" formatındaysa
+            // "c.Id" yap
+            rightColumn.replace(tableName, alias)
+        } else {
+            rightColumn
+        }
 
-        // Ek koşullar varsa
+        var sql = if (joinType == JoinType.CROSS) {
+            "${joinType.sql} $table"
+        } else {
+            "${joinType.sql} $table ON $leftColumn = $rightColumnWithAlias"
+        }
+
+        // Additional conditions
         if (additionalConditions != NoCondition) {
             val additionalSQL = additionalConditions.toSQL(params)
             if (additionalSQL.isNotEmpty()) {
@@ -63,8 +79,6 @@ data class JoinConfig(
 
         return sql
     }
-
-    fun getTableAlias(): String = tableAliasName ?: tableName
 }
 
 // ============================================

@@ -177,52 +177,6 @@ fun <R> SqlDriver.transaction(block: TransactionScope.() -> R): R {
 }
 
 // ========================================
-// JOIN METHODLAR
-// ========================================
-
-/**
- * INNER JOIN - Public wrapper
- */
-internal inline fun <reified T : Any, reified J : Any> SelectBuilder<T>.innerJoin(
-    leftColumn: String,
-    rightColumn: String,
-    noinline block: (JoinBuilder.() -> Unit)? = null
-): SelectBuilder<T> {
-    return this.innerJoin<J>(leftColumn, rightColumn, block)
-}
-
-/**
- * LEFT JOIN - Public wrapper
- */
-internal inline fun <reified T : Any, reified J : Any> SelectBuilder<T>.leftJoin(
-    leftColumn: String,
-    rightColumn: String,
-    noinline block: (JoinBuilder.() -> Unit)? = null
-): SelectBuilder<T> {
-    return this.leftJoin<J>(leftColumn, rightColumn, block)
-}
-
-/**
- * RIGHT JOIN - Public wrapper
- */
-internal inline fun <reified T : Any, reified J : Any> SelectBuilder<T>.rightJoin(
-    leftColumn: String,
-    rightColumn: String,
-    noinline block: (JoinBuilder.() -> Unit)? = null
-): SelectBuilder<T> {
-    return this.rightJoin<J>(leftColumn, rightColumn, block)
-}
-
-/**
- * CROSS JOIN - Public wrapper
- */
-internal inline fun <reified T : Any, reified J : Any> SelectBuilder<T>.crossJoin(
-    noinline block: (JoinBuilder.() -> Unit)? = null
-): SelectBuilder<T> {
-    return this.crossJoin<J>(block)
-}
-
-// ========================================
 // DeleteBuilder
 // ========================================
 
