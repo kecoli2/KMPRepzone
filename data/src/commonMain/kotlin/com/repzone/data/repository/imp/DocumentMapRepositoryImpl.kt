@@ -1,5 +1,6 @@
 package com.repzone.data.repository.imp
 
+import com.repzone.core.constant.IMobileApiControllerConstant
 import com.repzone.core.enums.DocProcessType
 import com.repzone.core.enums.DocumentTypeGroup
 import com.repzone.core.enums.NumberTemplateType
@@ -33,16 +34,21 @@ import com.repzone.domain.model.SyncDocumentMapModel
 import com.repzone.domain.model.SyncDocumentMapProcessModel
 import com.repzone.domain.model.SyncDocumentMapProcessStepModel
 import com.repzone.domain.repository.IDocumentMapRepository
-import com.repzone.network.api.ICommonApiController
+import com.repzone.network.api.IMobileApiController
 import com.repzone.network.http.wrapper.ApiResult
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                                 private val mapperDocumentMap: SyncDocumentMapEntityDbMapper,
                                 private val mapperDocumentProcess: SyncDocumentMapProcessEntityDbMapper,
                                 private val mapperDcomentMapProcessStep: SyncDocumentMapProcessStepEntityDbMapper,
                                 private val mapperPrinterDocumentRelationInformationEntity: PrinterDocumentRelationInformationEntityDbMapper,
                                 private val mapperNumberDocument: DocumentMapDocNumberInformationEntityDbMapper,
-                                private val iCommonApi: ICommonApiController
+                                private val iMobileApi: IMobileApiController
 ): IDocumentMapRepository {
 
     //region Public Method
@@ -349,8 +355,9 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
     /***
      * todo() Burda request common apiye bakılacak
      */
-    override suspend fun getADocumentNumberFromAPI(docGroupType: Int, docTypeId: Int, numberTemplateType: NumberTemplateType) {
-        val result = iCommonApi.getDocNumber(docGroupType, docTypeId, numberTemplateType)
+    @OptIn(ExperimentalTime::class)
+    override suspend fun getADocumentNumberFromAPI(docGroupType: Int, docTypeId: Int, numberTemplateType: NumberTemplateType): DocumentMapDocNumberInformationModel {
+        val result = iMobileApi.getDocNumber(docGroupType, docTypeId, numberTemplateType)
         when(result){
             is ApiResult.Success -> {
 
@@ -359,26 +366,109 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
             }
         }
 
-        //var prepareDocNumber = prepareDocNumber(MobileLastDocumentModel)
+        //TODO API REQUEST INDEN GELECEK DEGER ILE DocNumber Degistirilecek
+        var prepareDocNumber = prepareDocNumber(LastDocumentModel())
 
+        val documentType = when(docGroupType){
+            1 -> {
+                DocumentTypeGroup.ORDER
+            }
+            2 -> {
+                DocumentTypeGroup.INVOICE
+            }
+            3 -> {
+                DocumentTypeGroup.DISPATCH
+            }
+            4 -> {
+                DocumentTypeGroup.WAREHOUSERECEIPT
+            }
+            5 -> {
+                DocumentTypeGroup.COLLECTION
+            }
+            6 -> {
+                DocumentTypeGroup.OTHER
+            }
+            else -> {
+                DocumentTypeGroup.INVOICE
+            }
+        }
 
-
+        return DocumentMapDocNumberInformationModel(
+            documentMapId = docTypeId.toLong(),
+            documentNumberBody = (prepareDocNumber.number + 1).toLong(),
+            documentNumberPostfix = "",
+            documentNumberPrefix = prepareDocNumber.prefix,
+            documentType = documentType
+        )
     }
 
     override suspend fun fetchLastDocumentNumber(docGroupType: Int, docTypeId: Int) {
-        TODO("Not yet implemented")
+        val response = iMobileApi.getLastDocNumbers(docGroupType, docTypeId)
+
+        when(response){
+            is ApiResult.Success -> {
+                val doc = response.data.maxByOrNull { it.docId }
+                doc?.let {
+                    val prepareDocNumber = prepareDocNumber(LastDocumentModel(
+                        docId = it.docId,
+                        docNumber = it.docNumber,
+                        docDate = it.docDate
+                    ))
+                    setDocumentNumberByDocumentGroup(DocumentTypeGroup.INVOICE, prepareDocNumber.prefix, prepareDocNumber.number +1,"", docTypeId)
+                }
+            }
+            else -> {
+
+            }
+        }
     }
 
-    override suspend fun prepareDocNumber(docModel: LastDocumentModel): DocumentNumberAndPrefix {
-        TODO("Not yet implemented")
+    override suspend fun prepareDocNumber(docModel: LastDocumentModel?): DocumentNumberAndPrefix {
+        var defaultDocNumber = 10000
+        var defaultPrefix = "REP2025"
+
+        docModel?.let { lastDoc ->
+            // hazion - 6 digit
+            val digitCount = if (lastDoc.docNumber.length  >= 9) 9 else lastDoc.docNumber.length
+            val last6char = lastDoc.docNumber.substring(lastDoc.docNumber.length - digitCount)
+
+            defaultDocNumber = last6char.toIntOrNull() ?: defaultDocNumber
+
+            if (lastDoc.docNumber.length > 13) {
+                val first3char = lastDoc.docNumber.substring(0, 3)
+                val currentYear = Clock.System.now().toLocalDateTime(TimeZone.currentSystemDefault()).year
+                defaultPrefix = "$first3char$currentYear"
+            }
+        }
+
+        return DocumentNumberAndPrefix(
+            prefix = defaultPrefix,
+            number = defaultDocNumber
+        )
     }
 
     override suspend fun softDeleteDocumentMapNumber(docNumber: DocumentMapDocNumberInformationModel) {
-        TODO("Not yet implemented")
+        docNumber.copy(
+            state = 4
+        )
+        iDatabaseManager.getSqlDriver().update(mapperNumberDocument.fromDomain(docNumber))
     }
 
     override suspend fun deleteDocumentFromAPI(documentGroup: DocumentTypeGroup, documentUniqueId: String): String {
-        TODO("Not yet implemented")
+        val response = iMobileApi.deleteDocumentFromAPI(documentGroup, documentUniqueId)
+        return when(response){
+            is ApiResult.Success -> {
+                response.data
+            }
+
+            is ApiResult.Error -> {
+                response.exception.message
+            }
+
+            else -> {
+                ""
+            }
+        } as String
     }
     //endregion
 }

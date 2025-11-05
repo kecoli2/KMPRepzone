@@ -10,14 +10,8 @@ import com.repzone.data.repository.imp.MobileModuleParameterRepositoryImpl
 import com.repzone.data.repository.imp.RepresentativeRepositoryImpl
 import com.repzone.data.repository.imp.RouteAppointmentRepositoryImpl
 import com.repzone.data.repository.imp.SyncModuleRepositoryImpl
-import com.repzone.data.util.Mapper
-import com.repzone.data.util.MapperDto
-import com.repzone.database.*
-import com.repzone.domain.model.*
 import com.repzone.domain.repository.*
 import com.repzone.domain.repository.IMobileModuleParameterRepository
-import com.repzone.network.dto.*
-import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val RepositoryModule = module {

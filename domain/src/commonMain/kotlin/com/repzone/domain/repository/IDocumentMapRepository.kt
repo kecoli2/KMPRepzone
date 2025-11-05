@@ -30,9 +30,9 @@ interface IDocumentMapRepository {
     suspend fun setDocumentNumberByDocumentGroup(documentGroup: DocumentTypeGroup ,prefix: String, number: Int, postfix: String, documentMapId: Int = 0)
     suspend fun logInvoicePrintContent(content: String, sessionId: String)
     suspend fun logCollectionPrintContent(content: String, sessionId: String)
-    suspend fun getADocumentNumberFromAPI(docGroupType: Int,docTypeId: Int, numberTemplateType: NumberTemplateType)
+    suspend fun getADocumentNumberFromAPI(docGroupType: Int,docTypeId: Int, numberTemplateType: NumberTemplateType): DocumentMapDocNumberInformationModel
     suspend fun fetchLastDocumentNumber(docGroupType: Int,docTypeId: Int)
-    suspend fun prepareDocNumber(docModel: LastDocumentModel): DocumentNumberAndPrefix
+    suspend fun prepareDocNumber(docModel: LastDocumentModel?): DocumentNumberAndPrefix
     suspend fun softDeleteDocumentMapNumber(docNumber: DocumentMapDocNumberInformationModel)
     suspend fun deleteDocumentFromAPI(documentGroup: DocumentTypeGroup, documentUniqueId: String): String
 }

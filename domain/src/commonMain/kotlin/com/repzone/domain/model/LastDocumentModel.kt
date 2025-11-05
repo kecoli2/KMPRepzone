@@ -5,7 +5,7 @@ import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 data class LastDocumentModel(
-    val docId: Int,
-    val docNumber: String? = null,
-    val docDate: Instant
+    val docId: Int = 0,
+    val docNumber: String = "",
+    val docDate: Instant? = null
 )
