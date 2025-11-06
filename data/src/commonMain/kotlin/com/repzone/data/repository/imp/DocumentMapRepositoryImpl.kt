@@ -54,7 +54,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
     //region Public Method
     override suspend fun getAll(orgId: Int): List<SyncDocumentMapModel> {
         val list = iDatabaseManager.getSqlDriver().select<SyncDocumentMapEntity> {
-            innerJoin<SyncDocumentOrganizationEntity>("DocumentTypeId","Id"){
+            innerJoin<SyncDocumentOrganizationEntity>("Id","DocumentTypeId"){
                 alias("DOM")
             }
 

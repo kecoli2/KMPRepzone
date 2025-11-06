@@ -1,12 +1,10 @@
 package com.repzone.domain.util.enums
 
-enum class ActionMenuGroup {
+enum class DocumentTypeGroup {
     ORDER,
     INVOICE,
     DISPATCH,
+    WAREHOUSERECEIPT,
     COLLECTION,
-    SURVEY,
-    REPORT,
-    CUSTOMER_INFORMATION,
-    FORM
+    OTHER
 }

@@ -1,5 +1,6 @@
 package com.repzone.core.model
 
+import com.repzone.core.enums.CustomerOrRepresentativeOrganizationSelection
 import com.repzone.core.enums.ThemeMode
 import com.repzone.core.enums.ThemeType
 import com.repzone.core.interfaces.IPreferencesManager
@@ -86,6 +87,15 @@ class UserSessionImp(private val preferences: IPreferencesManager): IUserSession
 
     override fun getLanguage(): String? {
         return preferences.getStringValue(getUserKeyPrefId(LANGUAGE_KEY), "en")
+    }
+
+    override fun decideWhichOrgIdToBeUsed(customerOrgId: Int): Int {
+        getActiveSession()?.identity?.let {
+            if(it.organizationSelection == CustomerOrRepresentativeOrganizationSelection.REPRESENTATIVEORGANIZATION){
+                return it.organizationId
+            }
+        }
+        return customerOrgId
     }
 
 

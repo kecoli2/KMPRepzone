@@ -1,22 +1,23 @@
 package com.repzone.domain.usecase.visit
 
 import com.repzone.core.enums.OnOf
+import com.repzone.core.interfaces.IUserSession
 import com.repzone.domain.common.DomainException
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.common.Result
 import com.repzone.domain.model.RouteInformationModel
 import com.repzone.domain.model.VisitInformation
+import com.repzone.domain.repository.IDocumentMapRepository
 import com.repzone.domain.util.enums.ActionButtonType
 import com.repzone.domain.util.models.VisitButtonItem
 import com.repzone.domain.util.models.VisitActionItem
 
-class GetVisitMenuListUseCase(
-    private val iModuleParameters: IMobileModuleParameterRepository
-
-) {
+class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParameterRepository,
+                              private val iUserSession: IUserSession,
+                              private val iDocumentMapreRepository: IDocumentMapRepository) {
     //region Field
-    private var actionMenuList: List<VisitActionItem> = emptyList()
+    private var actionMenuList: ArrayList<VisitActionItem> = arrayListOf()
     private var actionButtonList: ArrayList<VisitButtonItem> = arrayListOf()
     //endregion
 
@@ -24,17 +25,13 @@ class GetVisitMenuListUseCase(
     //endregion
 
     //region Constructor
-    suspend operator fun invoke(
-        customer: CustomerItemModel,
-        visitInformation: VisitInformation?,
-        routeInformation: RouteInformationModel?
-    ): Result<Pair<List<VisitActionItem>, List<VisitButtonItem>>> {
+    suspend operator fun invoke(customer: CustomerItemModel, visitInformation: VisitInformation?, routeInformation: RouteInformationModel): Result<Pair<List<VisitActionItem>, List<VisitButtonItem>>> {
         return try{
             prepareActionButtonList(visitInformation, customer)
-            prepareActionMenuItemList()
+            prepareActionMenuItemList(customer, visitInformation, routeInformation)
             Result.Success(Pair(actionMenuList, actionButtonList))
         }catch (ex: Exception){
-            Result.Error(DomainException.UnknownException())
+            Result.Error(DomainException.UnknownException(cause = ex))
         }
     }
     //endregion
@@ -46,10 +43,7 @@ class GetVisitMenuListUseCase(
     //endregion
 
     //region Private Method
-    private fun prepareActionButtonList(
-        visitInformation: VisitInformation?,
-        customer: CustomerItemModel
-    ) {
+    private fun prepareActionButtonList(visitInformation: VisitInformation?, customer: CustomerItemModel) {
         actionButtonList.clear()
         if(visitInformation == null){
             actionButtonList.add(
@@ -115,8 +109,68 @@ class GetVisitMenuListUseCase(
         }
     }
 
-    private fun prepareActionMenuItemList() {
+    private suspend fun prepareActionMenuItemList(customer: CustomerItemModel, activeVisit: VisitInformation?, routeInformation: RouteInformationModel) {
+        actionMenuList.clear()
+
+        //TODO BURASINA BAKILACAK ACTIVITE VISIT
+       /* var activityFormTags = new List<string>();
+        if (ActiveVisitActivityId > 0)
+        {
+            var activeVisitActivity = visitService.GetActivityModel(ActiveVisitActivityId);
+
+            if (string.IsNullOrEmpty(activeVisitActivity.FormTags) == false)
+            {
+                activityFormTags = activeVisitActivity.FormTags.Split(',').ToList();
+            }
+        }*/
+
+        val realCustomerOrganizationId = routeInformation.customerOrganizationId?.toInt()!!
+        val usedCustomerOrganizationId = iUserSession.decideWhichOrgIdToBeUsed(routeInformation.customerOrganizationId.toInt())
+        val documents = iDocumentMapreRepository.getAll(usedCustomerOrganizationId)
+
+        if(1==1){
+
+        }
 
     }
     //endregion
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
