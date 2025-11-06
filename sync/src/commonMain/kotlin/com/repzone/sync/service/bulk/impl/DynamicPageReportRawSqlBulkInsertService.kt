@@ -1,13 +1,9 @@
 package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.model.ResourceUI
-import com.repzone.core.util.extensions.fromResource
 import com.repzone.data.mapper.SyncDynamicPageReportEntityDbMapper
-import com.repzone.data.util.MapperDto
-import com.repzone.database.SyncDynamicPageReportEntity
-import com.repzone.database.SyncDynamicPageReportEntityMetadata
+import com.repzone.database.metadata.SyncDynamicPageReportEntityMetadata
 import com.repzone.database.toSqlValuesString
-import com.repzone.domain.model.SyncDynamicPageReportModel
 import com.repzone.network.dto.DynamicPageReportDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
@@ -26,7 +22,7 @@ class DynamicPageReportRawSqlBulkInsertService(private val mapper: SyncDynamicPa
             TableOperation(
                 tableName = SyncDynamicPageReportEntityMetadata.tableName,
                 clearSql = null,
-                columns = SyncDynamicPageReportEntityMetadata.columns,
+                columns = SyncDynamicPageReportEntityMetadata.columns.map { it.name },
                 values = pages.map { it.toSqlValuesString() },
                 includeClears = includeClears,
                 useUpsert = useUpsert,

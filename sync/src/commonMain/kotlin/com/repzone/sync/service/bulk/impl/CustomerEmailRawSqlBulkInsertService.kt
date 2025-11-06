@@ -1,13 +1,9 @@
 package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.model.ResourceUI
-import com.repzone.core.util.extensions.fromResource
 import com.repzone.data.mapper.SyncCustomerEmailEntityDbMapper
-import com.repzone.data.util.MapperDto
-import com.repzone.database.SyncCustomerEmailEntity
-import com.repzone.database.SyncCustomerEmailEntityMetadata
+import com.repzone.database.metadata.SyncCustomerEmailEntityMetadata
 import com.repzone.database.toSqlValuesString
-import com.repzone.domain.model.SyncCustomerEmailModel
 import com.repzone.network.dto.CustomerEmailDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
@@ -26,7 +22,7 @@ class CustomerEmailRawSqlBulkInsertService(private val mapper: SyncCustomerEmail
             TableOperation(
                 tableName = SyncCustomerEmailEntityMetadata.tableName,
                 clearSql = null,
-                columns = SyncCustomerEmailEntityMetadata.columns,
+                columns = SyncCustomerEmailEntityMetadata.columns.map { it.name },
                 values = emails.map { it.toSqlValuesString() },
                 recordCount = emails.size,
                 useUpsert = useUpsert,

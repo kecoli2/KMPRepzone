@@ -4,9 +4,9 @@ import com.repzone.core.model.ResourceUI
 import com.repzone.data.mapper.SyncDocumentMapEntityDbMapper
 import com.repzone.data.mapper.SyncDocumentMapProcessEntityDbMapper
 import com.repzone.data.mapper.SyncDocumentMapProcessStepEntityDbMapper
-import com.repzone.database.SyncDocumentMapEntityMetadata
-import com.repzone.database.SyncDocumentMapProcessEntityMetadata
-import com.repzone.database.SyncDocumentMapProcessStepEntityMetadata
+import com.repzone.database.metadata.SyncDocumentMapEntityMetadata
+import com.repzone.database.metadata.SyncDocumentMapProcessEntityMetadata
+import com.repzone.database.metadata.SyncDocumentMapProcessStepEntityMetadata
 import com.repzone.database.toSqlValuesString
 import com.repzone.network.dto.DocumentMapModelDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
@@ -31,7 +31,7 @@ class DocumentMapsRawSqlBulkInsertService(private val mapperDocument: SyncDocume
             TableOperation(
                 tableName = SyncDocumentMapEntityMetadata.tableName,
                 clearSql = null,
-                columns =  SyncDocumentMapEntityMetadata.columns,
+                columns =  SyncDocumentMapEntityMetadata.columns.map { it.name },
                 values = documents.map { it.toSqlValuesString() },
                 recordCount = documents.size,
                 useUpsert = useUpsert,
@@ -40,7 +40,7 @@ class DocumentMapsRawSqlBulkInsertService(private val mapperDocument: SyncDocume
             TableOperation(
                 tableName = SyncDocumentMapProcessEntityMetadata.tableName,
                 clearSql = null,
-                columns =  SyncDocumentMapProcessEntityMetadata.columns,
+                columns =  SyncDocumentMapProcessEntityMetadata.columns.map { it.name },
                 values = process.map { it.toSqlValuesString() },
                 recordCount = process.size,
                 useUpsert = useUpsert,
@@ -50,7 +50,7 @@ class DocumentMapsRawSqlBulkInsertService(private val mapperDocument: SyncDocume
             TableOperation(
                 tableName = SyncDocumentMapProcessStepEntityMetadata.tableName,
                 clearSql = null,
-                columns =  SyncDocumentMapProcessStepEntityMetadata.columns,
+                columns =  SyncDocumentMapProcessStepEntityMetadata.columns.map { it.name },
                 values = processStep.map { it.toSqlValuesString() },
                 recordCount = processStep.size,
                 useUpsert = useUpsert,

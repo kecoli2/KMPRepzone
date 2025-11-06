@@ -1,14 +1,9 @@
 package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.model.ResourceUI
-import com.repzone.core.util.extensions.fromResource
 import com.repzone.data.mapper.SyncRouteAppointmentEntityDbMapper
-import com.repzone.data.util.MapperDto
-
-import com.repzone.database.SyncRouteAppointmentEntity
-import com.repzone.database.SyncRouteAppointmentEntityMetadata
+import com.repzone.database.metadata.SyncRouteAppointmentEntityMetadata
 import com.repzone.database.toSqlValuesString
-import com.repzone.domain.model.SyncRouteAppointmentModel
 import com.repzone.network.dto.RouteDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
@@ -28,7 +23,7 @@ class RouteDataRawSqlBulkInsertService(private val dbMapper: SyncRouteAppointmen
                 TableOperation(
                     tableName = SyncRouteAppointmentEntityMetadata.tableName,
                     clearSql = null,
-                    columns = SyncRouteAppointmentEntityMetadata.columns,
+                    columns = SyncRouteAppointmentEntityMetadata.columns.map { it.name },
                     values = routeList.map { it.toSqlValuesString() },
                     recordCount = routeList.size,
                     useUpsert = useUpsert,

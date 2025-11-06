@@ -1,10 +1,9 @@
 package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.model.ResourceUI
-import com.repzone.core.util.extensions.fromResource
 import com.repzone.data.mapper.CustomerEntityDbMapper
-import com.repzone.database.SyncAddressEntityMetadata
-import com.repzone.database.SyncCustomerEntityMetadata
+import com.repzone.database.metadata.SyncAddressEntityMetadata
+import com.repzone.database.metadata.SyncCustomerEntityMetadata
 import com.repzone.database.toSqlValuesString
 import com.repzone.network.dto.CustomerDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
@@ -28,7 +27,7 @@ class CustomerRawSqlBulkInsertService(private val mapper: CustomerEntityDbMapper
             TableOperation(
                 tableName = SyncCustomerEntityMetadata.tableName,
                 clearSql = null,
-                columns = SyncCustomerEntityMetadata.columns,
+                columns = SyncCustomerEntityMetadata.columns.map { it.name },
                 values = customerEntity.map { it.toSqlValuesString() },
                 recordCount = customerEntity.size,
                 useUpsert = useUpsert,
@@ -37,7 +36,7 @@ class CustomerRawSqlBulkInsertService(private val mapper: CustomerEntityDbMapper
             TableOperation(
                 tableName = SyncAddressEntityMetadata.tableName,
                 clearSql = null,
-                columns = SyncAddressEntityMetadata.columns,
+                columns = SyncAddressEntityMetadata.columns.map { it.name },
                 values = addresstEntity.map { it.toSqlValuesString() },
                 recordCount = addresstEntity.size,
                 useUpsert = useUpsert,

@@ -2,13 +2,9 @@ package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.enums.CrmParameterEntityType
 import com.repzone.core.model.ResourceUI
-import com.repzone.core.util.extensions.fromResource
 import com.repzone.data.mapper.SyncCrmPriceListParameterEntityDbMapper
-import com.repzone.data.util.MapperDto
-import com.repzone.database.SyncCrmPriceListParameterEntity
-import com.repzone.database.SyncCrmPriceListParameterEntityMetadata
+import com.repzone.database.metadata.SyncCrmPriceListParameterEntityMetadata
 import com.repzone.database.toSqlValuesString
-import com.repzone.domain.model.SyncCrmPriceListParameterModel
 import com.repzone.network.dto.CrmPriceListParameterDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
@@ -30,7 +26,7 @@ class CustomerGroupPriceParameterslRawSqlBulkInsertService(private val mapper: S
             TableOperation(
                 tableName = SyncCrmPriceListParameterEntityMetadata.tableName,
                 clearSql = null,
-                columns = SyncCrmPriceListParameterEntityMetadata.columns,
+                columns = SyncCrmPriceListParameterEntityMetadata.columns.map { it.name },
                 values = parameters.map { it.toSqlValuesString() },
                 recordCount = parameters.size,
                 useUpsert = useUpsert,

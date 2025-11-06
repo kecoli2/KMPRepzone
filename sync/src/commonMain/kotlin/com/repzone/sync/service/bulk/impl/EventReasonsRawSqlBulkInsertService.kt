@@ -1,13 +1,9 @@
 package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.model.ResourceUI
-import com.repzone.core.util.extensions.fromResource
 import com.repzone.data.mapper.SyncEventReasonEntityDbMapper
-import com.repzone.data.util.MapperDto
-import com.repzone.database.SyncEventReasonEntity
-import com.repzone.database.SyncEventReasonEntityMetadata
+import com.repzone.database.metadata.SyncEventReasonEntityMetadata
 import com.repzone.database.toSqlValuesString
-import com.repzone.domain.model.SyncEventReasonModel
 import com.repzone.network.dto.EventReasonDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
@@ -26,7 +22,7 @@ class EventReasonsRawSqlBulkInsertService(private val mapper: SyncEventReasonEnt
             TableOperation(
                 tableName = SyncEventReasonEntityMetadata.tableName,
                 clearSql = null,
-                columns = SyncEventReasonEntityMetadata.columns,
+                columns = SyncEventReasonEntityMetadata.columns.map { it.name },
                 values = eventReasons.map { it.toSqlValuesString() },
                 recordCount = eventReasons.size,
                 useUpsert = useUpsert,

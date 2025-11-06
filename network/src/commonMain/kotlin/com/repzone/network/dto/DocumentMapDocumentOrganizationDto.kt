@@ -6,6 +6,7 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
+@Serializable
 data class DocumentMapDocumentOrganizationDto(
     val id: Int,
     val state: Int,

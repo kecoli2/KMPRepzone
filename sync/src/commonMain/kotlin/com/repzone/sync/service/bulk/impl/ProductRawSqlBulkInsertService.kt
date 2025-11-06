@@ -1,11 +1,10 @@
 package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.model.ResourceUI
-import com.repzone.core.util.extensions.fromResource
 import com.repzone.data.mapper.ProductEntityDtoDbMapper
-import com.repzone.database.ProductParameterEntityMetadata
-import com.repzone.database.SyncProductEntityMetadata
-import com.repzone.database.SyncProductUnitEntityMetadata
+import com.repzone.database.metadata.ProductParameterEntityMetadata
+import com.repzone.database.metadata.SyncProductEntityMetadata
+import com.repzone.database.metadata.SyncProductUnitEntityMetadata
 import com.repzone.database.toSqlValuesString
 import com.repzone.network.dto.ProductDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
@@ -44,7 +43,7 @@ class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMap
             TableOperation(
                 tableName = SyncProductEntityMetadata.tableName,
                 clearSql = null,
-                columns = SyncProductEntityMetadata.columns,
+                columns = SyncProductEntityMetadata.columns.map { it.name },
                 values = productEntities.map { it.toSqlValuesString() },
                 recordCount = productEntities.size,
                 includeClears = includeClears,
@@ -54,7 +53,7 @@ class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMap
             TableOperation(
                 tableName = SyncProductUnitEntityMetadata.tableName,
                 clearSql = null,
-                columns = SyncProductUnitEntityMetadata.columns,
+                columns = SyncProductUnitEntityMetadata.columns.map { it.name },
                 values = unitEntities.map { it.toSqlValuesString() },
                 recordCount = unitEntities.size,
                 includeClears = includeClears,
@@ -64,7 +63,7 @@ class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMap
             TableOperation(
                 tableName = ProductParameterEntityMetadata.tableName,
                 clearSql = null,
-                columns = ProductParameterEntityMetadata.columns,
+                columns = ProductParameterEntityMetadata.columns.map { it.name },
                 values = parameterEntities.map { it.toSqlValuesString() },
                 recordCount = parameterEntities.size,
                 includeClears = includeClears,

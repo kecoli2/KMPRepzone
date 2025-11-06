@@ -1,19 +1,12 @@
 package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.model.ResourceUI
-import com.repzone.core.util.extensions.fromResource
 import com.repzone.data.mapper.SyncPackageCustomFieldEntityDbMapper
 import com.repzone.data.mapper.SyncPackageCustomFieldProductEntityDbMapper
-import com.repzone.data.util.MapperDto
-import com.repzone.database.SyncPackageCustomFieldEntity
-import com.repzone.database.SyncPackageCustomFieldEntityMetadata
-import com.repzone.database.SyncPackageCustomFieldProductEntity
-import com.repzone.database.SyncPackageCustomFieldProductEntityMetadata
+import com.repzone.database.metadata.SyncPackageCustomFieldEntityMetadata
+import com.repzone.database.metadata.SyncPackageCustomFieldProductEntityMetadata
 import com.repzone.database.toSqlValuesString
-import com.repzone.domain.model.SyncPackageCustomFieldModel
-import com.repzone.domain.model.SyncPackageCustomFieldProductModel
 import com.repzone.network.dto.PackageCustomFieldDto
-import com.repzone.network.dto.PackageCustomFieldProductDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
 import com.repzone.sync.transaction.TableOperation
@@ -34,7 +27,7 @@ class ModulesRawSqlBulkInsertService(private val mapperCustomField: SyncPackageC
             TableOperation(
                 tableName = SyncPackageCustomFieldEntityMetadata.tableName,
                 clearSql = null,
-                columns = SyncPackageCustomFieldEntityMetadata.columns,
+                columns = SyncPackageCustomFieldEntityMetadata.columns.map { it.name },
                 values = customField.map { it.toSqlValuesString() },
                 recordCount = customField.size,
                 useUpsert = useUpsert,
@@ -44,7 +37,7 @@ class ModulesRawSqlBulkInsertService(private val mapperCustomField: SyncPackageC
             TableOperation(
                 tableName = SyncPackageCustomFieldProductEntityMetadata.tableName,
                 clearSql = null,
-                columns = SyncPackageCustomFieldProductEntityMetadata.columns,
+                columns = SyncPackageCustomFieldProductEntityMetadata.columns.map { it.name },
                 values = customFieldProduct.map { it.toSqlValuesString() },
                 recordCount = customFieldProduct.size,
                 useUpsert = useUpsert,

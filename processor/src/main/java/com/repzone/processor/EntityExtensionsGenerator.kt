@@ -52,14 +52,14 @@ object EntityExtensionsGenerator {
             appendLine("// Auto-generated extensions for $entityName")
             appendLine()
 
-            // Metadata object
+            /*// Metadata object
             appendLine("object ${entityName}Metadata {")
             appendLine("    val tableName: String = \"${schema.tableName}\"")
             append("    val columns: List<String> = listOf(")
             append(schema.columns.joinToString(", ") { "\"${it.name}\"" })
             appendLine(")")
             appendLine("}")
-            appendLine()
+            appendLine()*/
 
             // toValuesList function
             appendLine("fun $entityName.toValuesList(): List<Any?> = listOf(")

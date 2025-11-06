@@ -1,9 +1,8 @@
 package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.model.ResourceUI
-import com.repzone.core.util.extensions.fromResource
 import com.repzone.data.mapper.SyncProductGroupEntityDbMapper
-import com.repzone.database.SyncProductGroupEntityMetadata
+import com.repzone.database.metadata.SyncProductGroupEntityMetadata
 import com.repzone.database.toSqlValuesString
 import com.repzone.network.dto.ProductGroupDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
@@ -26,7 +25,7 @@ class ProductGroupRawSqlBulkInsertService(private val dbMapper: SyncProductGroup
             TableOperation(
                 tableName = SyncProductGroupEntityMetadata.tableName,
                 clearSql = null,
-                columns = SyncProductGroupEntityMetadata.columns,
+                columns = SyncProductGroupEntityMetadata.columns.map { it.name },
                 values = productGroupEntities.map { it.toSqlValuesString() },
                 recordCount = productGroupEntities.size,
                 useUpsert = true,

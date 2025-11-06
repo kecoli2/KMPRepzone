@@ -1,13 +1,9 @@
 package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.model.ResourceUI
-import com.repzone.core.util.extensions.fromResource
 import com.repzone.data.mapper.SyncCustomerGroupEntityDbMapper
-import com.repzone.data.util.MapperDto
-import com.repzone.database.SyncCustomerGroupEntity
-import com.repzone.database.SyncCustomerGroupEntityMetadata
+import com.repzone.database.metadata.SyncCustomerGroupEntityMetadata
 import com.repzone.database.toSqlValuesString
-import com.repzone.domain.model.SyncCustomerGroupModel
 import com.repzone.network.dto.CustomerGroupDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
@@ -27,7 +23,7 @@ class CustomerGroupRawSqlBulkInsertService(private val mapper: SyncCustomerGroup
             TableOperation(
                 tableName = SyncCustomerGroupEntityMetadata.tableName,
                 clearSql = null,
-                columns = SyncCustomerGroupEntityMetadata.columns,
+                columns = SyncCustomerGroupEntityMetadata.columns.map { it.name },
                 values = customerGroupsList.map { it.toSqlValuesString() },
                 recordCount = customerGroupsList.size,
                 useUpsert = useUpsert,
