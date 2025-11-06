@@ -17,7 +17,7 @@ data class FormFiltersDto(
     val attribute: FormAttributeObjectDto? = null,
     val filterType: String? = null,
     val source: String? = null,
-    val formId: Int? = null,
+    val formRowId: Int = 0,
     val operator: String? = null,
     @kotlinx.serialization.Transient
     val formRow: FormRowDto? = null

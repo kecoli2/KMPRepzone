@@ -6,6 +6,7 @@ import com.repzone.data.repository.imp.EventReasonRepositoryImpl
 import com.repzone.data.repository.imp.CustomerListRepositoryImpl
 import com.repzone.data.repository.imp.CustomerRepositoryImpl
 import com.repzone.data.repository.imp.DocumentMapRepositoryImpl
+import com.repzone.data.repository.imp.DynamicFormRepositoryImpl
 import com.repzone.data.repository.imp.MobileModuleParameterRepositoryImpl
 import com.repzone.data.repository.imp.RepresentativeRepositoryImpl
 import com.repzone.data.repository.imp.RouteAppointmentRepositoryImpl
@@ -46,6 +47,7 @@ val RepositoryModule = module {
         get(),
         get())
     }
+    factory<IDynamicFormRepository>{ DynamicFormRepositoryImpl(get(), get()) }
     //endregion REPOSITORY
 
     //region DBMAPPERS

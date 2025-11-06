@@ -1,9 +1,6 @@
-package com.repzone.network.dto.form
+package com.repzone.domain.model.forms
 
-import kotlinx.serialization.Serializable
-
-@Serializable
-data class FormAttributeDto(
+data class FormAttribute(
     var id: Int = 0,
     var key: String? = null,
     var value: String? = null,

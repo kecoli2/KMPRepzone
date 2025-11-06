@@ -1,29 +1,34 @@
-package com.repzone.network.dto.form
+package com.repzone.domain.model.forms
 
 import com.repzone.core.model.base.IBaseModel
-import com.repzone.core.util.InstantSerializer
-import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-@Serializable
-data class FormEmbeddedPropertyDto (
+data class FormEmbeddedProperty(
     override val id: Int,
     override val state: Int,
-    @Serializable(with = InstantSerializer::class)
     override val modificationDateUtc: Instant? = null,
-    @Serializable(with = InstantSerializer::class)
     override val recordDateUtc: Instant? = null,
+
     var formId: Int = 0,
+    // Propertinin adı otomatik verilcek
     var controlName: String? = null,
+    // Kontrol tipi buton
     var controlType: String? = null,
+    // Kontrol ekranda gösterilirken kullanılacak nesnenin texti (evet/hatır" 2 >3")
     var controlText: String? = null,
+    // Ekrana eklenecek kontrolün etiketi ... Arabanız varmı?
     var caption: String? = null,
+    // Dönecek değer. Form/anket doldurulduktan sonra mobil cihaz tarafında bu alan
+    // doldurularak bu şablonun bilgileri şablonun json yada binary değeri gönderilecek
     var returnValue: String? = null,
+    // İzin verilen boyut KB cinsinden
     var maxMbSize: Int = 0,
+    // İzin verilen dosya sayısı (resim vs)
     var maxFileCount: Int = 0,
-): IBaseModel {
+
+) : IBaseModel {
     override fun getUpdateTime(): Instant? {
         return modificationDateUtc ?: recordDateUtc
     }

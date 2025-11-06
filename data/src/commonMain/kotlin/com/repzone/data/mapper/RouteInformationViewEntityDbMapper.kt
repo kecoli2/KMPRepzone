@@ -1,6 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.util.extensions.toBoolean
 import com.repzone.core.util.extensions.toInstant
+import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
 import com.repzone.database.RouteInformationViewEntity
 import com.repzone.domain.model.RouteInformationModel
@@ -24,7 +26,7 @@ class RouteInformationViewEntityDbMapper : Mapper<RouteInformationViewEntity, Ro
             customerTagStr = from.CustomerTagStr?.split(","),
             customerRisk = from.CustomerRisk,
             customerBalance = from.CustomerBalance,
-            isECustomer = from.IsECustomer,
+            isECustomer = from.IsECustomer.toBoolean(),
             blocked = from.Blocked,
             customerGroupId = from.CustomerGroupId,
             addressId = from.AddressId,
@@ -51,7 +53,7 @@ class RouteInformationViewEntityDbMapper : Mapper<RouteInformationViewEntity, Ro
             CustomerTagStr = domain.customerTagStr?.joinToString(","),
             CustomerRisk = domain.customerRisk,
             CustomerBalance = domain.customerBalance,
-            IsECustomer = domain.isECustomer,
+            IsECustomer = domain.isECustomer.toLong(),
             Blocked = domain.blocked,
             CustomerGroupId = domain.customerGroupId,
             AddressId = domain.addressId,
