@@ -1,17 +1,13 @@
 package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.model.ResourceUI
-import com.repzone.core.util.extensions.fromResource
 import com.repzone.data.mapper.SyncDocumentMapEntityDbMapper
 import com.repzone.data.mapper.SyncDocumentMapProcessEntityDbMapper
 import com.repzone.data.mapper.SyncDocumentMapProcessStepEntityDbMapper
-import com.repzone.data.util.MapperDto
-import com.repzone.database.SyncDocumentMapEntity
 import com.repzone.database.SyncDocumentMapEntityMetadata
 import com.repzone.database.SyncDocumentMapProcessEntityMetadata
 import com.repzone.database.SyncDocumentMapProcessStepEntityMetadata
 import com.repzone.database.toSqlValuesString
-import com.repzone.domain.model.SyncDocumentMapModel
 import com.repzone.network.dto.DocumentMapModelDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
 import com.repzone.sync.transaction.CompositeOperation
@@ -72,5 +68,4 @@ class DocumentMapsRawSqlBulkInsertService(private val mapperDocument: SyncDocume
         )
     }
     //endregion
-
 }

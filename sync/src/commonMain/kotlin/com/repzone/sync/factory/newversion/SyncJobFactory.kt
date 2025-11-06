@@ -39,7 +39,9 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
         documentMapApi: ISyncApiService<List<DocumentMapModelDto>>,
         documentMapBulkInsert: IBulkInsertService<List<DocumentMapModelDto>>,
         dynamicPageReportApi: ISyncApiService<List<DynamicPageReportDto>>,
-        dynamicPageReportBulkInsert: IBulkInsertService<List<DynamicPageReportDto>>
+        dynamicPageReportBulkInsert: IBulkInsertService<List<DynamicPageReportDto>>,
+        documentMapOrganizationsApi: ISyncApiService<List<DocumentMapDocumentOrganizationDto>>,
+        documentMapOrganizationsBulkInsert: IBulkInsertService<List<DocumentMapDocumentOrganizationDto>>,
     ): Map<SyncJobType, ISyncJob> {
         return mapOf(
             SyncJobType.PRODUCTS to ProductSyncJob(
@@ -65,7 +67,9 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
             SyncJobType.COMMON_MODULES to PakageCustomFieldSyncJob(apiModulesApi, modulesRawBulkInsert, syncModuleRepository, modulesUserSession),
             SyncJobType.COMMON_MODULES_REASONS to EventReasonsSyncJob(eventReasonsApi, eventReasonsRawBulkInsert, syncModuleRepository),
             SyncJobType.COMMON_DOCUMENT_MAPS to DocumentMapsSyncJob(documentMapApi, documentMapBulkInsert, syncModuleRepository),
-            SyncJobType.COMMON_DYNAMIC_PAGES to DynamicPageReportSyncJob(dynamicPageReportApi,dynamicPageReportBulkInsert, syncModuleRepository))
+            SyncJobType.COMMON_DYNAMIC_PAGES to DynamicPageReportSyncJob(dynamicPageReportApi,dynamicPageReportBulkInsert, syncModuleRepository),
+            SyncJobType.EXTRATABLE_REPLICATION_DOCUMENTORGANIZATIONS to DocumentOrganizationsSyncJob(documentMapOrganizationsApi, documentMapOrganizationsBulkInsert, syncModuleRepository)
+        )
     }
     //endregion
 

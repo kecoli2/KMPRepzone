@@ -2,8 +2,7 @@ package com.repzone.sync.service.api.impl
 
 import com.repzone.core.util.extensions.toDateString
 import com.repzone.domain.model.SyncModuleModel
-import com.repzone.network.dto.CrmPriceListParameterDto
-import com.repzone.network.dto.DocumentMapModelDto
+import com.repzone.network.dto.DocumentMapDocumentOrganizationDto
 import com.repzone.network.http.extensions.safePost
 import com.repzone.network.http.wrapper.ApiResult
 import com.repzone.network.models.request.FilterModelRequest
@@ -14,19 +13,19 @@ import kotlinx.datetime.TimeZone
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class SyncApiDocumentMapsImpl(client: HttpClient): BaseSyncApiService<List<DocumentMapModelDto>>(client) {
+class SyncApiDocumentMapsOrganizationsImpl(client: HttpClient): BaseSyncApiService<List<DocumentMapDocumentOrganizationDto>>(client) {
     //region Public Method
-    override fun getDataSize(data: List<DocumentMapModelDto>): Int {
+    override fun getDataSize(data: List<DocumentMapDocumentOrganizationDto>): Int {
         return data.size
     }
 
-    override suspend fun performApiCall(model: SyncModuleModel, requestModel: FilterModelRequest?): ApiResult<List<DocumentMapModelDto>> {
-        return client.safePost<List<DocumentMapModelDto>>(model.requestUrl!!){
+    override suspend fun performApiCall(model: SyncModuleModel, requestModel: FilterModelRequest?): ApiResult<List<DocumentMapDocumentOrganizationDto>> {
+        return client.safePost<List<DocumentMapDocumentOrganizationDto>>(model.requestUrl!!){
             setBody(requestModel)
         }
     }
 
-    override fun onPageFetched(data: List<DocumentMapModelDto>, requestModel: FilterModelRequest?) {
+    override fun onPageFetched(data: List<DocumentMapDocumentOrganizationDto>, requestModel: FilterModelRequest?) {
         data.lastOrNull().let {
             requestModel?.lastModDate = it?.modificationDateUtc?.toEpochMilliseconds()?.toDateString("yyyy-MM-dd HH:mm:ss.fff",
                 TimeZone.UTC) ?: ""

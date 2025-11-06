@@ -325,4 +325,5 @@ private fun SyncJobType.getDisplayName(): String = when (this) {
     COMMON_MODULES_REASONS -> "Genel Görev Reasons"
     COMMON_DOCUMENT_MAPS -> "Document Görevi"
     COMMON_DYNAMIC_PAGES -> "Dynamic Pages Görevi"
+    EXTRATABLE_REPLICATION_DOCUMENTORGANIZATIONS -> "Dökümant Organizations"
 }

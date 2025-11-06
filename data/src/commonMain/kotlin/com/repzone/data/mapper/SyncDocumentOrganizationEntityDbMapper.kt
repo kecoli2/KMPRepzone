@@ -1,10 +1,15 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
+import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncDocumentOrganizationEntity
 import com.repzone.domain.model.SyncDocumentOrganizationModel
+import com.repzone.network.dto.DocumentMapDocumentOrganizationDto
+import kotlin.time.ExperimentalTime
 
-class SyncDocumentOrganizationEntityDbMapper : Mapper<SyncDocumentOrganizationEntity, SyncDocumentOrganizationModel> {
+@OptIn(ExperimentalTime::class)
+class SyncDocumentOrganizationEntityDbMapper : MapperDto<SyncDocumentOrganizationEntity, SyncDocumentOrganizationModel, DocumentMapDocumentOrganizationDto> {
     //region Public Method
     override fun toDomain(from: SyncDocumentOrganizationEntity): SyncDocumentOrganizationModel {
         return SyncDocumentOrganizationModel(
@@ -47,6 +52,28 @@ class SyncDocumentOrganizationEntityDbMapper : Mapper<SyncDocumentOrganizationEn
             State = domain.state,
             UniqueIdCaption = domain.uniqueIdCaption,
             UseFinancialLogo = domain.useFinancialLogo
+        )
+    }
+
+    override fun fromDto(dto: DocumentMapDocumentOrganizationDto): SyncDocumentOrganizationEntity {
+        return SyncDocumentOrganizationEntity(
+            Id = dto.id.toLong(),
+            DocumentHeader = dto.documentHeader,
+            DocumentTypeId = dto.documentTypeId?.toLong(),
+            Lang = dto.lang,
+            LogoPathUrl = dto.logoPathUrl,
+            LogoSelection = dto.logoSelection?.toLong(),
+            MinMaxControl = dto.minMaxControl.toLong(),
+            ModificationDateUtc = dto.modificationDateUtc?.toEpochMilliseconds(),
+            Note = dto.note,
+            OrganizationId = dto.organizationId?.toLong(),
+            PrinterTemplateAbsoulutePath = dto.printerTemplateAbsolutePath,
+            PrinterTemplatePath = dto.printerTemplatePath,
+            PrintQrCode = dto.printQrCode.toLong(),
+            RecordDateUtc = dto.recordDateUtc?.toEpochMilliseconds(),
+            State = dto.state.toLong(),
+            UniqueIdCaption = dto.uniqueIdCaption,
+            UseFinancialLogo = dto.useFinancialLogo.toLong()
         )
     }
     //endregion

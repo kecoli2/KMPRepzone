@@ -5,6 +5,7 @@ import com.repzone.network.dto.CrmPriceListParameterDto
 import com.repzone.network.dto.CustomerDto
 import com.repzone.network.dto.CustomerEmailDto
 import com.repzone.network.dto.CustomerGroupDto
+import com.repzone.network.dto.DocumentMapDocumentOrganizationDto
 import com.repzone.network.dto.DocumentMapModelDto
 import com.repzone.network.dto.DynamicPageReportDto
 import com.repzone.network.dto.EventReasonDto
@@ -39,5 +40,7 @@ interface ISyncFactory {
                    documentMapApi: ISyncApiService<List<DocumentMapModelDto>>,
                    documentMapBulkInsert: IBulkInsertService<List<DocumentMapModelDto>>,
                    dynamicPageReportApi: ISyncApiService<List<DynamicPageReportDto>>,
-                   dynamicPageReportBulkInsert: IBulkInsertService<List<DynamicPageReportDto>>):Map<SyncJobType, ISyncJob>
+                   dynamicPageReportBulkInsert: IBulkInsertService<List<DynamicPageReportDto>>,
+                   documentMapOrganizationsApi: ISyncApiService<List<DocumentMapDocumentOrganizationDto>>,
+                   documentMapOrganizationsBulkInsert: IBulkInsertService<List<DocumentMapDocumentOrganizationDto>>,):Map<SyncJobType, ISyncJob>
 }

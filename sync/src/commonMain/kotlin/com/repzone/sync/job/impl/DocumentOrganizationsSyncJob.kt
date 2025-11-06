@@ -1,18 +1,18 @@
 package com.repzone.sync.job.impl
 
-import com.repzone.core.constant.ICommonApiControllerConstant
+import com.repzone.core.constant.IDocumentApiControllerConstant
 import com.repzone.core.enums.UIModule
+import com.repzone.core.enums.UserRole
+import com.repzone.core.model.ResourceUI
+import com.repzone.core.util.extensions.toDateString
 import com.repzone.domain.repository.ISyncModuleRepository
-import com.repzone.network.dto.DocumentMapModelDto
+import com.repzone.network.dto.DocumentMapDocumentOrganizationDto
 import com.repzone.network.models.request.FilterModelRequest
 import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.job.base.BasePaginatedSyncJob
-import com.repzone.sync.model.SyncJobType
-import com.repzone.core.enums.UserRole
-import com.repzone.core.model.ResourceUI
-import com.repzone.core.util.extensions.toDateString
 import com.repzone.sync.model.SyncJobGroup
+import com.repzone.sync.model.SyncJobType
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_fetched
 import repzonemobile.core.generated.resources.job_complate_saved
@@ -20,22 +20,16 @@ import repzonemobile.core.generated.resources.job_document_map
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class DocumentMapsSyncJob(apiService: ISyncApiService<List<DocumentMapModelDto>>,
-                          bulkInsertService: IBulkInsertService<List<DocumentMapModelDto>>,
-                          syncModuleRepository: ISyncModuleRepository,
-): BasePaginatedSyncJob<List<DocumentMapModelDto>>(apiService, bulkInsertService, syncModuleRepository){
+class DocumentOrganizationsSyncJob(apiService: ISyncApiService<List<DocumentMapDocumentOrganizationDto>>,
+                                   bulkInsertService: IBulkInsertService<List<DocumentMapDocumentOrganizationDto>>,
+                                   syncModuleRepository: ISyncModuleRepository,
+): BasePaginatedSyncJob<List<DocumentMapDocumentOrganizationDto>>(apiService, bulkInsertService, syncModuleRepository) {
     //region Field
     override val allowedRoles = setOf(UserRole.SALES_REP)
-    override val jobType = SyncJobType.COMMON_DOCUMENT_MAPS
-    override val defaultRequestEndPoint = ICommonApiControllerConstant.COMMON_APP_DOCUMENT_MAPS
+    override val jobType = SyncJobType.EXTRATABLE_REPLICATION_DOCUMENTORGANIZATIONS
+    override val defaultRequestEndPoint = IDocumentApiControllerConstant.DOCUMENTORGANIZATION_ENDPOINT
     override val moduleType = UIModule.NEW
     override val jobGroup: SyncJobGroup = SyncJobGroup.DOCUMENT
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
     //endregion
 
     //region Public Method
@@ -53,21 +47,26 @@ class DocumentMapsSyncJob(apiService: ISyncApiService<List<DocumentMapModelDto>>
         )
     }
 
-    override fun extractLastIdAndLastDate(dtoData: List<DocumentMapModelDto>, requestModel: FilterModelRequest?){
+    override fun extractLastIdAndLastDate(dtoData: List<DocumentMapDocumentOrganizationDto>, requestModel: FilterModelRequest?) {
         dtoData.lastOrNull()?.let {
             requestModel?.lastId = it.id
             requestModel?.lastModDate = it.modificationDateUtc?.toEpochMilliseconds()?.toDateString("yyyy-MM-dd HH:mm:ss.fff") ?: ""
         }
     }
 
-    override fun getDataSize(dtoData: List<DocumentMapModelDto>): Int {
+    override fun getDataSize(dtoData: List<DocumentMapDocumentOrganizationDto>): Int {
         return dtoData.size
     }
 
     override fun onPreExecuteFilterModel(value: FilterModelRequest): FilterModelRequest {
-        value.take = 5000
+        value.take = 1000
         return value
     }
     //endregion
 
+    //region Protected Method
+    //endregion
+
+    //region Private Method
+    //endregion
 }

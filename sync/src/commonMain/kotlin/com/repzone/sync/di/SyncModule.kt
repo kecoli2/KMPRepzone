@@ -4,6 +4,7 @@ import com.repzone.network.dto.CrmPriceListParameterDto
 import com.repzone.network.dto.CustomerDto
 import com.repzone.network.dto.CustomerEmailDto
 import com.repzone.network.dto.CustomerGroupDto
+import com.repzone.network.dto.DocumentMapDocumentOrganizationDto
 import com.repzone.network.dto.DocumentMapModelDto
 import com.repzone.network.dto.DynamicPageReportDto
 import com.repzone.network.dto.EventReasonDto
@@ -107,6 +108,12 @@ val SyncModule = module {
         get(),
         get(),
         get()) }
+
+    single<ISyncApiService<List<DocumentMapDocumentOrganizationDto>>>(named("syncApiDocumentMapsOrganizationsImpl")) { SyncApiDocumentMapsOrganizationsImpl(get()) }
+    single<IBulkInsertService<List<DocumentMapDocumentOrganizationDto>>>(named("syncDocumentMapDocumentOrganizationsBulkInsert")){ DocumentMapsOrganizationsRawSqlBulkInsertService(
+        get(),
+        get()) }
+
     //endregion COMMON DOCUMENT
 
     //region COMMON DYNAMIC PAGES
@@ -142,6 +149,9 @@ val SyncModule = module {
             documentMapApi = get(named("syncApiDocumentMapsImpl")),
             documentMapBulkInsert = get(named("syncDocumentMapsRawSqlBulkInsertService")),
             dynamicPageReportApi = get(named("syncApiDynamicPageReportImpl")),
-            dynamicPageReportBulkInsert = get(named("syncDynamicPageReportRawSqlBulkInsertService")))
+            dynamicPageReportBulkInsert = get(named("syncDynamicPageReportRawSqlBulkInsertService")),
+            documentMapOrganizationsApi = get(named("syncApiDocumentMapsOrganizationsImpl")),
+            documentMapOrganizationsBulkInsert = get(named("syncDocumentMapDocumentOrganizationsBulkInsert"))
+        )
     }
 }

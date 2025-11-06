@@ -78,7 +78,7 @@ class SyncManagerImpl(private val syncJobs: Map<SyncJobType, ISyncJob>,
         val applicableJobs = syncJobs.filter { (_, job) ->
             job.isApplicableForRole(iUserSession.getActiveSession()?.identity?.role ?: UserRole.SALES_REP) && job.jobGroup == jobGroup
         }.keys.toList()
-        
+
         startSpecificJobs(applicableJobs)
     }
 

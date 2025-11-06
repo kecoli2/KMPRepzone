@@ -511,6 +511,7 @@ private fun SyncJobType.getDisplayName(): String = when (this) {
     COMMON_MODULES_REASONS -> "Custom Field Reasons"
     COMMON_DOCUMENT_MAPS -> "Document Maps"
     COMMON_DYNAMIC_PAGES -> "Dynamic Report Pages"
+    EXTRATABLE_REPLICATION_DOCUMENTORGANIZATIONS -> "Document Map Organization"
 }
 
 private fun UserRole.getDisplayName(): String = when (this) {
@@ -536,6 +537,7 @@ private fun isJobApplicableForRole(jobType: SyncJobType, userRole: UserRole): Bo
         COMMON_MODULES_REASONS -> userRole in setOf(UserRole.SALES_REP)
         COMMON_DOCUMENT_MAPS -> userRole in setOf(UserRole.SALES_REP)
         COMMON_DYNAMIC_PAGES ->  userRole in setOf(UserRole.SALES_REP)
+        SyncJobType.EXTRATABLE_REPLICATION_DOCUMENTORGANIZATIONS ->  userRole in setOf(UserRole.SALES_REP)
     }
 }
 
