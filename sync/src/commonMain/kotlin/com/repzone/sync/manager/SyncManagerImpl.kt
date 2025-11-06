@@ -8,6 +8,7 @@ import com.repzone.sync.model.SyncJobType
 import com.repzone.sync.model.SyncProgress
 import com.repzone.core.enums.UserRole
 import com.repzone.core.interfaces.IUserSession
+import com.repzone.sync.model.SyncJobGroup
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -70,6 +71,14 @@ class SyncManagerImpl(private val syncJobs: Map<SyncJobType, ISyncJob>,
             job.isApplicableForRole(iUserSession.getActiveSession()?.identity?.role ?: UserRole.SALES_REP)
         }.keys.toList()
 
+        startSpecificJobs(applicableJobs)
+    }
+
+    override suspend fun startSync(jobGroup: SyncJobGroup) {
+        val applicableJobs = syncJobs.filter { (_, job) ->
+            job.isApplicableForRole(iUserSession.getActiveSession()?.identity?.role ?: UserRole.SALES_REP) && job.jobGroup == jobGroup
+        }.keys.toList()
+        
         startSpecificJobs(applicableJobs)
     }
 

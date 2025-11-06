@@ -13,6 +13,7 @@ import com.repzone.core.enums.UserRole
 import com.repzone.core.model.ResourceUI
 import com.repzone.core.util.extensions.toDateString
 import com.repzone.network.dto.CustomerEmailDto
+import com.repzone.sync.model.SyncJobGroup
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_fetched
 import repzonemobile.core.generated.resources.job_complate_saved
@@ -29,6 +30,7 @@ class CustomerGroupPriceParametersSyncJob(apiService: ISyncApiService<List<CrmPr
     override val jobType = SyncJobType.CUSTOMERS_GROUP_PRICE
     override val defaultRequestEndPoint = ICustomerApiControllerConstant.CUSTOMER_GROUP_PRICES_PARAMETERS_ENDPOINT
     override val moduleType = UIModule.NEW
+    override val jobGroup: SyncJobGroup = SyncJobGroup.CUSTOMER
     //endregion
 
     //region Properties

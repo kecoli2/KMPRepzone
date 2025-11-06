@@ -18,6 +18,13 @@ enum class SyncJobType {
     COMMON_DYNAMIC_PAGES,
     FORM,
     EXTRA_TABLE,
-    STOCK
+    STOCK,
+    EXTRATABLE_REPLICATION_DOCUMENTORGANIZATIONS
+}
 
+enum class SyncJobGroup{
+    NONE,
+    DOCUMENT,
+    CUSTOMER,
+    PRODUCT
 }

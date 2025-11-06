@@ -13,6 +13,7 @@ import com.repzone.core.enums.UserRole
 import com.repzone.core.model.ResourceUI
 import com.repzone.core.util.extensions.toDateString
 import com.repzone.network.dto.ProductGroupDto
+import com.repzone.sync.model.SyncJobGroup
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_fetched
 import repzonemobile.core.generated.resources.job_complate_saved
@@ -28,6 +29,7 @@ class ProductSyncJob(apiService: ISyncApiService<List<ProductDto>>, bulkInsertSe
     override val jobType = SyncJobType.PRODUCTS
     override val defaultRequestEndPoint = IProductApiControllerConstant.PRODUCT_LIST_ENDPOINT
     override val moduleType = UIModule.NEW
+    override val jobGroup: SyncJobGroup = SyncJobGroup.PRODUCT
     //endregion
 
     //region Properties

@@ -16,6 +16,7 @@ import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
 import com.repzone.core.enums.UserRole
 import com.repzone.core.model.ResourceUI
+import com.repzone.sync.model.SyncJobGroup
 import com.repzone.sync.util.SyncConstant
 import io.ktor.util.date.getTimeMillis
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,6 +52,8 @@ abstract class BasePaginatedSyncJob<TDto : Any>(
     abstract override val jobType: SyncJobType
     protected abstract val defaultRequestEndPoint: String
     abstract override val moduleType: UIModule
+
+    abstract override val jobGroup: SyncJobGroup
     //endregion
 
     //region Configurable Properties

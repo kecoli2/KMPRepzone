@@ -13,6 +13,7 @@ import com.repzone.core.enums.UserRole
 import com.repzone.core.model.ResourceUI
 import com.repzone.core.util.extensions.toDateString
 import com.repzone.network.dto.DynamicPageReportDto
+import com.repzone.sync.model.SyncJobGroup
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_fetched
 import repzonemobile.core.generated.resources.job_complate_saved
@@ -28,6 +29,7 @@ class EventReasonsSyncJob(apiService: ISyncApiService<List<EventReasonDto>>, bul
     override val jobType = SyncJobType.COMMON_MODULES_REASONS
     override val defaultRequestEndPoint = ICommonApiControllerConstant.COMMON_APP_MODULES_REASONS_ENDPOINT
     override val moduleType = UIModule.NEW
+    override val jobGroup: SyncJobGroup = SyncJobGroup.NONE
     //endregion
 
     //region Properties

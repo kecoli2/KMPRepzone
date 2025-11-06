@@ -13,6 +13,7 @@ import com.repzone.core.model.ResourceUI
 import com.repzone.core.util.extensions.toDateString
 import com.repzone.network.dto.EventReasonDto
 import com.repzone.network.models.request.FilterModelRequest
+import com.repzone.sync.model.SyncJobGroup
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_fetched
 import repzonemobile.core.generated.resources.job_complate_saved
@@ -29,6 +30,7 @@ class ProductGroupSyncJob(apiService: ISyncApiService<List<ProductGroupDto>>,
     override val jobType = SyncJobType.PRODUCTS_GROUP
     override val defaultRequestEndPoint = IProductApiControllerConstant.PRODUCT_GROUP_LIST_ENDPOINT
     override val moduleType = UIModule.NEW
+    override val jobGroup: SyncJobGroup = SyncJobGroup.PRODUCT
     //endregion
 
     //region Properties

@@ -17,6 +17,7 @@ import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.database.runtime.selectAsFlow
 import com.repzone.database.runtime.selectFirstAsFlow
 import com.repzone.network.dto.CrmPriceListParameterDto
+import com.repzone.sync.model.SyncJobGroup
 import kotlinx.coroutines.runBlocking
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_fetched
@@ -27,13 +28,14 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 class CustomerEmailSyncJob(apiService: ISyncApiService<List<CustomerEmailDto>>,
                            bulkinsertService: IBulkInsertService<List<CustomerEmailDto>>,
-                           syncModuleRepository: ISyncModuleRepository
+                           syncModuleRepository: ISyncModuleRepository,
 ): BasePaginatedSyncJob<List<CustomerEmailDto>>(apiService, bulkinsertService, syncModuleRepository) {
     //region Field
     override val allowedRoles = setOf(UserRole.SALES_REP)
     override val jobType = SyncJobType.CUSTOMERS_EMAIL
     override val defaultRequestEndPoint = ICustomerApiControllerConstant.CUSTOMER_EMAIL_ENDPOINT
     override val moduleType = UIModule.NEW
+    override val jobGroup: SyncJobGroup = SyncJobGroup.CUSTOMER
     //endregion
 
     //region Properties

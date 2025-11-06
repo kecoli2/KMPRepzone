@@ -12,6 +12,7 @@ import com.repzone.sync.model.SyncJobType
 import com.repzone.core.enums.UserRole
 import com.repzone.core.model.ResourceUI
 import com.repzone.core.util.extensions.toDateString
+import com.repzone.sync.model.SyncJobGroup
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_fetched
 import repzonemobile.core.generated.resources.job_complate_saved
@@ -28,6 +29,7 @@ class DocumentMapsSyncJob(apiService: ISyncApiService<List<DocumentMapModelDto>>
     override val jobType = SyncJobType.COMMON_DOCUMENT_MAPS
     override val defaultRequestEndPoint = ICommonApiControllerConstant.COMMON_APP_DOCUMENT_MAPS
     override val moduleType = UIModule.NEW
+    override val jobGroup: SyncJobGroup = SyncJobGroup.DOCUMENT
     //endregion
 
     //region Properties

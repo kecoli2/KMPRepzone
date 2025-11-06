@@ -5,6 +5,7 @@ import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
 import com.repzone.sync.model.SyncProgress
 import com.repzone.core.enums.UserRole
+import com.repzone.sync.model.SyncJobGroup
 import kotlinx.coroutines.flow.Flow
 
 interface ISyncManager {
@@ -12,6 +13,7 @@ interface ISyncManager {
     val overallProgress: Flow<SyncProgress>
 
     suspend fun startSync()
+    suspend fun startSync(jobGroup: SyncJobGroup)
     suspend fun startSpecificJobs(jobs: List<SyncJobType>)
     suspend fun pauseAll()
     suspend fun resumeAll()
