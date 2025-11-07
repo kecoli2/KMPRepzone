@@ -13,6 +13,7 @@ class VisitViewModel(private val iModuleParameters: IMobileModuleParameterReposi
                     private val iVisitManager: IVisitManager): BaseViewModel<VisitUiState, VisitViewModel.Event>(VisitUiState()) {
     //region Field
     private var customer: CustomerItemModel? = null
+    private var isInitialized = false // EKLEME
     //endregion
 
     //region Properties
@@ -20,11 +21,15 @@ class VisitViewModel(private val iModuleParameters: IMobileModuleParameterReposi
 
     //region Constructor
     suspend fun initiliaze(customers: CustomerItemModel){
+        if (isInitialized && customer?.customerId == customers.customerId) {
+            return
+        }
         customer = customers
         iVisitManager.initiliaze(customers).fold(
             onSuccess = {
                 prepareUiParameters()
                 prepareActions()
+                isInitialized = true
             },
             onError = {
                 setError(it)
@@ -66,6 +71,7 @@ class VisitViewModel(private val iModuleParameters: IMobileModuleParameterReposi
 
     override fun onDispose() {
         super.onDispose()
+        isInitialized = false
     }
     //endregion
 

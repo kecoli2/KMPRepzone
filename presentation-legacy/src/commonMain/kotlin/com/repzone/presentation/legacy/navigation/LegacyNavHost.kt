@@ -118,14 +118,9 @@ fun LegacyNavHost(
                     selectedCustomer?.let {
                         VisitScreenLegacy(it,
                             onBackClick = {
+                                navigationState.clearCustomer()
                                 navController.navigateUp()
                             })
-                    }
-
-                    DisposableEffect(Unit) {
-                        onDispose {
-                            navigationState.clearCustomer()
-                        }
                     }
                 }
             }

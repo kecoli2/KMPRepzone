@@ -43,6 +43,7 @@ import androidx.compose.material.icons.filled.Warehouse
 import androidx.compose.material3.Badge
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -106,8 +107,8 @@ import kotlin.time.ExperimentalTime
 fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = ViewModelHost<VisitViewModel> { viewModel ->
     val themeManager: ThemeManager = koinInject()
     val uiState by viewModel.state.collectAsState()
-    val scope = rememberCoroutineScope()
-    LaunchedEffect(Unit){
+
+    LaunchedEffect(customer.customerId){
         viewModel.initiliaze(customer)
     }
 
@@ -115,8 +116,11 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
         onBackClick()
     }
 
-    Scaffold { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues).fillMaxSize())
+    Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
+        Column(
+            modifier = Modifier.padding(paddingValues).fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+        )
         {
             // Custom Top Bar
             RepzoneTopAppBar(
@@ -157,28 +161,20 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
                     }
                 }
             }
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp)
-                    .height(2.dp)
-                    .graphicsLayer {
-                        shadowElevation = 6f
-                        shape = RectangleShape
-                        clip = false
-                    }
-                    .background(Color.Gray.copy(alpha = 0.4f))
+            HorizontalDivider( // ✅ Box yerine HorizontalDivider kullanın
+                modifier = Modifier.padding(top = 4.dp),
+                thickness = 2.dp,
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
             )
 
-            // YENİ: Sticky Header'lı Liste
             VisitActionList(
-                items = uiState.actionMenuList, // ViewModel'den gelen liste
+                items = uiState.actionMenuList,
                 onItemClick = { item ->
-                    // Item tıklama işlemi
                     //viewModel.onActionItemClick(item)
                 },
                 themeManager = themeManager,
                 modifier = Modifier.fillMaxSize()
+                    .weight(1f)
             )
         }
     }
@@ -202,7 +198,6 @@ fun VisitActionList(
 
     LazyColumn(
         modifier = modifier,
-        contentPadding = PaddingValues(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         groupedItems.forEach { (documentType, groupItems) ->
@@ -240,29 +235,28 @@ fun DocumentTypeHeader(
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        color = themeManager.getCurrentColorScheme().colorPalet.primary50,
-        shadowElevation = 2.dp
+        color = MaterialTheme.colorScheme.onSecondaryContainer
     ) {
         Row(
             modifier = Modifier
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = 12.dp, vertical = 6.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // İkon
+            // İkon - renkli
             Icon(
                 imageVector = documentType.getIcon(),
                 contentDescription = null,
-                tint = Color.White,
-                modifier = Modifier.size(24.dp)
+                tint = themeManager.getCurrentColorScheme().colorPalet.secondary40,
+                modifier = Modifier.size(20.dp)
             )
 
-            // Başlık
+            // Başlık - siyah/koyu
             Text(
                 text = documentType.getDisplayName(),
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = Color.White
+                style = MaterialTheme.typography.titleSmall,
+                fontWeight = FontWeight.SemiBold,
+                color = themeManager.getCurrentColorScheme().colorPalet.secondary40
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -270,13 +264,13 @@ fun DocumentTypeHeader(
             // Badge - grup item sayısı
             Surface(
                 shape = CircleShape,
-                color = themeManager.getCurrentColorScheme().colorPalet.secondary60
+                color = themeManager.getCurrentColorScheme().colorPalet.secondary40.copy(alpha = 0.45f)
             ) {
                 Text(
                     text = itemCount.toString(),
                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = Color.White,
+                    style = MaterialTheme.typography.labelMedium,
+                    color = themeManager.getCurrentColorScheme().colorPalet.secondary100,
                     fontWeight = FontWeight.Bold
                 )
             }
@@ -284,7 +278,6 @@ fun DocumentTypeHeader(
     }
 }
 
-// YENİ: Action Item Card
 @Composable
 fun VisitActionItemCard(
     item: VisitActionItem,
@@ -292,39 +285,37 @@ fun VisitActionItemCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = if (item.hasDone) {
-                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
-            } else {
-                MaterialTheme.colorScheme.surface
-            }
-        )
+    Column(
+        modifier = modifier.fillMaxWidth()
     ) {
         Row(
             modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .clickable(onClick = onClick)
+                .background(
+                    if (item.hasDone) {
+                        MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f)
+                    } else {
+                        Color.Transparent
+                    }
+                )
+                .padding(horizontal = 8.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             // Sol taraf - İkon/Avatar
             Box(
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(40.dp)
                     .clip(CircleShape)
-                    .background(themeManager.getCurrentColorScheme().colorPalet.primary50.copy(alpha = 0.2f)),
+                    .background(themeManager.getCurrentColorScheme().colorPalet.secondary40.copy(alpha = 0.15f)),
                 contentAlignment = Alignment.Center
             ) {
                 if (item.smallIcon != null) {
                     AsyncImage(
                         model = "${CdnConfig.CDN_IMAGE_CONFIG}xs/${item.smallIcon}",
                         contentDescription = null,
-                        modifier = Modifier.size(32.dp),
+                        modifier = Modifier.size(24.dp),
                         contentScale = ContentScale.Fit,
                         error = painterResource(Res.drawable.image_not_found)
                     )
@@ -332,8 +323,8 @@ fun VisitActionItemCard(
                     Icon(
                         imageVector = item.documentType.getIcon(),
                         contentDescription = null,
-                        tint = themeManager.getCurrentColorScheme().colorPalet.primary50,
-                        modifier = Modifier.size(24.dp)
+                        tint = themeManager.getCurrentColorScheme().colorPalet.secondary40,
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
@@ -346,27 +337,27 @@ fun VisitActionItemCard(
                 // Başlık
                 Text(
                     text = item.name ?: item.documentName ?: "Unnamed",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Medium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     textDecoration = if (item.hasDone) TextDecoration.LineThrough else null
                 )
 
                 // Açıklama
-                if (item.description != null) {
+                if (!item.description.isNullOrEmpty()) {
                     Text(
                         text = item.description ?: "",
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 2,
+                        maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
 
                 // Alt bilgi (badges)
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     // Mandatory badge
@@ -376,7 +367,8 @@ fun VisitActionItemCard(
                         ) {
                             Text(
                                 text = "Zorunlu",
-                                style = MaterialTheme.typography.labelSmall
+                                style = MaterialTheme.typography.labelSmall,
+                                fontSize = 10.sp
                             )
                         }
                     }
@@ -388,7 +380,8 @@ fun VisitActionItemCard(
                         ) {
                             Text(
                                 text = item.interval.getDisplayName(),
-                                style = MaterialTheme.typography.labelSmall
+                                style = MaterialTheme.typography.labelSmall,
+                                fontSize = 10.sp
                             )
                         }
                     }
@@ -400,7 +393,8 @@ fun VisitActionItemCard(
                         ) {
                             Text(
                                 text = "Sevkiyat",
-                                style = MaterialTheme.typography.labelSmall
+                                style = MaterialTheme.typography.labelSmall,
+                                fontSize = 10.sp
                             )
                         }
                     }
@@ -408,27 +402,24 @@ fun VisitActionItemCard(
             }
 
             // Sağ taraf - Status/Action
-            Column(
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                // Tamamlandı checkmark
-                if (item.hasDone) {
-                    Icon(
-                        imageVector = Icons.Default.CheckCircle,
-                        contentDescription = "Tamamlandı",
-                        tint = themeManager.getCurrentColorScheme().colorPalet.primary50,
-                        modifier = Modifier.size(24.dp)
-                    )
+            Icon(
+                imageVector = if (item.hasDone) Icons.Default.CheckCircle else Icons.Default.ChevronRight,
+                contentDescription = "Tamamlandı",
+                tint = if (item.hasDone) {
+                    themeManager.getCurrentColorScheme().colorPalet.secondary40
                 } else {
-                    Icon(
-                        imageVector = Icons.Default.ChevronRight,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                },
+                modifier = Modifier.size(20.dp)
+            )
         }
+
+        // Divider
+        HorizontalDivider(
+            modifier = Modifier.padding(start = 68.dp), // İkon genişliği + padding
+            thickness = 0.5.dp,
+            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+        )
     }
 }
 
@@ -497,7 +488,7 @@ fun CustomerSummary(customer: CustomerItemModel, themeManager: ThemeManager, vis
             horizontalArrangement = Arrangement.Start
         ){
             //CUSTOMER ICON
-            if (customer?.imageUri != null) {
+            if (customer.imageUri != null) {
                 AsyncImage(
                     model = "${CdnConfig.CDN_IMAGE_CONFIG}xs/${customer.imageUri}",
                     contentDescription = null,
