@@ -13,7 +13,8 @@ enum class DocumentTypeGroup {
     DISPATCH,
     WAREHOUSERECEIPT,
     COLLECTION,
-    OTHER;
+    OTHER,
+    FORM;
 
     companion object {
         object Serializer : KSerializer<DocumentTypeGroup> {

@@ -53,4 +53,8 @@ data class RepresentativeMobileIdentityModel(
     val doNotCheckEDocumentWhileSave: Int,
     val utcTimeOffset: Int? = null,
     val userIdentityId: Int
-)
+){
+    fun getTags(): List<String> {
+        return tagsRaw?.split(",")?.map { it.trim() } ?: emptyList()
+    }
+}

@@ -18,7 +18,7 @@ data class VisitActionItem(
     val customerChannels: ArrayList<Int> = arrayListOf(),
     val customerClasses: ArrayList<Int> = arrayListOf(),
     val customerSegments: ArrayList<Int> = arrayListOf(),
-    val sustomerGroups: ArrayList<Int> = arrayListOf(),
+    val customerGroups: ArrayList<Int> = arrayListOf(),
     val serialized: String? = null,
     val description: String? = null,
     val hasDone: Boolean = false,
@@ -29,5 +29,8 @@ data class VisitActionItem(
     val interval: TaskRepeatInterval = TaskRepeatInterval.NONE,
     val documentType: DocumentTypeGroup,
     val transactionGroupType: TransactionDocumentGroup? = null,
-    val isFulfillment: Boolean = false
-)
+    val isFulfillment: Boolean = false,
+    val smallIcon: String? = null,
+){
+    val shouldBeSeen get() = interval != TaskRepeatInterval.ATVISITSTART
+}

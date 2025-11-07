@@ -21,7 +21,7 @@ class CustomerItemViewEntityDbMapper: Mapper<CustomerItemViewEntity, CustomerIte
             finishDate = from.FinishDate?.toInstant(),
             appointmentId = from.AppointmentId,
             date = from.Date?.toInstant(),
-            tagRaw = from.TagRaw?.split(","),
+            tagRaw = from.TagRaw?.split(",") ?: emptyList(),
             name = from.Name,
             customerCode = from.CustomerCode,
             customerGroupName = from.CustomerGroupName,

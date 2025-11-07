@@ -11,7 +11,7 @@ data class CustomerItemModel(
     val finishDate: Instant?,
     val appointmentId: Long,
     val date: Instant?,
-    val tagRaw: List<String?>? = emptyList(),
+    val tagRaw: List<String> = emptyList(),
     val name: String?,
     val customerCode: String?,
     val customerGroupName: String?,
