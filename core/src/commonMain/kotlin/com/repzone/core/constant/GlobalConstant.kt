@@ -53,6 +53,7 @@ object IMobileApiControllerConstant {
 
 object IFormApiControllerConstant {
     const val FORM_DEFINATION_ENDPOINT = "/api/v1/Form/List"
+    const val FORM_MANDATORY_ENDPOINT = "/api/v1/Form/MandatoryForms"
 }
 
 object VersionModuleConstant {

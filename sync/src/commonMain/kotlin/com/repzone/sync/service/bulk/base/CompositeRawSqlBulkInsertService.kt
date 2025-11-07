@@ -46,11 +46,11 @@ abstract class CompositeRawSqlBulkInsertService<T>(private val coordinator: Tran
     //endregion
 
     //region Protected Method
-    protected abstract fun buildCompositeOperation(items: T, includeClears: Boolean = false, useUpsert: Boolean = false): CompositeOperation
+    protected abstract suspend fun buildCompositeOperation(items: T, includeClears: Boolean = false, useUpsert: Boolean = false): CompositeOperation
     //endregion
 
     //region Private Method
-    private fun buildCompositeOperationWithChunking(items: T, includeClears: Boolean = false, useUpsert: Boolean = false): CompositeOperation {
+    private suspend fun buildCompositeOperationWithChunking(items: T, includeClears: Boolean = false, useUpsert: Boolean = false): CompositeOperation {
         val rawOp = buildCompositeOperation(items, includeClears, useUpsert)
         val chunkedOperations = rawOp.operations.map { tableOp ->
             if (tableOp.recordCount == 0) return@map tableOp

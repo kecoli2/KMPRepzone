@@ -17,7 +17,7 @@ import repzonemobile.core.generated.resources.job_customer
 class CustomerRawSqlBulkInsertService(private val mapper: CustomerEntityDbMapper, coordinator: TransactionCoordinator):
     CompositeRawSqlBulkInsertService<List<CustomerDto>>(coordinator) {
     //region Public Method
-    override fun buildCompositeOperation( items: List<CustomerDto>, includeClears: Boolean, useUpsert: Boolean,): CompositeOperation {
+    override suspend fun buildCompositeOperation( items: List<CustomerDto>, includeClears: Boolean, useUpsert: Boolean,): CompositeOperation {
         val customerEntity = items.map { mapper.fromDto(it) }
         val addresstEntity = items.flatMap { it ->
             mapper.fromDtoAdress(it.addresses, it.id.toLong())

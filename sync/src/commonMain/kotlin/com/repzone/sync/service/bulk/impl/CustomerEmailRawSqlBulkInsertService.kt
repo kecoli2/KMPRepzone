@@ -16,7 +16,7 @@ import repzonemobile.core.generated.resources.job_email
 class CustomerEmailRawSqlBulkInsertService(private val mapper: SyncCustomerEmailEntityDbMapper,
                                            coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<CustomerEmailDto>>(coordinator) {
     //region Public Method
-    override fun buildCompositeOperation(items: List<CustomerEmailDto>, includeClears: Boolean, useUpsert: Boolean,): CompositeOperation {
+    override suspend fun buildCompositeOperation(items: List<CustomerEmailDto>, includeClears: Boolean, useUpsert: Boolean,): CompositeOperation {
         val emails = items.map { mapper.fromDto(it) }
         val operation = listOf(
             TableOperation(

@@ -16,7 +16,7 @@ import repzonemobile.core.generated.resources.job_document_map
 class DocumentMapsOrganizationsRawSqlBulkInsertService(private val mapperDocument: SyncDocumentOrganizationEntityDbMapper, coordinator: TransactionCoordinator
 ): CompositeRawSqlBulkInsertService<List<DocumentMapDocumentOrganizationDto>>(coordinator) {
     //region Public Method
-    override fun buildCompositeOperation(items: List<DocumentMapDocumentOrganizationDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
+    override suspend fun buildCompositeOperation(items: List<DocumentMapDocumentOrganizationDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val documents = items.map { mapperDocument.fromDto(it) }
 
 

@@ -16,7 +16,7 @@ import repzonemobile.core.generated.resources.job_module
 class EventReasonsRawSqlBulkInsertService(private val mapper: SyncEventReasonEntityDbMapper,
                                           coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<EventReasonDto>>(coordinator) {
     //region Public Method
-    override fun buildCompositeOperation(items: List<EventReasonDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
+    override suspend fun buildCompositeOperation(items: List<EventReasonDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val eventReasons = items.map { mapper.fromDto(it) }
         val operations = listOf(
             TableOperation(

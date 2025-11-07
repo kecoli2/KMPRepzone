@@ -19,7 +19,7 @@ class ModulesRawSqlBulkInsertService(private val mapperCustomField: SyncPackageC
                                      private val mapperCustomFieldProduct: SyncPackageCustomFieldProductEntityDbMapper, coordinator: TransactionCoordinator)
     : CompositeRawSqlBulkInsertService<List<PackageCustomFieldDto>>(coordinator) {
     //region Public Method
-    override fun buildCompositeOperation(items: List<PackageCustomFieldDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
+    override suspend fun buildCompositeOperation(items: List<PackageCustomFieldDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val customField = items.map { mapperCustomField.fromDto(it) }
         val customFieldProduct = items.flatMap { it.fields }.map { mapperCustomFieldProduct.fromDto(it) }
 

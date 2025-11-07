@@ -13,6 +13,7 @@ import com.repzone.network.dto.PackageCustomFieldDto
 import com.repzone.network.dto.ProductDto
 import com.repzone.network.dto.ProductGroupDto
 import com.repzone.network.dto.RouteDto
+import com.repzone.network.dto.SyncMandatoryFormDto
 import com.repzone.network.dto.form.FormBaseDto
 import com.repzone.sync.model.SyncJobType
 
@@ -46,5 +47,8 @@ interface ISyncFactory {
         documentMapOrganizationsApi: ISyncApiService<List<DocumentMapDocumentOrganizationDto>>,
         documentMapOrganizationsBulkInsert: IBulkInsertService<List<DocumentMapDocumentOrganizationDto>>,
         formDefinationsApi: ISyncApiService<List<FormBaseDto>>,
-        formDefinationBulkInsert: IBulkInsertService<List<FormBaseDto>>):Map<SyncJobType, ISyncJob>
+        formDefinationBulkInsert: IBulkInsertService<List<FormBaseDto>>,
+        formMandatoryDataApi: ISyncApiService<List<SyncMandatoryFormDto>>,
+        formMandatoryDataBulkInsert: IBulkInsertService<List<SyncMandatoryFormDto>>
+    ):Map<SyncJobType, ISyncJob>
 }

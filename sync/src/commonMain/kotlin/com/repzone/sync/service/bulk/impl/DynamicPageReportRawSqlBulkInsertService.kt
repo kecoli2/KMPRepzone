@@ -16,7 +16,7 @@ import repzonemobile.core.generated.resources.job_dynamic_event_reasons
 class DynamicPageReportRawSqlBulkInsertService(private val mapper: SyncDynamicPageReportEntityDbMapper,
                                                coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<DynamicPageReportDto>>(coordinator) {
     //region Public Method
-    override fun buildCompositeOperation(items: List<DynamicPageReportDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
+    override suspend fun buildCompositeOperation(items: List<DynamicPageReportDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val pages = items.map { mapper.fromDto(it) }
         val operations = listOf(
             TableOperation(

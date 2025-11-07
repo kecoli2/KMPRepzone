@@ -18,7 +18,7 @@ class ProductGroupRawSqlBulkInsertService(private val dbMapper: SyncProductGroup
 ): CompositeRawSqlBulkInsertService<List<ProductGroupDto>>(coordinator) {
     //region Public Method
 
-    override fun buildCompositeOperation(items: List<ProductGroupDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
+    override suspend fun buildCompositeOperation(items: List<ProductGroupDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val productGroupEntities = items.map { dbMapper.fromDto(it) }
 
         val operations = listOf(

@@ -44,7 +44,9 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
         documentMapOrganizationsApi: ISyncApiService<List<DocumentMapDocumentOrganizationDto>>,
         documentMapOrganizationsBulkInsert: IBulkInsertService<List<DocumentMapDocumentOrganizationDto>>,
         formDefinationsApi: ISyncApiService<List<FormBaseDto>>,
-        formDefinationBulkInsert: IBulkInsertService<List<FormBaseDto>>
+        formDefinationBulkInsert: IBulkInsertService<List<FormBaseDto>>,
+        formMandatoryDataApi: ISyncApiService<List<SyncMandatoryFormDto>>,
+        formMandatoryDataBulkInsert: IBulkInsertService<List<SyncMandatoryFormDto>>
     ): Map<SyncJobType, ISyncJob> {
         return mapOf(
             SyncJobType.PRODUCTS to ProductSyncJob(
@@ -72,7 +74,8 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
             SyncJobType.COMMON_DOCUMENT_MAPS to DocumentMapsSyncJob(documentMapApi, documentMapBulkInsert, syncModuleRepository),
             SyncJobType.COMMON_DYNAMIC_PAGES to DynamicPageReportSyncJob(dynamicPageReportApi,dynamicPageReportBulkInsert, syncModuleRepository),
             SyncJobType.EXTRATABLE_REPLICATION_DOCUMENTORGANIZATIONS to DocumentOrganizationsSyncJob(documentMapOrganizationsApi, documentMapOrganizationsBulkInsert, syncModuleRepository),
-            SyncJobType.FORM to FormDataFetchSyncJob(formDefinationsApi, formDefinationBulkInsert, syncModuleRepository)
+            SyncJobType.FORM to FormDataFetchSyncJob(formDefinationsApi, formDefinationBulkInsert, syncModuleRepository),
+            SyncJobType.FORM_MANDATORY to FormMandatoryDataSyncJob(formMandatoryDataApi, formMandatoryDataBulkInsert, syncModuleRepository)
         )
     }
     //endregion

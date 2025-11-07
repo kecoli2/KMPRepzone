@@ -18,7 +18,7 @@ class CustomerPriceParameterslRawSqlBulkInsertService(
     private val mapper: SyncCrmPriceListParameterEntityDbMapper,
     coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<CrmPriceListParameterDto>>(coordinator) {
     //region Public Method
-    override fun buildCompositeOperation(items: List<CrmPriceListParameterDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
+    override suspend fun buildCompositeOperation(items: List<CrmPriceListParameterDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val parameters = items.map { it ->
             it.entityType = CrmParameterEntityType.CUSTOMER
             mapper.fromDto(it)

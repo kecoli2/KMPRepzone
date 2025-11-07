@@ -21,7 +21,7 @@ class FormDataFetchSqlBulkInsertService(coordinator: TransactionCoordinator
 ): CompositeRawSqlBulkInsertService<List<FormBaseDto>>(coordinator) {
 
     //region Public Method
-    override fun buildCompositeOperation(items: List<FormBaseDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
+    override suspend fun buildCompositeOperation(items: List<FormBaseDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         items.forEach {
             it.formRows = it.formRows.sortedBy { p -> p.order }
         }

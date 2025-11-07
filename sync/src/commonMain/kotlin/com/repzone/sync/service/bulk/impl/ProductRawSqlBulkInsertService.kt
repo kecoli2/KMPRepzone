@@ -17,19 +17,9 @@ import repzonemobile.core.generated.resources.job_product_parameters
 
 class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMapper,
                                      coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<ProductDto>>(coordinator) {
-    //region Field
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
-
-    //endregion
 
     //region Public Method
-
-    override fun buildCompositeOperation(items: List<ProductDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
+    override suspend fun buildCompositeOperation(items: List<ProductDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val productEntities = items.map { dbMapper.fromDomain(it) }
         val unitEntities = items.flatMap { dto ->
             dbMapper.toUnitEntities(dto.id.toLong(), dto.units)

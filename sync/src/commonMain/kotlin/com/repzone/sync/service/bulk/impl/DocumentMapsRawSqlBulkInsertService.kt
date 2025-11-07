@@ -22,7 +22,7 @@ class DocumentMapsRawSqlBulkInsertService(private val mapperDocument: SyncDocume
                                           private val mapperProcessStep: SyncDocumentMapProcessStepEntityDbMapper, coordinator: TransactionCoordinator
 ): CompositeRawSqlBulkInsertService<List<DocumentMapModelDto>>(coordinator) {
     //region Public Method
-    override fun buildCompositeOperation(items: List<DocumentMapModelDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
+    override suspend fun buildCompositeOperation(items: List<DocumentMapModelDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val documents = items.map { mapperDocument.fromDto(it) }
         val process = items.flatMap {it -> it.process?.map { mapperProcess.fromDto(it, it.name) } ?: emptyList() }
         val processStep = items.flatMap { it -> it.process?.flatMap { stepp -> stepp.steps?.map { mapperProcessStep.fromDto(it, stepp.id) } ?: emptyList() } ?: emptyList()}

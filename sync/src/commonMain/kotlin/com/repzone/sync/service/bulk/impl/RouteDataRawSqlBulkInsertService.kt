@@ -16,7 +16,7 @@ import repzonemobile.core.generated.resources.job_rota
 class RouteDataRawSqlBulkInsertService(private val dbMapper: SyncRouteAppointmentEntityDbMapper,
                                        coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<RouteDto>>(coordinator) {
     //region Public Method
-    override fun buildCompositeOperation(items: List<RouteDto>, includeClears: Boolean, useUpsert: Boolean,): CompositeOperation {
+    override suspend fun buildCompositeOperation(items: List<RouteDto>, includeClears: Boolean, useUpsert: Boolean,): CompositeOperation {
         val routeList = items.map { dbMapper.fromDto(it) }
         return CompositeOperation(
             operations = listOf(
