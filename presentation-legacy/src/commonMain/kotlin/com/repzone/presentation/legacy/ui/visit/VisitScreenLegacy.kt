@@ -1,17 +1,20 @@
 package com.repzone.presentation.legacy.ui.visit
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
@@ -19,19 +22,32 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Assessment
 import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.Description
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Note
+import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Receipt
+import androidx.compose.material.icons.filled.RemoveCircleOutline
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Timer
+import androidx.compose.material.icons.filled.Warehouse
 import androidx.compose.material3.Badge
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -48,11 +64,14 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.repzone.core.constant.CdnConfig
+import com.repzone.core.enums.DocumentTypeGroup
+import com.repzone.core.enums.TaskRepeatInterval
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.component.RepzoneTopAppBar
 import com.repzone.core.ui.component.TopBarAction
@@ -68,6 +87,7 @@ import com.repzone.core.util.extensions.toMoney
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.util.enums.ActionButtonType
+import com.repzone.domain.util.models.VisitActionItem
 import com.repzone.domain.util.models.VisitButtonItem
 import com.repzone.presentation.legacy.viewmodel.visit.VisitUiState
 import com.repzone.presentation.legacy.viewmodel.visit.VisitViewModel
@@ -96,7 +116,7 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
     }
 
     Scaffold { paddingValues ->
-        Column(modifier = Modifier.padding(paddingValues))
+        Column(modifier = Modifier.padding(paddingValues).fillMaxSize())
         {
             // Custom Top Bar
             RepzoneTopAppBar(
@@ -120,7 +140,7 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
             Box(modifier = Modifier
                 .fillMaxWidth(),
                 contentAlignment = Alignment.Center
-                ){
+            ){
                 LazyRow(
                     modifier = Modifier.padding(top = 4.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -149,8 +169,299 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
                     }
                     .background(Color.Gray.copy(alpha = 0.4f))
             )
+
+            // YENİ: Sticky Header'lı Liste
+            VisitActionList(
+                items = uiState.actionMenuList, // ViewModel'den gelen liste
+                onItemClick = { item ->
+                    // Item tıklama işlemi
+                    //viewModel.onActionItemClick(item)
+                },
+                themeManager = themeManager,
+                modifier = Modifier.fillMaxSize()
+            )
         }
     }
+}
+
+// YENİ: Sticky Header'lı Liste Composable
+@Composable
+fun VisitActionList(
+    items: List<VisitActionItem>,
+    onItemClick: (VisitActionItem) -> Unit,
+    themeManager: ThemeManager,
+    modifier: Modifier = Modifier
+) {
+    // Gruplama: DocumentTypeGroup'a göre
+    val groupedItems = remember(items) {
+        items.groupBy { it.documentType }
+            .toList()
+            .sortedBy { it.first.ordinal }
+            .toMap()
+    }
+
+    LazyColumn(
+        modifier = modifier,
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        groupedItems.forEach { (documentType, groupItems) ->
+            // Sticky Header
+            stickyHeader(key = documentType.name) {
+                DocumentTypeHeader(
+                    documentType = documentType,
+                    itemCount = groupItems.size,
+                    themeManager = themeManager
+                )
+            }
+
+            // Grup içindeki itemlar
+            items(
+                items = groupItems,
+                key = { it.name ?: it.documentName ?: it.hashCode() }
+            ) { item ->
+                VisitActionItemCard(
+                    item = item,
+                    themeManager = themeManager,
+                    onClick = { onItemClick(item) }
+                )
+            }
+        }
+    }
+}
+
+// YENİ: Sticky Header Composable
+@Composable
+fun DocumentTypeHeader(
+    documentType: DocumentTypeGroup,
+    itemCount: Int,
+    themeManager: ThemeManager,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier.fillMaxWidth(),
+        color = themeManager.getCurrentColorScheme().colorPalet.primary50,
+        shadowElevation = 2.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(horizontal = 16.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            // İkon
+            Icon(
+                imageVector = documentType.getIcon(),
+                contentDescription = null,
+                tint = Color.White,
+                modifier = Modifier.size(24.dp)
+            )
+
+            // Başlık
+            Text(
+                text = documentType.getDisplayName(),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = Color.White
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Badge - grup item sayısı
+            Surface(
+                shape = CircleShape,
+                color = themeManager.getCurrentColorScheme().colorPalet.secondary60
+            ) {
+                Text(
+                    text = itemCount.toString(),
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                    style = MaterialTheme.typography.labelSmall,
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+    }
+}
+
+// YENİ: Action Item Card
+@Composable
+fun VisitActionItemCard(
+    item: VisitActionItem,
+    themeManager: ThemeManager,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = if (item.hasDone) {
+                MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f)
+            } else {
+                MaterialTheme.colorScheme.surface
+            }
+        )
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            // Sol taraf - İkon/Avatar
+            Box(
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .background(themeManager.getCurrentColorScheme().colorPalet.primary50.copy(alpha = 0.2f)),
+                contentAlignment = Alignment.Center
+            ) {
+                if (item.smallIcon != null) {
+                    AsyncImage(
+                        model = "${CdnConfig.CDN_IMAGE_CONFIG}xs/${item.smallIcon}",
+                        contentDescription = null,
+                        modifier = Modifier.size(32.dp),
+                        contentScale = ContentScale.Fit,
+                        error = painterResource(Res.drawable.image_not_found)
+                    )
+                } else {
+                    Icon(
+                        imageVector = item.documentType.getIcon(),
+                        contentDescription = null,
+                        tint = themeManager.getCurrentColorScheme().colorPalet.primary50,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+            }
+
+            // Orta - İçerik
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                // Başlık
+                Text(
+                    text = item.name ?: item.documentName ?: "Unnamed",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.SemiBold,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    textDecoration = if (item.hasDone) TextDecoration.LineThrough else null
+                )
+
+                // Açıklama
+                if (item.description != null) {
+                    Text(
+                        text = item.description ?: "",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+
+                // Alt bilgi (badges)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Mandatory badge
+                    if (item.isMandatory) {
+                        Badge(
+                            containerColor = MaterialTheme.colorScheme.error
+                        ) {
+                            Text(
+                                text = "Zorunlu",
+                                style = MaterialTheme.typography.labelSmall
+                            )
+                        }
+                    }
+
+                    // Interval badge
+                    if (item.interval != TaskRepeatInterval.NONE) {
+                        Badge(
+                            containerColor = themeManager.getCurrentColorScheme().colorPalet.secondary60
+                        ) {
+                            Text(
+                                text = item.interval.getDisplayName(),
+                                style = MaterialTheme.typography.labelSmall
+                            )
+                        }
+                    }
+
+                    // Fulfillment badge
+                    if (item.isFulfillment) {
+                        Badge(
+                            containerColor = themeManager.getCurrentColorScheme().colorPalet.primary50
+                        ) {
+                            Text(
+                                text = "Sevkiyat",
+                                style = MaterialTheme.typography.labelSmall
+                            )
+                        }
+                    }
+                }
+            }
+
+            // Sağ taraf - Status/Action
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                // Tamamlandı checkmark
+                if (item.hasDone) {
+                    Icon(
+                        imageVector = Icons.Default.CheckCircle,
+                        contentDescription = "Tamamlandı",
+                        tint = themeManager.getCurrentColorScheme().colorPalet.primary50,
+                        modifier = Modifier.size(24.dp)
+                    )
+                } else {
+                    Icon(
+                        imageVector = Icons.Default.ChevronRight,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+        }
+    }
+}
+
+// YENİ: Extension fonksiyonlar
+fun DocumentTypeGroup.getIcon(): ImageVector = when (this) {
+    DocumentTypeGroup.ORDER -> Icons.Default.ShoppingCart
+    DocumentTypeGroup.INVOICE -> Icons.Default.Receipt
+    DocumentTypeGroup.DISPATCH -> Icons.Default.LocalShipping
+    DocumentTypeGroup.WAREHOUSERECEIPT -> Icons.Default.Warehouse
+    DocumentTypeGroup.COLLECTION -> Icons.Default.Payments
+    DocumentTypeGroup.FORM -> Icons.Default.Description
+    DocumentTypeGroup.OTHER -> Icons.Default.MoreHoriz
+    DocumentTypeGroup.EMPTY -> Icons.Default.RemoveCircleOutline
+}
+
+fun DocumentTypeGroup.getDisplayName(): String = when (this) {
+    DocumentTypeGroup.ORDER -> "Siparişler"
+    DocumentTypeGroup.INVOICE -> "Faturalar"
+    DocumentTypeGroup.DISPATCH -> "Sevkiyatlar"
+    DocumentTypeGroup.WAREHOUSERECEIPT -> "Depo Fişleri"
+    DocumentTypeGroup.COLLECTION -> "Tahsilatlar"
+    DocumentTypeGroup.FORM -> "Formlar"
+    DocumentTypeGroup.OTHER -> "Diğer"
+    DocumentTypeGroup.EMPTY -> "Boş"
+}
+
+fun TaskRepeatInterval.getDisplayName(): String = when (this) {
+    TaskRepeatInterval.NONE -> "Tekrar Yok"
+    TaskRepeatInterval.ATVISITSTART -> "Ziyaret Başlangıcı"
+    TaskRepeatInterval.ONE_TIME -> "Birkerelik"
+    TaskRepeatInterval.WEEK -> "Haftalık"
+    TaskRepeatInterval.MONTH -> "Aylık"
+    else -> this.name
 }
 
 @OptIn(ExperimentalTime::class)
