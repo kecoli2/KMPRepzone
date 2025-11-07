@@ -12,6 +12,7 @@ import com.repzone.network.dto.PackageCustomFieldDto
 import com.repzone.network.dto.ProductDto
 import com.repzone.network.dto.ProductGroupDto
 import com.repzone.network.dto.RouteDto
+import com.repzone.network.dto.form.FormBaseDto
 import com.repzone.sync.factory.newversion.SyncJobFactory
 import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
@@ -123,6 +124,12 @@ val SyncModule = module {
         get()) }
     //endregion COMMON DYNAMIC PAGES
 
+    //region FORM
+    single<ISyncApiService<List<FormBaseDto>>>(named("syncApiFormDataFetchImpl")) { SyncApiFormDataFetchImpl(get()) }
+    single<IBulkInsertService<List<FormBaseDto>>>(named("syncFormDataFetchSqlBulkInsertService")) { FormDataFetchSqlBulkInsertService(
+        get()) }
+    //endregion FORM
+
     single {
         get<ISyncFactory>().createJobs(
             productApi = get(named("productSyncApi")),
@@ -151,7 +158,8 @@ val SyncModule = module {
             dynamicPageReportApi = get(named("syncApiDynamicPageReportImpl")),
             dynamicPageReportBulkInsert = get(named("syncDynamicPageReportRawSqlBulkInsertService")),
             documentMapOrganizationsApi = get(named("syncApiDocumentMapsOrganizationsImpl")),
-            documentMapOrganizationsBulkInsert = get(named("syncDocumentMapDocumentOrganizationsBulkInsert"))
-        )
+            documentMapOrganizationsBulkInsert = get(named("syncDocumentMapDocumentOrganizationsBulkInsert")),
+            formDefinationsApi = get(named("syncApiFormDataFetchImpl")),
+            formDefinationBulkInsert = get(named("syncFormDataFetchSqlBulkInsertService")))
     }
 }

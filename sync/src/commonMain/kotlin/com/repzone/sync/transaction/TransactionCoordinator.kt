@@ -1,8 +1,10 @@
 package com.repzone.sync.transaction
 
 import app.cash.sqldelight.db.SqlDriver
+import com.repzone.core.platform.Logger
 import com.repzone.core.util.extensions.now
 import com.repzone.database.interfaces.IDatabaseManager
+import com.repzone.database.runtime.rawExecute
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -182,10 +184,10 @@ class TransactionCoordinator(
     private fun executeRawSql(sql: String) {
         try {
             runBlocking {
-                iDatabaseManager.getSqlDriver().execute(null, sql, 0)
+                iDatabaseManager.getSqlDriver().rawExecute (sql)
             }
         }catch (ex: Exception){
-            println("Syntax Error Sql: ${sql} ")
+            Logger.error(ex)
             throw ex;
         }
 

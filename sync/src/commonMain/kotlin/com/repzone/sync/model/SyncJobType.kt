@@ -26,5 +26,6 @@ enum class SyncJobGroup{
     NONE,
     DOCUMENT,
     CUSTOMER,
-    PRODUCT
+    PRODUCT,
+    FORMS
 }

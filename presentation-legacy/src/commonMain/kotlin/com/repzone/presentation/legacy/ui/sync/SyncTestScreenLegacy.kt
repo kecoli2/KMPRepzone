@@ -537,7 +537,7 @@ private fun isJobApplicableForRole(jobType: SyncJobType, userRole: UserRole): Bo
         COMMON_MODULES_REASONS -> userRole in setOf(UserRole.SALES_REP)
         COMMON_DOCUMENT_MAPS -> userRole in setOf(UserRole.SALES_REP)
         COMMON_DYNAMIC_PAGES ->  userRole in setOf(UserRole.SALES_REP)
-        SyncJobType.EXTRATABLE_REPLICATION_DOCUMENTORGANIZATIONS ->  userRole in setOf(UserRole.SALES_REP)
+        EXTRATABLE_REPLICATION_DOCUMENTORGANIZATIONS ->  userRole in setOf(UserRole.SALES_REP)
     }
 }
 

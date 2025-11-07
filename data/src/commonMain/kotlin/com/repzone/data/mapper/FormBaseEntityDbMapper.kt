@@ -12,7 +12,7 @@ import com.repzone.network.dto.form.FormBaseDto
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class FormBaseMapper {
+class FormBaseEntityDbMapper {
     //region Field
     //endregion
 

@@ -856,4 +856,5 @@
     <string name="list_empty">No records found to display...</string>
     <string name="ecustomerinfo">This customer is an e-invoice taxpayer</string>
     <string name= "loading">Loading</string>
+    <string name="job_form_definations">Form definations</string>
 </resources>

@@ -3,6 +3,7 @@ package com.repzone.sync.factory.newversion
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.network.dto.*
+import com.repzone.network.dto.form.FormBaseDto
 import com.repzone.sync.interfaces.IBulkInsertService
 import com.repzone.sync.interfaces.ISyncApiService
 import com.repzone.sync.interfaces.ISyncFactory
@@ -42,6 +43,8 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
         dynamicPageReportBulkInsert: IBulkInsertService<List<DynamicPageReportDto>>,
         documentMapOrganizationsApi: ISyncApiService<List<DocumentMapDocumentOrganizationDto>>,
         documentMapOrganizationsBulkInsert: IBulkInsertService<List<DocumentMapDocumentOrganizationDto>>,
+        formDefinationsApi: ISyncApiService<List<FormBaseDto>>,
+        formDefinationBulkInsert: IBulkInsertService<List<FormBaseDto>>
     ): Map<SyncJobType, ISyncJob> {
         return mapOf(
             SyncJobType.PRODUCTS to ProductSyncJob(
@@ -68,7 +71,8 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
             SyncJobType.COMMON_MODULES_REASONS to EventReasonsSyncJob(eventReasonsApi, eventReasonsRawBulkInsert, syncModuleRepository),
             SyncJobType.COMMON_DOCUMENT_MAPS to DocumentMapsSyncJob(documentMapApi, documentMapBulkInsert, syncModuleRepository),
             SyncJobType.COMMON_DYNAMIC_PAGES to DynamicPageReportSyncJob(dynamicPageReportApi,dynamicPageReportBulkInsert, syncModuleRepository),
-            SyncJobType.EXTRATABLE_REPLICATION_DOCUMENTORGANIZATIONS to DocumentOrganizationsSyncJob(documentMapOrganizationsApi, documentMapOrganizationsBulkInsert, syncModuleRepository)
+            SyncJobType.EXTRATABLE_REPLICATION_DOCUMENTORGANIZATIONS to DocumentOrganizationsSyncJob(documentMapOrganizationsApi, documentMapOrganizationsBulkInsert, syncModuleRepository),
+            SyncJobType.FORM to FormDataFetchSyncJob(formDefinationsApi, formDefinationBulkInsert, syncModuleRepository)
         )
     }
     //endregion

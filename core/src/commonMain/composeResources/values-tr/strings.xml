@@ -818,6 +818,7 @@
     <string name="job_dynamic_report">Dinamik Raporlar</string>
     <string name="job_dynamic_event_reasons">Etkinlikler</string>
     <string name="job_module">Moduller</string>
+    <string name="job_form_definations">Form tanımları</string>
     <string name="job_product_group">Ürün Grupları</string>
     <string name="job_product_parameters">Ürün ve Parametreleri</string>
     <string name="job_rota">Rotalar Senkron</string>

@@ -2,8 +2,7 @@ package com.repzone.data.repository.imp
 
 import com.repzone.core.enums.FormVisibleOption
 import com.repzone.core.util.extensions.enumToLong
-import com.repzone.core.util.extensions.jsonToModel
-import com.repzone.data.mapper.FormBaseMapper
+import com.repzone.data.mapper.FormBaseEntityDbMapper
 import com.repzone.data.mapper.SyncFormBaseEntityDbMapper
 import com.repzone.database.SyncFormBaseEntity
 import com.repzone.database.interfaces.IDatabaseManager
@@ -14,7 +13,6 @@ import com.repzone.domain.model.SyncFormBaseModel
 import com.repzone.domain.model.forms.FormBase
 import com.repzone.domain.model.forms.FormModel
 import com.repzone.domain.repository.IDynamicFormRepository
-import com.repzone.network.dto.form.FormBaseDto
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
@@ -94,7 +92,7 @@ class DynamicFormRepositoryImpl(private val iDatabaseManager: IDatabaseManager, 
         if(json == null){
             return null
         }
-        val formBase = FormBaseMapper().toJsonFromDomain(json)
+        val formBase = FormBaseEntityDbMapper().toJsonFromDomain(json)
         return formBase
     }
     //endregion
