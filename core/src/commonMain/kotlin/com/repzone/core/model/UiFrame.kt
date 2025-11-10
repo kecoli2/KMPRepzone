@@ -13,6 +13,7 @@ import kotlin.time.Instant
 interface HasUiFrame {
     val uiFrame: UiFrame
     fun copyWithUiFrame(newUiFrame: UiFrame): HasUiFrame
+    fun resetUiFrame(): HasUiFrame
 }
 
 // UiFrame data class

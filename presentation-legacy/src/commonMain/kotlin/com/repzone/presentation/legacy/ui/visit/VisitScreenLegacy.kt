@@ -19,15 +19,25 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Sort
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.Assessment
+import androidx.compose.material.icons.filled.AttachFile
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.ChevronRight
+import androidx.compose.material.icons.filled.ClearAll
 import androidx.compose.material.icons.filled.Description
+import androidx.compose.material.icons.filled.Flight
 import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.LocalShipping
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Mode
+import androidx.compose.material.icons.filled.Mood
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.Note
 import androidx.compose.material.icons.filled.Payments
@@ -35,10 +45,14 @@ import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.RemoveCircleOutline
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Sort
+import androidx.compose.material.icons.filled.Stars
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.Warehouse
+import androidx.compose.material.icons.outlined.TripOrigin
 import androidx.compose.material3.Badge
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -59,7 +73,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -212,7 +225,6 @@ fun VisitActionList(
     }
 }
 
-// YENİ: Sticky Header Composable
 @Composable
 fun DocumentTypeHeader(
     documentType: DocumentTypeGroup,
@@ -298,22 +310,12 @@ fun VisitActionItemCard(
                     .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.45f)),
                 contentAlignment = Alignment.Center
             ) {
-                if (item.smallIcon != null) {
-                    AsyncImage(
-                        model = "${CdnConfig.CDN_IMAGE_CONFIG}xs/${item.smallIcon}",
-                        contentDescription = null,
-                        modifier = Modifier.size(24.dp),
-                        contentScale = ContentScale.Fit,
-                        error = painterResource(Res.drawable.image_not_found)
-                    )
-                } else {
-                    Icon(
-                        imageVector = item.documentType.getIcon(),
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.onSecondary,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
+                Icon(
+                    imageVector = item.getIcon(),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSecondary,
+                    modifier = Modifier.size(20.dp)
+                )
             }
 
             // Orta - İçerik
@@ -323,7 +325,7 @@ fun VisitActionItemCard(
             ) {
                 // Başlık
                 Text(
-                    text = item.name ?: item.documentName ?: "Unnamed",
+                    text = item.getMenuName(),
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Medium,
                     maxLines = 1,
@@ -409,27 +411,84 @@ fun VisitActionItemCard(
     }
 }
 
-// YENİ: Extension fonksiyonlar
-fun DocumentTypeGroup.getIcon(): ImageVector = when (this) {
+private fun VisitActionItem.getIcon(): ImageVector = when (this.documentType) {
     DocumentTypeGroup.ORDER -> Icons.Default.ShoppingCart
     DocumentTypeGroup.INVOICE -> Icons.Default.Receipt
     DocumentTypeGroup.DISPATCH -> Icons.Default.LocalShipping
     DocumentTypeGroup.WAREHOUSERECEIPT -> Icons.Default.Warehouse
     DocumentTypeGroup.COLLECTION -> Icons.Default.Payments
-    DocumentTypeGroup.FORM -> Icons.Default.Description
+    DocumentTypeGroup.FORM -> {
+        when(this.smallIcon){
+            "0" ->{
+                Icons.Default.Settings
+            }
+            "1"->{
+                Icons.Default.Flight
+            }
+            "2" -> {
+                Icons.Default.Menu
+            }
+            "3" ->{
+                Icons.Default.ArrowDropDown
+            }
+            "4"->{
+                Icons.AutoMirrored.Default.Sort
+            }
+            "5"->{
+                Icons.Default.ClearAll
+            }
+            "6"->{
+                Icons.Default.ArrowUpward
+            }
+            "7"->{
+                Icons.Default.AttachFile
+            }
+            "8"->{
+                Icons.Default.Mood
+            }
+            "9"->{
+                Icons.Default.Stars
+            }
+            "10"->{
+                Icons.Default.Bookmark
+            }
+            "11"->{
+                Icons.Outlined.TripOrigin
+            }
+            "12"->{
+                Icons.Default.Mode
+            }
+            else -> {
+                Icons.Default.Description
+            }
+        }
+
+    }
     DocumentTypeGroup.OTHER -> Icons.Default.MoreHoriz
     DocumentTypeGroup.EMPTY -> Icons.Default.RemoveCircleOutline
 }
 
-fun DocumentTypeGroup.getDisplayName(): String = when (this) {
-    DocumentTypeGroup.ORDER -> "Siparişler"
-    DocumentTypeGroup.INVOICE -> "Faturalar"
-    DocumentTypeGroup.DISPATCH -> "Sevkiyatlar"
-    DocumentTypeGroup.WAREHOUSERECEIPT -> "Depo Fişleri"
-    DocumentTypeGroup.COLLECTION -> "Tahsilatlar"
-    DocumentTypeGroup.FORM -> "Formlar"
-    DocumentTypeGroup.OTHER -> "Diğer"
-    DocumentTypeGroup.EMPTY -> "Boş"
+private fun DocumentTypeGroup.getIcon(): ImageVector = when (this) {
+    DocumentTypeGroup.ORDER -> Icons.Default.ShoppingCart
+    DocumentTypeGroup.INVOICE -> Icons.Default.Receipt
+    DocumentTypeGroup.DISPATCH -> Icons.Default.LocalShipping
+    DocumentTypeGroup.WAREHOUSERECEIPT -> Icons.Default.Warehouse
+    DocumentTypeGroup.COLLECTION -> Icons.Default.Payments
+    DocumentTypeGroup.FORM ->  Icons.Default.Description
+    DocumentTypeGroup.OTHER -> Icons.Default.MoreHoriz
+    DocumentTypeGroup.EMPTY -> Icons.Default.RemoveCircleOutline
+}
+
+@Composable
+private fun DocumentTypeGroup.getDisplayName(): String = when (this) {
+    DocumentTypeGroup.ORDER -> Res.string.orders.fromResource()
+    DocumentTypeGroup.INVOICE -> Res.string.invoices.fromResource()
+    DocumentTypeGroup.DISPATCH -> Res.string.dispatches.fromResource()
+    DocumentTypeGroup.WAREHOUSERECEIPT -> Res.string.warehousereceipts.fromResource()
+    DocumentTypeGroup.COLLECTION -> Res.string.collections.fromResource()
+    DocumentTypeGroup.FORM -> Res.string.forms.fromResource()
+    DocumentTypeGroup.OTHER -> Res.string.other.fromResource()
+    DocumentTypeGroup.EMPTY -> Res.string.empty.fromResource()
 }
 
 @Composable
@@ -441,6 +500,59 @@ private fun TaskRepeatInterval.getDisplayName(): String = when (this) {
     TaskRepeatInterval.MONTH -> Res.string.task_repeat_month.fromResource()
     TaskRepeatInterval.TWO_WEEK -> Res.string.task_repeat_two_week.fromResource()
     TaskRepeatInterval.EVERY_VISIT -> Res.string.task_repeat_every_visit.fromResource()
+}
+
+@Composable
+private fun VisitActionItem.getMenuName(): String {
+    return when (this.documentType) {
+        DocumentTypeGroup.ORDER,DocumentTypeGroup.WAREHOUSERECEIPT, DocumentTypeGroup.INVOICE, DocumentTypeGroup.DISPATCH, DocumentTypeGroup.COLLECTION -> {
+            when(this.name){
+                "ReceivedOrder" -> Res.string.receivedorder.fromResource()
+                "ElectronicOrder" -> Res.string.electronicorder.fromResource()
+                "SalesReturnsOrder" -> Res.string.salesreturnsorder.fromResource()
+                "DamagedReturnOrder" -> Res.string.damagedreturnorder.fromResource()
+                "ReturnElectronicOrder" -> Res.string.returnelectronicorder.fromResource()
+                "ReturnWholesaleInvoice" -> Res.string.returnwholesaleinvoice.fromResource()
+                "WholesaleInvoice" -> Res.string.wholesaleinvoice.fromResource()
+                "ElectronicInvoice" -> Res.string.electronicinvoice.fromResource()
+                "ReturnElectronicInvoice" -> Res.string.returnelectronicinvoice.fromResource()
+                "WholesaleDispatch" -> Res.string.wholesaledispatch.fromResource()
+                "ReturnWholesaleDispatch" -> Res.string.returnwholesaledispatch.fromResource()
+                "ElectronicDispatch" -> Res.string.electronicdispatch.fromResource()
+                "ReturnElectronicDispatch" -> Res.string.returnelectronicdispatch.fromResource()
+                "CollectionBill" -> Res.string.collectionbill.fromResource()
+                "CollectionCash" -> Res.string.collectioncash.fromResource()
+                "CollectionCheque" -> Res.string.collectioncheque.fromResource()
+                "CollectionCreditCard" -> Res.string.collectioncreditcard.fromResource()
+                "CollectionMoneyOrder" -> Res.string.collectionmoneyorder.fromResource()
+                "DebitAdvice" -> Res.string.debitadvice.fromResource()
+                "CreditAdvice" -> Res.string.creditadvice.fromResource()
+                "ReturnAssetsPurchaseInvoice" -> Res.string.returnassetspurchaseinvoice.fromResource()
+                "AssetsPurchaseInvoice" -> Res.string.assetspurchaseinvoice.fromResource()
+                "AssetsPurchaseElectronicInvoice" -> Res.string.assetspurchaseelectronicinvoice.fromResource()
+                "AssetsPurchaseReturnElectronicInvoice" -> Res.string.assetspurchasereturnelectronicinvoice.fromResource()
+                "GivenOrder" -> Res.string.givenorder.fromResource()
+                "AssetsPurchaseElectronicOrder" -> Res.string.assetspurchaseelectronicorder.fromResource()
+                "AssetsPurchaseReturnElectronicOrder" -> Res.string.assetspurchasereturnelectronicorder.fromResource()
+                "AssetsPurchaseReturnOrder" -> Res.string.assetspurchasereturnorder.fromResource()
+                "AssetsPurchaseReturnDispatch" -> Res.string.assetspurchasereturndispatch.fromResource()
+                "AssetsPurchaseDispatch" -> Res.string.assetspurchasedispatch.fromResource()
+                "AssetsPurchaseElectronicDispatch" -> Res.string.assetspurchaseelectronicdispatch.fromResource()
+                "AssetsPurchaseReturnElectronicDispatch" -> Res.string.assetspurchasereturnelectronicdispatch.fromResource()
+                "InvoiceVehicleReturn" -> Res.string.invoicevehiclereturn.fromResource()
+                "InvoiceOneToOneReturn" -> Res.string.invoiceonetoonereturn.fromResource()
+                "InvoiceDamagedReturn" -> Res.string.invoicedamagedreturn.fromResource()
+                "InvoiceOneToOneDamagedReturn" -> Res.string.invoiceonetoonedamagedreturn.fromResource()
+                "NamedDeliveryOrder" -> Res.string.nameddeliveryorder.fromResource()
+                else -> {
+                    this.name ?: this.documentName ?: ""
+                }
+            }
+        }
+        else -> {
+            this.name ?: this.documentName ?: ""
+        }
+    }
 }
 
 @OptIn(ExperimentalTime::class)
@@ -541,7 +653,7 @@ fun CustomerSummary(customer: CustomerItemModel, themeManager: ThemeManager, vis
                 }
                 if(visitUiState.visibleBalanceText){
                     Text(
-                        text = "${Res.string.customerbalanceheader.fromResource()} ${customer.customerBalance.toMoney()} / ${customer.customerRiskBalance.toMoney()}",
+                        text = "${Res.string.customerbalanceheader.fromResource()} ${customer.balance.toMoney()} / ${customer.customerRiskBalance.toMoney()}",
                         style = MaterialTheme.typography.bodySmall,
                         color = themeManager.getCurrentColorScheme().colorPalet.white,
                         maxLines = 1,

@@ -1,6 +1,7 @@
 package com.repzone.presentation.legacy.viewmodel.visit
 
 import com.repzone.core.ui.base.BaseViewModel
+import com.repzone.core.ui.base.resetUiFrame
 import com.repzone.core.ui.base.setError
 import com.repzone.core.ui.base.withLoading
 import com.repzone.domain.common.fold
@@ -72,6 +73,7 @@ class VisitViewModel(private val iModuleParameters: IMobileModuleParameterReposi
     override fun onDispose() {
         super.onDispose()
         isInitialized = false
+        resetUiFrame()
     }
     //endregion
 

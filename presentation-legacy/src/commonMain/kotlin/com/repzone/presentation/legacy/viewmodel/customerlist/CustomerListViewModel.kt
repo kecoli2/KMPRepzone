@@ -117,6 +117,10 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
             }
         }
     }
+
+    override fun onDispose() {
+        super.onDispose()
+    }
     //endregion
 
     //region Protected Method

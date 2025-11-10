@@ -874,4 +874,5 @@
     <string name="task_repeat_month">Every Month</string>
     <string name="task_repeat_every_visit">Every Visit</string>
     <string name="necessary">Necessary</string>
+    <string name="nameddeliveryorder">Named Delivery Order</string>
 </resources>

@@ -48,7 +48,6 @@ class VisitManager(private val iVisitRepository: IVisitRepository,
             getRouteInformationUseCase.invoke(customer).fold(
                 onSuccess = {
                     routeInformation = it
-                    customer.customerBalance = it?.customerBalance ?: 0.0
                     customer.customerRiskBalance = it?.customerRisk ?: 0.0
                 },
                 onError = {

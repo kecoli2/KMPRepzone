@@ -87,8 +87,7 @@ private fun AppContent() {
     val currentLanguage by themeManager.currentLanguage.collectAsState()
     key(currentLanguage) {
         AppTheme(themeManager = themeManager) {
-            //AppRouter()
-            AppAndroidPreview()
+            AppRouter()
         }
     }
 }

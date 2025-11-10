@@ -51,6 +51,10 @@ data class CustomerListScreenUiState(
         return copy(uiFrame = uiFrame,)
     }
 
+    override fun resetUiFrame(): CustomerListScreenUiState {
+        return CustomerListScreenUiState()
+    }
+
     sealed class CustomerListState {
         data object Initial : CustomerListState()
         data object Loading : CustomerListState()

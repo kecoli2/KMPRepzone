@@ -1,8 +1,6 @@
 package com.repzone.data.mapper
 
 import com.repzone.core.util.extensions.toBoolean
-import com.repzone.core.util.extensions.toDateOnly
-import com.repzone.core.util.extensions.toEnum
 import com.repzone.core.util.extensions.toInstant
 import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
@@ -36,7 +34,8 @@ class CustomerItemViewEntityDbMapper: Mapper<CustomerItemViewEntity, CustomerIte
             endDate = from.EndDate?.toInstant(),
             customerBlocked = from.CustomerBlocked,
             sprintId = from.SprintId,
-            isECustomer = from.IsECustomer?.toBoolean() ?: false
+            isECustomer = from.IsECustomer?.toBoolean() ?: false,
+            balance = from.Balance ?: 0.0
         )
     }
 
@@ -48,7 +47,7 @@ class CustomerItemViewEntityDbMapper: Mapper<CustomerItemViewEntity, CustomerIte
             FinishDate = domain.finishDate?.toEpochMilliseconds(),
             AppointmentId = domain.appointmentId,
             Date = domain.date?.toEpochMilliseconds(),
-            TagRaw = domain.tagRaw?.joinToString(","),
+            TagRaw = domain.tagRaw.joinToString(","),
             Name = domain.name,
             CustomerCode = domain.customerCode,
             CustomerGroupName = domain.customerGroupName,
@@ -62,7 +61,8 @@ class CustomerItemViewEntityDbMapper: Mapper<CustomerItemViewEntity, CustomerIte
             CustomerBlocked = domain.customerBlocked,
             SprintId = domain.sprintId,
             ShowDisplayClock = domain.showDisplayClock.toLong(),
-            IsECustomer = domain.isECustomer.toLong()
+            IsECustomer = domain.isECustomer.toLong(),
+            Balance = domain.balance
         )
 
     }

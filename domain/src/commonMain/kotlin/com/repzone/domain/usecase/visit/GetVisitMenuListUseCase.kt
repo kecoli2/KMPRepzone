@@ -240,7 +240,7 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
 
             }
 
-            val filteredForms = list
+            var filteredForms = list
                 .filter { form ->
                     form.hasValidRepresentTags(iUserSession.getActiveSession()!!.identity!!.getTags()) &&
                             form.hasValidCustomerTags(customer.tagRaw) &&
@@ -259,7 +259,7 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
                     } ?: false)
                 }
 
-            filteredForms.toMutableList().sortByDescending { it.displayOrder }
+            filteredForms = filteredForms.toMutableList().sortedBy { it.displayOrder }
             actionMenuList.addAll(filteredForms)
         }
     }

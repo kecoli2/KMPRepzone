@@ -19,4 +19,8 @@ data class SyncUiState(
     override fun copyWithUiFrame(newUiFrame: UiFrame): SyncUiState {
         return copy(uiFrame = uiFrame)
     }
+
+    override fun resetUiFrame(): SyncUiState {
+        return SyncUiState()
+    }
 }

@@ -11,4 +11,8 @@ data class SplashScreenUiState(
     override fun copyWithUiFrame(newUiFrame: UiFrame): SplashScreenUiState {
         return copy(uiFrame = newUiFrame)
     }
+
+    override fun resetUiFrame(): SplashScreenUiState {
+        return SplashScreenUiState()
+    }
 }

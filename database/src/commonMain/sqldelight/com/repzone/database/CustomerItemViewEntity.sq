@@ -20,7 +20,8 @@ SELECT
     CAST(C.Blocked AS INTEGER) CustomerBlocked,
     CAST(RA.SprintId AS INTEGER) SprintId,
     CAST (1 AS INTEGER) ShowDisplayClock,
-    CAST(C.IsECustomer AS INTEGER) IsECustomer
+    CAST(C.IsECustomer AS INTEGER) IsECustomer,
+    C.Balance
 FROM SyncRouteAppointmentEntity RA
 INNER JOIN SyncCustomerEntity C ON RA.CustomerId = C.Id
 INNER JOIN SyncAddressEntity A ON A.CustomerId = C.Id
@@ -52,7 +53,8 @@ SELECT
     CustomerBlocked,
     SprintId,
     ShowDisplayClock,
-    IsECustomer
+    IsECustomer,
+    Balance
 FROM CustomerItemViewEntity
 WHERE SprintId = ?
     AND (:onlyParents = 0 OR ParentCustomerId = 0 OR ParentCustomerId IS NULL)

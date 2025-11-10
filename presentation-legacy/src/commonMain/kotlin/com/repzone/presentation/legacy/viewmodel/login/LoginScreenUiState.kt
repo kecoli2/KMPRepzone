@@ -14,6 +14,11 @@ data class LoginScreenUiState(
     override fun copyWithUiFrame(newUiFrame: UiFrame): LoginScreenUiState {
         return copy(uiFrame = newUiFrame)
     }
+
+    override fun resetUiFrame(): LoginScreenUiState {
+        return LoginScreenUiState()
+    }
+
     val isFormValid: Boolean get() = username.isNotBlank() && password.isNotBlank()
     val canSubmit: Boolean get() = isFormValid && !uiFrame.isLoading
 }

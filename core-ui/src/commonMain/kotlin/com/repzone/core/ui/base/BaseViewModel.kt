@@ -2,6 +2,7 @@ package com.repzone.core.ui.base
 
 import com.repzone.core.model.HasUiFrame
 import com.repzone.core.model.UiFrame
+import com.repzone.core.ui.base.resetUiFrame
 import com.repzone.domain.common.DomainException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -164,7 +165,7 @@ fun <S> BaseViewModel<S, *>.clearError()
 fun <S> BaseViewModel<S, *>.resetUiFrame()
         where S : Any, S : HasUiFrame {
     updateStateInternal { currentState ->
-        currentState.copyWithUiFrame(UiFrame()) as S
+        currentState.resetUiFrame() as S
     }
 }
 

@@ -44,6 +44,10 @@ class SyncTestViewModel(private val syncManager: ISyncManager,
         override fun copyWithUiFrame(newUiFrame: UiFrame): State {
             return copy(uiFrame = uiFrame)
         }
+
+        override fun resetUiFrame(): State {
+            return State()
+        }
     }
 
     /**

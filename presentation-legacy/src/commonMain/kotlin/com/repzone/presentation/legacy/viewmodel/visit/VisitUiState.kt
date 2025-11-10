@@ -20,6 +20,10 @@ data class VisitUiState(
         return copy(uiFrame = uiFrame)
     }
 
+    override fun resetUiFrame(): VisitUiState {
+        return VisitUiState()
+    }
+
     sealed class ActionMenuListState {
         data object Initial : ActionMenuListState()
         data object Loading : ActionMenuListState()
