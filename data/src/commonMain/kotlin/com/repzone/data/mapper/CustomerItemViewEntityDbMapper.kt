@@ -1,6 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.util.extensions.toBoolean
 import com.repzone.core.util.extensions.toDateOnly
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.core.util.extensions.toInstant
 import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
@@ -33,7 +35,8 @@ class CustomerItemViewEntityDbMapper: Mapper<CustomerItemViewEntity, CustomerIte
             parentCustomerId = from.ParentCustomerId,
             endDate = from.EndDate?.toInstant(),
             customerBlocked = from.CustomerBlocked,
-            sprintId = from.SprintId
+            sprintId = from.SprintId,
+            isECustomer = from.IsECustomer?.toBoolean() ?: false
         )
     }
 
@@ -59,6 +62,7 @@ class CustomerItemViewEntityDbMapper: Mapper<CustomerItemViewEntity, CustomerIte
             CustomerBlocked = domain.customerBlocked,
             SprintId = domain.sprintId,
             ShowDisplayClock = domain.showDisplayClock.toLong(),
+            IsECustomer = domain.isECustomer.toLong()
         )
 
     }

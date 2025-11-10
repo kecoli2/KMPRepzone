@@ -135,7 +135,7 @@ private class OrangeTonalPalet public constructor(): IColorPalet {
 
     override fun lightColorScheme(): ColorScheme {
         return lightColorScheme(
-        primary = primary40,
+        primary = primary50,
         onPrimary = primary100,
         primaryContainer = primary90,
         onPrimaryContainer = primary10,

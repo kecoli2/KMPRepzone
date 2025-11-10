@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun updateAppLocaleAndRecreate(languageCode: String) {
-        val localeList = LocaleListCompat.forLanguageTags(languageCode)
+        /*val localeList = LocaleListCompat.forLanguageTags(languageCode)
         AppCompatDelegate.setApplicationLocales(localeList)
         val locale = Locale(languageCode)
         Locale.setDefault(locale)
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         config.setLocale(locale)
         @Suppress("DEPRECATION")
         resources.updateConfiguration(config, resources.displayMetrics)
-        recreate()
+        recreate()*/
     }
 
     override fun onDestroy() {
@@ -94,7 +94,7 @@ private fun AppContent() {
 
 @Composable
 //@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, widthDp = 800, heightDp = 400)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
 fun AppAndroidPreview() {
     startKoin {
         androidContext(RepzoneApplication())

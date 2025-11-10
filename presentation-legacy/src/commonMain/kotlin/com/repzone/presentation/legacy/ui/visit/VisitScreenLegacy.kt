@@ -235,7 +235,7 @@ fun DocumentTypeHeader(
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.onSecondaryContainer
+        color = MaterialTheme.colorScheme.primary
     ) {
         Row(
             modifier = Modifier
@@ -247,7 +247,7 @@ fun DocumentTypeHeader(
             Icon(
                 imageVector = documentType.getIcon(),
                 contentDescription = null,
-                tint = themeManager.getCurrentColorScheme().colorPalet.secondary40,
+                tint = MaterialTheme.colorScheme.onSecondary,
                 modifier = Modifier.size(20.dp)
             )
 
@@ -256,7 +256,7 @@ fun DocumentTypeHeader(
                 text = documentType.getDisplayName(),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold,
-                color = themeManager.getCurrentColorScheme().colorPalet.secondary40
+                color = MaterialTheme.colorScheme.onSecondary
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -264,7 +264,7 @@ fun DocumentTypeHeader(
             // Badge - grup item sayısı
             Surface(
                 shape = CircleShape,
-                color = themeManager.getCurrentColorScheme().colorPalet.secondary40.copy(alpha = 0.45f)
+                color = MaterialTheme.colorScheme.onSecondary.copy(alpha = 0.45f)
             ) {
                 Text(
                     text = itemCount.toString(),
@@ -308,7 +308,7 @@ fun VisitActionItemCard(
                 modifier = Modifier
                     .size(40.dp)
                     .clip(CircleShape)
-                    .background(themeManager.getCurrentColorScheme().colorPalet.secondary40.copy(alpha = 0.15f)),
+                    .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.45f)),
                 contentAlignment = Alignment.Center
             ) {
                 if (item.smallIcon != null) {
@@ -323,7 +323,7 @@ fun VisitActionItemCard(
                     Icon(
                         imageVector = item.documentType.getIcon(),
                         contentDescription = null,
-                        tint = themeManager.getCurrentColorScheme().colorPalet.secondary40,
+                        tint = MaterialTheme.colorScheme.onSecondary,
                         modifier = Modifier.size(20.dp)
                     )
                 }
@@ -389,7 +389,7 @@ fun VisitActionItemCard(
                     // Fulfillment badge
                     if (item.isFulfillment) {
                         Badge(
-                            containerColor = themeManager.getCurrentColorScheme().colorPalet.primary50
+                            containerColor = MaterialTheme.colorScheme.primary
                         ) {
                             Text(
                                 text = "Sevkiyat",
@@ -406,7 +406,7 @@ fun VisitActionItemCard(
                 imageVector = if (item.hasDone) Icons.Default.CheckCircle else Icons.Default.ChevronRight,
                 contentDescription = "Tamamlandı",
                 tint = if (item.hasDone) {
-                    themeManager.getCurrentColorScheme().colorPalet.secondary40
+                    MaterialTheme.colorScheme.primary
                 } else {
                     MaterialTheme.colorScheme.onSurfaceVariant
                 },
@@ -462,7 +462,7 @@ fun CustomerSummary(customer: CustomerItemModel, themeManager: ThemeManager, vis
         customer.date?.toEpochMilliseconds()?.toDateString("HH:mm") ?: ""
     }
 
-    val formattedDate2 = remember(customer.date) {
+    val formattedDate2 = remember(customer.endDate) {
         customer.endDate?.toEpochMilliseconds()?.toDateString("HH:mm") ?: ""
     }
 
@@ -511,7 +511,7 @@ fun CustomerSummary(customer: CustomerItemModel, themeManager: ThemeManager, vis
                         .clip(CircleShape)
                         .background(MaterialTheme.colorScheme.surfaceVariant)
                         .padding(8.dp),
-                    tint = themeManager.getCurrentColorScheme().colorPalet.primary50
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
 
@@ -553,7 +553,7 @@ fun CustomerSummary(customer: CustomerItemModel, themeManager: ThemeManager, vis
                 }
                 if(visitUiState.visibleBalanceText){
                     Text(
-                        text = "${Res.string.customerbalanceheader.fromResource()} ${visitUiState.customerBalance.toMoney()} / ${visitUiState.customerRiskBalance.toMoney()}",
+                        text = "${Res.string.customerbalanceheader.fromResource()} ${customer.customerBalance.toMoney()} / ${customer.customerRiskBalance.toMoney()}",
                         style = MaterialTheme.typography.bodySmall,
                         color = themeManager.getCurrentColorScheme().colorPalet.white,
                         maxLines = 1,
@@ -574,7 +574,7 @@ fun CustomerSummary(customer: CustomerItemModel, themeManager: ThemeManager, vis
                     )
                     Text(
                         modifier = Modifier.padding(start = 8.dp),
-                        text = "${formattedDateStart}-${formattedDate2}",
+                        text = "$dayDesc ${formattedDateStart}-${formattedDate2}",
                         style = MaterialTheme.typography.bodySmall,
                         color = themeManager.getCurrentColorScheme().colorPalet.white,
                         maxLines = 1,
@@ -600,6 +600,14 @@ fun CustomerSummary(customer: CustomerItemModel, themeManager: ThemeManager, vis
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
+                }else{
+                    Text(
+                        text = Res.string.ecustomerinfo.fromResource(),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = themeManager.getCurrentColorScheme().colorPalet.white,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
             }
         }
@@ -618,7 +626,7 @@ fun ActionButton(item: VisitButtonItem, themeManager: ThemeManager, onClick: () 
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    color = themeManager.getCurrentColorScheme().colorPalet.primary50,
+                    color = MaterialTheme.colorScheme.primary,
                     shape = RoundedCornerShape(50.dp)
                 )
         ) {

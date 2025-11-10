@@ -30,7 +30,9 @@ data class CustomerItemModel(
     val showCalendarInfo: Boolean = false,
     val showDisplayClock: Boolean = false,
     val displayOrder: Int? = null,
-    val showDisplayOrder: Boolean = false) {
+    val showDisplayOrder: Boolean = false,
+    var isECustomer: Boolean = false) {
 
-    var isECustomer: Boolean = false
+    var customerBalance : Double = 0.0
+    var customerRiskBalance: Double = 0.0
 }
