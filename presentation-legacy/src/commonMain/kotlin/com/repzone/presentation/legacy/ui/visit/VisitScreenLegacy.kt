@@ -327,8 +327,7 @@ fun VisitActionItemCard(
                     style = MaterialTheme.typography.bodyLarge,
                     fontWeight = FontWeight.Medium,
                     maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                    textDecoration = if (item.hasDone) TextDecoration.LineThrough else null
+                    overflow = TextOverflow.Ellipsis
                 )
 
                 // Açıklama

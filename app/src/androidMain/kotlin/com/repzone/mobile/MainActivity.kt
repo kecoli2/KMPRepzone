@@ -87,14 +87,15 @@ private fun AppContent() {
     val currentLanguage by themeManager.currentLanguage.collectAsState()
     key(currentLanguage) {
         AppTheme(themeManager = themeManager) {
-            AppRouter()
+            //AppRouter()
+            AppAndroidPreview()
         }
     }
 }
 
 @Composable
 //@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, widthDp = 800, heightDp = 400)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun AppAndroidPreview() {
     startKoin {
         androidContext(RepzoneApplication())
@@ -200,12 +201,15 @@ fun AppAndroidPreview() {
             interval = TaskRepeatInterval.ATVISITSTART
         )
     )
-    VisitActionList(
-        items = lists,
-        onItemClick = {
+    AppTheme(themeManager = themeManager) {
+        VisitActionList(
+            items = lists,
+            onItemClick = {
 
-        },
-        themeManager = themeManager,
-        modifier = Modifier
-    )
+            },
+            themeManager = themeManager,
+            modifier = Modifier
+        )
+    }
+
 }

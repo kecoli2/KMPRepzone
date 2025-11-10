@@ -76,7 +76,6 @@ class ThemeManager(private val iUserSession: IUserSession? = null) {
             _currentColorSchemeId.value = defaultSchemeId
         }
     }
-
     fun setColorScheme(themeType: ThemeType) {
         val config = activePresentationConfig ?: return
         val schemes = config.provideColorSchemes()
