@@ -878,4 +878,11 @@
     <string name="task_repeat_every_visit">Her ziyarette</string>
     <string name="necessary">Zorunlu</string>
     <string name="nameddeliveryorder">Nama Sevk Sipariş</string>
+    <string name="damaged_return_electronic_order">Hasarlı İade e-Siparişi</string>
+    <string name="e_invoice_vehicle_return">E-Fatura Araç İadesi</string>
+    <string name="e_invoice_damaged_return">E-Fatura Hasarlı İade</string>
+    <string name="e_invoice_one_to_one_damaged_return">E-Fatura Birebir Hasarlı İade</string>
+    <string name="damaged_return_electronic_dispatch">Hasarlı İade e-İrsaliye</string>
+
+
 </resources>

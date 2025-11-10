@@ -875,4 +875,10 @@
     <string name="task_repeat_every_visit">Every Visit</string>
     <string name="necessary">Necessary</string>
     <string name="nameddeliveryorder">Named Delivery Order</string>
+    <string name="damaged_return_electronic_order">Damaged Return Electronic Order</string>
+    <string name="e_invoice_vehicle_return">E-Invoice Vehicle Return</string>
+    <string name="e_invoice_damaged_return">E-Invoice Damaged Return</string>
+    <string name="e_invoice_one_to_one_damaged_return">E-Invoice One-to-One Damaged Return</string>
+    <string name="damaged_return_electronic_dispatch">Damaged Return E-Dispatch</string>
+
 </resources>
