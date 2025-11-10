@@ -128,6 +128,11 @@ interface IColorPalet {
     val error100: Color
     //endregion Error Palette
 
+    //region Aditional Palette
+    val startVisitIconBackGround : Color
+    val stopVisitIconBackGround : Color
+    //endregion Aditional Palette
+
     fun lightColorScheme(): ColorScheme
     fun darkColorScheme(): ColorScheme
 }

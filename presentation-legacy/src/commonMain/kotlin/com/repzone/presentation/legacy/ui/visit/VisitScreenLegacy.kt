@@ -47,7 +47,6 @@ import androidx.compose.material.icons.filled.Receipt
 import androidx.compose.material.icons.filled.RemoveCircleOutline
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material.icons.filled.Sort
 import androidx.compose.material.icons.filled.Stars
 import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Timer
@@ -69,6 +68,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
@@ -140,9 +142,22 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
 
             //Customer Summary
             CustomerSummary(customer = customer, themeManager = themeManager, uiState)
-
-            Box(modifier = Modifier
-                .fillMaxWidth(),
+            val backgroundColor = MaterialTheme.colorScheme.background
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .drawBehind {
+                        drawRect(
+                            color = themeManager.getCurrentColorScheme().colorPalet.secondary20,
+                            topLeft = Offset(0f, 0f),
+                            size = Size(size.width, size.height / 2)
+                        )
+                        drawRect(
+                            color = backgroundColor,
+                            topLeft = Offset(0f, size.height / 2),
+                            size = Size(size.width, size.height / 2)
+                        )
+                    },
                 contentAlignment = Alignment.Center
             ){
                 LazyRow(
@@ -726,7 +741,7 @@ fun ActionButton(item: VisitButtonItem, themeManager: ThemeManager, onClick: () 
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    color = MaterialTheme.colorScheme.primary,
+                    color = getIconButtonTypeBackgroundColor(item.actionType, themeManager),
                     shape = RoundedCornerShape(50.dp)
                 )
         ) {
@@ -756,7 +771,7 @@ fun ActionButton(item: VisitButtonItem, themeManager: ThemeManager, onClick: () 
 }
 
 @Composable
-fun getIconForActionType(type: ActionButtonType): ImageVector {
+private fun getIconForActionType(type: ActionButtonType): ImageVector {
     return when (type) {
         ActionButtonType.VISITING_START -> Icons.Default.PlayArrow
         ActionButtonType.VISITING_END -> Icons.Default.Stop
@@ -765,5 +780,21 @@ fun getIconForActionType(type: ActionButtonType): ImageVector {
         ActionButtonType.DRIVE -> Icons.Default.Folder
         ActionButtonType.REPORT -> Icons.Default.Assessment
         ActionButtonType.NOTES -> Icons.Default.Note
+    }
+}
+
+@Composable
+private fun getIconButtonTypeBackgroundColor(type: ActionButtonType, themeManager: ThemeManager): Color {
+    return when (type) {
+        ActionButtonType.VISITING_START -> {
+            themeManager.getCurrentColorScheme().colorPalet.startVisitIconBackGround
+        }
+        ActionButtonType.VISITING_END -> {
+            themeManager.getCurrentColorScheme().colorPalet.stopVisitIconBackGround
+        }
+        else -> {
+            MaterialTheme.colorScheme.primary
+        }
+
     }
 }

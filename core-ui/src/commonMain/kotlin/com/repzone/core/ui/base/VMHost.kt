@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import com.repzone.core.platform.Logger
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -20,6 +21,8 @@ import kotlin.time.ExperimentalTime
 object SmartViewModelStore {
     private val store = mutableMapOf<String, ViewModelEntry>()
     private val activeCompositions = mutableSetOf<String>() // Aktif ekranları track et
+    private val navigationDepth = mutableMapOf<String, Int>() // Her ViewModel'in backstack derinliği
+    private val entryIdToViewModelKey = mutableMapOf<String, String>() // BackStackEntry ID -> ViewModel Key mapping
 
     private data class ViewModelEntry(
         val viewModel: BaseViewModel<*, *>,
@@ -40,39 +43,59 @@ object SmartViewModelStore {
     }
 
     // Composition active/inactive tracking
-    fun markCompositionActive(key: String) {
+    fun markCompositionActive(key: String, depth: Int = 0) {
         activeCompositions.add(key)
+        navigationDepth[key] = depth
     }
 
     fun markCompositionInactive(key: String) {
         activeCompositions.remove(key)
     }
 
-    // Smart cleanup - sadece inactive ViewModel'leri temizle
+    fun isCompositionActive(key: String): Boolean {
+        return activeCompositions.contains(key)
+    }
+
+    // Navigation depth güncelleme
+    fun updateNavigationDepth(key: String, depth: Int) {
+        navigationDepth[key] = depth
+    }
+
+    // BackStack entry tracking
+    fun registerBackStackEntry(entryId: String, viewModelKey: String) {
+        entryIdToViewModelKey[entryId] = viewModelKey
+        println("Registered: entryId=$entryId -> viewModelKey=$viewModelKey")
+    }
+
+    fun disposeByEntryId(entryId: String) {
+        val viewModelKey = entryIdToViewModelKey[entryId]
+        if (viewModelKey != null) {
+            disposeViewModel(viewModelKey)
+            entryIdToViewModelKey.remove(entryId)
+        }
+    }
+
+    // Smart cleanup - sadece acil durum temizliği için
+    // Normal durumlarda NavBackStackEntry lifecycle otomatik dispose ediyor
     fun smartCleanup() {
         val currentTime = Clock.System.now().toEpochMilliseconds()
-        val timeout = 5 * 60 * 1000L // 2 dakika (test için kısa)
+        val emergencyTimeout = 2 * 60 * 60 * 1000L // 2 saat - acil durum için
 
         val toRemove = store.filter { (key, entry) ->
-            val isOld = currentTime - entry.lastAccessTime > timeout
             val isInactive = !activeCompositions.contains(key)
+            val isVeryOld = currentTime - entry.lastAccessTime > emergencyTimeout
 
-            // Sadece hem eski hem de inactive olan ViewModel'leri temizle
-            isOld && isInactive
+            // Sadece çok eski ve inactive olanları temizle
+            isInactive && isVeryOld
         }
 
         if (toRemove.isNotEmpty()) {
             toRemove.forEach { (key, entry) ->
-                println("Disposing inactive ViewModel: $key")
+                Logger.d("ViewHost","Emergency cleanup: disposing ViewModel $key (unused for 2+ hours)")
                 entry.viewModel.onDispose()
                 store.remove(key)
+                navigationDepth.remove(key)
             }
-        }
-
-        // Aktif ViewModel'leri koruyarak log
-        val activeVMs = store.keys.filter { activeCompositions.contains(it) }
-        if (activeVMs.isNotEmpty()) {
-            println("Protected active ViewModels: ${activeVMs.joinToString(", ")}")
         }
     }
 
@@ -80,6 +103,41 @@ object SmartViewModelStore {
         store.values.forEach { it.viewModel.onDispose() }
         store.clear()
         activeCompositions.clear()
+        navigationDepth.clear()
+    }
+
+    // Manuel dispose - specific ViewModel'i hemen dispose et
+    fun disposeViewModel(key: String) {
+        store[key]?.let { entry ->
+            entry.viewModel.onDispose()
+            store.remove(key)
+            activeCompositions.remove(key)
+            navigationDepth.remove(key)
+            Logger.d("ViewHost","ViewModel manually disposed: $key")
+        }
+    }
+
+    // Remove ViewModel from store
+    fun remove(key: String) {
+        store[key]?.let { entry ->
+            entry.viewModel.onDispose()
+        }
+        store.remove(key)
+        activeCompositions.remove(key)
+        navigationDepth.remove(key)
+    }
+
+    // Manuel dispose - tüm inactive ViewModel'leri dispose et
+    fun disposeInactiveViewModels() {
+        val inactiveKeys = store.keys.filter { !activeCompositions.contains(it) }
+        inactiveKeys.forEach { key ->
+            store[key]?.let { entry ->
+                entry.viewModel.onDispose()
+                store.remove(key)
+                navigationDepth.remove(key)
+                Logger.d("ViewHost","Inactive ViewModel disposed: $key")
+            }
+        }
     }
 
     // Debug info
@@ -122,7 +180,6 @@ fun <VM : BaseViewModel<*, *>> rememberCompositionAwareViewModel(key: String, fa
         onDispose {
             SmartViewModelStore.markCompositionInactive(key)
             vm.onStop()
-            // NOT disposing here - let smart cleanup handle it
         }
     }
 
@@ -141,13 +198,6 @@ inline fun <reified VM : BaseViewModel<*, *>> ViewModelHost(
         if (params.isEmpty()) koin.get<VM>()
         else koin.get<VM> { parametersOf(*params) }
     }
-
-/*    // Debug info
-    if (BuildConfig.DEBUG) {
-        LaunchedEffect(Unit) {
-            println("ViewModelHost: $key - ${SmartViewModelStore.getDebugInfo()}")
-        }
-    }*/
 
     content(vm)
 }

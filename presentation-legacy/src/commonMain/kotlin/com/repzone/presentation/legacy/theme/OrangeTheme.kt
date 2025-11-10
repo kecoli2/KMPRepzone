@@ -9,7 +9,8 @@ import com.repzone.core.ui.manager.theme.common.ColorSchemeVariant
 import com.repzone.core.ui.manager.theme.common.IColorPalet
 
 // ==================== TONAL PALETTES ====================
-private class OrangeTonalPalet public constructor(): IColorPalet {
+private class OrangeTonalPalet public constructor(
+): IColorPalet {
     //region Primary Palette (Orange)
     override val primary0 :Color = Color(0xFF000000)
     override val primary5 :Color = Color(0xFF180A01)
@@ -132,6 +133,11 @@ private class OrangeTonalPalet public constructor(): IColorPalet {
 
     override val white: Color = Color.White
     override val black: Color = Color.Black
+
+    //region Additional Color
+    override val startVisitIconBackGround = Color(0xFF009942)
+    override val stopVisitIconBackGround = Color(0xFFBA1A1A)
+    //endregion Additional Color
 
     override fun lightColorScheme(): ColorScheme {
         return lightColorScheme(

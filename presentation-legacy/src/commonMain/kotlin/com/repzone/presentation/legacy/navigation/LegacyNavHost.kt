@@ -3,7 +3,6 @@ package com.repzone.presentation.legacy.navigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -15,7 +14,6 @@ import androidx.navigation.compose.rememberNavController
 import com.repzone.core.ui.component.selectiondialog.sample.ExampleUsageScreen
 import com.repzone.core.ui.ui.settings.SettingsScreen
 import com.repzone.core.ui.util.enum.NavigationItemType
-import com.repzone.presentation.legacy.navigation.NavigationSharedStateHolder
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
 import com.repzone.presentation.legacy.ui.customerlist.CustomerListScreenLegacy
 import com.repzone.presentation.legacy.ui.splash.SplashScreenLegacy
@@ -28,18 +26,21 @@ fun LegacyNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController = rememberNavController()
 ) {
+    // BackStack monitor - backstack'ten çıkarılan ekranları dispose eder
+    navController.MonitorBackStack()
+
     CompositionLocalProvider(LocalNavController provides navController) {
         NavHost(
             navController = navController,
             startDestination = LegacyScreen.AuthGraph,
             modifier = modifier.fillMaxSize(),
-            // ... transitions ...
         ) {
 
             // ============ AUTH GRAPH ============
-            navigation<LegacyScreen.AuthGraph>(startDestination = LegacyScreen.Splash  //
-            ) {
-                composable<LegacyScreen.Splash> {
+            navigation<LegacyScreen.AuthGraph>(startDestination = LegacyScreen.Splash) {
+                composable<LegacyScreen.Splash> { backStackEntry ->
+                    RegisterBackStackEntry(backStackEntry.id, "SplashViewModel")
+
                     SplashScreenLegacy(
                         onNavigateToLogin = {
                             navController.navigate(LegacyScreen.Login) {
@@ -54,10 +55,11 @@ fun LegacyNavHost(
                     )
                 }
 
-                composable<LegacyScreen.Login> {
+                composable<LegacyScreen.Login> { backStackEntry ->
+                    RegisterBackStackEntry(backStackEntry.id, "LoginViewModel")
+
                     LoginScreenLegacy(
                         onLoginSuccess = {
-                            // Login başarılı → Main graph'a git
                             navController.navigate(LegacyScreen.MainGraph) {
                                 popUpTo(LegacyScreen.AuthGraph) { inclusive = true }
                             }
@@ -65,14 +67,17 @@ fun LegacyNavHost(
                     )
                 }
 
-                composable<LegacyScreen.TestScreen> {
+                composable<LegacyScreen.TestScreen> { backStackEntry ->
+                    RegisterBackStackEntry(backStackEntry.id, "TestViewModel")
                     ExampleUsageScreen()
                 }
             }
 
             // ============ MAIN APP GRAPH ============
             navigation<LegacyScreen.MainGraph>(startDestination = LegacyScreen.Sync) {
-                composable<LegacyScreen.Sync> {
+                composable<LegacyScreen.Sync> { backStackEntry ->
+                    RegisterBackStackEntry(backStackEntry.id, "SyncViewModel")
+
                     SyncScreenLegacy(
                         onSyncCompleted = {
                             navController.navigate(LegacyScreen.CustomerList) {
@@ -82,7 +87,9 @@ fun LegacyNavHost(
                     )
                 }
 
-                composable<LegacyScreen.CustomerList> {
+                composable<LegacyScreen.CustomerList> { backStackEntry ->
+                    RegisterBackStackEntry(backStackEntry.id, "CustomerListViewModel")
+
                     val sharedHolder : NavigationSharedStateHolder = koinInject()
                     CustomerListScreenLegacy({ type ->
                         when(type) {
@@ -92,7 +99,6 @@ fun LegacyNavHost(
 
                             NavigationItemType.LOGOUT -> {
                                 navController.navigate(LegacyScreen.Login) {
-                                    // Tüm back stack'i temizle
                                     popUpTo(0) { inclusive = true }
                                 }
                             }
@@ -105,13 +111,17 @@ fun LegacyNavHost(
                     })
                 }
 
-                composable<LegacyScreen.SettingsScreen> {
+                composable<LegacyScreen.SettingsScreen> { backStackEntry ->
+                    RegisterBackStackEntry(backStackEntry.id, "SettingsViewModel")
+
                     SettingsScreen {
                         navController.navigateUp()
                     }
                 }
 
-                composable<LegacyScreen.VisitScreen> {
+                composable<LegacyScreen.VisitScreen> { backStackEntry ->
+                    RegisterBackStackEntry(backStackEntry.id, "VisitViewModel")
+
                     val navigationState: NavigationSharedStateHolder = koinInject()
                     val selectedCustomer by navigationState.selectedCustomer.collectAsState()
 
@@ -127,3 +137,9 @@ fun LegacyNavHost(
         }
     }
 }
+
+
+
+
+
+
