@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
     private fun updateAppLocaleAndRecreate(languageCode: String) {
-        /*val localeList = LocaleListCompat.forLanguageTags(languageCode)
+        val localeList = LocaleListCompat.forLanguageTags(languageCode)
         AppCompatDelegate.setApplicationLocales(localeList)
         val locale = Locale(languageCode)
         Locale.setDefault(locale)
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         config.setLocale(locale)
         @Suppress("DEPRECATION")
         resources.updateConfiguration(config, resources.displayMetrics)
-        recreate()*/
+        recreate()
     }
 
     override fun onDestroy() {

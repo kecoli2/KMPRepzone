@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -41,8 +40,6 @@ import androidx.compose.material.icons.filled.Stop
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.Warehouse
 import androidx.compose.material3.Badge
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -55,13 +52,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
@@ -86,7 +80,6 @@ import com.repzone.core.util.extensions.toDateString
 import com.repzone.core.util.extensions.toDayName
 import com.repzone.core.util.extensions.toMoney
 import com.repzone.domain.model.CustomerItemModel
-import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.util.enums.ActionButtonType
 import com.repzone.domain.util.models.VisitActionItem
 import com.repzone.domain.util.models.VisitButtonItem
@@ -94,13 +87,7 @@ import com.repzone.presentation.legacy.viewmodel.visit.VisitUiState
 import com.repzone.presentation.legacy.viewmodel.visit.VisitViewModel
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
-import repzonemobile.core.generated.resources.Res
-import repzonemobile.core.generated.resources.customerbalanceheader
-import repzonemobile.core.generated.resources.ecustomerinfo
-import repzonemobile.core.generated.resources.image_not_found
-import repzonemobile.core.generated.resources.routedescriptionheader
-import repzonemobile.core.generated.resources.routetoday
-import repzonemobile.core.generated.resources.routetomorrow
+import repzonemobile.core.generated.resources.*
 import kotlin.time.ExperimentalTime
 
 @Composable
@@ -366,7 +353,7 @@ fun VisitActionItemCard(
                             containerColor = MaterialTheme.colorScheme.error
                         ) {
                             Text(
-                                text = "Zorunlu",
+                                text = Res.string.necessary.fromResource(),
                                 style = MaterialTheme.typography.labelSmall,
                                 fontSize = 10.sp
                             )
@@ -446,13 +433,15 @@ fun DocumentTypeGroup.getDisplayName(): String = when (this) {
     DocumentTypeGroup.EMPTY -> "Boş"
 }
 
-fun TaskRepeatInterval.getDisplayName(): String = when (this) {
-    TaskRepeatInterval.NONE -> "Tekrar Yok"
-    TaskRepeatInterval.ATVISITSTART -> "Ziyaret Başlangıcı"
-    TaskRepeatInterval.ONE_TIME -> "Birkerelik"
-    TaskRepeatInterval.WEEK -> "Haftalık"
-    TaskRepeatInterval.MONTH -> "Aylık"
-    else -> this.name
+@Composable
+private fun TaskRepeatInterval.getDisplayName(): String = when (this) {
+    TaskRepeatInterval.NONE -> ""
+    TaskRepeatInterval.ATVISITSTART -> Res.string.task_repeat_at_visit_start.fromResource()
+    TaskRepeatInterval.ONE_TIME -> Res.string.task_repeat_one_time.fromResource()
+    TaskRepeatInterval.WEEK -> Res.string.task_repeat_week.fromResource()
+    TaskRepeatInterval.MONTH -> Res.string.task_repeat_month.fromResource()
+    TaskRepeatInterval.TWO_WEEK -> Res.string.task_repeat_two_week.fromResource()
+    TaskRepeatInterval.EVERY_VISIT -> Res.string.task_repeat_every_visit.fromResource()
 }
 
 @OptIn(ExperimentalTime::class)

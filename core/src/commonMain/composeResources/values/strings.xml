@@ -857,4 +857,21 @@
     <string name="ecustomerinfo">This customer is an e-invoice taxpayer</string>
     <string name= "loading">Loading</string>
     <string name="job_form_definations">Form definations</string>
+
+    <string name="invoices">Invoices</string>
+    <string name="dispatches">Dispatches</string>
+    <string name="warehousereceipts">Warehouse Receipts</string>
+    <string name="collections">Collections</string>
+    <string name="forms">Forms</string>
+    <string name="other">Other</string>
+    <string name="empty">...</string>
+
+    <string name="task_repeat_none">No Repeat</string>
+    <string name="task_repeat_one_time">One Time</string>
+    <string name="task_repeat_at_visit_start">At Visit Start</string>
+    <string name="task_repeat_week">Every Week</string>
+    <string name="task_repeat_two_week">Every Two Weeks</string>
+    <string name="task_repeat_month">Every Month</string>
+    <string name="task_repeat_every_visit">Every Visit</string>
+    <string name="necessary">Necessary</string>
 </resources>

@@ -860,4 +860,21 @@
     <string name="list_empty">Gösterilecek kayıt bulunamadı...</string>
     <string name= "ecustomerinfo"> Bu müşteri e-fatura mükellefidir</string>
     <string name= "loading">Yükleniyor</string>
+
+    <string name="invoices">Faturalar</string>
+    <string name="dispatches">İrsaliyeler</string>
+    <string name="warehousereceipts">Depo Fişleri</string>
+    <string name="collections">Tahsilatlar</string>
+    <string name="forms">Formlar</string>
+    <string name="other">Diğer</string>
+    <string name="empty">...</string>
+
+    <string name="task_repeat_none">Tekrarlama yok</string>
+    <string name="task_repeat_one_time">Bir kez</string>
+    <string name="task_repeat_at_visit_start">Ziyaret başlangıcında</string>
+    <string name="task_repeat_week">Her hafta</string>
+    <string name="task_repeat_two_week">İki haftada bir</string>
+    <string name="task_repeat_month">Her ay</string>
+    <string name="task_repeat_every_visit">Her ziyarette</string>
+    <string name="necessary">Zorunlu</string>
 </resources>
