@@ -562,7 +562,7 @@ private fun VisitActionItem.getMenuName(): String {
                 "DamagedReturnElectronicOrder" -> Res.string.damaged_return_electronic_order.fromResource()
                 "EInvoiceVehicleReturn" -> Res.string.e_invoice_vehicle_return.fromResource()
                 "EInvoiceDamagedReturn" -> Res.string.e_invoice_damaged_return.fromResource()
-                "EInvoiceOneTwoOneDamagedReturn" -> Res.string.e_invoice_one_to_one_damaged_return.fromResource()
+                "EInvoiceOneToOneDamagedReturn" -> Res.string.e_invoice_one_to_one_damaged_return.fromResource()
                 "DamagedReturnElectronicDispatch" -> Res.string.damaged_return_electronic_dispatch.fromResource()
 
                 else -> {
