@@ -1,5 +1,6 @@
 package com.repzone.core.ui.base
 
+import androidx.lifecycle.ViewModel
 import com.repzone.core.model.HasUiFrame
 import com.repzone.core.model.UiFrame
 import com.repzone.core.ui.base.resetUiFrame

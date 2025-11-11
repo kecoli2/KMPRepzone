@@ -5,13 +5,16 @@ import com.repzone.core.ui.base.resetUiFrame
 import com.repzone.core.ui.base.setError
 import com.repzone.core.ui.base.withLoading
 import com.repzone.domain.common.fold
+import com.repzone.domain.events.CustomerBalanceUpdated
+import com.repzone.domain.events.DomainEvent
+import com.repzone.domain.events.base.IEventBus
 import com.repzone.domain.manager.visitmanager.IVisitManager
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.repository.IVisitRepository
 
 class VisitViewModel(private val iModuleParameters: IMobileModuleParameterRepository,
-                    private val iVisitManager: IVisitManager): BaseViewModel<VisitUiState, VisitViewModel.Event>(VisitUiState()) {
+                    private val iVisitManager: IVisitManager, private val iEventBus: IEventBus): BaseViewModel<VisitUiState, VisitViewModel.Event>(VisitUiState()) {
     //region Field
     private var customer: CustomerItemModel? = null
     private var isInitialized = false // EKLEME
@@ -36,6 +39,8 @@ class VisitViewModel(private val iModuleParameters: IMobileModuleParameterReposi
                 setError(it)
             }
         )
+
+        iEventBus.emit(CustomerBalanceUpdated(customer?.customerId ?: 0,45.78))
     }
     //endregion
 

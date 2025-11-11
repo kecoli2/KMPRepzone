@@ -6,10 +6,13 @@ import com.repzone.core.interfaces.IPreferencesManager
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.core.ui.base.resetUiFrame
+import com.repzone.core.util.extensions.moveToFirst
 import com.repzone.database.SyncCustomerEntity
 import com.repzone.database.SyncRouteAppointmentEntity
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.database.runtime.select
+import com.repzone.domain.events.base.IEventBus
+import com.repzone.domain.events.base.subscribeToBalanceUpdates
 import com.repzone.domain.model.CustomerByParrentModel
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
@@ -38,7 +41,8 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                             private val iSyncManager: ISyncManager,
                             private var representRepository: IRepresentativeRepository,
                             private val iPreferencesManager: IPreferencesManager,
-                            private val iDatabaseManager: IDatabaseManager
+                            private val iDatabaseManager: IDatabaseManager,
+                            private val iEventBus: IEventBus
 ): BaseViewModel<CustomerListScreenUiState, CustomerListViewModel.Event>(CustomerListScreenUiState()) {
     //region Field
     private var searchQuery: String = ""
@@ -52,6 +56,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
             scope.launch {
                 updateUiWithPermissions()
             }
+            testSubscribe()
         }
     //endregion
 
@@ -120,6 +125,17 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
 
     override fun onDispose() {
         super.onDispose()
+    }
+
+    private  fun testSubscribe(){
+        scope.launch {
+            iEventBus.subscribeToBalanceUpdates().collect { event ->
+                updateState { currentState ->
+                    val list = currentState.filteredCustomers.moveToFirst { it.customerId == event.customerId }
+                    currentState.copy(filteredCustomers = list)
+                }
+            }
+        }
     }
     //endregion
 

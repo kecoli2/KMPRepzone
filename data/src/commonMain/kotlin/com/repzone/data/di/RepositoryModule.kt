@@ -517,4 +517,8 @@ val RepositoryModule = module {
     single { SyncWarehouseTotalEntityDbMapper() }
     //endregion
     //endregion DBMAPPERS
+
+    includes(
+        EventBusModule
+    )
 }
