@@ -3,16 +3,9 @@ package com.repzone.presentation.legacy.viewmodel.customerlist
 import com.repzone.core.enums.OnOf
 import com.repzone.core.enums.VisitPlanSchedulesType
 import com.repzone.core.interfaces.IPreferencesManager
-import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.base.BaseViewModel
-import com.repzone.core.ui.base.resetUiFrame
-import com.repzone.core.util.extensions.moveToFirst
-import com.repzone.database.SyncCustomerEntity
-import com.repzone.database.SyncRouteAppointmentEntity
 import com.repzone.database.interfaces.IDatabaseManager
-import com.repzone.database.runtime.select
 import com.repzone.domain.events.base.IEventBus
-import com.repzone.domain.events.base.subscribeToBalanceUpdates
 import com.repzone.domain.model.CustomerByParrentModel
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
@@ -26,10 +19,6 @@ import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.ExperimentalTime
@@ -56,7 +45,6 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
             scope.launch {
                 updateUiWithPermissions()
             }
-            testSubscribe()
         }
     //endregion
 
@@ -127,16 +115,6 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         super.onDispose()
     }
 
-    private  fun testSubscribe(){
-        scope.launch {
-            iEventBus.subscribeToBalanceUpdates().collect { event ->
-                updateState { currentState ->
-                    val list = currentState.filteredCustomers.moveToFirst { it.customerId == event.customerId }
-                    currentState.copy(filteredCustomers = list)
-                }
-            }
-        }
-    }
     //endregion
 
     //region Protected Method
@@ -284,7 +262,10 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                 currentState.copy(uiFrame = currentState.uiFrame.copy(true))
             }
 
-            if(iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.groupByParentCustomer == OnOf.ON){
+            if(iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true
+                && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.groupByParentCustomer == OnOf.ON && (selectedCustomer.parentCustomerId
+                    ?: 0) > 0
+            ) {
                 val parentData = iCustomerListRepository.getAllByParrent(selectedCustomer)
                 if(parentData.parrentCustomers.isNotEmpty()){
                    emitEvent(Event.ShowDialogParentCustomer(parentData))

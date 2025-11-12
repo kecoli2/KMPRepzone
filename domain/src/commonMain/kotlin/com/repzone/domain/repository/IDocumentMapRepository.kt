@@ -1,7 +1,7 @@
 package com.repzone.domain.repository
 
 import com.repzone.core.enums.DocProcessType
-import com.repzone.core.enums.DocumentTypeGroup
+import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.NumberTemplateType
 import com.repzone.core.model.PrinterListItem
 import com.repzone.domain.model.DocumentMapDocNumberInformationModel
@@ -26,13 +26,13 @@ interface IDocumentMapRepository {
     suspend fun clearPrinterRelations(printerAdress: String)
     suspend fun getAnyPrinterInfo(): PrinterDocumentRelationInformationModel?
     suspend fun getDocNumberByDocumentMapId(documentMapId: Int): DocumentMapDocNumberInformationModel?
-    suspend fun getDocNumberByDocumentGroup(documentGroup: DocumentTypeGroup): DocumentMapDocNumberInformationModel?
-    suspend fun setDocumentNumberByDocumentGroup(documentGroup: DocumentTypeGroup ,prefix: String, number: Int, postfix: String, documentMapId: Int = 0)
+    suspend fun getDocNumberByDocumentGroup(documentGroup: DocumentActionType): DocumentMapDocNumberInformationModel?
+    suspend fun setDocumentNumberByDocumentGroup(documentGroup: DocumentActionType, prefix: String, number: Int, postfix: String, documentMapId: Int = 0)
     suspend fun logInvoicePrintContent(content: String, sessionId: String)
     suspend fun logCollectionPrintContent(content: String, sessionId: String)
     suspend fun getADocumentNumberFromAPI(docGroupType: Int,docTypeId: Int, numberTemplateType: NumberTemplateType): DocumentMapDocNumberInformationModel
     suspend fun fetchLastDocumentNumber(docGroupType: Int,docTypeId: Int)
     suspend fun prepareDocNumber(docModel: LastDocumentModel?): DocumentNumberAndPrefix
     suspend fun softDeleteDocumentMapNumber(docNumber: DocumentMapDocNumberInformationModel)
-    suspend fun deleteDocumentFromAPI(documentGroup: DocumentTypeGroup, documentUniqueId: String): String
+    suspend fun deleteDocumentFromAPI(documentGroup: DocumentActionType, documentUniqueId: String): String
 }

@@ -1,7 +1,7 @@
 package com.repzone.domain.events.base
 
 import com.repzone.core.platform.Logger
-import com.repzone.domain.events.DomainEvent
+import com.repzone.domain.events.base.events.DomainEvent
 
 interface IEventLogger {
     /**

@@ -1,8 +1,7 @@
 package com.repzone.data.repository.imp
 
-import com.repzone.core.constant.IMobileApiControllerConstant
 import com.repzone.core.enums.DocProcessType
-import com.repzone.core.enums.DocumentTypeGroup
+import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.NumberTemplateType
 import com.repzone.core.enums.PrinterDeviceType
 import com.repzone.core.model.PrinterListItem
@@ -275,16 +274,16 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
 
         if(numberInfoWithId == null){
             if(documentMapId == 13 || documentMapId == 29){
-                numberInfoWithId = getDocNumberByDocumentGroup(DocumentTypeGroup.INVOICE)
+                numberInfoWithId = getDocNumberByDocumentGroup(DocumentActionType.INVOICE)
             }else if (documentMapId == 0 || documentMapId == 30){
-                numberInfoWithId = getDocNumberByDocumentGroup(DocumentTypeGroup.DISPATCH)
+                numberInfoWithId = getDocNumberByDocumentGroup(DocumentActionType.DISPATCH)
             }
         }
 
         return numberInfoWithId
     }
 
-    override suspend fun getDocNumberByDocumentGroup(documentGroup: DocumentTypeGroup): DocumentMapDocNumberInformationModel? {
+    override suspend fun getDocNumberByDocumentGroup(documentGroup: DocumentActionType): DocumentMapDocNumberInformationModel? {
         return iDatabaseManager.getSqlDriver().select<DocumentMapDocNumberInformationEntity> {
             where {
                 criteria("DocumentGroup", equal = documentGroup.ordinal)
@@ -296,7 +295,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
         }
     }
 
-    override suspend fun setDocumentNumberByDocumentGroup(documentGroup: DocumentTypeGroup, prefix: String, number: Int, postfix: String, documentMapId: Int) {
+    override suspend fun setDocumentNumberByDocumentGroup(documentGroup: DocumentActionType, prefix: String, number: Int, postfix: String, documentMapId: Int) {
         var currentNumber = iDatabaseManager.getSqlDriver().select<DocumentMapDocNumberInformationEntity> {
             where {
                 criteria("DocumentType", equal = documentGroup.ordinal)
@@ -371,25 +370,25 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
 
         val documentType = when(docGroupType){
             1 -> {
-                DocumentTypeGroup.ORDER
+                DocumentActionType.ORDER
             }
             2 -> {
-                DocumentTypeGroup.INVOICE
+                DocumentActionType.INVOICE
             }
             3 -> {
-                DocumentTypeGroup.DISPATCH
+                DocumentActionType.DISPATCH
             }
             4 -> {
-                DocumentTypeGroup.WAREHOUSERECEIPT
+                DocumentActionType.WAREHOUSERECEIPT
             }
             5 -> {
-                DocumentTypeGroup.COLLECTION
+                DocumentActionType.COLLECTION
             }
             6 -> {
-                DocumentTypeGroup.OTHER
+                DocumentActionType.OTHER
             }
             else -> {
-                DocumentTypeGroup.INVOICE
+                DocumentActionType.INVOICE
             }
         }
 
@@ -414,7 +413,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                         docNumber = it.docNumber,
                         docDate = it.docDate
                     ))
-                    setDocumentNumberByDocumentGroup(DocumentTypeGroup.INVOICE, prepareDocNumber.prefix, prepareDocNumber.number +1,"", docTypeId)
+                    setDocumentNumberByDocumentGroup(DocumentActionType.INVOICE, prepareDocNumber.prefix, prepareDocNumber.number +1,"", docTypeId)
                 }
             }
             else -> {
@@ -454,7 +453,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
         iDatabaseManager.getSqlDriver().update(mapperNumberDocument.fromDomain(docNumber))
     }
 
-    override suspend fun deleteDocumentFromAPI(documentGroup: DocumentTypeGroup, documentUniqueId: String): String {
+    override suspend fun deleteDocumentFromAPI(documentGroup: DocumentActionType, documentUniqueId: String): String {
         val response = iMobileApi.deleteDocumentFromAPI(documentGroup, documentUniqueId)
         return when(response){
             is ApiResult.Success -> {

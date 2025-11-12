@@ -20,8 +20,8 @@ data class DocumentMapModelDto(
     @Serializable(with = IoType.Companion.Serializer::class)
     val ioType: IoType? = null,
     val isElectronicDocument: Boolean,
-    @Serializable(with = DocumentTypeGroup.Companion.Serializer::class)
-    val documentTypeGroup: DocumentTypeGroup? = null,
+    @Serializable(with = DocumentActionType.Companion.Serializer::class)
+    val documentTypeGroup: DocumentActionType? = null,
     @Serializable(with = WarehouseType.Companion.Serializer::class)
     val warehouseType: WarehouseType? = null,
     val minMaxControl: Boolean,

@@ -1,6 +1,6 @@
 package com.repzone.domain.events.base
 
-import com.repzone.domain.events.DomainEvent
+import com.repzone.domain.events.base.events.DomainEvent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -18,10 +18,10 @@ interface IEventBus {
     /**
      * Event yayınla (suspend)
      */
-    suspend fun emit(event: DomainEvent)
+    suspend fun publish(event: DomainEvent)
 
     /**
      * Event yayınla (non-blocking)
      */
-    fun tryEmit(event: DomainEvent): Boolean
+    fun tryPublish(event: DomainEvent): Boolean
 }

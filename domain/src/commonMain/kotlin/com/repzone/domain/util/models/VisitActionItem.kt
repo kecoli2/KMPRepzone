@@ -1,6 +1,6 @@
 package com.repzone.domain.util.models
 
-import com.repzone.core.enums.DocumentTypeGroup
+import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.TaskRepeatInterval
 import com.repzone.domain.util.enums.TransactionDocumentGroup
 import kotlin.time.ExperimentalTime
@@ -27,7 +27,7 @@ data class VisitActionItem(
     val endDate: Instant? = null,
     val isMandatory: Boolean = false,
     val interval: TaskRepeatInterval = TaskRepeatInterval.NONE,
-    val documentType: DocumentTypeGroup,
+    val documentType: DocumentActionType,
     val transactionGroupType: TransactionDocumentGroup? = null,
     val isFulfillment: Boolean = false,
     val smallIcon: String? = null,

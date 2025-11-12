@@ -6,21 +6,23 @@ import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
 import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.encoding.Encoder
 
-enum class DocumentTypeGroup {
-    EMPTY,
+enum class DocumentActionType {
+    START_VISIT,
     ORDER,
     INVOICE,
     DISPATCH,
     WAREHOUSERECEIPT,
     COLLECTION,
     OTHER,
-    FORM;
+    FORM,
+    END_VISIT,
+    EMPTY;
 
     companion object {
-        object Serializer : KSerializer<DocumentTypeGroup> {
+        object Serializer : KSerializer<DocumentActionType> {
             override val descriptor = PrimitiveSerialDescriptor("DocumentTypeGroup", PrimitiveKind.INT)
-            override fun serialize(encoder: Encoder, value: DocumentTypeGroup) = encoder.encodeInt(value.ordinal)
-            override fun deserialize(decoder: Decoder) = DocumentTypeGroup.entries[decoder.decodeInt()]
+            override fun serialize(encoder: Encoder, value: DocumentActionType) = encoder.encodeInt(value.ordinal)
+            override fun deserialize(decoder: Decoder) = DocumentActionType.entries[decoder.decodeInt()]
         }
     }
 }

@@ -1,7 +1,7 @@
 package com.repzone.network.http.impl
 
 import com.repzone.core.constant.IMobileApiControllerConstant
-import com.repzone.core.enums.DocumentTypeGroup
+import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.NumberTemplateType
 import com.repzone.network.api.IMobileApiController
 import com.repzone.network.dto.LastDocumentModelDto
@@ -43,7 +43,7 @@ class MobileApiControllerImpl(private val client: HttpClient): IMobileApiControl
         }
     }
 
-    override suspend fun deleteDocumentFromAPI(documentGroup: DocumentTypeGroup, documentUniqueId: String): ApiResult<String?> {
+    override suspend fun deleteDocumentFromAPI(documentGroup: DocumentActionType, documentUniqueId: String): ApiResult<String?> {
         return  try {
             val response = client.safeDelete<String?>(IMobileApiControllerConstant.DELETE_DOCUMENT){
                 url {

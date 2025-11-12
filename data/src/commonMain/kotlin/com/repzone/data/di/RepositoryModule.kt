@@ -519,6 +519,7 @@ val RepositoryModule = module {
     //endregion DBMAPPERS
 
     includes(
-        EventBusModule
+        EventBusModule,
+        PublineModule
     )
 }

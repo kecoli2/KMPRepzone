@@ -80,7 +80,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.repzone.core.constant.CdnConfig
-import com.repzone.core.enums.DocumentTypeGroup
+import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.TaskRepeatInterval
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.component.RepzoneTopAppBar
@@ -170,9 +170,9 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
                             item = item,
                             themeManager = themeManager,
                             onClick = {
+                                viewModel.onEvent(VisitViewModel.Event.OnActionButton(item.actionType))
                             }
                         )
-
                     }
                 }
             }
@@ -242,7 +242,7 @@ fun VisitActionList(
 
 @Composable
 fun DocumentTypeHeader(
-    documentType: DocumentTypeGroup,
+    documentType: DocumentActionType,
     itemCount: Int,
     themeManager: ThemeManager,
     modifier: Modifier = Modifier
@@ -427,12 +427,12 @@ fun VisitActionItemCard(
 }
 
 private fun VisitActionItem.getIcon(): ImageVector = when (this.documentType) {
-    DocumentTypeGroup.ORDER -> Icons.Default.ShoppingCart
-    DocumentTypeGroup.INVOICE -> Icons.Default.Receipt
-    DocumentTypeGroup.DISPATCH -> Icons.Default.LocalShipping
-    DocumentTypeGroup.WAREHOUSERECEIPT -> Icons.Default.Warehouse
-    DocumentTypeGroup.COLLECTION -> Icons.Default.Payments
-    DocumentTypeGroup.FORM -> {
+    DocumentActionType.ORDER -> Icons.Default.ShoppingCart
+    DocumentActionType.INVOICE -> Icons.Default.Receipt
+    DocumentActionType.DISPATCH -> Icons.Default.LocalShipping
+    DocumentActionType.WAREHOUSERECEIPT -> Icons.Default.Warehouse
+    DocumentActionType.COLLECTION -> Icons.Default.Payments
+    DocumentActionType.FORM -> {
         when(this.smallIcon){
             "0" ->{
                 Icons.Default.Settings
@@ -479,31 +479,31 @@ private fun VisitActionItem.getIcon(): ImageVector = when (this.documentType) {
         }
 
     }
-    DocumentTypeGroup.OTHER -> Icons.Default.MoreHoriz
-    DocumentTypeGroup.EMPTY -> Icons.Default.RemoveCircleOutline
+    DocumentActionType.OTHER -> Icons.Default.MoreHoriz
+    else -> Icons.Default.Description
 }
 
-private fun DocumentTypeGroup.getIcon(): ImageVector = when (this) {
-    DocumentTypeGroup.ORDER -> Icons.Default.ShoppingCart
-    DocumentTypeGroup.INVOICE -> Icons.Default.Receipt
-    DocumentTypeGroup.DISPATCH -> Icons.Default.LocalShipping
-    DocumentTypeGroup.WAREHOUSERECEIPT -> Icons.Default.Warehouse
-    DocumentTypeGroup.COLLECTION -> Icons.Default.Payments
-    DocumentTypeGroup.FORM ->  Icons.Default.Description
-    DocumentTypeGroup.OTHER -> Icons.Default.MoreHoriz
-    DocumentTypeGroup.EMPTY -> Icons.Default.RemoveCircleOutline
+private fun DocumentActionType.getIcon(): ImageVector = when (this) {
+    DocumentActionType.ORDER -> Icons.Default.ShoppingCart
+    DocumentActionType.INVOICE -> Icons.Default.Receipt
+    DocumentActionType.DISPATCH -> Icons.Default.LocalShipping
+    DocumentActionType.WAREHOUSERECEIPT -> Icons.Default.Warehouse
+    DocumentActionType.COLLECTION -> Icons.Default.Payments
+    DocumentActionType.FORM ->  Icons.Default.Description
+    DocumentActionType.OTHER -> Icons.Default.MoreHoriz
+    else -> Icons.Default.Description
 }
 
 @Composable
-private fun DocumentTypeGroup.getDisplayName(): String = when (this) {
-    DocumentTypeGroup.ORDER -> Res.string.orders.fromResource()
-    DocumentTypeGroup.INVOICE -> Res.string.invoices.fromResource()
-    DocumentTypeGroup.DISPATCH -> Res.string.dispatches.fromResource()
-    DocumentTypeGroup.WAREHOUSERECEIPT -> Res.string.warehousereceipts.fromResource()
-    DocumentTypeGroup.COLLECTION -> Res.string.collections.fromResource()
-    DocumentTypeGroup.FORM -> Res.string.forms.fromResource()
-    DocumentTypeGroup.OTHER -> Res.string.other.fromResource()
-    DocumentTypeGroup.EMPTY -> Res.string.empty.fromResource()
+private fun DocumentActionType.getDisplayName(): String = when (this) {
+    DocumentActionType.ORDER -> Res.string.orders.fromResource()
+    DocumentActionType.INVOICE -> Res.string.invoices.fromResource()
+    DocumentActionType.DISPATCH -> Res.string.dispatches.fromResource()
+    DocumentActionType.WAREHOUSERECEIPT -> Res.string.warehousereceipts.fromResource()
+    DocumentActionType.COLLECTION -> Res.string.collections.fromResource()
+    DocumentActionType.FORM -> Res.string.forms.fromResource()
+    DocumentActionType.OTHER -> Res.string.other.fromResource()
+    else -> "empty"
 }
 
 @Composable
@@ -520,7 +520,7 @@ private fun TaskRepeatInterval.getDisplayName(): String = when (this) {
 @Composable
 private fun VisitActionItem.getMenuName(): String {
     return when (this.documentType) {
-        DocumentTypeGroup.ORDER,DocumentTypeGroup.WAREHOUSERECEIPT, DocumentTypeGroup.INVOICE, DocumentTypeGroup.DISPATCH, DocumentTypeGroup.COLLECTION -> {
+        DocumentActionType.ORDER,DocumentActionType.WAREHOUSERECEIPT, DocumentActionType.INVOICE, DocumentActionType.DISPATCH, DocumentActionType.COLLECTION -> {
             when(this.name){
                 "ReceivedOrder" -> Res.string.receivedorder.fromResource()
                 "ElectronicOrder" -> Res.string.electronicorder.fromResource()

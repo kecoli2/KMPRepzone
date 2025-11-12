@@ -1,6 +1,6 @@
 package com.repzone.data.mapper
 
-import com.repzone.core.enums.DocumentTypeGroup
+import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.util.extensions.enumToLong
 import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
@@ -16,7 +16,7 @@ class DocumentMapDocNumberInformationEntityDbMapper : Mapper<DocumentMapDocNumbe
             documentNumberBody = from.DocumentNumberBody,
             documentNumberPostfix = from.DocumentNumberPostfix,
             documentNumberPrefix = from.DocumentNumberPrefix,
-            documentType = from.DocumentType?.toEnum<DocumentTypeGroup>() ?: DocumentTypeGroup.EMPTY,
+            documentType = from.DocumentType?.toEnum<DocumentActionType>() ?: DocumentActionType.EMPTY,
             state = from.State
         )
     }

@@ -1,0 +1,10 @@
+package com.repzone.domain.repository
+
+import com.repzone.core.enums.DocumentActionType
+import com.repzone.domain.model.CustomerItemModel
+import com.repzone.domain.pipline.model.pipline.Pipeline
+
+interface IPipelineRepository {
+    fun getPipelineForAction(actionType: DocumentActionType): Pipeline
+    fun getStartVisit(customerItemModel: CustomerItemModel): Pipeline
+}

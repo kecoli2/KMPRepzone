@@ -158,6 +158,9 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                 is CustomerListViewModel.Event.NavigateVisitPage ->{
                     onCustomerClick(event.selectedCustomer)
                 }
+                is CustomerListViewModel.Event.ShowDialogParentCustomer -> {
+
+                }
                 else -> {
 
                 }

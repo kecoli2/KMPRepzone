@@ -1,6 +1,6 @@
 package com.repzone.domain.events.base
 
-import com.repzone.domain.events.DomainEvent
+import com.repzone.domain.events.base.events.DomainEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
@@ -33,12 +33,12 @@ class EventBus(
             initialValue = 0
         )
 
-    override suspend fun emit(event: DomainEvent) {
+    override suspend fun publish(event: DomainEvent) {
         logger?.logEmit(event, subscriptionCount.value)
         _events.emit(event)
     }
 
-    override fun tryEmit(event: DomainEvent): Boolean {
+    override fun tryPublish(event: DomainEvent): Boolean {
         logger?.logEmit(event, subscriptionCount.value)
         return _events.tryEmit(event)
     }

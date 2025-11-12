@@ -1,6 +1,6 @@
 package com.repzone.data.mapper
 
-import com.repzone.core.enums.DocumentTypeGroup
+import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.IoType
 import com.repzone.core.enums.SalesOperationType
 import com.repzone.core.enums.WarehouseType
@@ -24,7 +24,7 @@ class SyncDocumentMapEntityDbMapper : MapperDto<SyncDocumentMapEntity, SyncDocum
             id = from.Id,
             description = from.Description,
             documentHeader = from.DocumentHeader,
-            documentTypeGroup = from.DocumentTypeGroup?.toEnum<DocumentTypeGroup>() ?: DocumentTypeGroup.EMPTY,
+            documentTypeGroup = from.DocumentTypeGroup?.toEnum<DocumentActionType>() ?: DocumentActionType.EMPTY,
             ioType = from.IoType?.toEnum<IoType>() ?: IoType.EMPTY,
             isElectronicDocument = from.IsElectronicDocument?.toBoolean() ?: false,
             isFulfillment = from.IsFulfillment?.toBoolean() ?: false,

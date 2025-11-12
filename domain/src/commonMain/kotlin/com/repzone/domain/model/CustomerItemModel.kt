@@ -22,7 +22,7 @@ data class CustomerItemModel(
     val imageUri: String?,
     val parentCustomerId: Long?,
     val endDate: Instant?,
-    val customerBlocked: Long?,
+    val customerBlocked: Boolean = false,
     val sprintId: Long?,
     //OPTIONAL FIELD
     val dontShowDatePart: Boolean = false,

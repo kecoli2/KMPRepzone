@@ -8,3 +8,5 @@ expect fun isInPreview(): Boolean
 expect class CurrencyFormatter() {
     fun format(amount: Double): String
 }
+
+expect fun randomUUID(): String

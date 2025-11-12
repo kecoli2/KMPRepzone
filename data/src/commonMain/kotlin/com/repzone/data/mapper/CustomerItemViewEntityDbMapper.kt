@@ -32,7 +32,7 @@ class CustomerItemViewEntityDbMapper: Mapper<CustomerItemViewEntity, CustomerIte
             imageUri = from.ImageUri,
             parentCustomerId = from.ParentCustomerId,
             endDate = from.EndDate?.toInstant(),
-            customerBlocked = from.CustomerBlocked,
+            customerBlocked = from.CustomerBlocked?.toBoolean() ?: false,
             sprintId = from.SprintId,
             isECustomer = from.IsECustomer?.toBoolean() ?: false,
             balance = from.Balance ?: 0.0
@@ -58,7 +58,7 @@ class CustomerItemViewEntityDbMapper: Mapper<CustomerItemViewEntity, CustomerIte
             ImageUri = domain.imageUri,
             ParentCustomerId = domain.parentCustomerId,
             EndDate = domain.endDate?.toEpochMilliseconds(),
-            CustomerBlocked = domain.customerBlocked,
+            CustomerBlocked = domain.customerBlocked.toLong(),
             SprintId = domain.sprintId,
             ShowDisplayClock = domain.showDisplayClock.toLong(),
             IsECustomer = domain.isECustomer.toLong(),

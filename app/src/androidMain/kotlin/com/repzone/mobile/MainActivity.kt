@@ -17,7 +17,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.lifecycleScope
 import com.repzone.core.di.CoreModule
-import com.repzone.core.enums.DocumentTypeGroup
+import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.TaskRepeatInterval
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.di.CoreUiModule
@@ -118,7 +118,7 @@ fun AppAndroidPreview() {
         VisitActionItem(
             name = "Sipariş Oluştur",
             description = "Yeni sipariş kaydı oluşturun",
-            documentType = DocumentTypeGroup.ORDER,
+            documentType = DocumentActionType.ORDER,
             isMandatory = true,
             hasDone = false,
             displayOrder = 1,
@@ -127,7 +127,7 @@ fun AppAndroidPreview() {
         VisitActionItem(
             name = "Acil Sipariş",
             description = "Acil sipariş kaydı",
-            documentType = DocumentTypeGroup.ORDER,
+            documentType = DocumentActionType.ORDER,
             isMandatory = false,
             hasDone = true,
             displayOrder = 2,
@@ -136,7 +136,7 @@ fun AppAndroidPreview() {
         VisitActionItem(
             name = "Fatura Kes",
             description = "Müşteriye fatura düzenleyin",
-            documentType = DocumentTypeGroup.INVOICE,
+            documentType = DocumentActionType.INVOICE,
             hasDone = false,
             displayOrder = 3,
             interval = TaskRepeatInterval.NONE
@@ -144,7 +144,7 @@ fun AppAndroidPreview() {
         VisitActionItem(
             name = "Proforma Fatura",
             description = "Proforma fatura düzenleyin",
-            documentType = DocumentTypeGroup.INVOICE,
+            documentType = DocumentActionType.INVOICE,
             hasDone = true,
             displayOrder = 4,
             interval = TaskRepeatInterval.NONE
@@ -152,7 +152,7 @@ fun AppAndroidPreview() {
         VisitActionItem(
             name = "Sevkiyat Hazırla",
             description = "Sevkiyat belgesi hazırlayın",
-            documentType = DocumentTypeGroup.DISPATCH,
+            documentType = DocumentActionType.DISPATCH,
             hasDone = false,
             isFulfillment = true,
             displayOrder = 5,
@@ -161,7 +161,7 @@ fun AppAndroidPreview() {
         VisitActionItem(
             name = "Müşteri Formu",
             description = "Müşteri bilgi formunu doldurun",
-            documentType = DocumentTypeGroup.FORM,
+            documentType = DocumentActionType.FORM,
             interval = TaskRepeatInterval.ONE_TIME,
             isMandatory = true,
             hasDone = false,
@@ -170,7 +170,7 @@ fun AppAndroidPreview() {
         VisitActionItem(
             name = "Memnuniyet Anketi",
             description = "Müşteri memnuniyet anketini doldurun",
-            documentType = DocumentTypeGroup.FORM,
+            documentType = DocumentActionType.FORM,
             hasDone = false,
             displayOrder = 7,
             interval = TaskRepeatInterval.NONE
@@ -178,7 +178,7 @@ fun AppAndroidPreview() {
         VisitActionItem(
             name = "Tahsilat Yap",
             description = "Müşteriden tahsilat yapın",
-            documentType = DocumentTypeGroup.COLLECTION,
+            documentType = DocumentActionType.COLLECTION,
             hasDone = false,
             displayOrder = 8,
             interval = TaskRepeatInterval.NONE
@@ -186,7 +186,7 @@ fun AppAndroidPreview() {
         VisitActionItem(
             name = "Depo Fişi",
             description = "Depo giriş fişi oluşturun",
-            documentType = DocumentTypeGroup.WAREHOUSERECEIPT,
+            documentType = DocumentActionType.WAREHOUSERECEIPT,
             hasDone = true,
             displayOrder = 9,
             interval = TaskRepeatInterval.NONE
@@ -194,7 +194,7 @@ fun AppAndroidPreview() {
         VisitActionItem(
             name = "Diğer İşlem",
             description = "Diğer işlemleri gerçekleştirin",
-            documentType = DocumentTypeGroup.OTHER,
+            documentType = DocumentActionType.OTHER,
             hasDone = false,
             displayOrder = 10,
             interval = TaskRepeatInterval.ATVISITSTART

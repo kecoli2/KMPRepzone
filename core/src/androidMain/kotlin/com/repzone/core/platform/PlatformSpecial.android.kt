@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalInspectionMode
 import java.text.NumberFormat
 import java.util.Locale
+import java.util.UUID
 
 @Composable
 actual fun isInPreview(): Boolean {
@@ -16,4 +17,8 @@ actual class CurrencyFormatter actual constructor() {
             .format(amount)
         return value
     }
+}
+
+actual fun randomUUID(): String {
+    return UUID.randomUUID().toString()
 }

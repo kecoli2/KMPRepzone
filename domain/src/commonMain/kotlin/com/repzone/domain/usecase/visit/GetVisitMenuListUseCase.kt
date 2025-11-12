@@ -1,6 +1,6 @@
 package com.repzone.domain.usecase.visit
 
-import com.repzone.core.enums.DocumentTypeGroup
+import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.OnOf
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.util.extensions.now
@@ -135,23 +135,23 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
         val usedCustomerOrganizationId = iUserSession.decideWhichOrgIdToBeUsed(routeInformation.customerOrganizationId.toInt())
         val documents = iDocumentMapreRepository.getAll(usedCustomerOrganizationId)
         val fulfillmentOrderDocuments = documents.filter {
-            it.isFulfillment && it.documentTypeGroup == DocumentTypeGroup.ORDER && it.isElectronicDocument == (iUserSession.getActiveSession()!!.identity!!.doNotCheckEDocumentWhileSave != 1 && routeInformation.isECustomer)
+            it.isFulfillment && it.documentTypeGroup == DocumentActionType.ORDER && it.isElectronicDocument == (iUserSession.getActiveSession()!!.identity!!.doNotCheckEDocumentWhileSave != 1 && routeInformation.isECustomer)
         }
 
         val orderDocuments = documents.filter {
-            !it.isFulfillment && it.documentTypeGroup == DocumentTypeGroup.ORDER && it.isElectronicDocument == (iUserSession.getActiveSession()!!.identity!!.doNotCheckEDocumentWhileSave != 1 && routeInformation.isECustomer)
+            !it.isFulfillment && it.documentTypeGroup == DocumentActionType.ORDER && it.isElectronicDocument == (iUserSession.getActiveSession()!!.identity!!.doNotCheckEDocumentWhileSave != 1 && routeInformation.isECustomer)
         }
 
         val invoiceDocuments = documents.filter {
-            !it.isFulfillment && it.documentTypeGroup == DocumentTypeGroup.INVOICE && it.isElectronicDocument == (iUserSession.getActiveSession()!!.identity!!.doNotCheckEDocumentWhileSave != 1 && routeInformation.isECustomer)
+            !it.isFulfillment && it.documentTypeGroup == DocumentActionType.INVOICE && it.isElectronicDocument == (iUserSession.getActiveSession()!!.identity!!.doNotCheckEDocumentWhileSave != 1 && routeInformation.isECustomer)
         }
 
         val dispatchDocuments = documents.filter {
-            !it.isFulfillment && it.documentTypeGroup == DocumentTypeGroup.DISPATCH && it.isElectronicDocument == (iUserSession.getActiveSession()!!.identity!!.doNotCheckEDocumentWhileSave != 1 && routeInformation.isECustomer)
+            !it.isFulfillment && it.documentTypeGroup == DocumentActionType.DISPATCH && it.isElectronicDocument == (iUserSession.getActiveSession()!!.identity!!.doNotCheckEDocumentWhileSave != 1 && routeInformation.isECustomer)
         }
 
         val paymentDocuments = documents.filter {
-            !it.isFulfillment && it.documentTypeGroup == DocumentTypeGroup.COLLECTION
+            !it.isFulfillment && it.documentTypeGroup == DocumentActionType.COLLECTION
         }
 
         if(fulfillmentOrderDocuments.isNotEmpty() && iModuleParameters.getModule().order){
@@ -164,7 +164,7 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
                     VisitActionItem(
                         name = it.name,
                         description = it.description,
-                        documentType = DocumentTypeGroup.ORDER,
+                        documentType = DocumentActionType.ORDER,
                         isFulfillment = it.isFulfillment
                     )
                 )
@@ -177,7 +177,7 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
                     VisitActionItem(
                         name = it.name,
                         description = it.description,
-                        documentType = DocumentTypeGroup.INVOICE,
+                        documentType = DocumentActionType.INVOICE,
                         isFulfillment = it.isFulfillment
                     )
                 )
@@ -190,7 +190,7 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
                     VisitActionItem(
                         name = it.name,
                         description = it.description,
-                        documentType = DocumentTypeGroup.DISPATCH,
+                        documentType = DocumentActionType.DISPATCH,
                         isFulfillment = it.isFulfillment
                     )
                 )
@@ -203,7 +203,7 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
                     VisitActionItem(
                         name = it.name,
                         description = it.description,
-                        documentType = DocumentTypeGroup.COLLECTION,
+                        documentType = DocumentActionType.COLLECTION,
                         isFulfillment = it.isFulfillment
                     )
                 )
@@ -235,7 +235,7 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
                     customerChannels = formMaster.customerChannels.toMutableList() as? ArrayList<Int> ?: arrayListOf(),
                     customerSegments = formMaster.customerSegments.toMutableList() as? ArrayList<Int> ?: arrayListOf(),
                     customerGroups = formMaster.customerGroups.toMutableList() as? ArrayList<Int> ?: arrayListOf(),
-                    documentType = DocumentTypeGroup.FORM,
+                    documentType = DocumentActionType.FORM,
                 )
 
             }

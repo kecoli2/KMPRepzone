@@ -55,6 +55,7 @@ enum class ErrorCode(val code: String) {
     NO_INTERNET("error_network_no_internet"),
     TIMEOUT("error_network_timeout"),
     SERVER_ERROR("error_network_server"),
+    CUSTOMER_BLOCKED("error_business_customer_blocked")
 }
 
 
