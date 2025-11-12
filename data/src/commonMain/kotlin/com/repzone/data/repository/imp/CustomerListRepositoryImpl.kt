@@ -53,7 +53,28 @@ class CustomerListRepositoryImpl(private val iMobileModuleParameter: IMobileModu
         val onlyParents = iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.isActive == true && iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.groupByParentCustomer == OnOf.ON
         val swipeEnable = iEventReasonRepository.getEventReasonList(RepresentativeEventReasonType.NOVISIT).count() > 0
 
-        var listModel = iDatabaseManager.getDatabase().customerItemViewEntityQueries.selectCustomerItemViewEntity(activeStrint?.id?.toLong(), onlyParents.toLong()).executeAsList().map {
+        var listModel = iDatabaseManager.getSqlDriver().select<CustomerItemViewEntity> {
+            where {
+                criteria("SprintId", activeStrint?.id?.toLong())
+
+                if(onlyParents){
+                    or {
+                        criteria("ParentCustomerId", equal = 0)
+                        criteria("ParentCustomerId", isNull = true)
+                    }
+
+                }
+            }
+            groupBy {
+                groupBy("AppointmentId")
+            }
+
+            orderBy {
+                order("Date", desc = false)
+                order("AddressType", desc = false)
+            }
+
+        }.toList().map {
             val domain = mapper.toDomain(it)
             domain.copy(
                 dontShowDatePart = dontShowDatePart,

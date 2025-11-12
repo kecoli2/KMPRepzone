@@ -30,33 +30,3 @@ WHERE RA.State = 1
     AND C.State = 1
     AND C.IsVisible = 1
     AND A.State = 1;
-
-selectCustomerItemViewEntity:
-SELECT
-    CustomerId,
-    VisitId,
-    IconIndex,
-    FinishDate,
-    AppointmentId,
-    Date,
-    TagRaw,
-    Name,
-    CustomerCode,
-    CustomerGroupName,
-    Address,
-    Latitude,
-    Longitude,
-    AddressType,
-    ImageUri,
-    ParentCustomerId,
-    EndDate,
-    CustomerBlocked,
-    SprintId,
-    ShowDisplayClock,
-    IsECustomer,
-    Balance
-FROM CustomerItemViewEntity
-WHERE SprintId = ?
-    AND (:onlyParents = 0 OR ParentCustomerId = 0 OR ParentCustomerId IS NULL)
-    GROUP BY AppointmentId
-ORDER BY Date, AddressType;
