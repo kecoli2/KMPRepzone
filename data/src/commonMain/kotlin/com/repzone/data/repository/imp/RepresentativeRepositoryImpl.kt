@@ -57,12 +57,8 @@ class RepresentativeRepositoryImpl(private val iDatabaseManager: IDatabaseManage
         val summary = if (date != null){
             RepresentSummary(
                 visitTotal = routes.size,
-                visitDoneTotal = routes.filter {
-                    it.visitId != null
-                }.size ,
-                orderCount = sprintOrders.count {
-                    it.OrderDate == date.toEpochMilliseconds()
-                },
+                visitDoneTotal = routes.count { it.visitId != null },
+                orderCount = sprintOrders.count {  it.OrderDate == date.toEpochMilliseconds() },
                 orderValue = sprintOrders.filter { it.OrderDate == date.toEpochMilliseconds() }.sumOf { it.TotalCost!! },
                 formCount = sprintForms.filter { it.RecordDate == date.toEpochMilliseconds() }.size,
                 activeAppoinmentDayCount = routes.groupBy { it.date }.count { it.value.isNotEmpty() }
@@ -70,8 +66,8 @@ class RepresentativeRepositoryImpl(private val iDatabaseManager: IDatabaseManage
         }else{
             RepresentSummary(
                 visitTotal = routes.size,
-                visitDoneTotal = sprintRoutes.count(),
-                orderCount = routes.count { it.visitId != null },
+                visitDoneTotal = routes.count { it.visitId != null },
+                orderCount = sprintRoutes.count(),
                 orderValue = sprintOrders.filter { it.TotalCost != null }.sumOf { it.TotalCost!! },
                 formCount = sprintForms.count(),
                 activeAppoinmentDayCount = routes.groupBy { it.date }.count { it.value.isNotEmpty() }

@@ -137,11 +137,13 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
             when(event){
                 is DomainEvent.VisitStartEvent ->{
                     updateState { currentState ->
-                        val list = currentState.filteredCustomers.moveToFirst { it.customerId == event.customerId && it.appointmentId == event.appointmentId }
-                        currentState.copy(
-                            filteredCustomers = list,
-                            representSummary = representRepository.getSummary(currentState.selectedDate, list)
+                        val lst = currentState.filteredCustomers.moveToFirst(
+                            predicate =  { it.customerId == event.customerId },
+                            transform = { it.copy(visitId = event.visitId) }
                         )
+                        currentState.copy(
+                            filteredCustomers = lst,
+                            representSummary = representRepository.getSummary(currentState.selectedDate, lst))
                     }
                 }
                 else -> null
@@ -183,10 +185,10 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
 
                 // 2. Sıralama uygula
                 filtered = when (sortOption) {
-                    CustomerSortOption.NAME_ASC -> filtered.sortedBy { it.name?.lowercase() }
-                    CustomerSortOption.NAME_DESC -> filtered.sortedByDescending { it.name?.lowercase() }
-                    CustomerSortOption.DATE_ASC -> filtered.sortedBy { it.date?.toEpochMilliseconds() }
-                    CustomerSortOption.DATE_DESC -> filtered.sortedByDescending { it.date?.toEpochMilliseconds() }
+                    CustomerSortOption.NAME_ASC -> filtered.sortedBy { it.name?.lowercase() }.sortedByDescending { it.visitId != null && it.finishDate == null }
+                    CustomerSortOption.NAME_DESC -> filtered.sortedByDescending { it.name?.lowercase() }.sortedByDescending { it.visitId != null && it.finishDate == null }
+                    CustomerSortOption.DATE_ASC -> filtered.sortedBy { it.date?.toEpochMilliseconds() }.sortedByDescending { it.visitId != null && it.finishDate == null }
+                    CustomerSortOption.DATE_DESC -> filtered.sortedByDescending { it.date?.toEpochMilliseconds() }.sortedByDescending { it.visitId != null && it.finishDate == null }
                 }
 
                 currentState.copy(

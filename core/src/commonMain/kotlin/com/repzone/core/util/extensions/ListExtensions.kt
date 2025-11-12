@@ -4,12 +4,22 @@ fun List<String>?.joinList(separator: String = ", "): String {
     return this?.joinToString(separator = separator) ?: ""
 }
 
-fun <T> List<T>.moveToFirst(predicate: (T) -> Boolean): List<T> {
-    val element = this.firstOrNull(predicate) ?: return this
-    return listOf(element) + this.filter { !predicate(it) }
+inline fun <T> List<T>.moveToFirst(
+    predicate: (T) -> Boolean,
+    transform: (T) -> T = { it }
+): List<T> {
+    val index = indexOfFirst(predicate)
+    if (index == -1) return this
+
+    val mutable = toMutableList()
+    val item = transform(mutable.removeAt(index))
+    mutable.add(0, item)
+    return mutable
 }
 
-fun <T> List<T>.moveToFirst(element: T): List<T> {
+fun <T> List<T>.moveToFirst(element: T, transform: (T) -> T = { it }): List<T> {
     if (!this.contains(element)) return this
-    return listOf(element) + this.filter { it != element }
+
+    val newElement = transform(element)
+    return listOf(newElement) + this.filter { it != element }
 }
