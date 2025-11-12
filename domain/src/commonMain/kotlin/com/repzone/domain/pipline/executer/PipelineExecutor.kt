@@ -41,6 +41,10 @@ class PipelineExecutor(private val eventBus: IEventBus) {
 
                 for (rule in stage.rules) {
 
+                    if (!rule.canExecute(context)) {
+                        continue
+                    }
+
                     val result = rule.execute(context)
 
                     when (result) {

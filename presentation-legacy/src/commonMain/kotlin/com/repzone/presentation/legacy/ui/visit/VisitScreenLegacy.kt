@@ -86,6 +86,7 @@ import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.component.RepzoneTopAppBar
 import com.repzone.core.ui.component.TopBarAction
 import com.repzone.core.ui.component.TopBarLeftIcon
+import com.repzone.core.ui.component.dialog.RepzoneDialog
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.ui.platform.HandleBackPress
 import com.repzone.core.util.extensions.fromResource
@@ -110,12 +111,16 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
     val themeManager: ThemeManager = koinInject()
     val uiState by viewModel.state.collectAsState()
 
-    LaunchedEffect(customer.customerId){
+    LaunchedEffect(customer.customerId) {
         viewModel.initiliaze(customer)
     }
 
     HandleBackPress {
         onBackClick()
+    }
+
+    LaunchedEffect(uiState.showDecisionDialog) {
+
     }
 
     Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
@@ -159,7 +164,7 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
                         )
                     },
                 contentAlignment = Alignment.Center
-            ){
+            ) {
                 LazyRow(
                     modifier = Modifier.padding(top = 4.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -193,8 +198,33 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
             )
         }
     }
-}
 
+    uiState.showDecisionDialog?.let { dialogState ->
+        RepzoneDialog(
+            isOpen = true,
+            title = Res.string.warning.fromResource(),
+            message = dialogState.message,
+            yesText = dialogState.options.firstOrNull()?.label ?: "",
+            onYes = {
+                viewModel.onEvent(VisitViewModel.Event.OnDecisionMade(
+                    ruleId = dialogState.ruleId,
+                    selectedOptions = dialogState.options.first(),
+                    sessionId = dialogState.sessionId
+                ))
+            },
+            showNoButton = dialogState.options.size > 1,
+            noText = dialogState.options.getOrNull(1)?.label ?: "",
+            onNo = {
+                viewModel.onEvent(VisitViewModel.Event.OnDecisionMade(
+                    ruleId = dialogState.ruleId,
+                    selectedOptions = dialogState.options[1],
+                    sessionId = dialogState.sessionId
+                ))
+            }
+        )
+    }
+
+}
 // YENİ: Sticky Header'lı Liste Composable
 @Composable
 fun VisitActionList(

@@ -12,10 +12,18 @@ class ScreenRule(
     override val id: String,
     override val title: String,
     val screen: Screen,
-    val eventBus: IEventBus
+    val eventBus: IEventBus,
+    val condition: ((PipelineContext) -> Boolean)? = null
 ) : Rule {
 
     override val type = RuleType.SCREEN
+
+    override suspend fun canExecute(context: PipelineContext): Boolean {
+        if (condition != null) {
+            return condition.invoke(context)
+        }
+        return true
+    }
 
     override suspend fun execute(context: PipelineContext): RuleResult {
 

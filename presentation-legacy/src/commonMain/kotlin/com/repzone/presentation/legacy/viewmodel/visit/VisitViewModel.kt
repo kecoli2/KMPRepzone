@@ -8,11 +8,14 @@ import com.repzone.core.ui.base.withLoading
 import com.repzone.domain.common.fold
 import com.repzone.domain.events.base.IEventBus
 import com.repzone.domain.events.base.events.DecisionEvents
+import com.repzone.domain.events.base.events.DomainEvent
 import com.repzone.domain.events.base.events.PipelineEvents
 import com.repzone.domain.events.base.events.ScreenEvents
 import com.repzone.domain.events.base.subscribeToEvents
 import com.repzone.domain.manager.visitmanager.IVisitManager
 import com.repzone.domain.model.CustomerItemModel
+import com.repzone.domain.pipline.model.DecisionDialogState
+import com.repzone.domain.pipline.model.pipline.DecisionOption
 import com.repzone.domain.pipline.usecase.ExecuteActionUseCase
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.util.enums.ActionButtonType
@@ -107,6 +110,17 @@ class VisitViewModel(private val iModuleParameters: IMobileModuleParameterReposi
                         ActionButtonType.NOTES -> TODO()
                     }
                 }
+                is Event.OnDecisionMade -> {
+                    updateState { currentState ->
+                        currentState.copy(showDecisionDialog = null)
+                    }
+
+                    eventBus.publish(DecisionEvents.DecisionMade(
+                        ruleId = event.ruleId,
+                        selectedOption = event.selectedOptions,
+                        sessionId = event.sessionId
+                    ))
+                }
             }
         }
     }
@@ -139,12 +153,47 @@ class VisitViewModel(private val iModuleParameters: IMobileModuleParameterReposi
                        }
                     }
                     is DecisionEvents.DecisionRequired -> {
-                        if(1==1){
-
+                        updateState { currentState ->
+                            currentState.copy(showDecisionDialog = DecisionDialogState(
+                                ruleId = it.ruleId,
+                                title = it.title,
+                                message = it.message,
+                                options = it.options,
+                                sessionId = it.sessionId
+                            ))
                         }
                     }
                     is PipelineEvents.PipelineCompleted -> {
-                        if(1==1){
+
+                    }
+                    is DomainEvent.VisitStartEvent -> {
+                        updateState { currentState ->
+                            val list = currentState.actionButtonList.map { it->
+                                if(it.actionType  == ActionButtonType.VISITING_START){
+                                    it.copy(actionType = ActionButtonType.VISITING_END)
+                                }else{
+                                    it
+                                }
+                            }
+                            currentState.copy(
+                                actionButtonList = list
+                            )
+
+                        }
+                    }
+
+                    is DomainEvent.VisitStoptEvent -> {
+                        updateState { currentState ->
+                            val list = currentState.actionButtonList.map { it->
+                                if(it.actionType  == ActionButtonType.VISITING_END){
+                                    it.copy(actionType = ActionButtonType.VISITING_START)
+                                }else{
+                                    it
+                                }
+                            }
+                            currentState.copy(
+                                actionButtonList = list
+                            )
 
                         }
                     }
@@ -160,7 +209,7 @@ class VisitViewModel(private val iModuleParameters: IMobileModuleParameterReposi
     //region Event
     sealed class Event {
         data class OnActionButton(val actionButton: ActionButtonType) : Event()
-
+        data class OnDecisionMade(val ruleId: String, val selectedOptions: DecisionOption, val sessionId: String): Event()
     }
     //endregion Event
 }

@@ -6,6 +6,7 @@ interface Rule {
     val type: RuleType
 
     suspend fun execute(context: PipelineContext): RuleResult
+    suspend fun canExecute(context: PipelineContext): Boolean = true
 }
 
 enum class RuleType {

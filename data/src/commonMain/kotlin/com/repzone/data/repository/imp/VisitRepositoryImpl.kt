@@ -14,6 +14,7 @@ import com.repzone.database.runtime.insert
 import com.repzone.database.runtime.insertOrReplace
 import com.repzone.database.runtime.select
 import com.repzone.database.runtime.selectAsFlow
+import com.repzone.database.runtime.update
 import com.repzone.domain.events.base.IEventBus
 import com.repzone.domain.events.base.events.DomainEvent
 import com.repzone.domain.model.CustomerItemModel
@@ -77,10 +78,8 @@ class VisitRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
 
         visit = visit.copy(Finish = now())
         iDatabaseManager.getSqlDriver().insertOrReplace(visit)
-
+        eventBus.publish(DomainEvent.VisitStoptEvent(visit.Id))
         //TODO FIREBASE VE MERKEZE LOGLAMALAR BURALARA KONULACAK
-
-
     }
     //endregion
 

@@ -2,6 +2,7 @@ package com.repzone.presentation.legacy.viewmodel.visit
 
 import com.repzone.core.model.HasUiFrame
 import com.repzone.core.model.UiFrame
+import com.repzone.domain.pipline.model.DecisionDialogState
 import com.repzone.domain.util.models.VisitButtonItem
 import com.repzone.domain.util.models.VisitActionItem
 
@@ -14,7 +15,8 @@ data class VisitUiState(
     val visibleBalanceText : Boolean = true,
     val customerBalance: Double = 0.0,
     val customerRiskBalance: Double = 0.0,
-    val appoinmentDescription : String = ""
+    val appoinmentDescription : String = "",
+    val showDecisionDialog: DecisionDialogState? = null
 ): HasUiFrame {
     override fun copyWithUiFrame(newUiFrame: UiFrame): VisitUiState {
         return copy(uiFrame = uiFrame)
