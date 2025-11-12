@@ -19,4 +19,7 @@ sealed interface DomainEvent {
                                       val balance: Double,
                                       override val timestamp: Long = now()
     ):DomainEvent
+
+    data class VisitStartEvent(val visitId: Long, val customerId: Long, val appointmentId: Long, override val timestamp: Long = now()):DomainEvent
+
 }

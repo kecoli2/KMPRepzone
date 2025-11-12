@@ -2,6 +2,7 @@ package com.repzone.data.mapper
 
 import com.repzone.core.util.extensions.toBoolean
 import com.repzone.core.util.extensions.toInstant
+import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
 import com.repzone.database.VisitEntity
 import com.repzone.domain.model.VisitInformation
@@ -20,9 +21,9 @@ class VisitEntityDbMapper : Mapper<VisitEntity, VisitModel> {
             finish = from.Finish?.toInstant(),
             formIdsRaw = from.FormIdsRaw,
             guid = from.Guid,
-            isItOnLocation = from.IsItOnLocation,
-            isItOnRoute = from.IsItOnRoute,
-            isItOnTime = from.IsItOnTime,
+            isItOnLocation = from.IsItOnLocation?.toBoolean() ?: false,
+            isItOnRoute = from.IsItOnRoute?.toBoolean() ?: false,
+            isItOnTime = from.IsItOnTime?.toBoolean() ?: false,
             latitude = from.Latitude,
             longitude = from.Longitude,
             orderIdsRaw = from.OrderIdsRaw,
@@ -42,9 +43,9 @@ class VisitEntityDbMapper : Mapper<VisitEntity, VisitModel> {
             Finish = domain.finish?.toEpochMilliseconds(),
             FormIdsRaw = domain.formIdsRaw,
             Guid = domain.guid,
-            IsItOnLocation = domain.isItOnLocation,
-            IsItOnRoute = domain.isItOnRoute,
-            IsItOnTime = domain.isItOnTime,
+            IsItOnLocation = domain.isItOnLocation.toLong(),
+            IsItOnRoute = domain.isItOnRoute.toLong(),
+            IsItOnTime = domain.isItOnTime.toLong(),
             Latitude = domain.latitude,
             Longitude = domain.longitude,
             OrderIdsRaw = domain.orderIdsRaw,

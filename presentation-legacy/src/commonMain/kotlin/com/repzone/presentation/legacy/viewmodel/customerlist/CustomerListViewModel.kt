@@ -4,8 +4,11 @@ import com.repzone.core.enums.OnOf
 import com.repzone.core.enums.VisitPlanSchedulesType
 import com.repzone.core.interfaces.IPreferencesManager
 import com.repzone.core.ui.base.BaseViewModel
+import com.repzone.core.util.extensions.moveToFirst
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.domain.events.base.IEventBus
+import com.repzone.domain.events.base.events.DomainEvent
+import com.repzone.domain.events.base.subscribeToEvents
 import com.repzone.domain.model.CustomerByParrentModel
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
@@ -19,6 +22,9 @@ import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.shareIn
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.ExperimentalTime
@@ -44,6 +50,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         init {
             scope.launch {
                 updateUiWithPermissions()
+                subscribeEventBus()
             }
         }
     //endregion
@@ -121,6 +128,26 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
     //endregion
 
     //region Private Method
+    private suspend  fun subscribeEventBus(){
+        iEventBus.subscribeToEvents().shareIn(
+            scope = scope,
+            started = SharingStarted.WhileSubscribed(),
+            replay = 0
+        ).collect { event ->
+            when(event){
+                is DomainEvent.VisitStartEvent ->{
+                    updateState { currentState ->
+                        val list = currentState.filteredCustomers.moveToFirst { it.customerId == event.customerId && it.appointmentId == event.appointmentId }
+                        currentState.copy(
+                            filteredCustomers = list,
+                            representSummary = representRepository.getSummary(currentState.selectedDate, list)
+                        )
+                    }
+                }
+                else -> null
+            }
+        }
+    }
     private suspend fun clearFilters() {
         updateState { currentState ->
             currentState.copy(
@@ -212,7 +239,6 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         searchQuery = query
         applyFilters(state.value.selectedFilterGroups, state.value.selectedSortOption)
     }
-
     private fun updateUiWithPermissions() {
         //region Reports Module
         val isActive = iModuleParameterRepository.getReportsParameters()?.isActive ?: false

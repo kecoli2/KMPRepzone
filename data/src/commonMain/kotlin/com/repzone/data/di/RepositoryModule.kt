@@ -13,41 +13,26 @@ import com.repzone.data.repository.imp.RouteAppointmentRepositoryImpl
 import com.repzone.data.repository.imp.SyncModuleRepositoryImpl
 import com.repzone.domain.repository.*
 import com.repzone.domain.repository.IMobileModuleParameterRepository
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val RepositoryModule = module {
 
     //region REPOSITORY
-    single<ICustomerRepository> { CustomerRepositoryImpl(get(), get()) }
-    single<ICustomerListRepository> {
-        CustomerListRepositoryImpl(get(),
-            get(),
-            get(),
-            get(),
-            get()) }
-    single<ISyncModuleRepository> {
-        SyncModuleRepositoryImpl(
-            get(),
-            get()) }
+    singleOf(::CustomerRepositoryImpl){ bind<ICustomerRepository>() }
+    singleOf(::CustomerListRepositoryImpl){ bind<ICustomerListRepository>() }
+    singleOf(::SyncModuleRepositoryImpl){ bind<ISyncModuleRepository>() }
+    singleOf(::MobileModuleParameterRepositoryImpl){ bind<IMobileModuleParameterRepository>() }
+    singleOf(::EventReasonRepositoryImpl){ bind<IEventReasonRepository>() }
+    singleOf(::RouteAppointmentRepositoryImpl){ bind<IRouteAppointmentRepository>() }
 
-    single<IMobileModuleParameterRepository>{
-        MobileModuleParameterRepositoryImpl(
-            get(),
-            get(),
-            get()) }
-    single<IRouteAppointmentRepository> { RouteAppointmentRepositoryImpl(get(), get()) }
-    single<IEventReasonRepository> { EventReasonRepositoryImpl(get()) }
-    factory<IRepresentativeRepository>{ RepresentativeRepositoryImpl(get(), get()) }
-    factory<IVisitRepository>{ VisitRepositoryImpl(get(), get()) }
-    factory<IDocumentMapRepository>{ DocumentMapRepositoryImpl(get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get(),
-        get())
-    }
-    factory<IDynamicFormRepository>{ DynamicFormRepositoryImpl(get(), get()) }
+    factoryOf(::RepresentativeRepositoryImpl) { bind<IRepresentativeRepository>() }
+    factoryOf(::VisitRepositoryImpl) { bind<IVisitRepository>() }
+    factoryOf(::DocumentMapRepositoryImpl) { bind<IDocumentMapRepository>() }
+    factoryOf(::DynamicFormRepositoryImpl) { bind<IDynamicFormRepository>() }
+
     //endregion REPOSITORY
 
     //region DBMAPPERS

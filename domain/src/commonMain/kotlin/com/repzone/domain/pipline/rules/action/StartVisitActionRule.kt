@@ -1,14 +1,19 @@
 package com.repzone.domain.pipline.rules.action
 
+import com.repzone.domain.model.CustomerItemModel
+import com.repzone.domain.model.VisitReasonInformation
 import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule
 import com.repzone.domain.pipline.model.pipline.RuleResult
 import com.repzone.domain.pipline.model.pipline.RuleType
+import com.repzone.domain.repository.IVisitRepository
 
 class StartVisitActionRule(
     override val id: String = "start_visit",
     override val title: String = "Ziyaret Başlat",
-) :  Rule {
+    val iVisitRepository: IVisitRepository,
+    val customerItemModel: CustomerItemModel,
+    val visitInfo: VisitReasonInformation? = null) :  Rule {
     //region Field
     override val type: RuleType = RuleType.ACTION
     //endregion
@@ -21,12 +26,12 @@ class StartVisitActionRule(
 
     //region Public Method
     override suspend fun execute(context: PipelineContext): RuleResult {
-
-        //database e kayıt et ve visit id al
-        val visitId = "visit"
-        context.putData("visit_id", visitId)
-
-        return RuleResult.Success(this)
+        try {
+            iVisitRepository.startVisit(customerItemModel, visitInfo)
+            return RuleResult.Success(this)
+        }catch (ex: Exception){
+            return RuleResult.Failed(this, ex.message ?: "Unknown error")
+        }
     }
     //endregion
 

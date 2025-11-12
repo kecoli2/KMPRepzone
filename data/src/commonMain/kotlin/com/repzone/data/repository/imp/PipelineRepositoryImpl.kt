@@ -65,7 +65,7 @@ class PipelineRepositoryImpl(private val eventBus: IEventBus,
                 id = "start_visit_stage",
                 name = "Ziyaret Başlat",
                 rules = listOf(
-                    StartVisitActionRule()
+                    StartVisitActionRule(customerItemModel = customerItemModel, visitInfo = null, iVisitRepository = iVisitRepository)
                 )
             )
         )

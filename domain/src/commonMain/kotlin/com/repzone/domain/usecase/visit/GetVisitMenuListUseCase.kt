@@ -59,13 +59,13 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
             )
         }else{
             if (visitInformation.appointmentId == customer.appointmentId){
-                VisitButtonItem(
+                actionButtonList.add(VisitButtonItem(
                     actionType = ActionButtonType.VISITING_END,
-                )
+                ))
             }else{
-                VisitButtonItem(
+                actionButtonList.add(VisitButtonItem(
                     actionType = ActionButtonType.VISITING_START,
-                )
+                ))
             }
         }
 

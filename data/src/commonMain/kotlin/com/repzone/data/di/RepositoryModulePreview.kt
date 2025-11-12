@@ -371,21 +371,25 @@ import com.repzone.network.dto.EventReasonDto
 import com.repzone.network.dto.PackageCustomFieldDto
 import com.repzone.network.dto.PackageCustomFieldProductDto
 import com.repzone.network.dto.RouteDto
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.factoryOf
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val RepositoryModulePreview = module {
 
     //region REPOSITORY
-    single<ICustomerRepository> { CustomerRepositoryImpl(get(), get()) }
-    single<ICustomerListRepository> { CustomerListRepositoryImpl(get(),
-        get(), get(), get(), get()) }
-    single<ISyncModuleRepository> { SyncModuleRepositoryImpl(get(), get()) }
-    single<IMobileModuleParameterRepository>{ MobileModuleParameterRepositoryImplPreview(get(), get(), get()) }
-    factory<IRepresentativeRepository>{ RepresentativeRepositoryImpl(get(), get()) }
-    single<IRouteAppointmentRepository> { RouteAppointmentRepositoryImpl(get(), get()) }
-    single<IEventReasonRepository> { EventReasonRepositoryImpl(get()) }
-    factory<IVisitRepository>{ VisitRepositoryImpl(get(), get()) }
+    singleOf(::CustomerRepositoryImpl) { bind<ICustomerRepository>() }
+    singleOf(::CustomerListRepositoryImpl) { bind<ICustomerListRepository>() }
+    singleOf(::SyncModuleRepositoryImpl) { bind<ISyncModuleRepository>() }
+    singleOf(::MobileModuleParameterRepositoryImplPreview) { bind<IMobileModuleParameterRepository>() }
+    singleOf(::RouteAppointmentRepositoryImpl) { bind<IRouteAppointmentRepository>() }
+    singleOf(::EventReasonRepositoryImpl) { bind<IEventReasonRepository>() }
+
+    factoryOf(::RepresentativeRepositoryImpl){ bind<IRepresentativeRepository>() }
+    factoryOf(::VisitRepositoryImpl){ bind<IVisitRepository>() }
+    
     //endregion REPOSITORY
 
     //region DBMAPPERS
