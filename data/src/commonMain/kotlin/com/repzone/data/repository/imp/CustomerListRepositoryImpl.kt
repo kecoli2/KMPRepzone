@@ -53,9 +53,6 @@ class CustomerListRepositoryImpl(private val iMobileModuleParameter: IMobileModu
         val onlyParents = iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.isActive == true && iMobileModuleParameter.getGeofenceRouteTrackingParameters()?.groupByParentCustomer == OnOf.ON
         val swipeEnable = iEventReasonRepository.getEventReasonList(RepresentativeEventReasonType.NOVISIT).count() > 0
 
-        /*AND (:onlyParents = 0 OR ParentCustomerId = 0 OR ParentCustomerId IS NULL)*/
-
-
         var listModel = iDatabaseManager.getSqlDriver().select<CustomerItemViewEntity> {
             where {
                 criteria("SprintId", activeStrint?.id?.toLong())
@@ -140,7 +137,7 @@ class CustomerListRepositoryImpl(private val iMobileModuleParameter: IMobileModu
         val listParrent = iDatabaseManager.getSqlDriver().select<CustomerItemViewEntity> {
             where {
                 criteria("SprintId", selectedCustomer.sprintId)
-                criteria("ParentCustomerId", selectedCustomer.parentCustomerId)
+                criteria("ParentCustomerId", selectedCustomer.customerId)
             }
             orderBy {
                 order("Date")

@@ -113,6 +113,11 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                     onClickedCustomer(event.selectedCustomer)
                 }
 
+                is Event.ClearParentCustomer -> {
+                    updateState { currentState ->
+                        currentState.copy(customerParentModel = null)
+                    }
+                }
                 else -> {}
             }
         }
@@ -292,11 +297,18 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
 
             if(iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.isActive == true
                 && iModuleParameterRepository.getGeofenceRouteTrackingParameters()?.groupByParentCustomer == OnOf.ON && (selectedCustomer.parentCustomerId
-                    ?: 0) > 0
+                    ?: 0) == 0L
             ) {
                 val parentData = iCustomerListRepository.getAllByParrent(selectedCustomer)
                 if(parentData.parrentCustomers.isNotEmpty()){
-                   emitEvent(Event.ShowDialogParentCustomer(parentData))
+                    if(parentData.parrentCustomers.size == 1){
+                        emitEvent(Event.NavigateVisitPage(parentData.parrentCustomers.first()))
+                        return
+                    }
+                    updateState { currentState->
+                        currentState.copy(customerParentModel = parentData)
+                    }
+                   emitEvent(Event.ShowDialogParentCustomer)
                 }else{
                     emitEvent(Event.NavigateVisitPage(selectedCustomer))
                 }
@@ -325,8 +337,9 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         data object ClearFilters : Event()
         data object LogOut: Event()
         data class OnClickCustomerItem(val selectedCustomer: CustomerItemModel): Event()
-        data class ShowDialogParentCustomer(val selectedCustomer: CustomerByParrentModel): Event()
+        data object ShowDialogParentCustomer: Event()
         data class NavigateVisitPage(val selectedCustomer: CustomerItemModel): Event()
+        data object ClearParentCustomer: Event()
     }
     //endregion Event
 }

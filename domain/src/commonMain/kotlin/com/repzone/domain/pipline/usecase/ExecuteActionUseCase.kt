@@ -14,7 +14,20 @@ class ExecuteActionUseCase(
 ) {
     @OptIn(ExperimentalUuidApi::class)
     suspend operator fun invoke(actionType: DocumentActionType, customerItemModel: CustomerItemModel) {
-        val pipeline = pipelineRepository.getStartVisit(customerItemModel)
+        val pipeline = when(actionType){
+            DocumentActionType.START_VISIT -> {
+                pipelineRepository.getStartVisit(customerItemModel)
+            }
+            DocumentActionType.END_VISIT -> {
+                pipelineRepository.getStartVisit(customerItemModel)
+            }
+            else -> {
+                null
+            }
+        }
+
+        if (pipeline == null)
+            return
 
         val context = PipelineContext(
             actionType = actionType,

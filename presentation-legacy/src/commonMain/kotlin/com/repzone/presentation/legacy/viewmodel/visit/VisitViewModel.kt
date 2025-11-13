@@ -102,12 +102,24 @@ class VisitViewModel(private val iModuleParameters: IMobileModuleParameterReposi
                         ActionButtonType.VISITING_START -> {
                             executeActionUseCase(DocumentActionType.START_VISIT, customer!!)
                         }
-                        ActionButtonType.VISITING_END -> TODO()
-                        ActionButtonType.MAP -> TODO()
-                        ActionButtonType.ORDER_LOG -> TODO()
-                        ActionButtonType.DRIVE -> TODO()
-                        ActionButtonType.REPORT -> TODO()
-                        ActionButtonType.NOTES -> TODO()
+                        ActionButtonType.VISITING_END -> {
+                            executeActionUseCase(DocumentActionType.END_VISIT, customer!!)
+                        }
+                        ActionButtonType.MAP -> {
+
+                        }
+                        ActionButtonType.ORDER_LOG -> {
+
+                        }
+                        ActionButtonType.DRIVE -> {
+
+                        }
+                        ActionButtonType.REPORT -> {
+
+                        }
+                        ActionButtonType.NOTES -> {
+
+                        }
                     }
                 }
                 is Event.OnDecisionMade -> {

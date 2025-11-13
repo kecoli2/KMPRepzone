@@ -45,6 +45,7 @@ import androidx.compose.material.icons.outlined.EditNotifications
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Room
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.Badge
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
@@ -85,6 +86,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
 import com.repzone.core.constant.CdnConfig
 import com.repzone.core.interfaces.IUserSession
@@ -92,6 +96,8 @@ import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.component.RepzoneTopAppBar
 import com.repzone.core.ui.component.TopBarAction
 import com.repzone.core.ui.component.TopBarLeftIcon
+import com.repzone.core.ui.component.selectiondialog.GenericPopupList
+import com.repzone.core.ui.component.selectiondialog.SelectionMode
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.ui.model.NavigationItem
@@ -110,13 +116,18 @@ import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListViewMo
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.customerblockedmsg
+import repzonemobile.core.generated.resources.customerblockedtitle
 import repzonemobile.core.generated.resources.customernotestitle
+import repzonemobile.core.generated.resources.customersworkername
 import repzonemobile.core.generated.resources.dailyoperationstitle
 import repzonemobile.core.generated.resources.documents
 import repzonemobile.core.generated.resources.eagleeyelogstitle
 import repzonemobile.core.generated.resources.exit
 import repzonemobile.core.generated.resources.generalsettings
 import repzonemobile.core.generated.resources.image_not_found
+import repzonemobile.core.generated.resources.necessary
 import repzonemobile.core.generated.resources.notificationlogpagetitle
 import repzonemobile.core.generated.resources.onlinehubtitle
 import repzonemobile.core.generated.resources.profile
@@ -150,6 +161,8 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
     val userNameSurName by remember { mutableStateOf("${iUserSessionInfo.getActiveSession()?.firstName} ${iUserSessionInfo.getActiveSession()?.lastName}") }
     val userMail by remember { mutableStateOf(iUserSessionInfo.getActiveSession()?.email ?: "") }
     var isInitialLoad by rememberSaveable { mutableStateOf(true) }
+    var showParentCustomer by rememberSaveable { mutableStateOf(false) }
+    var searchParrentCustomer by rememberSaveable { mutableStateOf("") }
 
 
     LaunchedEffect(Unit){
@@ -159,7 +172,7 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                     onCustomerClick(event.selectedCustomer)
                 }
                 is CustomerListViewModel.Event.ShowDialogParentCustomer -> {
-
+                    showParentCustomer = true
                 }
                 else -> {
 
@@ -219,7 +232,7 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                                 model = null,
                                 contentDescription = null,
                                 modifier = Modifier.size(50.dp).clip(CircleShape),
-                                error = painterResource(repzonemobile.core.generated.resources.Res.drawable.profile),
+                                error = painterResource(Res.drawable.profile),
                                 contentScale = ContentScale.Crop,
                                 alignment = Alignment.Center
                             )
@@ -301,7 +314,7 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                     NavigationDrawerItem(
                         label = {
                             Text(
-                                repzonemobile.core.generated.resources.Res.string.exit.fromResource(),
+                                Res.string.exit.fromResource(),
                                 style = MaterialTheme.typography.bodyMedium
                             )
                         },
@@ -331,6 +344,55 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
             }
         }
     ) {
+        if(showParentCustomer){
+            Dialog(onDismissRequest = {
+                showParentCustomer = false
+                viewModel.onEvent(CustomerListViewModel.Event.ClearParentCustomer)
+                searchParrentCustomer = ""
+            }, properties = DialogProperties(
+
+            )){
+                GenericPopupList(
+                    items = uiState.customerParentModel?.parrentCustomers!!,
+                    selectionMode = SelectionMode.SINGLE,
+                    itemContent = { customer, isSelected ->
+
+                        CustomerCardParent(customer, modifier = Modifier,
+                            themeManager = themeManager,
+                            onCustomerClick = { customer ->
+                                showParentCustomer = false
+                                searchParrentCustomer = ""
+                                viewModel.scope.launch {
+                                    viewModel.onEvent(CustomerListViewModel.Event.OnClickCustomerItem(customer) )
+                                }
+                            }, uiState = uiState)
+                    },
+                    itemKey = {"${it.customerId}-${it.date}"},
+                    searchEnabled = true,
+                    searchQuery = searchParrentCustomer,
+                    onSearchQueryChange = {searchParrentCustomer = it},
+                    searchPredicate = { customer, query ->
+                        (customer.name ?: "").contains(query, ignoreCase = true)
+                                || (customer.address ?: "").contains(query, ignoreCase = true)
+                                || (customer.customerCode ?: "").contains(query, ignoreCase = true)
+                                || (customer.customerCode ?: "").contains(query, ignoreCase = true)
+                                || (customer.customerId).toString().contains(query, ignoreCase = true)
+                    },
+                    searchPlaceholder = Res.string.routesearchcustomer.fromResource(),
+                    onConfirm = { selected ->
+                        showParentCustomer = false
+                        viewModel.scope.launch {
+                            viewModel.onEvent(CustomerListViewModel.Event.OnClickCustomerItem(selected.first()) )
+                        }
+                    },
+                    onDismiss = {
+                        showParentCustomer = false
+                        viewModel.onEvent(CustomerListViewModel.Event.ClearParentCustomer)
+                        searchParrentCustomer = ""
+                    }
+                )
+            }
+        }
         Scaffold { paddingValues ->
             Column(
                 modifier = Modifier
@@ -430,7 +492,7 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                                 Box(modifier = Modifier.weight(1f)) {
                                     if (searchQuery.isEmpty()) {
                                         Text(
-                                            repzonemobile.core.generated.resources.Res.string.routesearchcustomer.fromResource(),
+                                            Res.string.routesearchcustomer.fromResource(),
                                             style = MaterialTheme.typography.bodyMedium,
                                             color = Color.Gray
                                         )
@@ -525,9 +587,9 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                                             onClick = { selectedTab = index },
                                             text = {
                                                 when(index +1){
-                                                    1 -> Text(repzonemobile.core.generated.resources.Res.string.routetoday.fromResource())
-                                                    2 -> Text(repzonemobile.core.generated.resources.Res.string.routetomorrow.fromResource())
-                                                    3 -> Text(repzonemobile.core.generated.resources.Res.string.routeothers.fromResource())
+                                                    1 -> Text(Res.string.routetoday.fromResource())
+                                                    2 -> Text(Res.string.routetomorrow.fromResource())
+                                                    3 -> Text(Res.string.routeothers.fromResource())
                                                 }
                                             },
                                             unselectedContentColor = MaterialTheme.colorScheme.outlineVariant
@@ -572,7 +634,7 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                             ),
                         ){
                             Icon(imageVector = Icons.Default.Task, modifier = Modifier.padding(end = 8.dp), contentDescription = null)
-                            Text(repzonemobile.core.generated.resources.Res.string.routepagetasksbtntext.fromResource())
+                            Text(Res.string.routepagetasksbtntext.fromResource())
                         }
                     }
 
@@ -585,7 +647,7 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                             ),
                         ){
                             Icon(imageVector = Icons.Default.ModeComment, modifier = Modifier.padding(end = 8.dp), contentDescription = null)
-                            Text(repzonemobile.core.generated.resources.Res.string.routepagechatbtntext.fromResource())
+                            Text(Res.string.routepagechatbtntext.fromResource())
                         }
                     }
                 }
@@ -598,33 +660,33 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
 fun getNavigationItems(): List<NavigationItem>{
     return listOf(
         NavigationItem(
-            title = repzonemobile.core.generated.resources.Res.string.generalsettings.fromResource(),
+            title = Res.string.generalsettings.fromResource(),
             selectedIcon = Icons.Filled.Settings,
             unselectedIcon = Icons.Outlined.Settings,
             navigationItemType = NavigationItemType.GENERAL_SETTINGS
         ),
         NavigationItem(
-            title = repzonemobile.core.generated.resources.Res.string.documents.fromResource(),
+            title = Res.string.documents.fromResource(),
             selectedIcon = Icons.Filled.DocumentScanner,
             unselectedIcon = Icons.Outlined.DocumentScanner,
             navigationItemType = NavigationItemType.SHARED_DOCUMENT
         ),
         NavigationItem(
-            title = repzonemobile.core.generated.resources.Res.string.dailyoperationstitle.fromResource(),
+            title = Res.string.dailyoperationstitle.fromResource(),
             selectedIcon = Icons.Filled.AccessTimeFilled,
             unselectedIcon = Icons.Outlined.AccessTime,
             navigationItemType = NavigationItemType.DAILY_OPERATIONS
         ),
 
         NavigationItem(
-            title = repzonemobile.core.generated.resources.Res.string.eagleeyelogstitle.fromResource(),
+            title = Res.string.eagleeyelogstitle.fromResource(),
             selectedIcon = Icons.Filled.Room,
             unselectedIcon = Icons.Outlined.Room,
             navigationItemType = NavigationItemType.GPS_OPERATIONS
         ),
 
         NavigationItem(
-            title = repzonemobile.core.generated.resources.Res.string.notificationlogpagetitle.fromResource(),
+            title = Res.string.notificationlogpagetitle.fromResource(),
             selectedIcon = Icons.Filled.EditNotifications,
             unselectedIcon = Icons.Outlined.EditNotifications,
             navigationItemType = NavigationItemType.NOTIFICATION_HISTORY,
@@ -632,14 +694,14 @@ fun getNavigationItems(): List<NavigationItem>{
         ),
 
         NavigationItem(
-            title = repzonemobile.core.generated.resources.Res.string.onlinehubtitle.fromResource(),
+            title = Res.string.onlinehubtitle.fromResource(),
             selectedIcon = Icons.Filled.Cloud,
             unselectedIcon = Icons.Filled.Cloud,
             navigationItemType = NavigationItemType.ONLINE_CENTER
         ),
 
         NavigationItem(
-            title = repzonemobile.core.generated.resources.Res.string.customernotestitle.fromResource(),
+            title = Res.string.customernotestitle.fromResource(),
             selectedIcon = Icons.Filled.People,
             unselectedIcon = Icons.Filled.People,
             navigationItemType = NavigationItemType.CUSTOMER_NOTES
@@ -678,7 +740,7 @@ fun CustomerCard(customer: CustomerItemModel,
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop,
                     alignment = Alignment.Center,
-                    error = painterResource(repzonemobile.core.generated.resources.Res.drawable.image_not_found),
+                    error = painterResource(Res.drawable.image_not_found),
                     onError = {
                         println("Error: ${it.result.throwable.message}")
                     },
@@ -704,13 +766,26 @@ fun CustomerCard(customer: CustomerItemModel,
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start
             ) {
-                Text(
-                    text = customer.name ?: "",
-                    style = MaterialTheme.typography.titleSmall,
-                    color = MaterialTheme.colorScheme.onSurface,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
+                Row(modifier = Modifier
+                    .fillMaxWidth()){
+                    Text(
+                        text = customer.name ?: "",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    if(customer.customerBlocked){
+                        Badge(containerColor = MaterialTheme.colorScheme.error) {
+                            Text(
+                                text = Res.string.customerblockedtitle.fromResource(),
+                                style = MaterialTheme.typography.labelSmall,
+                                fontSize = 10.sp
+                            )
+                        }
+                    }
+                }
+
                 Text(
                     text = customer.address ?: "",
                     fontWeight = FontWeight.Light,
@@ -747,8 +822,8 @@ fun CustomerCard(customer: CustomerItemModel,
 
                 val dayDesc =
                     when {
-                        customer.date?.toEpochMilliseconds()?.isToday() == true -> repzonemobile.core.generated.resources.Res.string.routetoday.fromResource()
-                        customer.date?.toEpochMilliseconds()?.isTomorrow() == true -> repzonemobile.core.generated.resources.Res.string.routetomorrow.fromResource()
+                        customer.date?.toEpochMilliseconds()?.isToday() == true -> Res.string.routetoday.fromResource()
+                        customer.date?.toEpochMilliseconds()?.isTomorrow() == true -> Res.string.routetomorrow.fromResource()
                         else -> customer.date?.toDayName() ?: ""
                     }
 
@@ -778,6 +853,96 @@ fun CustomerCard(customer: CustomerItemModel,
                     text = dayDesc,
                     fontWeight = FontWeight.Light,
                     style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalTime::class)
+@Composable
+fun CustomerCardParent(customer: CustomerItemModel,
+                 modifier: Modifier = Modifier,
+                 themeManager: ThemeManager,
+                 onCustomerClick: (CustomerItemModel) -> Unit = {}, uiState : CustomerListScreenUiState
+) {
+    Surface(
+        modifier = modifier.height(80.dp).clickable {
+            if (uiState.customerListState != CustomerListScreenUiState.CustomerListState.Loading){
+                onCustomerClick(customer)
+            }
+        },
+        color = MaterialTheme.colorScheme.surface
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Avatar
+            if (customer.imageUri != null) {
+                AsyncImage(
+                    model = "${CdnConfig.CDN_IMAGE_CONFIG}xs/${customer.imageUri}",
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop,
+                    alignment = Alignment.Center,
+                    error = painterResource(Res.drawable.image_not_found),
+                    onError = {
+                        println("Error: ${it.result.throwable.message}")
+                    },
+                )
+            } else {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .clip(CircleShape)
+                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .padding(8.dp),
+                    tint = themeManager.getCurrentColorScheme().colorPalet.primary50
+                )
+            }
+
+            // Orta metinler
+            Column(
+                modifier = Modifier
+                    .padding(start = 12.dp)
+                    .weight(1f),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
+            ) {
+                Row(modifier = Modifier
+                    .fillMaxWidth()){
+                    Text(
+                        text = customer.name ?: "",
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurface,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    if(customer.customerBlocked){
+                        Badge(containerColor = MaterialTheme.colorScheme.error) {
+                            Text(
+                                text = Res.string.customerblockedtitle.fromResource(),
+                                style = MaterialTheme.typography.labelSmall,
+                                fontSize = 10.sp
+                            )
+                        }
+                    }
+                }
+
+                Text(
+                    text = customer.address ?: "",
+                    fontWeight = FontWeight.Light,
+                    style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis

@@ -19,9 +19,6 @@ class PipelineRepositoryImpl(private val eventBus: IEventBus,
     //region Field
     //endregion
 
-    //region Properties
-    //endregion
-
     //region Constructor
     //endregion
 
@@ -33,9 +30,6 @@ class PipelineRepositoryImpl(private val eventBus: IEventBus,
     override fun getStartVisit(customerItemModel: CustomerItemModel): Pipeline {
         return startVisitPipeline(customerItemModel)
     }
-    //endregion
-
-    //region Protected Method
     //endregion
 
     //region Private Method
@@ -76,8 +70,6 @@ class PipelineRepositoryImpl(private val eventBus: IEventBus,
 
                     !hasActiveVisit || visitEnded
                 }
-
-
             )
         )
     )

@@ -2,6 +2,7 @@ package com.repzone.presentation.legacy.viewmodel.customerlist
 
 import com.repzone.core.model.HasUiFrame
 import com.repzone.core.model.UiFrame
+import com.repzone.domain.model.CustomerByParrentModel
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.model.RepresentSummary
 import com.repzone.presentation.legacy.model.CustomerGroup
@@ -43,7 +44,9 @@ data class CustomerListScreenUiState(
         orderValue = 0.0,
         formCount = 0,
         activeAppoinmentDayCount = 0
-    )
+    ),
+
+    val customerParentModel: CustomerByParrentModel? = null
 
 ): HasUiFrame {
 
