@@ -3,6 +3,7 @@ package com.repzone.core.ui.base
 import androidx.lifecycle.ViewModel
 import com.repzone.core.model.HasUiFrame
 import com.repzone.core.model.UiFrame
+import com.repzone.core.platform.Logger
 import com.repzone.core.ui.base.resetUiFrame
 import com.repzone.domain.common.DomainException
 import kotlinx.coroutines.CoroutineScope
@@ -50,7 +51,7 @@ open class BaseViewModel<S : Any, E : Any>(initialState: S) {
     }
 
     internal inline fun updateStateInternal(block: (S) -> S) {
-        println("DEBUG BaseViewModel: updateStateInternal called")
+        Logger.d ("DEBUG BaseViewModel: updateStateInternal called")
         val oldState = _state.value
         val newState = block(oldState)
         println("DEBUG BaseViewModel: old state: $oldState")

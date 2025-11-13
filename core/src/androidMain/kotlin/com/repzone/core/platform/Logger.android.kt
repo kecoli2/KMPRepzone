@@ -8,4 +8,8 @@ actual object Logger {
     actual fun error(ex: Exception?) {
         android.util.Log.e("ERROR", ex?.message ?: "Unknown error")
     }
+
+    actual fun d(message: String) {
+        android.util.Log.d("Repzone", message)
+    }
 }

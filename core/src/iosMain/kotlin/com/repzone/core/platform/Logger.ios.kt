@@ -8,4 +8,8 @@ actual object Logger {
     actual fun error(ex: Exception?) {
         println("[ERROR] ${ex?.message}")
     }
+
+    actual fun d(message: String) {
+        println("[Repzone] $message")
+    }
 }
