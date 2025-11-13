@@ -64,7 +64,6 @@ object SmartViewModelStore {
     // BackStack entry tracking
     fun registerBackStackEntry(entryId: String, viewModelKey: String) {
         entryIdToViewModelKey[entryId] = viewModelKey
-        println("Registered: entryId=$entryId -> viewModelKey=$viewModelKey")
     }
 
     fun disposeByEntryId(entryId: String) {

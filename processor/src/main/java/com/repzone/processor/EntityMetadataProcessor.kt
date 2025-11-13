@@ -13,6 +13,12 @@ class EntityMetadataProcessor(
 ) : SymbolProcessor {
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
+        val currentModule = options["module"] ?: ""
+
+        if (currentModule != "database") {
+            return emptyList()
+        }
+
         logger.info("EntityMetadataProcessor started")
 
         // 1. .sq dosyalarını bul

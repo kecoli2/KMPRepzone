@@ -1,1 +1,3 @@
 com.repzone.database.processor.EntityMetadataProcessorProvider
+com.repzone.processor.StringResourceGeneratorProvider
+com.repzone.processor.BuildConfigGeneratorProvider

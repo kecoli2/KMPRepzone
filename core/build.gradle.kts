@@ -1,3 +1,4 @@
+import com.google.devtools.ksp.gradle.KspAATask
 import org.jetbrains.compose.resources.ResourcesExtension.ResourceClassGeneration
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -9,6 +10,13 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.ksp)
+}
+
+ksp {
+    arg("projectRoot", rootProject.projectDir.absolutePath)
+    arg("module", "core")
+    arg("incremental", "false")
 }
 
 kotlin {
@@ -30,15 +38,18 @@ kotlin {
     }
 
     sourceSets {
-        commonMain.dependencies {
-            implementation(libs.compose.runtime)
-            implementation(libs.kotlin.stdlib)
-            implementation(libs.kotlinx.serialization.json)
-            implementation(libs.kotlinx.coroutines.core)
-            implementation(libs.kotlinx.datetime)
-            implementation(libs.koin.core)
-            implementation(compose.components.resources)
-            implementation(compose.ui)
+        commonMain {
+            dependencies {
+                implementation(libs.compose.runtime)
+                implementation(libs.kotlin.stdlib)
+                implementation(libs.kotlinx.serialization.json)
+                implementation(libs.kotlinx.coroutines.core)
+                implementation(libs.kotlinx.datetime)
+                implementation(libs.koin.core)
+                implementation(compose.components.resources)
+                implementation(compose.ui)
+            }
+            kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
         }
 
         androidMain.dependencies {
@@ -70,55 +81,22 @@ compose {
     resources.generateResClass = ResourceClassGeneration.Always
 }
 
-//region BuildConfig generation
-val uiModuleName: String = providers.gradleProperty("ACTIVE_UI_MODULE").getOrElse("UIModule.NEW")
-val appVersion: String = libs.versions.application.versionname.get()
-val isDebug: Boolean = providers.gradleProperty("DEBUG").getOrElse("false").toBoolean()
-val defaultThemeColor: String = providers.gradleProperty("DEFAULT_THEME").getOrElse("ThemeType.DEFAULT")
-val apiEndpoint: String = providers.gradleProperty("API_ENDPOINT").getOrElse("")
-
-val generateBuildConfig = tasks.register("generateBuildConfig") {
-    val outputDir = file("src/commonMain/kotlin/com/repzone/core/config")
-    val outputFile = File(outputDir, "BuildConfig.kt")
-    outputs.file(outputFile)
-
-    inputs.property("uiModuleName", uiModuleName)
-    inputs.property("isDebug", isDebug)
-    inputs.property("appVersion", appVersion)
-    inputs.property("defaultThemeColor", defaultThemeColor)
-    inputs.property("apiEndpoint", apiEndpoint)
-
-    doLast {
-        outputDir.mkdirs()
-        outputFile.writeText("""
-            package com.repzone.core.config
-            
-            import com.repzone.core.enums.*
-            object BuildConfig {
-                private val uiModule: UIModule = $uiModuleName
-                const val apiEndpoint: String = "$apiEndpoint"                
-                const val IS_DEBUG: Boolean = $isDebug
-                const val APP_VERSION: String = "$appVersion"
-                val THEME_NAME: ThemeType = $defaultThemeColor
-                
-                val activeUIModule: UIModule
-                    get() = uiModule
-                
-                fun isUIModuleActive(module: UIModule): Boolean {
-                    return uiModule == module
-                }
-            }                       
-        """.trimIndent())
-    }
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    dependsOn(generateBuildConfig)
+dependencies {
+    add("kspCommonMainMetadata", project(":processor"))
 }
 
 tasks.configureEach {
-    if (name.contains("compile") && name.contains("Kotlin")) {
-        dependsOn(generateBuildConfig)
+    if (name.startsWith("compile") && name.contains("Kotlin")) {
+        tasks.findByName("kspCommonMainKotlinMetadata")?.let { kspTask ->
+            dependsOn(kspTask)
+        }
     }
 }
-//endregion
+
+afterEvaluate {
+    tasks.withType<KotlinCompile>().configureEach {
+        tasks.findByName("kspCommonMainKotlinMetadata")?.let { kspTask ->
+            dependsOn(kspTask)
+        }
+    }
+}

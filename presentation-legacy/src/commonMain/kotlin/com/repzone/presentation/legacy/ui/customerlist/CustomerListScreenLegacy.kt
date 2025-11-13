@@ -885,10 +885,8 @@ fun CustomerCardParent(customer: CustomerItemModel,
                  onCustomerClick: (CustomerItemModel) -> Unit = {}, uiState : CustomerListScreenUiState
 ) {
     Surface(
-        modifier = modifier.height(80.dp).clickable {
-            if (uiState.customerListState != CustomerListScreenUiState.CustomerListState.Loading){
-                onCustomerClick(customer)
-            }
+        modifier = modifier.height(60.dp).clickable {
+            onCustomerClick(customer)
         },
         color = MaterialTheme.colorScheme.surface
     ) {

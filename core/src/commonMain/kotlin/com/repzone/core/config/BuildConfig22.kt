@@ -1,7 +1,7 @@
 package com.repzone.core.config
 
 import com.repzone.core.enums.*
-object BuildConfig {
+object BuildConfig22 {
     private val uiModule: UIModule = UIModule.LEGACY
     const val apiEndpoint: String = "https://repzone-mobile-api.azurewebsites.net"                
     const val IS_DEBUG: Boolean = true

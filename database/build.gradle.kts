@@ -15,6 +15,7 @@ ksp {
 
     // Incremental processing'i kapat - her zaman full build
     arg("incremental", "false")
+    arg("module", "database")
 }
 
 kotlin {
