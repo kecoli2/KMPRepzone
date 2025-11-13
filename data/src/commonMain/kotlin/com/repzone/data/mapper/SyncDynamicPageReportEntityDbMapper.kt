@@ -1,5 +1,6 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.util.extensions.toBoolean
 import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
 import com.repzone.data.util.MapperDto
@@ -19,8 +20,8 @@ class SyncDynamicPageReportEntityDbMapper :
             description = from.Description,
             modificationDateUtc = from.ModificationDateUtc,
             name = from.Name,
-            quickAccessOrder = from.QuickAccessOrder,
-            quickAccessShow = from.QuickAccessShow,
+            quickAccessOrder = from.QuickAccessOrder?.toInt(),
+            quickAccessShow = from.QuickAccessShow?.toBoolean() ?: false,
             recordDateUtc = from.RecordDateUtc,
             requested = from.Requested,
             state = from.State
@@ -35,8 +36,8 @@ class SyncDynamicPageReportEntityDbMapper :
             Description = domain.description,
             ModificationDateUtc = domain.modificationDateUtc,
             Name = domain.name,
-            QuickAccessOrder = domain.quickAccessOrder,
-            QuickAccessShow = domain.quickAccessShow,
+            QuickAccessOrder = domain.quickAccessOrder?.toLong(),
+            QuickAccessShow = domain.quickAccessShow.toLong(),
             RecordDateUtc = domain.recordDateUtc,
             Requested = domain.requested,
             State = domain.state

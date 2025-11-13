@@ -2,6 +2,8 @@ package com.repzone.presentation.legacy.viewmodel.customerlist
 
 import com.repzone.core.model.HasUiFrame
 import com.repzone.core.model.UiFrame
+import com.repzone.core.ui.component.floatactionbutton.model.FabAction
+import com.repzone.core.ui.component.floatactionbutton.model.FabMenuItem
 import com.repzone.domain.model.CustomerByParrentModel
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.model.RepresentSummary
@@ -46,7 +48,8 @@ data class CustomerListScreenUiState(
         activeAppoinmentDayCount = 0
     ),
 
-    val customerParentModel: CustomerByParrentModel? = null
+    val customerParentModel: CustomerByParrentModel? = null,
+    val floatActionButtonList: FabAction? = null
 
 ): HasUiFrame {
 

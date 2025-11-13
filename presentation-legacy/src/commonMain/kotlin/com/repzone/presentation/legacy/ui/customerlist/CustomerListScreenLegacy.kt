@@ -25,10 +25,13 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTimeFilled
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.DocumentScanner
 import androidx.compose.material.icons.filled.EditNotifications
+import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.ModeComment
 import androidx.compose.material.icons.filled.People
@@ -96,6 +99,7 @@ import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.component.RepzoneTopAppBar
 import com.repzone.core.ui.component.TopBarAction
 import com.repzone.core.ui.component.TopBarLeftIcon
+import com.repzone.core.ui.component.floatactionbutton.SmartFabScaffold
 import com.repzone.core.ui.component.selectiondialog.GenericPopupList
 import com.repzone.core.ui.component.selectiondialog.SelectionMode
 import com.repzone.core.ui.manager.theme.AppTheme
@@ -117,17 +121,14 @@ import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import repzonemobile.core.generated.resources.Res
-import repzonemobile.core.generated.resources.customerblockedmsg
 import repzonemobile.core.generated.resources.customerblockedtitle
 import repzonemobile.core.generated.resources.customernotestitle
-import repzonemobile.core.generated.resources.customersworkername
 import repzonemobile.core.generated.resources.dailyoperationstitle
 import repzonemobile.core.generated.resources.documents
 import repzonemobile.core.generated.resources.eagleeyelogstitle
 import repzonemobile.core.generated.resources.exit
 import repzonemobile.core.generated.resources.generalsettings
 import repzonemobile.core.generated.resources.image_not_found
-import repzonemobile.core.generated.resources.necessary
 import repzonemobile.core.generated.resources.notificationlogpagetitle
 import repzonemobile.core.generated.resources.onlinehubtitle
 import repzonemobile.core.generated.resources.profile
@@ -393,7 +394,21 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                 )
             }
         }
-        Scaffold { paddingValues ->
+
+
+        SmartFabScaffold (
+            fabAction = if(uiState.floatActionButtonList != null ){
+                uiState.floatActionButtonList
+            }else{
+                null
+            },
+            onFabClick = {
+                viewModel.onEvent(CustomerListViewModel.Event.OnClickFab)
+            },
+            onMenuItemClick = { item ->
+                viewModel.onEvent(CustomerListViewModel.Event.OnClickFabMenuItem(item))
+            }
+        ) { paddingValues ->
             Column(
                 modifier = Modifier
                     .fillMaxSize()

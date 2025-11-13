@@ -1,17 +1,26 @@
 package com.repzone.presentation.legacy.viewmodel.customerlist
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Feedback
+import androidx.compose.material.icons.filled.LeaveBagsAtHome
+import androidx.compose.material.icons.filled.Report
 import com.repzone.core.enums.OnOf
 import com.repzone.core.enums.VisitPlanSchedulesType
 import com.repzone.core.interfaces.IPreferencesManager
+import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.base.BaseViewModel
+import com.repzone.core.ui.component.floatactionbutton.model.FabAction
+import com.repzone.core.ui.component.floatactionbutton.model.FabMenuItem
+import com.repzone.core.ui.component.floatactionbutton.model.FabMenuItemType
 import com.repzone.core.util.extensions.moveToFirst
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.domain.events.base.IEventBus
 import com.repzone.domain.events.base.events.DomainEvent
 import com.repzone.domain.events.base.subscribeToEvents
-import com.repzone.domain.model.CustomerByParrentModel
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
+import com.repzone.domain.repository.IDynamicPageReport
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.repository.IRepresentativeRepository
 import com.repzone.presentation.legacy.model.CustomerGroup
@@ -24,7 +33,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.time.ExperimentalTime
@@ -37,7 +45,9 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                             private var representRepository: IRepresentativeRepository,
                             private val iPreferencesManager: IPreferencesManager,
                             private val iDatabaseManager: IDatabaseManager,
-                            private val iEventBus: IEventBus
+                            private val iEventBus: IEventBus,
+                            private val iUserSession: IUserSession,
+                            private val iDynamicReportRepository: IDynamicPageReport
 ): BaseViewModel<CustomerListScreenUiState, CustomerListViewModel.Event>(CustomerListScreenUiState()) {
     //region Field
     private var searchQuery: String = ""
@@ -116,6 +126,16 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                 is Event.ClearParentCustomer -> {
                     updateState { currentState ->
                         currentState.copy(customerParentModel = null)
+                    }
+                }
+                is Event.OnClickFab -> {
+                    if(1==1){
+
+                    }
+                }
+                is Event.OnClickFabMenuItem -> {
+                    if(1==1){
+
                     }
                 }
                 else -> {}
@@ -246,7 +266,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         searchQuery = query
         applyFilters(state.value.selectedFilterGroups, state.value.selectedSortOption)
     }
-    private fun updateUiWithPermissions() {
+    private suspend fun updateUiWithPermissions() {
         //region Reports Module
         val isActive = iModuleParameterRepository.getReportsParameters()?.isActive ?: false
         val isDashboardActive = iModuleParameterRepository.getReportsParameters()?.mobileDashBoard ?: false
@@ -258,11 +278,89 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         val canAddNewCustomer = iModuleParameterRepository.getCrmOperationsParameters()?.canAddNewCustomer ?: false
         //endregion Customer add - CRM Operations
 
+
+
         //region Feedback - Messaging and Chat
         val isActiveMsgChat = iModuleParameterRepository.getMessagingChatFeedbackParameters()?.isActive ?: false
         val isActiveFeedback = iModuleParameterRepository.getMessagingChatFeedbackParameters()?.feedback ?: false
         val isActiveMessaging = iModuleParameterRepository.getMessagingChatFeedbackParameters()?.messaging ?: false
         //endregion Feedback - Messaging and Chat
+
+        //region float action button
+        var fabAction : FabAction? = null
+        val listActionMenuItem : ArrayList<FabMenuItem> = arrayListOf()
+        if(isActiveCRM && canAddNewCustomer){
+            listActionMenuItem.add(
+                FabMenuItem(
+                    type = FabMenuItemType.ADD_CUSTOMER,
+                    icon = Icons.Default.Add,
+                    label = "PopupItemNewCustomerLegacy"
+                )
+            )
+        }
+
+        iUserSession.getActiveSession()?.identity?.let { it ->
+            if(it.tenantId == 788 || it.organizationId == 2706){
+                listActionMenuItem.add(
+                    FabMenuItem(
+                        type = FabMenuItemType.ADD_CUSTOMER,
+                        icon = Icons.Default.Add,
+                        label = "PopupItemNewCustomer"
+                    )
+                )
+            }
+        }
+
+        if(isActive && isOnlineHubActive){
+            listActionMenuItem.add(
+                FabMenuItem(
+                    type = FabMenuItemType.REPORT,
+                    icon = Icons.Default.Report,
+                    label = "PopupItemReports"
+                )
+            )
+            val reportList = iDynamicReportRepository.getAll().filter { it.quickAccessShow } .sortedBy { it.quickAccessOrder }
+
+            reportList.forEach { it->
+                listActionMenuItem.add(
+                    FabMenuItem(
+                        type = FabMenuItemType.REPORT,
+                        icon = Icons.Default.Report,
+                        label = it.name ?: "",
+                        typeId = it.code
+                    )
+                )
+            }
+        }
+
+        if(isActiveMsgChat && isActiveFeedback){
+            FabMenuItem(
+                type = FabMenuItemType.FEEDBACK,
+                icon = Icons.Default.Feedback,
+                label = "PopupItemFeedback"
+            )
+        }
+
+        iModuleParameterRepository.getAttendanceTrackingParameters()?.let { it->
+            if(it.isActive){
+                listActionMenuItem.add(
+                    FabMenuItem(
+                        type = FabMenuItemType.REQUEST_FOR_PERMIT,
+                        icon = Icons.Default.LeaveBagsAtHome,
+                        label = "PopupItemLeave"
+                    )
+                )
+            }
+        }
+        if(listActionMenuItem.isNotEmpty()){
+            fabAction = FabAction.Multiple(
+                icon = Icons.Default.Add,
+                contentDescription = "Add",
+                items = listActionMenuItem
+            )
+        }
+
+        //endregion float action button
 
         //region Update Ui State
         updateState { currentState ->
@@ -277,7 +375,8 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                 isCustomerAddModuleActive = isActiveCRM && canAddNewCustomer,
                 isFeedbackModuleActive = isActiveMsgChat && isActiveFeedback,
                 isChatButtonContainer = isActiveMsgChat && isActiveMessaging,
-                isDashboardActive = iModuleParameterRepository.getReportsParameters()?.isActive ?: false && iModuleParameterRepository.getReportsParameters()?.mobileDashBoard ?: false
+                isDashboardActive = iModuleParameterRepository.getReportsParameters()?.isActive ?: false && iModuleParameterRepository.getReportsParameters()?.mobileDashBoard ?: false,
+                floatActionButtonList = fabAction
             )
         }
 
@@ -340,6 +439,8 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         data object ShowDialogParentCustomer: Event()
         data class NavigateVisitPage(val selectedCustomer: CustomerItemModel): Event()
         data object ClearParentCustomer: Event()
+        data object OnClickFab: Event()
+        data class OnClickFabMenuItem(val fabMenuItem: FabMenuItem): Event()
     }
     //endregion Event
 }
