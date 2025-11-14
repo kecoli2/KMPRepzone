@@ -280,8 +280,6 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
         val canAddNewCustomer = iModuleParameterRepository.getCrmOperationsParameters()?.canAddNewCustomer ?: false
         //endregion Customer add - CRM Operations
 
-
-
         //region Feedback - Messaging and Chat
         val isActiveMsgChat = iModuleParameterRepository.getMessagingChatFeedbackParameters()?.isActive ?: false
         val isActiveFeedback = iModuleParameterRepository.getMessagingChatFeedbackParameters()?.feedback ?: false

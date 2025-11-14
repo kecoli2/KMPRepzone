@@ -1,6 +1,9 @@
-package com.repzone.domain.manager
+package com.repzone.data.repository.imp
 
-class sss {
+import com.repzone.domain.repository.ILocationRepository
+
+/*
+class LocationRepositoryImpl: ILocationRepository {
     //region Field
     //endregion
 
@@ -18,4 +21,4 @@ class sss {
 
     //region Private Method
     //endregion
-}
+}*/

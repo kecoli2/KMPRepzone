@@ -792,7 +792,7 @@
     <string name="month_december">Aralık</string>
     <string name="time_just_now">Az önce</string>
     <string name="time_minutes_ago">%1$d dk önce</string>
-    <string name="time_hours_ago">%1$d sa önce</string>
+    <string name="time_hours_ago">%1$d saat önce</string>
     <string name="time_days_ago">%1$d gün önce</string>
     <string name="time_weeks_ago">%1$d hafta önce</string>
     <string name="time_months_ago">%1$d ay önce</string>
