@@ -1,10 +1,11 @@
 package com.repzone.domain.platform
+import com.repzone.domain.common.Result
 
 /**
  * Background Task Scheduler Interface
  * Platform-specific arka plan görev zamanlayıcı (expect/actual)
  */
-expect interface BackgroundTaskScheduler {
+expect interface IBackgroundTaskScheduler {
     /**
      * Periyodik GPS toplama görevini planlar
      * @param intervalMinutes Dakika cinsinden aralık

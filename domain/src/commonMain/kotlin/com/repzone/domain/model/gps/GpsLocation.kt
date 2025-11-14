@@ -1,6 +1,7 @@
 package com.repzone.domain.model.gps
 
 import com.repzone.core.platform.randomUUID
+import com.repzone.domain.util.format
 
 /**
  * Location Model-Data
@@ -16,4 +17,15 @@ data class GpsLocation(
     val altitude: Double? = null,
     val provider: String,
     val isSynced: Boolean = false
-)
+){
+    fun isValid(): Boolean {
+        return latitude in -90.0..90.0 &&
+                longitude in -180.0..180.0 &&
+                accuracy > 0
+    }
+
+    fun toReadableString(): String {
+        return "Lat: ${latitude.format(6)}, Lng: ${longitude.format(6)}, " +
+                "Accuracy: ${accuracy.format(1)}m"
+    }
+}

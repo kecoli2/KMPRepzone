@@ -12,4 +12,8 @@ actual object Logger {
     actual fun d(message: String) {
         android.util.Log.d("Repzone", message)
     }
+
+    actual fun error(tag: String, ex: Exception?) {
+        android.util.Log.e(tag, ex?.message ?: "Unknown error")
+    }
 }

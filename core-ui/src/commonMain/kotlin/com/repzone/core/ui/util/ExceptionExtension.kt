@@ -3,8 +3,10 @@ package com.repzone.core.ui.util
 import androidx.compose.runtime.Composable
 import com.repzone.core.model.StringResource
 import com.repzone.core.model.UiText
+import com.repzone.core.util.extensions.fromResource
 import com.repzone.domain.common.DomainException
 import com.repzone.domain.common.ErrorCode
+import com.repzone.domain.common.Result
 
 @Composable
 fun DomainException.toMessage(): UiText {
@@ -74,13 +76,13 @@ fun DomainException.toMessage(): UiText {
 }
 
 @Composable
-fun <T> com.repzone.domain.common.Result<T>.getErrorMessage(): UiText? {
+fun <T> Result<T>.getErrorMessage(): UiText? {
     return when (this) {
-        is com.repzone.domain.common.Result.Error -> exception.toMessage()
-        is com.repzone.domain.common.Result.Success -> null
+        is Result.Error -> exception.toMessage()
+        is Result.Success -> null
     }
 }
 
-fun DomainException.getErrorCode(): String = errorCode.code
+fun DomainException.getError(): StringResource = errorCode.code
 
 fun DomainException.getParams(): Map<String, Any> = params

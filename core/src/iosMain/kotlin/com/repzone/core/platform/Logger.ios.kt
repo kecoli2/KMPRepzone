@@ -12,4 +12,8 @@ actual object Logger {
     actual fun d(message: String) {
         println("[Repzone] $message")
     }
+
+    actual fun error(tag: String, ex: Exception?) {
+        println("[$tag] ${ex?.message}")
+    }
 }

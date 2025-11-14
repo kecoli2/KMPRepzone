@@ -1,6 +1,9 @@
 package com.repzone.domain.common
 
-sealed class DomainException(val errorCode: ErrorCode, val params: Map<String, Any> = emptyMap(), cause: Throwable? = null) : Exception(errorCode.code, cause) {
+import com.repzone.core.model.StringResource
+import com.repzone.core.util.extensions.fromResource
+
+sealed class DomainException(val errorCode: ErrorCode, val params: Map<String, Any> = emptyMap(), cause: Throwable? = null) : Exception(errorCode.code.fromResource(), cause) {
     class NotFoundException(val entityName: String, val entityId: Any, cause: Throwable? = null) : DomainException(
         errorCode = ErrorCode.NOT_FOUND,
         params = mapOf("entityName" to entityName, "entityId" to entityId),
@@ -26,27 +29,30 @@ sealed class DomainException(val errorCode: ErrorCode, val params: Map<String, A
     class NetworkException(errorCode: ErrorCode = ErrorCode.NETWORK_ERROR, params: Map<String, Any> = emptyMap(), cause: Throwable? = null) : DomainException(errorCode, params, cause)
     class UnknownException(params: Map<String, Any> = emptyMap(), cause: Throwable? = null) : DomainException(ErrorCode.UNKNOWN_ERROR, params, cause)
 }
-enum class ErrorCode(val code: String) {
+enum class ErrorCode(val code: StringResource) {
     // General errors
-    NOT_FOUND("error_not_found"),
-    VALIDATION_ERROR("error_validation"),
-    DATABASE_ERROR("error_database"),
-    UNAUTHORIZED("error_unauthorized"),
-    CONFLICT("error_conflict"),
-    NETWORK_ERROR("error_network"),
-    UNKNOWN_ERROR("error_unknown"),
+    NOT_FOUND(StringResource.ERROR_NOT_FOUND),
+    VALIDATION_ERROR(StringResource.ERROR_VALIDATION),
+    DATABASE_ERROR(StringResource.ERROR_DATABASE),
+    UNAUTHORIZED(StringResource.ERROR_UNAUTHORIZED),
+    CONFLICT(StringResource.ERROR_CONFLICT),
+    NETWORK_ERROR(StringResource.ERROR_NETWORK),
+    UNKNOWN_ERROR(StringResource.ERROR_UNKNOWN),
 
     // Validation specific
-    REQUIRED_FIELD("error_validation_required_field"),
-    INVALID_EMAIL("error_validation_invalid_email"),
-    INVALID_PHONE("error_validation_invalid_phone"),
+    REQUIRED_FIELD(StringResource.ERROR_VALIDATION_REQUIRED_FIELD),
+    INVALID_EMAIL(StringResource.ERROR_VALIDATION_INVALID_EMAIL),
+    INVALID_PHONE(StringResource.ERROR_VALIDATION_INVALID_PHONE),
 
-    // Business rules
-    INSUFFICIENT_STOCK("error_business_insufficient_stock"),
-    DUPLICATE_ENTRY("error_business_duplicate_entry"),
     // Network specific
-    NO_INTERNET("error_network_no_internet"),
-    TIMEOUT("error_network_timeout"),
+    NO_INTERNET(StringResource.ERROR_NETWORK_NO_INTERNET),
+    TIMEOUT(StringResource.ERROR_NETWORK_TIMEOUT),
+    INVALID_GPS_LOCATION(StringResource.ERROR_INVALID_GPS_LOCATION),
+    GPS_INTERVAL_TOO_SHORT(StringResource.ERROR_LOCATION_GPS_INTERVAL_MINIMUM),
+    SYNC_INTERVAL_TOO_SHORT(StringResource.ERROR_SYNC_INTERVAL_MINIMUM),
+    GPS_MIN_DISTANCE_NAGATIVE(StringResource.ERROR_LOCATION_GPS_MIN_DISTANCE_NEGATIVE),
+    GPS_ACCURACY_THRESHOLD_NEGATIVE(StringResource.ERROR_LOCATION_GPS_ACCURACY_NEGATIVE),
+    GPS_PERMISSION_NOT_GRANTED(StringResource.ERROR_LOCATION_PERMISSION_DENIED)
 }
 
 

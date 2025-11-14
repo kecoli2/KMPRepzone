@@ -886,4 +886,26 @@
     <string name="invalid_email">Geçersiz e-posta adresi.</string>
     <string name="yes_terminate">Evet, Sonlandır</string>
 
+    <!--Business Error Code-->
+    <string name="error_not_found">Kayıt bulunamadı.</string>
+    <string name="error_validation">Eksik veya girilmemiş alanlar mevcut.</string>
+    <string name="error_database">Database hatası.</string>
+    <string name="error_unauthorized">Yetkisiz erişim.</string>
+    <string name="error_conflict">Kayıt çakışması bulundu.</string>
+    <string name="error_network">Ağ hatası bulundu.</string>
+    <string name="error_unknown">Bilinmeyen hata.</string>
+    <string name="error_validation_required_field">Gerekli alan eksik</string>
+    <string name="error_validation_invalid_email">Geçersiz e-posta adresi.</string>
+    <string name="error_validation_invalid_phone">Geçersiz telefon numarası.</string>
+    <string name="error_network_no_internet">İnternet bağlantısı yok</string>
+    <string name="error_network_timeout">Ağ zaman aşımı</string>
+
+    <string name="error_invalid_gps_location">Geçersiz GPS konumu</string>
+    <string name="error_location_gps_interval_minimum">GPS aralığı en az 1 dakika olmalıdır</string>
+    <string name="error_sync_interval_minimum">Senkronizasyon aralığı en az 1 dakika olmalıdır</string>
+    <string name="error_location_gps_min_distance_negative">GPS minimum mesafe negatif olamaz</string>
+    <string name="error_location_gps_accuracy_negative">GPS doğruluk eşiği negatif olamaz</string>
+    <string name="error_location_permission_denied">Konum izni verilmedi</string>
+    <string name="sync_gps_never">Gps verileri hiç senkronize edilmedi</string>
+
 </resources>

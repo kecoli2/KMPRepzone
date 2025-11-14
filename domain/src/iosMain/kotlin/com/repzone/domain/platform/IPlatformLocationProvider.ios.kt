@@ -3,6 +3,7 @@ package com.repzone.domain.platform
 import com.repzone.core.enums.LocationAccuracy
 import com.repzone.core.util.PermissionStatus
 import com.repzone.domain.model.gps.GpsLocation
+import com.repzone.domain.common.Result
 
 actual interface IPlatformLocationProvider {
     actual suspend fun requestLocation(): Result<GpsLocation>

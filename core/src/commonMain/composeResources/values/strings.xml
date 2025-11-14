@@ -882,4 +882,26 @@
     <string name="damaged_return_electronic_dispatch">Damaged Return E-Dispatch</string>
     <string name="invalid_email">Incorrect e-mail adress</string>
     <string name="yes_terminate">Yes, Terminate</string>
+
+    <!--Business Error-->
+    <string name="error_not_found">Record not found.</string>
+    <string name="error_validation">Some required fields are missing or invalid.</string>
+    <string name="error_database">Database error.</string>
+    <string name="error_unauthorized">Unauthorized access.</string>
+    <string name="error_conflict">Record conflict detected.</string>
+    <string name="error_network">Network error.</string>
+    <string name="error_unknown">Unknown error.</string>
+    <string name="error_validation_required_field">Required field is missing.</string>
+    <string name="error_validation_invalid_email">Invalid email address.</string>
+    <string name="error_validation_invalid_phone">Invalid phone number.</string>
+    <string name="error_network_no_internet">No internet connection.</string>
+    <string name="error_network_timeout">Network timeout.</string>
+    <string name="error_invalid_gps_location">Invalid GPS location.</string>
+    <string name="error_location_gps_interval_minimum">GPS interval must be at least 1 minute.</string>
+    <string name="error_sync_interval_minimum">Sync interval must be at least 1 minute.</string>
+    <string name="error_location_gps_min_distance_negative">GPS minimum distance cannot be negative.</string>
+    <string name="error_location_gps_accuracy_negative">GPS accuracy threshold cannot be negative.</string>
+    <string name="error_location_permission_denied">Location permission not granted.</string>
+    <string name="sync_gps_never">GPS data has never been synchronized.</string>
+
 </resources>

@@ -1,6 +1,6 @@
 package com.repzone.domain.model.gps
 
-import com.repzone.core.model.UiText
+import com.repzone.domain.common.DomainException
 
 /**
  * Service State i burada tutulacak
@@ -10,5 +10,8 @@ sealed class ServiceState {
     object Starting : ServiceState()
     object Running : ServiceState()
     object Stopping : ServiceState()
-    data class Error(val message: UiText, val throwable: Throwable? = null) : ServiceState()
+    object Paused : ServiceState()
+    data class Error(val domainException: DomainException) : ServiceState()
+
+    fun isActive(): Boolean = this is Running || this is Starting
 }

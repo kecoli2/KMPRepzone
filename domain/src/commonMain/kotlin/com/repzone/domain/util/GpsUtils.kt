@@ -3,6 +3,7 @@ package com.repzone.domain.util
 import com.repzone.core.model.StringResource
 import com.repzone.core.model.UiText
 import com.repzone.core.util.extensions.now
+import com.repzone.domain.common.DomainException
 import com.repzone.domain.model.gps.GpsLocation
 import kotlin.math.PI
 import kotlin.math.abs
@@ -12,7 +13,7 @@ import kotlin.math.pow
 import kotlin.math.round
 import kotlin.math.sin
 import kotlin.math.sqrt
-import kotlin.random.Random
+import com.repzone.domain.common.Result
 
 /**
  * Distance Calculator
@@ -82,8 +83,6 @@ object DistanceCalculator {
  * Time utilities
  */
 object TimeUtils {
-    fun currentTimeMillis(): Long = now()
-
     fun formatDuration(durationMillis: Long): UiText {
         val seconds = durationMillis / 1000
         val minutes = seconds / 60
@@ -121,7 +120,7 @@ fun GpsLocation.isAccurate(threshold: Float = 50f): Boolean {
 }
 
 fun GpsLocation.ageInMillis(): Long {
-    return TimeUtils.currentTimeMillis() - timestamp
+    return now() - timestamp
 }
 
 fun GpsLocation.isRecent(maxAgeMillis: Long = 60_000): Boolean {
@@ -175,15 +174,58 @@ suspend fun <T> retryWithBackoff(
     var currentDelay = initialDelayMillis
     repeat(times - 1) { attempt ->
         try {
-            return Result.success(block())
+            return Result.Success(block())
         } catch (e: Exception) {
             kotlinx.coroutines.delay(currentDelay)
             currentDelay = (currentDelay * factor).toLong().coerceAtMost(maxDelayMillis)
         }
     }
     return try {
-        Result.success(block())
+        Result.Success(block())
     } catch (e: Exception) {
-        Result.failure(e)
+        Result.Error(DomainException.UnknownException(cause = e))
     }
 }
+
+/**
+ * String formatting utilities for KMP
+ */
+object StringFormat {
+    /**
+     * Format a Double with specified decimal places
+     */
+    fun formatDouble(value: Double, decimals: Int): String {
+        val multiplier = when (decimals) {
+            0 -> 1.0
+            1 -> 10.0
+            2 -> 100.0
+            3 -> 1000.0
+            4 -> 10000.0
+            5 -> 100000.0
+            6 -> 1000000.0
+            else -> 10.0.pow(decimals.toDouble())
+        }
+        val rounded = round(value * multiplier) / multiplier
+
+        return if (decimals == 0) {
+            rounded.toLong().toString()
+        } else {
+            val intPart = rounded.toLong()
+            val fracPart = abs(rounded - intPart)
+            val fracString = (fracPart * multiplier).toLong().toString().padStart(decimals, '0')
+            "$intPart.$fracString"
+        }
+    }
+
+    /**
+     * Format a Float with specified decimal places
+     */
+    fun formatFloat(value: Float, decimals: Int): String {
+        return formatDouble(value.toDouble(), decimals)
+    }
+}
+/**
+ * Extension functions for easy formatting
+ */
+fun Double.format(decimals: Int): String = StringFormat.formatDouble(this, decimals)
+fun Float.format(decimals: Int): String = StringFormat.formatFloat(this, decimals)

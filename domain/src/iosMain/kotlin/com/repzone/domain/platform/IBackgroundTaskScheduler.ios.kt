@@ -1,6 +1,7 @@
 package com.repzone.domain.platform
+import com.repzone.domain.common.Result
 
-actual interface BackgroundTaskScheduler {
+actual interface IBackgroundTaskScheduler {
     actual fun scheduleGpsCollection(
         intervalMinutes: Int,
         flexIntervalMinutes: Int,
