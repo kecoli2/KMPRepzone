@@ -9,6 +9,8 @@ import com.repzone.core.enums.OnOf
 import com.repzone.core.enums.VisitPlanSchedulesType
 import com.repzone.core.interfaces.IPreferencesManager
 import com.repzone.core.interfaces.IUserSession
+import com.repzone.core.model.StringResource
+import com.repzone.core.model.UiText
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.core.ui.component.floatactionbutton.model.FabAction
 import com.repzone.core.ui.component.floatactionbutton.model.FabMenuItem
@@ -294,7 +296,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                 FabMenuItem(
                     type = FabMenuItemType.ADD_CUSTOMER,
                     icon = Icons.Default.Add,
-                    label = "PopupItemNewCustomerLegacy"
+                    label = UiText.resource(StringResource.POPUPITEMNEWCUSTOMERLEGACY)
                 )
             )
         }
@@ -305,7 +307,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                     FabMenuItem(
                         type = FabMenuItemType.ADD_CUSTOMER,
                         icon = Icons.Default.Add,
-                        label = "PopupItemNewCustomer"
+                        label = UiText.resource(StringResource.POPUPITEMNEWCUSTOMER)
                     )
                 )
             }
@@ -316,7 +318,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                 FabMenuItem(
                     type = FabMenuItemType.REPORT,
                     icon = Icons.Default.Report,
-                    label = "PopupItemReports"
+                    label = UiText.resource(StringResource.POPUPITEMREPORTS)
                 )
             )
             val reportList = iDynamicReportRepository.getAll().filter { it.quickAccessShow } .sortedBy { it.quickAccessOrder }
@@ -326,7 +328,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                     FabMenuItem(
                         type = FabMenuItemType.REPORT,
                         icon = Icons.Default.Report,
-                        label = it.name ?: "",
+                        label = UiText.dynamic(it.name ?: ""),
                         typeId = it.code
                     )
                 )
@@ -337,7 +339,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
             FabMenuItem(
                 type = FabMenuItemType.FEEDBACK,
                 icon = Icons.Default.Feedback,
-                label = "PopupItemFeedback"
+                label = UiText.resource(StringResource.POPUPITEMFEEDBACK)
             )
         }
 
@@ -347,7 +349,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                     FabMenuItem(
                         type = FabMenuItemType.REQUEST_FOR_PERMIT,
                         icon = Icons.Default.LeaveBagsAtHome,
-                        label = "PopupItemLeave"
+                        label = UiText.resource(StringResource.POPUPITEMLEAVE)
                     )
                 )
             }

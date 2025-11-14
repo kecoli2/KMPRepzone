@@ -1,6 +1,7 @@
 package com.repzone.core.ui.component.floatactionbutton.model
 
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.repzone.core.model.UiText
 
 sealed class FabAction {
     abstract val icon: ImageVector
@@ -21,6 +22,6 @@ sealed class FabAction {
 data class FabMenuItem(
     val type: FabMenuItemType,
     val icon: ImageVector,
-    val label: String,
+    val label: UiText,
     val typeId: String? = null
 )

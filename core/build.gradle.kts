@@ -17,6 +17,11 @@ ksp {
     arg("projectRoot", rootProject.projectDir.absolutePath)
     arg("module", "core")
     arg("incremental", "false")
+    arg("uiModuleName", providers.gradleProperty("ACTIVE_UI_MODULE").getOrElse("UIModule.NEW"))
+    arg("appVersion", libs.versions.application.versionname.get())
+    arg("isDebug", providers.gradleProperty("DEBUG").getOrElse("false"))
+    arg("defaultThemeColor", providers.gradleProperty("DEFAULT_THEME").getOrElse("ThemeType.DEFAULT"))
+    arg("apiEndpoint", providers.gradleProperty("API_ENDPOINT").getOrElse(""))
 }
 
 kotlin {

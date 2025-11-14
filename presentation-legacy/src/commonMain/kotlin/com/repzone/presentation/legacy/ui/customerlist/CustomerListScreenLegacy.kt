@@ -95,6 +95,7 @@ import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
 import com.repzone.core.constant.CdnConfig
 import com.repzone.core.interfaces.IUserSession
+import com.repzone.core.model.StringResource
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.component.RepzoneTopAppBar
 import com.repzone.core.ui.component.TopBarAction
@@ -925,6 +926,13 @@ fun CustomerCardParent(customer: CustomerItemModel,
             }
 
             // Orta metinler
+            val dayDesc =
+                when {
+                    customer.date?.toEpochMilliseconds()?.isToday() == true -> StringResource.ROUTETODAY.fromResource()
+                    customer.date?.toEpochMilliseconds()?.isTomorrow() == true -> StringResource.ROUTETOMORROW.fromResource()
+                    else -> customer.date?.toDayName() ?: ""
+                }
+
             Column(
                 modifier = Modifier
                     .padding(start = 12.dp)
@@ -950,6 +958,15 @@ fun CustomerCardParent(customer: CustomerItemModel,
                             )
                         }
                     }
+                    Text(
+                        modifier = Modifier.padding(start = 8.dp),
+                        text = dayDesc,
+                        fontWeight = FontWeight.Light,
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
 
                 Text(

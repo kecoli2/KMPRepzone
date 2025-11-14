@@ -82,6 +82,8 @@ import coil3.compose.AsyncImage
 import com.repzone.core.constant.CdnConfig
 import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.TaskRepeatInterval
+import com.repzone.core.model.StringResource
+import com.repzone.core.model.UiText
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.component.RepzoneTopAppBar
 import com.repzone.core.ui.component.TopBarAction
@@ -117,10 +119,6 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
 
     HandleBackPress {
         onBackClick()
-    }
-
-    LaunchedEffect(uiState.showDecisionDialog) {
-
     }
 
     Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
@@ -673,16 +671,29 @@ fun CustomerSummary(customer: CustomerItemModel, themeManager: ThemeManager, vis
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start)
             {
-                customer.name?.let {
-                    Text(
-                        text = it,
-                        style = MaterialTheme.typography.titleSmall,
-                        color = themeManager.getCurrentColorScheme().colorPalet.white,
-                        maxLines = 1,
-                        fontWeight = FontWeight.Bold,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                Row(modifier = Modifier.fillMaxWidth()){
+                    customer.name?.let {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.titleSmall,
+                            color = themeManager.getCurrentColorScheme().colorPalet.white,
+                            maxLines = 1,
+                            fontWeight = FontWeight.Bold,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    if(customer.customerBlocked){
+                        Badge(containerColor = MaterialTheme.colorScheme.error, modifier = Modifier.padding(start = 4.dp)) {
+                            Text(
+                                text = StringResource.CUSTOMERBLOCKEDTITLE.fromResource(),
+                                style = MaterialTheme.typography.labelSmall,
+                                fontSize = 10.sp
+                            )
+                        }
+                    }
                 }
+
                 customer.customerCode?.let {
                     Text(
                         text = it,

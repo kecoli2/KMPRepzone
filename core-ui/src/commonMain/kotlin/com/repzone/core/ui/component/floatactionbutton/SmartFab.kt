@@ -37,6 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.repzone.core.ui.component.floatactionbutton.model.FabAction
 import com.repzone.core.ui.component.floatactionbutton.model.FabMenuItem
+import com.repzone.core.util.extensions.fromResource
 
 @Composable
 fun SmartFabScaffold(
@@ -168,7 +169,7 @@ private fun FabMenuItemRow(
             tonalElevation = 2.dp
         ) {
             Text(
-                text = item.label,
+                text = item.label.fromResource(),
                 modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
                 style = MaterialTheme.typography.bodyMedium
             )
@@ -180,7 +181,7 @@ private fun FabMenuItemRow(
         ) {
             Icon(
                 imageVector = item.icon,
-                contentDescription = item.label
+                contentDescription = item.label.fromResource()
             )
         }
     }
