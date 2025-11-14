@@ -10,6 +10,8 @@ import com.repzone.domain.repository.ILocationRepository
 import com.repzone.domain.service.IGpsConfigManager
 import com.repzone.domain.service.ILocationService
 import com.repzone.domain.common.Result
+import com.repzone.domain.common.onError
+import com.repzone.domain.common.onSuccess
 import com.repzone.domain.model.SyncResult
 import com.repzone.domain.model.SyncStatus
 import com.repzone.domain.model.gps.GpsLocation
@@ -17,7 +19,11 @@ import com.repzone.domain.model.gps.LocationMetadata
 import com.repzone.domain.model.gps.ServiceState
 import com.repzone.domain.model.gps.TrackingStatistics
 import com.repzone.domain.service.IGpsDataSyncService
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.launch
 
 
 /**
@@ -98,7 +104,12 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
         }
 
         // Data sync'i planla
-        //dataSyncService.schedulePeriodicSync(config.serverSyncIntervalMinutes)
+        dataSyncService.schedulePeriodicSync(config.serverSyncIntervalMinutes)
+
+        // ⭐ YENİ: Auto sync özelliği aktifse, location updates'i dinle
+        if (config.autoSyncOnGpsUpdate) {
+            startAutoSyncObserver()
+        }
 
         return Result.Success(Unit)
     }
@@ -247,9 +258,23 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
     }
     //endregion
 
-    //region Protected Method
-    //endregion
-
     //region Private Method
+    private fun startAutoSyncObserver() {
+        CoroutineScope(SupervisorJob() + Dispatchers.Default
+        ).launch {
+            iLocationRepository.observeLocationUpdates()
+                .collect { newLocation ->
+                    // Yeni GPS alındığında hemen sync yap
+                    println("Auto sync: New GPS received, triggering sync...")
+                    dataSyncService.syncToServer()
+                        .onSuccess { result ->
+                            println("Auto sync completed: ${result.successCount} locations synced")
+                        }
+                        .onError { error ->
+                            println("Auto sync failed: ${error.message}")
+                        }
+                }
+        }
+    }
     //endregion
 }

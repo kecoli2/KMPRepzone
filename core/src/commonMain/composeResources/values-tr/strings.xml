@@ -908,4 +908,11 @@
     <string name="error_location_permission_denied">Konum izni verilmedi</string>
     <string name="sync_gps_never">Gps verileri hiç senkronize edilmedi</string>
 
+    <string name="error_start_hour_range">Başlangıç saati 0-23 arasında olmalıdır.</string>
+    <string name="error_start_minute_range">Başlangıç dakikası 0-59 arasında olmalıdır.</string>
+    <string name="error_end_hour_range">Bitiş saati 0-23 arasında olmalıdır.</string>
+    <string name="error_end_minute_range">Bitiş dakikası 0-59 arasında olmalıdır.</string>
+    <string name="error_active_days_required">En az bir aktif gün seçilmelidir.</string>
+    <string name="error_out_of_working_hours">Şu an çalışma saatleri dışında. Bir sonraki çalışma: %1$d dakika sonra.</string>
+
 </resources>

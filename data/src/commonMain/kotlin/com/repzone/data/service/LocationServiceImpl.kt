@@ -20,6 +20,7 @@ import com.repzone.domain.common.Result
 import com.repzone.domain.common.onError
 import com.repzone.domain.common.onSuccess
 import com.repzone.domain.util.isRecent
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -81,6 +82,19 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             // Konfigürasyonu kaydet
             currentConfig = config
 
+            if (config.enableSchedule && !config.isWithinSchedule()) {
+                val minutesUntilNext = config.getMinutesUntilNextScheduledTime()
+                val message = "Şu an çalışma saatleri dışında. Bir sonraki çalışma: $minutesUntilNext dakika sonra"
+                _serviceState.value = ServiceState.Error(DomainException.BusinessRuleException(ErrorCode.ERROR_OUT_OF_WORKING_HOURS))
+                println(message)
+
+                // Bir sonraki çalışma zamanında otomatik başlat
+                scheduleNextStart(config, minutesUntilNext)
+
+                return Result.Error(DomainException.BusinessRuleException(ErrorCode.ERROR_OUT_OF_WORKING_HOURS))
+            }
+
+
             // İzinleri kontrol et
             val permissionStatus = platformProvider.checkPermissions()
             if (permissionStatus != PermissionStatus.Granted) {
@@ -99,6 +113,10 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
                 ).onError { e ->
                     Logger.error("LocationServiceImpl", Exception(e))
                 }
+            }
+
+            if (config.enableSchedule) {
+                startScheduleMonitoring(config)
             }
 
             isRunning = true
@@ -244,6 +262,48 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
 
 
     //region Private Method
+    private fun scheduleNextStart(config: GpsConfig, delayMinutes: Int) {
+        backgroundScheduler.scheduleOneTimeTask(
+            taskId = "gps_scheduled_start",
+            delayMinutes = delayMinutes
+        ) {
+            startService(config)
+        }
+    }
+
+    private fun startScheduleMonitoring(config: GpsConfig) {
+        coroutineScope.launch {
+            while (isRunning && !isPaused) {
+                delay(60_000) // Her 1 dakikada kontrol et
+
+                if (!config.isWithinSchedule()) {
+                    // Çalışma saatleri dışına çıkıldı
+                    Logger.d("Schedule: Çalışma saatleri dışına çıkıldı, servis duraklatılıyor...")
+                    pauseService()
+
+                    // Bir sonraki çalışma zamanında devam et
+                    val minutesUntilNext = config.getMinutesUntilNextScheduledTime()
+                    scheduleNextResume(config, minutesUntilNext)
+                    break
+                }
+            }
+        }
+    }
+
+    private fun scheduleNextResume(config: GpsConfig, delayMinutes: Int) {
+        backgroundScheduler.scheduleOneTimeTask(
+            taskId = "gps_scheduled_resume",
+            delayMinutes = delayMinutes
+        ) {
+            resumeService().onSuccess {
+                // Resume sonrası monitoring'i tekrar başlat
+                if (config.enableSchedule) {
+                    startScheduleMonitoring(config)
+                }
+            }
+        }
+    }
+
     private fun startPlatformLocationUpdates(config: GpsConfig) {
         // Doğruluk seviyesini ayarla
         val accuracy = if (config.batteryOptimizationEnabled) {
@@ -265,7 +325,6 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             }
         }
     }
-
     private suspend fun processNewLocation(location: GpsLocation) {
         try {
             val config = currentConfig ?: return

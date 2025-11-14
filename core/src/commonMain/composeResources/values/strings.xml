@@ -903,5 +903,11 @@
     <string name="error_location_gps_accuracy_negative">GPS accuracy threshold cannot be negative.</string>
     <string name="error_location_permission_denied">Location permission not granted.</string>
     <string name="sync_gps_never">GPS data has never been synchronized.</string>
+    <string name="error_start_hour_range">Start hour must be between 0-23.</string>
+    <string name="error_start_minute_range">Start minute must be between 0-59.</string>
+    <string name="error_end_hour_range">End hour must be between 0-23.</string>
+    <string name="error_end_minute_range">End minute must be between 0-59.</string>
+    <string name="error_active_days_required">At least one active day must be selected.</string>
+    <string name="error_out_of_working_hours">Currently outside working hours. Next shift in %1$d minutes.</string>
 
 </resources>

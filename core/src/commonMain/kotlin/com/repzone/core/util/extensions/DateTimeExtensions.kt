@@ -43,6 +43,30 @@ fun Long.toIso8601StringFromSeconds(): String =
 fun String.fromIso8601ToLong(): Long? =
     runCatching { Instant.parse(this).toEpochMilliseconds() }.getOrNull()
 
+fun Long.getCurrentHour(): Int {
+    val instant = Instant.fromEpochMilliseconds(this)
+    val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+    return localDateTime.hour
+}
+
+fun Long.getCurrentDayOfWeek(): DayOfWeek {
+    val instant = Instant.fromEpochMilliseconds(this)
+    val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+    return localDateTime.dayOfWeek
+}
+
+fun Long.getCurrentMinute(): Int {
+    val instant = Instant.fromEpochMilliseconds(this)
+    val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+    return localDateTime.minute
+}
+
+fun Long.getCurrentSecond(): Int {
+    val instant = Instant.fromEpochMilliseconds(this)
+    val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+    return localDateTime.second
+}
+
 // ============================================
 // Date/Time Formatting Extensions
 // ============================================
