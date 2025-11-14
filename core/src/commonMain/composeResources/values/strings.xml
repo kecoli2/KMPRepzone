@@ -880,5 +880,6 @@
     <string name="e_invoice_damaged_return">E-Invoice Damaged Return</string>
     <string name="e_invoice_one_to_one_damaged_return">E-Invoice One-to-One Damaged Return</string>
     <string name="damaged_return_electronic_dispatch">Damaged Return E-Dispatch</string>
-
+    <string name="invalid_email">Incorrect e-mail adress</string>
+    <string name="yes_terminate">Yes, Terminate</string>
 </resources>

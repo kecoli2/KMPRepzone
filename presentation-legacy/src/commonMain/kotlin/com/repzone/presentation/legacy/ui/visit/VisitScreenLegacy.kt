@@ -202,9 +202,9 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
     uiState.showDecisionDialog?.let { dialogState ->
         RepzoneDialog(
             isOpen = true,
-            title = Res.string.warning.fromResource(),
-            message = dialogState.message,
-            yesText = dialogState.options.firstOrNull()?.label ?: "",
+            title = dialogState.title.fromResource(),
+            message = dialogState.message.fromResource(),
+            yesText = dialogState.options.firstOrNull()?.label?.fromResource() ?: "",
             onYes = {
                 viewModel.onEvent(VisitViewModel.Event.OnDecisionMade(
                     ruleId = dialogState.ruleId,
@@ -213,7 +213,7 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
                 ))
             },
             showNoButton = dialogState.options.size > 1,
-            noText = dialogState.options.getOrNull(1)?.label ?: "",
+            noText = dialogState.options.getOrNull(1)?.label?.fromResource() ?: "",
             onNo = {
                 viewModel.onEvent(VisitViewModel.Event.OnDecisionMade(
                     ruleId = dialogState.ruleId,

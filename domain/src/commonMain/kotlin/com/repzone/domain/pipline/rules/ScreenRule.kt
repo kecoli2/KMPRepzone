@@ -1,5 +1,6 @@
 package com.repzone.domain.pipline.rules
 
+import com.repzone.core.model.UiText
 import com.repzone.domain.events.base.IEventBus
 import com.repzone.domain.events.base.events.ScreenEvents
 import com.repzone.domain.pipline.model.Screen
@@ -10,7 +11,7 @@ import com.repzone.domain.pipline.model.pipline.RuleType
 
 class ScreenRule(
     override val id: String,
-    override val title: String,
+    override val title: UiText,
     val screen: Screen,
     val eventBus: IEventBus,
     val condition: ((PipelineContext) -> Boolean)? = null

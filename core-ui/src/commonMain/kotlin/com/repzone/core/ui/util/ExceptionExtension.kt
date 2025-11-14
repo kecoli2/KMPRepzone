@@ -1,57 +1,45 @@
 package com.repzone.core.ui.util
 
 import androidx.compose.runtime.Composable
+import com.repzone.core.model.StringResource
+import com.repzone.core.model.UiText
 import com.repzone.domain.common.DomainException
 import com.repzone.domain.common.ErrorCode
 
 @Composable
-fun DomainException.toMessage(): String {
+fun DomainException.toMessage(): UiText {
     return when (this) {
         is DomainException.NotFoundException -> {
-            // stringResource(Res.string.error_not_found, entityName, entityId.toString())
-            "TODO: Use stringResource when resources are set up"
+            UiText.dynamic("TODO: Use stringResource when resources are set up")
         }
 
         is DomainException.ValidationException -> {
             when (errorCode) {
                 ErrorCode.REQUIRED_FIELD -> {
                     val fieldName = params["fieldName"] as? String ?: field ?: "Field"
-                    // stringResource(Res.string.error_validation_required_field, fieldName)
-                    "$fieldName is required"
+                    UiText.dynamic("$fieldName is required")
+
                 }
                 ErrorCode.INVALID_EMAIL -> {
-                    // stringResource(Res.string.error_validation_invalid_email)
-                    "Invalid email format"
+                    UiText.resource(StringResource.INVALID_EMAIL)
                 }
                 ErrorCode.INVALID_PHONE -> {
-                    // stringResource(Res.string.error_validation_invalid_phone)
-                    "Invalid phone number"
+                    UiText.resource(StringResource.PHONENUMBERINVALIDWARNINGMSG)
                 }
                 else -> {
-                    // stringResource(Res.string.error_validation)
-                    "Validation error"
+                    UiText.dynamic("Validation error")
                 }
             }
         }
 
         is DomainException.DatabaseException -> {
-            // stringResource(Res.string.error_database)
-            "Database error occurred"
+            UiText.dynamic("Database error occurred")
         }
 
         is DomainException.BusinessRuleException -> {
             when (errorCode) {
-                ErrorCode.INSUFFICIENT_STOCK -> {
-                    // stringResource(Res.string.error_business_insufficient_stock)
-                    "Insufficient stock"
-                }
-                ErrorCode.DUPLICATE_ENTRY -> {
-                    // stringResource(Res.string.error_business_duplicate_entry)
-                    "This entry already exists"
-                }
                 else -> {
-                    // stringResource(Res.string.error_business_rule)
-                    "Business rule violation"
+                    UiText.dynamic("Business rule violation")
                 }
             }
         }
@@ -59,39 +47,34 @@ fun DomainException.toMessage(): String {
         is DomainException.NetworkException -> {
             when (errorCode) {
                 ErrorCode.NO_INTERNET -> {
-                    // stringResource(Res.string.error_network_no_internet)
-                    "No internet connection"
+                    UiText.resource(StringResource.CHECK_INTERNET)
                 }
                 ErrorCode.TIMEOUT -> {
-                    // stringResource(Res.string.error_network_timeout)
-                    "Request timed out"
+                    UiText.dynamic("Request timed out")
                 }
                 else -> {
-                    // stringResource(Res.string.error_network)
-                    "Network error occurred"
+                    UiText.dynamic("Network error occurred")
                 }
             }
         }
 
         is DomainException.ConflictException -> {
-            // stringResource(Res.string.error_conflict, entityName, field, value.toString())
-            "$entityName with $field=$value already exists"
+            UiText.dynamic("$entityName with $field=$value already exists")
+
         }
 
         is DomainException.UnauthorizedException -> {
-            // stringResource(Res.string.error_unauthorized)
-            "Unauthorized operation"
+            UiText.resource(StringResource.LOGINREJECTBYSERVER)
         }
 
         is DomainException.UnknownException -> {
-            // stringResource(Res.string.error_unknown)
-            "An unknown error occurred"
+            UiText.dynamic("An unknown error occurred")
         }
     }
 }
 
 @Composable
-fun <T> com.repzone.domain.common.Result<T>.getErrorMessage(): String? {
+fun <T> com.repzone.domain.common.Result<T>.getErrorMessage(): UiText? {
     return when (this) {
         is com.repzone.domain.common.Result.Error -> exception.toMessage()
         is com.repzone.domain.common.Result.Success -> null

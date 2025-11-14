@@ -1,5 +1,6 @@
 package com.repzone.domain.pipline.rules.action
 
+import com.repzone.core.model.UiText
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.model.VisitReasonInformation
 import com.repzone.domain.pipline.model.pipline.PipelineContext
@@ -10,7 +11,7 @@ import com.repzone.domain.repository.IVisitRepository
 
 class StartVisitActionRule(
     override val id: String = "start_visit",
-    override val title: String = "Ziyaret Başlat",
+    override val title: UiText = UiText.dynamic("Ziyaret Başlat"),
     val iVisitRepository: IVisitRepository,
     val customerItemModel: CustomerItemModel,
     val visitInfo: VisitReasonInformation? = null) :  Rule {

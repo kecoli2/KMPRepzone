@@ -1,5 +1,6 @@
 package com.repzone.domain.pipline.rules.check
 
+import com.repzone.core.model.UiText
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule
@@ -10,7 +11,7 @@ import com.repzone.domain.repository.IVisitRepository
 
 class ActiveVisitCheckRule(
     override val id: String = "active_visit_check",
-    override val title: String = "Active Visit Check",
+    override val title: UiText = UiText.dynamic("Active Visit Check"),
     private val customerItemModel: CustomerItemModel,
     private val iVisitRepository: IVisitRepository,
     private val iRouteAppointmentRepository: IRouteAppointmentRepository

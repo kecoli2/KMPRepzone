@@ -1,5 +1,6 @@
 package com.repzone.domain.events.base.events
 
+import com.repzone.core.model.UiText
 import com.repzone.core.util.extensions.now
 import com.repzone.domain.pipline.model.pipline.DecisionOption
 
@@ -7,8 +8,8 @@ sealed class DecisionEvents : DomainEvent {
 
     data class DecisionRequired(
         val ruleId: String,
-        val title: String,
-        val message: String,
+        val title: UiText,
+        val message: UiText,
         val options: List<DecisionOption>,
         val sessionId: String,
         override val timestamp: Long = now()

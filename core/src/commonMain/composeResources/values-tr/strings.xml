@@ -883,6 +883,7 @@
     <string name="e_invoice_damaged_return">E-Fatura Hasarlı İade</string>
     <string name="e_invoice_one_to_one_damaged_return">E-Fatura Birebir Hasarlı İade</string>
     <string name="damaged_return_electronic_dispatch">Hasarlı İade e-İrsaliye</string>
-
+    <string name="invalid_email">Geçersiz e-posta adresi.</string>
+    <string name="yes_terminate">Evet, Sonlandır</string>
 
 </resources>

@@ -1,5 +1,7 @@
 package com.repzone.domain.pipline.rules.decision
 
+import com.repzone.core.model.StringResource
+import com.repzone.core.model.UiText
 import com.repzone.domain.events.base.IEventBus
 import com.repzone.domain.events.base.events.DecisionEvents
 import com.repzone.domain.pipline.model.pipline.DecisionOption
@@ -10,7 +12,7 @@ import com.repzone.domain.pipline.model.pipline.RuleType
 
 class EndVisitDecisionRule(
     override val id: String = "end_visit_decision",
-    override val title: String = "Ziyaret Sonlandır",
+    override val title: UiText = UiText.dynamic("Ziyaret Sonlandır"),
     private val eventBus: IEventBus
 ) : Rule {
     //region Field
@@ -28,18 +30,18 @@ class EndVisitDecisionRule(
             return RuleResult.Success(this)
         }
         val activeVisitId = context.getData<Long>("active_visit_id") ?: 0L
-        val customerName = context.getData<String>("active_customer_name")
+        val customerName = context.getData<String>("active_customer_name") ?: ""
 
         val options = listOf(
-            DecisionOption("yes", "Evet, Sonlandır"),
-            DecisionOption("no", "Hayır")
+            DecisionOption("yes", UiText.resource(StringResource.YES_TERMINATE)),
+            DecisionOption("no", UiText.resource(StringResource.NO))
         )
 
         eventBus.publish(
             DecisionEvents.DecisionRequired(
                 ruleId = id,
-                title = title,
-                message = "Aktif ziyaret var. Sonlandıralım mı?",
+                title = UiText.resource(StringResource.WARNING),
+                message = UiText.resource(StringResource.VISITALREADYSTART, customerName),
                 options = options,
                 sessionId = context.sessionId
             )

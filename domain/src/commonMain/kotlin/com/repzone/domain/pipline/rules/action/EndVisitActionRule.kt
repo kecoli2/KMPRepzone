@@ -1,5 +1,6 @@
 package com.repzone.domain.pipline.rules.action
 
+import com.repzone.core.model.UiText
 import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule
 import com.repzone.domain.pipline.model.pipline.RuleResult
@@ -8,7 +9,7 @@ import com.repzone.domain.repository.IVisitRepository
 
 class EndVisitActionRule(
     override val id: String = "end_visit",
-    override val title: String = "Ziyaret Sonlandır",
+    override val title: UiText = UiText.dynamic("Ziyaret Sonlandır"),
     val iVisitRepository: IVisitRepository
 ) : Rule {
     //region Field

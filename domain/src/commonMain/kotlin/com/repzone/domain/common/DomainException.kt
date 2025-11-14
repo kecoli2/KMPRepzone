@@ -40,22 +40,13 @@ enum class ErrorCode(val code: String) {
     REQUIRED_FIELD("error_validation_required_field"),
     INVALID_EMAIL("error_validation_invalid_email"),
     INVALID_PHONE("error_validation_invalid_phone"),
-    INVALID_FORMAT("error_validation_invalid_format"),
-    VALUE_TOO_SHORT("error_validation_too_short"),
-    VALUE_TOO_LONG("error_validation_too_long"),
-    VALUE_OUT_OF_RANGE("error_validation_out_of_range"),
 
     // Business rules
     INSUFFICIENT_STOCK("error_business_insufficient_stock"),
     DUPLICATE_ENTRY("error_business_duplicate_entry"),
-    OPERATION_NOT_ALLOWED("error_business_operation_not_allowed"),
-    INVALID_STATE("error_business_invalid_state"),
-
     // Network specific
     NO_INTERNET("error_network_no_internet"),
     TIMEOUT("error_network_timeout"),
-    SERVER_ERROR("error_network_server"),
-    CUSTOMER_BLOCKED("error_business_customer_blocked")
 }
 
 

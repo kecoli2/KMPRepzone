@@ -1,5 +1,7 @@
 package com.repzone.domain.pipline.rules.decision
 
+import com.repzone.core.model.StringResource
+import com.repzone.core.model.UiText
 import com.repzone.domain.common.DomainException
 import com.repzone.domain.common.ErrorCode
 import com.repzone.domain.events.base.IEventBus
@@ -13,7 +15,7 @@ import com.repzone.domain.pipline.model.pipline.RuleType
 
 class CustomerBlockedDecisionRule(
     override val id: String = "customer_blocked_check",
-    override val title: String = "CustomerBlockedKontrol",
+    override val title: UiText = UiText.dynamic("CustomerBlockedKontrol"),
     private val customerItemModel: CustomerItemModel,
     private val eventBus: IEventBus
 ) : Rule {
@@ -32,14 +34,14 @@ class CustomerBlockedDecisionRule(
         if(customerItemModel.customerBlocked){
 
             val options = listOf(
-                DecisionOption("continue", "Devam Et"),
-                DecisionOption("cancel", "İptal Et")
+                DecisionOption("continue", UiText.resource(StringResource.DIALOGCONTINUE)),
+                DecisionOption("cancel", UiText.resource(StringResource.BUTTONCANCEL))
             )
 
             eventBus.publish(DecisionEvents.DecisionRequired(
                 ruleId = id,
                 title = title,
-                message = "Müşteri Engellenmiş",
+                message = UiText.resource(StringResource.CUSTOMERBLOCKEDMSG),
                 sessionId = context.sessionId,
                 options = options,
             ))

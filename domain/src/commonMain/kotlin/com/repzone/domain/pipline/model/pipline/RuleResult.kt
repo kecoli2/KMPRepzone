@@ -1,5 +1,6 @@
 package com.repzone.domain.pipline.model.pipline
 
+import com.repzone.core.model.UiText
 import com.repzone.domain.common.DomainException
 import com.repzone.domain.pipline.model.Screen
 
@@ -30,5 +31,5 @@ sealed class RuleResult {
 
 data class DecisionOption(
     val id: String,
-    val label: String
+    val label: UiText
 )
