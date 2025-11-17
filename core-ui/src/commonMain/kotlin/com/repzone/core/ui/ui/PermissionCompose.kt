@@ -15,7 +15,6 @@ import kotlinx.coroutines.launch
 @Composable
 expect fun rememberPermissionManager(): PermissionManager
 
-// 🔧 UI’den çağırmak için küçük bir yardımcı composable (örnek)
 @Composable
 fun PermissionsSectionLegacy() {
     val pm = rememberPermissionManager()
@@ -24,6 +23,7 @@ fun PermissionsSectionLegacy() {
     var btStatus by remember { mutableStateOf<PermissionStatus?>(null) }
     var notifStatus by remember { mutableStateOf<PermissionStatus?>(null) }
     var gpsStatus by remember { mutableStateOf<PermissionStatus?>(null) }
+    var foreGroundServiceStatus by remember { mutableStateOf<PermissionStatus?>(null) }
 
     // Buraya kendi buton/Metin tasarımını koy
     Button(onClick = {
@@ -49,5 +49,9 @@ fun PermissionsSectionLegacy() {
     }
     if(gpsStatus != null){
         Text("GPS: $gpsStatus")
+    }
+
+    if(foreGroundServiceStatus != null){
+        Text("Foreground Service: $foreGroundServiceStatus")
     }
 }

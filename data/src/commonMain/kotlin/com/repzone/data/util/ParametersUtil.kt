@@ -3,6 +3,9 @@ package com.repzone.data.util
 import com.repzone.core.enums.IStringValueEnum
 import com.repzone.core.enums.findEnumByValue
 import com.repzone.domain.model.SyncPackageCustomFieldProductModel
+import kotlinx.datetime.LocalDateTime
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -87,7 +90,8 @@ inline fun <reified T> List<SyncPackageCustomFieldProductModel>.getEnumValue(fie
 fun List<SyncPackageCustomFieldProductModel>.getDateTimeValue(fieldName: String): Instant? {
     val value = find { it.fieldName == fieldName }?.value ?: return null
     return try {
-        Instant.parse(value)
+        val ldt = LocalDateTime.parse(value)
+        ldt.toInstant(TimeZone.currentSystemDefault())
     } catch (e: Exception) {
         null
     }

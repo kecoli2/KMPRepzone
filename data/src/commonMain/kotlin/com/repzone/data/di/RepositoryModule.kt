@@ -507,6 +507,7 @@ val RepositoryModule = module {
 
     includes(
         EventBusModule,
-        PublineModule
+        PublineModule,
+        GpsModule
     )
 }

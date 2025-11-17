@@ -14,7 +14,7 @@ import com.repzone.domain.model.SyncStatus
  * Tüm servisleri koordine eden ana interface
  */
 interface IGpsTrackingManager {
-    suspend fun initialize(config: GpsConfig): Result<Unit>
+    suspend fun initialize(): Result<Unit>
     suspend fun start(): Result<Unit>
     suspend fun stop(): Result<Unit>
     suspend fun pause(): Result<Unit>

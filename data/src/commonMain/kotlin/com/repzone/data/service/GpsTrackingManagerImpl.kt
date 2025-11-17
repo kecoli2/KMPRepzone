@@ -1,6 +1,7 @@
 package com.repzone.data.service
 
 import com.repzone.core.util.PermissionStatus
+import com.repzone.core.util.extensions.getLocalDateTime
 import com.repzone.core.util.extensions.now
 import com.repzone.domain.common.DomainException
 import com.repzone.domain.manager.gps.IGpsTrackingManager
@@ -18,12 +19,15 @@ import com.repzone.domain.model.gps.GpsLocation
 import com.repzone.domain.model.gps.LocationMetadata
 import com.repzone.domain.model.gps.ServiceState
 import com.repzone.domain.model.gps.TrackingStatistics
+import com.repzone.domain.platform.IPlatformServiceController
+import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.service.IGpsDataSyncService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
+import kotlin.time.ExperimentalTime
 
 
 /**
@@ -46,11 +50,14 @@ import kotlinx.coroutines.launch
  * updateXXX() - Config değişikliklerinde servisleri restart et
  */
 
+@OptIn(ExperimentalTime::class)
 class GpsTrackingManagerImpl(private val locationService: ILocationService,
                              private val iLocationRepository: ILocationRepository,
                              private val configManager: IGpsConfigManager,
                              private val platformProvider: IPlatformLocationProvider,
-                             private val dataSyncService: IGpsDataSyncService
+                             private val dataSyncService: IGpsDataSyncService,
+                             private val iModuleParameterRepository: IMobileModuleParameterRepository,
+                             private val serviceController: IPlatformServiceController
 ): IGpsTrackingManager {
     //region Field
     private var isInitialized = false
@@ -63,8 +70,21 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
     //endregion
 
     //region Public Method
-    override suspend fun initialize(config: GpsConfig): Result<Unit> {
+    override suspend fun initialize(): Result<Unit> {
         return try {
+            val sss = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackStartTime?.getLocalDateTime()
+            var config = GpsConfig()
+            config = config.copy(
+                autoSyncOnGpsUpdate = true,
+                batteryOptimizationEnabled = true,
+                enableBackgroundTracking = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.backgroundTracking ?: false,
+                gpsIntervalMinutes = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackInterval ?: 1,
+                startTimeHour = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackStartTime?.getLocalDateTime()?.hour ?: 0,
+                startTimeMinute = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackStartTime?.getLocalDateTime()?.minute ?: 0,
+                endTimeHour = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackEndTime?.getLocalDateTime()?.hour ?: 0,
+                endTimeMinute = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackEndTime?.getLocalDateTime()?.minute ?: 0,
+                activeDays = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackDays ?: emptyList()
+            )
             // Konfigürasyonu validate et
             val validationResult = config.validate()
             if (validationResult.isError) {
@@ -97,6 +117,8 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
 
         val config = configManager.getConfig()
 
+        serviceController.startForegroundService()
+
         // Location service'i başlat
         val serviceResult = locationService.startService(config)
         if (serviceResult.isError) {
@@ -113,8 +135,8 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
 
     override suspend fun stop(): Result<Unit> {
         return try {
+            serviceController.startForegroundService()
             locationService.stopService().getOrThrow()
-            //dataSyncService.cancelScheduledSync()
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(DomainException.UnknownException(cause =e ))

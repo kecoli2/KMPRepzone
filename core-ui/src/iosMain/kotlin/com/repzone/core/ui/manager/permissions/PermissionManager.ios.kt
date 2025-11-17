@@ -147,4 +147,12 @@ actual class PermissionManager {
             UIApplication.sharedApplication.openURL(url)
         }
     }
+
+    actual suspend fun ensureForegroundService(): PermissionStatus {
+        return PermissionStatus.Granted
+    }
+
+    actual suspend fun checkForegroundService(): PermissionStatus {
+        return PermissionStatus.Granted
+    }
 }

@@ -17,7 +17,7 @@ import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-val gpsModule = module {
+val GpsModule = module {
 
     // Coroutine Scope
     single {

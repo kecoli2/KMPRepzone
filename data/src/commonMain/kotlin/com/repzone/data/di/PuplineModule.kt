@@ -9,7 +9,6 @@ import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
-
 var PublineModule = module {
     singleOf(::PipelineRepositoryImpl) { bind<IPipelineRepository>() }
     factoryOf(::PipelineExecutor)

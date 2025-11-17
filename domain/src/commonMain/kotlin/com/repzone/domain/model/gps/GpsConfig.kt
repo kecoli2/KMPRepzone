@@ -25,7 +25,7 @@ data class GpsConfig(
     val startTimeMinute: Int = 0,        // Başlangıç dakikası (0-59)
     val endTimeHour: Int = 18,           // Bitiş saati (0-23)
     val endTimeMinute: Int = 0,          // Bitiş dakikası (0-59)
-    val activeDays: Set<DayOfWeek> = setOf(
+    val activeDays: List<DayOfWeek> = listOf(
         DayOfWeek.MONDAY,
         DayOfWeek.TUESDAY,
         DayOfWeek.WEDNESDAY,

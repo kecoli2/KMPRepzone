@@ -5,6 +5,7 @@ import com.repzone.domain.common.DomainException
 import com.repzone.domain.common.ErrorCode
 import com.repzone.domain.common.Result
 import com.repzone.domain.model.gps.GpsConfig
+import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.service.IGpsConfigManager
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -18,7 +19,7 @@ import kotlinx.coroutines.flow.asStateFlow
  * Validation kontrolü
  * TODO: SharedPreferences/UserDefaults persistence
  */
-class GpsConfigManagerImpl(private val iUserSession: IUserSession): IGpsConfigManager {
+class GpsConfigManagerImpl: IGpsConfigManager {
     //region Field
     private val _config = MutableStateFlow(GpsConfig())
     //endregion
@@ -37,10 +38,9 @@ class GpsConfigManagerImpl(private val iUserSession: IUserSession): IGpsConfigMa
         // Validasyon kontrolü
         val validationResult = config.validate()
         if (validationResult.isSuccess) {
+            _config.value = config
             return validationResult
         }
-
-        _config.value = config
         // TODO: Konfigürasyonu persist et (SharedPreferences/UserDefaults)
         return Result.Success(Unit)
     }

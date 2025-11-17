@@ -8,6 +8,10 @@ expect class PermissionManager {
     suspend fun ensureNotifications(): PermissionStatus
     suspend fun ensureLocation(): PermissionStatus
 
+    suspend fun ensureForegroundService(): PermissionStatus
+    suspend fun checkForegroundService(): PermissionStatus
+
+
     suspend fun checkBluetooth(): PermissionStatus
     suspend fun checkNotifications(): PermissionStatus
     suspend fun checkLocation(): PermissionStatus

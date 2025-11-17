@@ -6,14 +6,20 @@ import com.repzone.core.ui.base.setError
 import com.repzone.core.ui.manager.permissions.PermissionManager
 import com.repzone.core.ui.ui.splash.SplashScreenUiState
 import com.repzone.core.util.PermissionStatus
+import com.repzone.core.util.PermissionStatus.DeniedPermanently.isPermanentDenied
+import com.repzone.domain.common.onError
+import com.repzone.domain.common.onSuccess
+import com.repzone.domain.manager.gps.IGpsTrackingManager
+import com.repzone.domain.model.gps.GpsConfig
 import com.repzone.network.api.ITokenApiController
 import com.repzone.network.http.wrapper.ApiResult
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashScreenViewModel(private val tokenController: ITokenApiController,
-                            private val userSession: IUserSession,):
-    BaseViewModel<SplashScreenUiState, SplashScreenViewModel.Event>(SplashScreenUiState()) {
+                            private val userSession: IUserSession,
+                            private val gpsTrackingManager: IGpsTrackingManager
+): BaseViewModel<SplashScreenUiState, SplashScreenViewModel.Event>(SplashScreenUiState()) {
 
     //region Field
         private var _nextOprerations : MutableMap<SplashScreenOperation,Any?> = mutableMapOf()
@@ -32,24 +38,54 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
     //endregion
 
     //region Public Method
-    suspend fun checkPermissionsAndProceed(pm: PermissionManager) {
-        val bt   = pm.ensureBluetooth()
-        val notif= if (bt == PermissionStatus.Granted) pm.ensureNotifications() else PermissionStatus.Denied(true)
-        val gps  = if (bt == PermissionStatus.Granted && notif == PermissionStatus.Granted)
-            pm.ensureLocation() else PermissionStatus.Denied(true)
+    suspend fun onEvent(event: Event){
+        when(event){
+            Event.NextOperationHandle -> {
+                nextOperation()
+            }
+            else -> {
 
-        val allOk = (bt == PermissionStatus.Granted && notif == PermissionStatus.Granted && gps == PermissionStatus.Granted)
-        if (allOk) {
+            }
+        }
+    }
+    suspend fun checkPermissionsAndProceed(pm: PermissionManager) {
+
+        // 1) Bluetooth
+        val bluetoothStatus = pm.ensureBluetooth()
+
+        // 2) Notifications (Bluetooth başarısızsa devam etmeye gerek yok)
+        val notificationStatus = if (bluetoothStatus == PermissionStatus.Granted) {
+            pm.ensureNotifications()
+        } else {
+            PermissionStatus.Denied(canAskAgain = true)
+        }
+
+        // 3) Location (BT + Notification başarılıysa)
+        val locationStatus = if (bluetoothStatus == PermissionStatus.Granted
+            && notificationStatus == PermissionStatus.Granted) {
+            pm.ensureLocation()
+        } else {
+            PermissionStatus.Denied(canAskAgain = true)
+        }
+
+        // 4) Foreground service (bilgi amaçlı, normal izin)
+        val foregroundStatus = pm.checkForegroundService()
+
+        // 5) Bütün izinler tamam mı?
+        val allGranted = listOf(bluetoothStatus, notificationStatus, locationStatus, foregroundStatus)
+            .all { it == PermissionStatus.Granted }
+
+        if (allGranted) {
             _nextOprerations.remove(SplashScreenOperation.CEHCK_PERMISSION)
             nextOperation()
             return
         }
 
-        // 🔍 Kalıcı reddedilme kontrolü (PermissionStatus tipine göre)
-        val statuses = listOf(bt, notif, gps)
-        val anyPermanent = statuses.any { it == PermissionStatus.Denied(true) }
+        // 6) Kalıcı reddedilme kontrolü
+        val anyPermanentDenied = listOf(bluetoothStatus, notificationStatus, locationStatus, foregroundStatus)
+            .any { it.isPermanentDenied }
 
-        if (anyPermanent) {
+        if (anyPermanentDenied) {
             sendEvent(Event.PermissionDeniedPermanent)
         } else {
             sendEvent(Event.PermissionDeniedTemporary)
@@ -81,13 +117,43 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
             SplashScreenOperation.CEHCK_PERMISSION -> {
 
             }
+
+            SplashScreenOperation.REGISTER_GPS_SERVICES -> {
+                registerGpsService()
+            }
         }
     }
+
+    private suspend fun registerGpsService() {
+        if(state.value.isGpsServiceStart){
+            updateState { currentState ->
+                currentState.copy(
+                    isGpsServiceStart = false,
+                    domainException = null
+                )
+            }
+        }
+        gpsTrackingManager.initialize()
+        gpsTrackingManager.start()
+            .onSuccess {
+            _nextOprerations.remove(SplashScreenOperation.REGISTER_GPS_SERVICES)
+            nextOperation()
+        }.onError {
+            updateState { currentState ->
+                currentState.copy(
+                    isGpsServiceStart = true,
+                    domainException = it
+                )
+            }
+        }
+    }
+
     private fun prepareNextOperation(){
         _nextOprerations.put(SplashScreenOperation.CEHCK_PERMISSION, null)
         _nextOprerations.put(SplashScreenOperation.CHECK_TOKEN, null)
         _nextOprerations.put(SplashScreenOperation.REGISTER_SMS_SERVICE, null)
         _nextOprerations.put(SplashScreenOperation.REGISTER_NOTIFICATION_SERVICE, null)
+        _nextOprerations.put(SplashScreenOperation.REGISTER_GPS_SERVICES, null)
     }
     private suspend fun checkToken(){
         try {
@@ -140,9 +206,9 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
      sealed class Event {
         object ControllSucces: Event()
         object NavigateToLogin: Event()
-
         object PermissionDeniedTemporary: Event()
         object PermissionDeniedPermanent : Event()
+        object NextOperationHandle : Event()
 
      }
     //endregion Event
@@ -152,7 +218,8 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
         CEHCK_PERMISSION,
         CHECK_TOKEN,
         REGISTER_SMS_SERVICE,
-        REGISTER_NOTIFICATION_SERVICE
+        REGISTER_NOTIFICATION_SERVICE,
+        REGISTER_GPS_SERVICES
     }
     //endregion Enums
 }

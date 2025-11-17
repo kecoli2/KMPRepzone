@@ -65,3 +65,9 @@ expect interface IPlatformLocationProvider {
     fun setLocationAccuracy(priority: LocationAccuracy)
     fun setConfig(config: GpsConfig)
 }
+
+expect interface IPlatformServiceController {
+    fun startForegroundService()
+    fun stopForegroundService()
+    fun isServiceRunning(): Boolean
+}

@@ -85,7 +85,7 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             if (config.enableSchedule && !config.isWithinSchedule()) {
                 val minutesUntilNext = config.getMinutesUntilNextScheduledTime()
                 val message = "Şu an çalışma saatleri dışında. Bir sonraki çalışma: $minutesUntilNext dakika sonra"
-                _serviceState.value = ServiceState.Error(DomainException.BusinessRuleException(ErrorCode.UNKNOWN_ERROR,cause = Exception(message)))
+                _serviceState.value = ServiceState.Error(DomainException.BusinessRuleException(ErrorCode.UNKNOWN_ERROR, cause = Exception(message)))
                 println(message)
 
                 // Bir sonraki çalışma zamanında otomatik başlat

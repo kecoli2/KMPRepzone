@@ -2,18 +2,18 @@
 <manifest xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!-- 🔌 TCP/IP (Wi-Fi/Ethernet) yazdırma -->
+    <!--TCP/IP (Wi-Fi/Ethernet) yazdırma -->
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- (opsiyonel) Ağ durumu -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
-    <!-- 🟦 Android 12+ (API 31+) Bluetooth izinleri -->
+    <!--Android 12+ (API 31+) Bluetooth izinleri -->
     <uses-permission android:name="android.permission.BLUETOOTH_SCAN" android:usesPermissionFlags="neverForLocation" />
     <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
     <!-- (opsiyonel) advertise gerekiyorsa -->
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />
 
-    <!-- 🟩 Android 11 ve altı (API ≤30) klasik Bluetooth + konum -->
+    <!--Android 11 ve altı (API ≤30) klasik Bluetooth + konum -->
     <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
     <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" android:maxSdkVersion="30" />
@@ -33,6 +33,9 @@
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"
+        tools:ignore="ForegroundServicesPolicy" />
 
     <application
         android:name=".RepzoneApplication"
@@ -63,6 +66,9 @@
                 android:name="autoStoreLocales"
                 android:value="true" />
         </service>
+        <service
+            android:name=".service.GpsTrackingService"
+            android:foregroundServiceType="location" />
     </application>
 
 </manifest>

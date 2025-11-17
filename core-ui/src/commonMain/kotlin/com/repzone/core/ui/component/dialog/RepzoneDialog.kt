@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.unit.dp
+import com.repzone.core.model.StringResource
+import com.repzone.core.util.extensions.fromResource
 
 @Composable
 fun RepzoneDialog(
@@ -20,11 +22,11 @@ fun RepzoneDialog(
     showYesButton: Boolean = true,
     onYes: () -> Unit,
     showNoButton: Boolean = true,
-    onNo: () -> Unit,
+    onNo: () -> Unit = {},
     onOther: () -> Unit = {},
-    yesText: String = "Evet",
-    noText: String = "Hayır",
-    otherText: String = "Diğer",
+    yesText: String = StringResource.YES.fromResource(),
+    noText: String = StringResource.NO.fromResource(),
+    otherText: String = StringResource.OTHER.fromResource(),
     showOther: Boolean = false,
     onDismissRequest: () -> Unit = onNo
 ) {

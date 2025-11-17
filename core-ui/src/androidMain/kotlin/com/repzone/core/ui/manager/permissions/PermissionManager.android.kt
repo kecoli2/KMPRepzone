@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.provider.Settings
 import androidx.activity.result.ActivityResultLauncher
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.startActivity
 import com.repzone.core.util.PermissionStatus
@@ -118,5 +119,18 @@ actual class PermissionManager  constructor() {
         intent.data = Uri.fromParts("package", appContext.packageName, null)
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(appContext, intent, null)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.P)
+    actual suspend fun ensureForegroundService(): PermissionStatus {
+        val perm = Manifest.permission.FOREGROUND_SERVICE
+        if (hasPermission(perm)) return PermissionStatus.Granted
+        return PermissionStatus.Denied(canAskAgain = true)
+    }
+
+    actual suspend fun checkForegroundService(): PermissionStatus {
+        val perm = Manifest.permission.FOREGROUND_SERVICE
+        val granted = ContextCompat.checkSelfPermission(appContext, perm) == PackageManager.PERMISSION_GRANTED
+        return if (granted) PermissionStatus.Granted else PermissionStatus.Denied(canAskAgain = true)
     }
 }

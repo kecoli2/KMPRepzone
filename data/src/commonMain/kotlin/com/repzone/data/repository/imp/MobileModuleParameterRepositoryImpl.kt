@@ -51,6 +51,7 @@ import com.repzone.domain.model.MobileParameterModel
 import com.repzone.domain.model.SyncPackageCustomFieldProductModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import kotlinx.coroutines.runBlocking
+import kotlinx.datetime.DayOfWeek
 import kotlin.time.ExperimentalTime
 
 class MobileModuleParameterRepositoryImpl(
@@ -258,7 +259,7 @@ class MobileModuleParameterRepositoryImpl(
                         trackInterval = parameters.getIntValue("TrackInterval", 0),
                         trackStartTime = parameters.getDateTimeValue("TrackStartTime"),
                         trackEndTime = parameters.getDateTimeValue("TrackEndTime"),
-                        trackDays = parameters.getStringValue("TrackDays")?.split(",")?.map { it.toInt() } ?: emptyList(),
+                        trackDays = parameters.getStringValue("TrackDays")?.split(",")?.map { DayOfWeek.entries[(it.toInt() - 1)] } ?: emptyList(),
                         backgroundTracking = parameters.getBooleanValue("BackgroundTracking", false),
                         showRepresentativePhoneDetails = parameters.getBooleanValue("ShowRepresentativePhoneDetails", false)
                     )

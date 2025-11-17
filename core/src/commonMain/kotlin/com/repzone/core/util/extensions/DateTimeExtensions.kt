@@ -5,6 +5,7 @@ package com.repzone.core.util.extensions
 import androidx.compose.runtime.Composable
 import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.number
 import kotlinx.datetime.plus
@@ -65,6 +66,10 @@ fun Long.getCurrentSecond(): Int {
     val instant = Instant.fromEpochMilliseconds(this)
     val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
     return localDateTime.second
+}
+
+fun Instant.getLocalDateTime(timeZone: TimeZone = TimeZone.currentSystemDefault()): LocalDateTime{
+    return this.toLocalDateTime(timeZone)
 }
 
 // ============================================
@@ -141,9 +146,7 @@ fun Instant.toDayName(timeZone: TimeZone = TimeZone.currentSystemDefault()): Str
 fun Instant?.toDayNameOrEmpty(timeZone: TimeZone = TimeZone.currentSystemDefault()): String =
     this?.toDayName(timeZone) ?: ""
 
-fun Long.toDateString(
-    pattern: String,
-    timeZone: TimeZone = TimeZone.currentSystemDefault()
+fun Long.toDateString(pattern: String, timeZone: TimeZone = TimeZone.currentSystemDefault()
 ): String {
     val instant = Instant.fromEpochMilliseconds(this)
     val local = instant.toLocalDateTime(timeZone)

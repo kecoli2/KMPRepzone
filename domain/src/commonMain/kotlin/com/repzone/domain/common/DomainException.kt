@@ -3,7 +3,7 @@ package com.repzone.domain.common
 import com.repzone.core.model.StringResource
 import com.repzone.core.util.extensions.fromResource
 
-sealed class DomainException(val errorCode: ErrorCode, val params: Map<String, Any> = emptyMap(), cause: Throwable? = null) : Exception(errorCode.code.fromResource(), cause) {
+sealed class DomainException(val errorCode: ErrorCode, val params: Map<String, Any> = emptyMap(), cause: Throwable? = null) : Exception(errorCode.code.toString(), cause) {
     class NotFoundException(val entityName: String, val entityId: Any, cause: Throwable? = null) : DomainException(
         errorCode = ErrorCode.NOT_FOUND,
         params = mapOf("entityName" to entityName, "entityId" to entityId),

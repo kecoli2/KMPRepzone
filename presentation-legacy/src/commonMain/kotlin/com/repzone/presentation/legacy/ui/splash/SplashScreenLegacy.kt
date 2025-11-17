@@ -42,11 +42,13 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import com.repzone.core.model.StringResource
 import com.repzone.core.ui.base.ViewModelHost
+import com.repzone.core.ui.component.dialog.RepzoneDialog
 import com.repzone.core.ui.ui.rememberPermissionManager
-import com.repzone.presentation.legacy.navigation.LegacyScreen
 import com.repzone.presentation.legacy.navigation.LocalNavController
 import com.repzone.core.ui.viewmodel.splash.SplashScreenViewModel
+import com.repzone.core.util.extensions.fromResource
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import repzonemobile.core.generated.resources.Res
@@ -82,6 +84,7 @@ fun SplashScreenLegacy(onNavigateToLogin: () -> Unit, onNavigateToMain: () -> Un
                 is SplashScreenViewModel.Event.PermissionDeniedTemporary -> {
                     showTempDeniedDialog = true
                 }
+                else -> {}
             }
         }
     }
@@ -150,6 +153,22 @@ fun SplashScreenLegacy(onNavigateToLogin: () -> Unit, onNavigateToMain: () -> Un
                 },
                 dismissButton = {
                     TextButton(onClick = { showPermDeniedDialog = false }) { Text("Kapat") }
+                }
+            )
+        }
+
+        if(state.isGpsServiceStart) {
+            RepzoneDialog(
+                isOpen = state.isGpsServiceStart,
+                title = StringResource.ERROR.fromResource(),
+                message = state.domainException?.message ?: StringResource.ERROR.fromResource(),
+                showNoButton = false,
+                showYesButton = true,
+                yesText = StringResource.TRY_AGAIN.fromResource(),
+                onYes = {
+                    viewModel.scope.launch {
+                        viewModel.onEvent(SplashScreenViewModel.Event.NextOperationHandle)
+                    }
                 }
             )
         }

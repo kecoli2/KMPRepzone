@@ -25,3 +25,9 @@ actual interface IPlatformLocationProvider {
     actual fun setConfig(config: GpsConfig)
 
 }
+
+actual interface IPlatformServiceController {
+    actual fun startForegroundService()
+    actual fun stopForegroundService()
+    actual fun isServiceRunning(): Boolean
+}

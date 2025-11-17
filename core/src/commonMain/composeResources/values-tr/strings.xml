@@ -915,5 +915,5 @@
     <string name="error_active_days_required">En az bir aktif gün seçilmelidir.</string>
     <string name="error_out_of_working_hours">Şu an çalışma saatleri dışında. Bir sonraki çalışma: %1$d dakika sonra.</string>
     <string name="error_already_running_gps">Gps servisleri çalışıyor</string>
-
+    <string name="try_again">Tekrar dene</string>
 </resources>
