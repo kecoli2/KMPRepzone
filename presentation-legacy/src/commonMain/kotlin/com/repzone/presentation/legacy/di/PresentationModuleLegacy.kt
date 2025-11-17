@@ -12,6 +12,7 @@ import com.repzone.domain.usecase.visit.GetVisitMenuListUseCase
 import com.repzone.presentation.legacy.navigation.NavigationSharedStateHolder
 import com.repzone.presentation.legacy.viewmodel.visit.VisitViewModel
 import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListViewModel
+import com.repzone.presentation.legacy.viewmodel.gpstest.GpsTrackingViewModel
 import com.repzone.presentation.legacy.viewmodel.sync.SyncTestViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -33,6 +34,7 @@ val PresentationModuleLegacy = module {
     factoryOf(::SyncViewModel)
     factoryOf(::CustomerListViewModel)
     factoryOf(::VisitViewModel)
+    factoryOf(::GpsTrackingViewModel)
     //endregion ViewModels
 
     //region Use Case

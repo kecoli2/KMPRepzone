@@ -911,4 +911,5 @@
     <string name="error_out_of_working_hours">Currently outside working hours. Next shift in %1$d minutes.</string>
     <string name="error_already_running_gps">GPS services are already running</string>
     <string name="try_again">Try again</string>
+    <string name="error_gps_timeout">GPS acquisition has timed out</string>
 </resources>

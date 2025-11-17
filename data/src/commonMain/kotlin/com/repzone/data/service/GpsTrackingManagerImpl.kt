@@ -83,7 +83,8 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
                 startTimeMinute = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackStartTime?.getLocalDateTime()?.minute ?: 0,
                 endTimeHour = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackEndTime?.getLocalDateTime()?.hour ?: 0,
                 endTimeMinute = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackEndTime?.getLocalDateTime()?.minute ?: 0,
-                activeDays = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackDays ?: emptyList()
+                activeDays = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackDays ?: emptyList(),
+                serverSyncIntervalMinutes = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackInterval ?: 1,
             )
             // Konfigürasyonu validate et
             val validationResult = config.validate()
@@ -117,8 +118,6 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
 
         val config = configManager.getConfig()
 
-        serviceController.startForegroundService()
-
         // Location service'i başlat
         val serviceResult = locationService.startService(config)
         if (serviceResult.isError) {
@@ -130,12 +129,16 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
             startAutoSyncObserver()
         }
 
+        if(!serviceController.isServiceRunning()){
+            serviceController.startForegroundService()
+        }
+
         return Result.Success(Unit)
     }
 
     override suspend fun stop(): Result<Unit> {
         return try {
-            serviceController.startForegroundService()
+            serviceController.stopForegroundService()
             locationService.stopService().getOrThrow()
             Result.Success(Unit)
         } catch (e: Exception) {
@@ -153,13 +156,6 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
 
     override suspend fun forceGpsUpdate(): Result<GpsLocation> {
         val result = locationService.forceGpsUpdate()
-        if (result.isSuccess) {
-            val location = result.getOrNull()
-            if (location != null) {
-                // Yeni konumu kaydet
-                iLocationRepository.saveLocation(location)
-            }
-        }
         return result
     }
 
@@ -251,7 +247,7 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
         return totalDistance
     }
 
-    suspend fun getStatistics(): TrackingStatistics {
+    override suspend fun getStatistics(): TrackingStatistics {
         val history = iLocationRepository.getLocationHistory(100)
         val totalDistance = calculateTotalDistance(history)
         val avgAccuracy = history.map { it.accuracy }.average().toFloat()

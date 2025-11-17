@@ -59,7 +59,8 @@ enum class ErrorCode(val code: StringResource) {
     ERROR_END_MINUTE_RANGE(StringResource.ERROR_END_MINUTE_RANGE),
     ERROR_ACTIVE_DAYS_REQUIRED(StringResource.ERROR_ACTIVE_DAYS_REQUIRED),
     ERROR_OUT_OF_WORKING_HOURS(StringResource.ERROR_OUT_OF_WORKING_HOURS),
-    ALREADY_RUNNING(StringResource.ERROR_ALREADY_RUNNING_GPS)
+    ALREADY_RUNNING(StringResource.ERROR_ALREADY_RUNNING_GPS),
+    ERROR_GPS_TIMEOUT(StringResource.ERROR_GPS_TIMEOUT)
 }
 
 
@@ -77,8 +78,8 @@ fun requiredFieldException(fieldName: String): DomainException.ValidationExcepti
 fun databaseException(errorCode: ErrorCode = ErrorCode.DATABASE_ERROR, cause: Throwable? = null): DomainException.DatabaseException =
     DomainException.DatabaseException(errorCode, emptyMap(), cause)
 
-fun businessRuleException(errorCode: ErrorCode, params: Map<String, Any> = emptyMap()): DomainException.BusinessRuleException =
-    DomainException.BusinessRuleException(errorCode, params)
+fun businessRuleException(errorCode: ErrorCode, params: Map<String, Any> = emptyMap(), cause: Throwable? = null): DomainException.BusinessRuleException =
+    DomainException.BusinessRuleException(errorCode, params, cause)
 
 fun networkException(errorCode: ErrorCode = ErrorCode.NETWORK_ERROR, cause: Throwable? = null): DomainException.NetworkException =
     DomainException.NetworkException(errorCode, emptyMap(), cause)

@@ -70,7 +70,7 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
     override suspend fun startService(config: GpsConfig): Result<Unit> {
         return try {
             if (isRunning) {
-                return Result.Error(DomainException.BusinessRuleException(ErrorCode.ALREADY_RUNNING))
+                return Result.Success(Unit)
             }
 
             _serviceState.value = ServiceState.Starting
@@ -327,7 +327,7 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
 
             // Konumu kaydet
             locationRepository.saveLocation(location).onSuccess {
-                _locationUpdates.value = location
+                //_locationUpdates.value = location
                 Logger.d("LOCATION_SERVICE","Location saved: ${location.toReadableString()}")
             }.onError { e ->
                 Logger.error("LOCATION_SERVICE",e)

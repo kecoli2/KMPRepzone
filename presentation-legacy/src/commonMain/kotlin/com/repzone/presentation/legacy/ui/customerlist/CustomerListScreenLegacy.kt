@@ -25,13 +25,10 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTimeFilled
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.DocumentScanner
 import androidx.compose.material.icons.filled.EditNotifications
-import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.ModeComment
 import androidx.compose.material.icons.filled.People
@@ -61,7 +58,6 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.NavigationDrawerItemDefaults
 import androidx.compose.material3.PrimaryTabRow
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
@@ -279,7 +275,9 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                                         }
                                         NavigationItemType.SHARED_DOCUMENT -> {}
                                         NavigationItemType.DAILY_OPERATIONS -> {}
-                                        NavigationItemType.GPS_OPERATIONS -> {}
+                                        NavigationItemType.GPS_OPERATIONS -> {
+                                            onNavigationDrawer(NavigationItemType.GPS_OPERATIONS)
+                                        }
                                         NavigationItemType.NOTIFICATION_HISTORY -> {}
                                         NavigationItemType.ONLINE_CENTER -> {
 

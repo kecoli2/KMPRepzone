@@ -183,11 +183,7 @@ class GpsTrackingService: Service() {
         }
     }
     private suspend fun updateCompleteNotification(location: GpsLocation) {
-        val stats = try {
-            (gpsTrackingManager as? GpsTrackingManagerImpl)?.getStatistics()
-        } catch (e: Exception) {
-            null
-        }
+        val stats = gpsTrackingManager.getStatistics()
 
         val config = gpsTrackingManager.getCurrentConfig()
 

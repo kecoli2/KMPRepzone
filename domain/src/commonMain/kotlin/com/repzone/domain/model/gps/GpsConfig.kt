@@ -14,8 +14,8 @@ import kotlinx.datetime.DayOfWeek
 data class GpsConfig(
     val gpsIntervalMinutes: Int = 5, // GPS toplama aralığı
     val serverSyncIntervalMinutes: Int = 15, // Sync aralığı
-    val minDistanceMeters: Float = 10f,  // Min hareket mesafesi
-    val accuracyThreshold: Float = 50f, // Max GPS hatası
+    val minDistanceMeters: Float = 0f,  // Min hareket mesafesi
+    val accuracyThreshold: Float = 250f, // Max GPS hatası
     val batteryOptimizationEnabled: Boolean = true,
     val enableBackgroundTracking: Boolean = true,
     val autoSyncOnGpsUpdate: Boolean = true, // GPS güncellemelerinde otomatik olarak sync yap

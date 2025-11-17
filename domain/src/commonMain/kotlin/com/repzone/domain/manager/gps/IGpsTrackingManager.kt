@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.Flow
 import com.repzone.domain.common.Result
 import com.repzone.domain.model.SyncResult
 import com.repzone.domain.model.SyncStatus
+import com.repzone.domain.model.gps.TrackingStatistics
 
 /**
  * Tüm servisleri koordine eden ana interface
@@ -31,4 +32,6 @@ interface IGpsTrackingManager {
     fun observeSyncStatus(): Flow<SyncStatus>
     suspend fun checkPermissions(): PermissionStatus
     suspend fun requestPermissions(): PermissionStatus
+
+    suspend fun getStatistics(): TrackingStatistics?
 }

@@ -9,6 +9,7 @@ import android.os.Build
 import android.os.Looper
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.Granularity
 import com.google.android.gms.location.LocationAvailability
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
@@ -19,12 +20,16 @@ import com.repzone.core.enums.LocationAccuracy
 import com.repzone.core.platform.Logger
 import com.repzone.core.platform.randomUUID
 import com.repzone.core.util.PermissionStatus
+import com.repzone.core.util.extensions.toMilisecond
 import com.repzone.domain.common.DomainException
+import com.repzone.domain.common.ErrorCode
 import com.repzone.domain.model.gps.GpsConfig
 import com.repzone.domain.model.gps.GpsLocation
 import com.repzone.domain.platform.IPlatformLocationProvider
 import com.repzone.domain.common.Result
+import com.repzone.domain.common.businessRuleException
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.resume
 
 class AndroidLocationProvider(private val context: Context): IPlatformLocationProvider {
@@ -48,8 +53,8 @@ class AndroidLocationProvider(private val context: Context): IPlatformLocationPr
         this.currentConfig = config
 
         currentAccuracy = when {
-            config.batteryOptimizationEnabled -> LocationAccuracy.BALANCED
-            config.gpsIntervalMinutes <= 1 -> LocationAccuracy.HIGH
+            config.batteryOptimizationEnabled && config.accuracyThreshold > 100f -> LocationAccuracy.BALANCED
+            config.gpsIntervalMinutes <= 1 && config.accuracyThreshold < 250f  -> LocationAccuracy.HIGH
             config.gpsIntervalMinutes <= 5 -> LocationAccuracy.BALANCED
             else -> LocationAccuracy.LOW
         }
@@ -57,44 +62,136 @@ class AndroidLocationProvider(private val context: Context): IPlatformLocationPr
     }
 
     @SuppressLint("MissingPermission")
-    override suspend fun requestLocation(): Result<GpsLocation> {
-        return suspendCancellableCoroutine { continuation ->
-            try {
-                if (!hasLocationPermission()) {
-                    continuation.resume(Result.Error(DomainException.UnknownException(cause = SecurityException("Location permission not granted"))))
-                    return@suspendCancellableCoroutine
-                }
-
-                val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 0)
-                    .setMinUpdateIntervalMillis(0)
-                    .setMaxUpdates(1)
-                    .build()
-
-                fusedLocationClient.requestLocationUpdates(
-                    locationRequest,
-                    object : LocationCallback() {
-                        override fun onLocationResult(result: LocationResult) {
-                            val location = result.lastLocation
-                            if (location != null) {
-                                continuation.resume(Result.Success(location.toGpsLocation()))
-                            } else {
-                                continuation.resume(Result.Error(DomainException.UnknownException(cause = Exception("Location is null"))))
-                            }
-                        }
-
-                        override fun onLocationAvailability(availability: LocationAvailability) {
-                            if (!availability.isLocationAvailable) {
-                                continuation.resume(Result.Error(DomainException.UnknownException(cause = Exception("Location not available"))))
-                            }
-                        }
-                    },
-                    Looper.getMainLooper()
-                )
-
-            } catch (e: Exception) {
-                continuation.resume(Result.Error(DomainException.UnknownException(cause = e)))
+    override suspend fun requestLocation(timeoutSecond: Int): Result<GpsLocation> {
+        return try {
+            // Mevcut periyodik callback'i geçici olarak durdur
+            val previousCallback = locationCallback
+            if (previousCallback != null) {
+                fusedLocationClient.removeLocationUpdates(previousCallback)
+                Logger.d("AndroidLocationProvider: Paused periodic updates for force GPS request")
             }
+
+            // Force GPS request
+            val result = withTimeoutOrNull(timeoutSecond.toMilisecond()) {
+                suspendCancellableCoroutine<Result<GpsLocation>> { continuation ->
+                    try {
+                        if (!hasLocationPermission()) {
+                            continuation.resume(
+                                Result.Error(
+                                    businessRuleException(
+                                        ErrorCode.GPS_PERMISSION_NOT_GRANTED,
+                                        cause = SecurityException("Location permission not granted")
+                                    )
+                                )
+                            )
+                            return@suspendCancellableCoroutine
+                        }
+
+                        var isResumed = false
+
+                        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 0)
+                            .setMinUpdateIntervalMillis(0)
+                            .setMaxUpdates(1)
+                            .setWaitForAccurateLocation(true)
+                            .build()
+
+                        lateinit var callback: LocationCallback
+
+                        callback = object : LocationCallback() {
+                            override fun onLocationResult(result: LocationResult) {
+                                if (!isResumed) {
+                                    isResumed = true
+                                    fusedLocationClient.removeLocationUpdates(callback)
+
+                                    val location = result.lastLocation
+                                    if (location != null) {
+                                        Logger.d("AndroidLocationProvider: Force GPS received - accuracy: ${location.accuracy}m")
+                                        continuation.resume(Result.Success(location.toGpsLocation()))
+                                    } else {
+                                        continuation.resume(
+                                            Result.Error(
+                                                businessRuleException(
+                                                    ErrorCode.UNKNOWN_ERROR,
+                                                    cause = IllegalStateException("Location is null")
+                                                )
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                        fusedLocationClient.requestLocationUpdates(
+                            locationRequest,
+                            callback,
+                            Looper.getMainLooper()
+                        )
+
+                        continuation.invokeOnCancellation {
+                            fusedLocationClient.removeLocationUpdates(callback)
+                        }
+
+                    } catch (e: Exception) {
+                        if (!continuation.isCompleted) {
+                            continuation.resume(
+                                Result.Error(
+                                    businessRuleException(
+                                        ErrorCode.UNKNOWN_ERROR,
+                                        cause = e
+                                    )
+                                )
+                            )
+                        }
+                    }
+                }
+            } ?: Result.Error(businessRuleException(ErrorCode.ERROR_GPS_TIMEOUT))
+
+            // Periyodik callback'i tekrar başlat (eğer daha önce çalışıyorsa)
+            if (previousCallback != null) {
+                restorePeriodicUpdates(previousCallback)
+            }
+
+            result
+        } catch (e: Exception) {
+            Result.Error(businessRuleException(ErrorCode.UNKNOWN_ERROR, cause = e))
         }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun restorePeriodicUpdates(callback: LocationCallback) {
+        val config = currentConfig ?: return
+
+        val intervalMs = config.gpsIntervalMinutes * 60 * 1000L
+        val minDistance = config.minDistanceMeters
+
+        val priority = when {
+            config.batteryOptimizationEnabled && currentAccuracy == LocationAccuracy.BALANCED ->
+                Priority.PRIORITY_BALANCED_POWER_ACCURACY
+            currentAccuracy == LocationAccuracy.HIGH ->
+                Priority.PRIORITY_HIGH_ACCURACY
+            currentAccuracy == LocationAccuracy.BALANCED ->
+                Priority.PRIORITY_BALANCED_POWER_ACCURACY
+            currentAccuracy == LocationAccuracy.LOW ->
+                Priority.PRIORITY_LOW_POWER
+            else ->
+                Priority.PRIORITY_PASSIVE
+        }
+
+        val locationRequest = LocationRequest.Builder(priority, intervalMs)
+            .setMinUpdateDistanceMeters(minDistance)
+            .setMinUpdateIntervalMillis(5000)
+            .setWaitForAccurateLocation(true)
+            .setMaxUpdateDelayMillis(intervalMs)
+            .setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)
+            .build()
+
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            callback,
+            Looper.getMainLooper()
+        )
+
+        Logger.d("AndroidLocationProvider: Resumed periodic updates after force GPS request")
     }
 
     @SuppressLint("MissingPermission")
@@ -110,7 +207,7 @@ class AndroidLocationProvider(private val context: Context): IPlatformLocationPr
         val config = currentConfig ?: GpsConfig()
 
         val priority = when {
-            config.batteryOptimizationEnabled -> Priority.PRIORITY_BALANCED_POWER_ACCURACY
+            config.batteryOptimizationEnabled && currentAccuracy == LocationAccuracy.BALANCED -> Priority.PRIORITY_BALANCED_POWER_ACCURACY
             currentAccuracy == LocationAccuracy.HIGH -> Priority.PRIORITY_HIGH_ACCURACY
             currentAccuracy == LocationAccuracy.BALANCED -> Priority.PRIORITY_BALANCED_POWER_ACCURACY
             currentAccuracy == LocationAccuracy.LOW -> Priority.PRIORITY_LOW_POWER
@@ -121,14 +218,16 @@ class AndroidLocationProvider(private val context: Context): IPlatformLocationPr
 
         val locationRequest = LocationRequest.Builder(priority, intervalMs)
             .setMinUpdateDistanceMeters(minDistanceMeters)
-            .setWaitForAccurateLocation(!config.batteryOptimizationEnabled)
-            .setMaxUpdateDelayMillis(intervalMs * 2)
+            .setMinUpdateIntervalMillis(5000)  // Min 5 saniye GPS sensörü bekle
+            .setWaitForAccurateLocation(true) //HASSAS GPS BEKLIYOR BELKI BURADA BIR OPTIMIZASYON YAPARIZ HALUK BEYLE KONUSALIÖ
+            .setMaxUpdateDelayMillis(intervalMs)
+            .setGranularity(Granularity.GRANULARITY_PERMISSION_LEVEL)  // En hassas
             .build()
 
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
                 result.lastLocation?.let { location ->
-                    if (location.accuracy <= config.accuracyThreshold) {
+                     if (location.accuracy <= config.accuracyThreshold) {
                         callback(location.toGpsLocation())
                     } else {
                         Logger.d("AndroidLocationProvider: Location rejected - accuracy ${location.accuracy}m > threshold ${config.accuracyThreshold}m")
@@ -173,15 +272,9 @@ class AndroidLocationProvider(private val context: Context): IPlatformLocationPr
     }
 
     override fun checkPermissions(): PermissionStatus {
-        val fineLocationGranted = ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_FINE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
+        val fineLocationGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
-        val coarseLocationGranted = ContextCompat.checkSelfPermission(
-            context,
-            Manifest.permission.ACCESS_COARSE_LOCATION
-        ) == PackageManager.PERMISSION_GRANTED
+        val coarseLocationGranted = ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
 
         return when {
             fineLocationGranted || coarseLocationGranted -> PermissionStatus.Granted

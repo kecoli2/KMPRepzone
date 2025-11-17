@@ -7,7 +7,7 @@ import com.repzone.domain.common.Result
 import com.repzone.domain.model.gps.GpsConfig
 
 actual interface IPlatformLocationProvider {
-    actual suspend fun requestLocation(): Result<GpsLocation>
+    actual suspend fun requestLocation(timeoutSecond: Int): Result<GpsLocation>
     actual fun startLocationUpdates(
         intervalMs: Long,
         minDistanceMeters: Float,

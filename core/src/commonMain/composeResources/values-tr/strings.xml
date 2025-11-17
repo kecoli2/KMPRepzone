@@ -916,4 +916,5 @@
     <string name="error_out_of_working_hours">Şu an çalışma saatleri dışında. Bir sonraki çalışma: %1$d dakika sonra.</string>
     <string name="error_already_running_gps">Gps servisleri çalışıyor</string>
     <string name="try_again">Tekrar dene</string>
+    <string name="error_gps_timeout">Gps alımı zaman aşımına uğradı</string>
 </resources>

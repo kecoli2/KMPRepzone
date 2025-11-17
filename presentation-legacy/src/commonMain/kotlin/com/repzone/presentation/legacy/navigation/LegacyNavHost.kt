@@ -16,6 +16,7 @@ import com.repzone.core.ui.ui.settings.SettingsScreen
 import com.repzone.core.ui.util.enum.NavigationItemType
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
 import com.repzone.presentation.legacy.ui.customerlist.CustomerListScreenLegacy
+import com.repzone.presentation.legacy.ui.gpstest.GpsTrackingScreen
 import com.repzone.presentation.legacy.ui.splash.SplashScreenLegacy
 import com.repzone.presentation.legacy.ui.sync.SyncScreenLegacy
 import com.repzone.presentation.legacy.ui.visit.VisitScreenLegacy
@@ -68,8 +69,8 @@ fun LegacyNavHost(
                 }
 
                 composable<LegacyScreen.TestScreen> { backStackEntry ->
-                    RegisterBackStackEntry(backStackEntry.id, "TestViewModel")
-                    ExampleUsageScreen()
+                    RegisterBackStackEntry(backStackEntry.id, "GpsTrackingViewModel")
+                    GpsTrackingScreen()
                 }
             }
 
@@ -102,6 +103,11 @@ fun LegacyNavHost(
                                     popUpTo(0) { inclusive = true }
                                 }
                             }
+
+                            NavigationItemType.GPS_OPERATIONS -> {
+                                navController.navigate(LegacyScreen.TestScreen)
+                            }
+
 
                             else -> { /* TODO */ }
                         }
