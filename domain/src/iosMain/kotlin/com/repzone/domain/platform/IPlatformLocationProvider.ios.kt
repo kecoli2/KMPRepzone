@@ -4,6 +4,7 @@ import com.repzone.core.enums.LocationAccuracy
 import com.repzone.core.util.PermissionStatus
 import com.repzone.domain.model.gps.GpsLocation
 import com.repzone.domain.common.Result
+import com.repzone.domain.model.gps.GpsConfig
 
 actual interface IPlatformLocationProvider {
     actual suspend fun requestLocation(): Result<GpsLocation>
@@ -21,5 +22,6 @@ actual interface IPlatformLocationProvider {
     actual suspend fun requestBackgroundPermission(): PermissionStatus
     actual fun isLocationEnabled(): Boolean
     actual fun setLocationAccuracy(priority: LocationAccuracy)
+    actual fun setConfig(config: GpsConfig)
 
 }

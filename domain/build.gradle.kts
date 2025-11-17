@@ -34,6 +34,12 @@ kotlin {
                 // Add KMP dependencies here
             }
         }
+        androidMain {
+            dependencies {
+                implementation(libs.play.services.location)
+
+            }
+        }
     }
 }
 

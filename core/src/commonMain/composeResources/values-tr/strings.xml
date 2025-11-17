@@ -914,5 +914,6 @@
     <string name="error_end_minute_range">Bitiş dakikası 0-59 arasında olmalıdır.</string>
     <string name="error_active_days_required">En az bir aktif gün seçilmelidir.</string>
     <string name="error_out_of_working_hours">Şu an çalışma saatleri dışında. Bir sonraki çalışma: %1$d dakika sonra.</string>
+    <string name="error_already_running_gps">Gps servisleri çalışıyor</string>
 
 </resources>

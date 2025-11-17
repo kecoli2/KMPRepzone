@@ -909,5 +909,6 @@
     <string name="error_end_minute_range">End minute must be between 0-59.</string>
     <string name="error_active_days_required">At least one active day must be selected.</string>
     <string name="error_out_of_working_hours">Currently outside working hours. Next shift in %1$d minutes.</string>
+    <string name="error_already_running_gps">GPS services are already running</string>
 
 </resources>

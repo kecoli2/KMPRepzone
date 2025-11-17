@@ -103,10 +103,7 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
             return serviceResult
         }
 
-        // Data sync'i planla
-        dataSyncService.schedulePeriodicSync(config.serverSyncIntervalMinutes)
-
-        // ⭐ YENİ: Auto sync özelliği aktifse, location updates'i dinle
+        // Auto sync özelliği aktifse, location updates'i dinle
         if (config.autoSyncOnGpsUpdate) {
             startAutoSyncObserver()
         }
@@ -199,11 +196,6 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
         if (result.isError) {
             return result
         }
-
-        // Sync schedule'ı güncelle
-        dataSyncService.cancelScheduledSync()
-        dataSyncService.schedulePeriodicSync(minutes)
-
         return Result.Success(Unit)
     }
 

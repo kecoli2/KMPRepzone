@@ -45,7 +45,7 @@ google-services   = "4.4.4"
 firebase-crash    = "3.0.6"
 
 # Google Play Services
-playServicesLocation = "21.3.0"
+play-services-location = "21.3.0"
 
 # Coil Glide benzeridir
 coil = "3.3.0"
@@ -128,7 +128,7 @@ firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics"
 firebase-database-ktx = { module = "com.google.firebase:firebase-database" }
 
 # Google Play Services
-play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocation" }
+play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "play-services-location" }
 
 # COIL Glide benzeri
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }

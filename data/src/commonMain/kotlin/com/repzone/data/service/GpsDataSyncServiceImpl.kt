@@ -4,7 +4,6 @@ import com.repzone.core.platform.Logger
 import com.repzone.core.util.extensions.now
 import com.repzone.domain.common.DomainException
 import com.repzone.domain.model.SyncStatus
-import com.repzone.domain.platform.IBackgroundTaskScheduler
 import com.repzone.domain.repository.ILocationRepository
 import com.repzone.domain.service.IGpsDataSyncService
 import kotlinx.coroutines.CoroutineScope
@@ -31,7 +30,6 @@ import kotlinx.coroutines.withContext
  * Mock API client (TODO: Ktor)
  * Ayrıca Firebase Real Database
  *
- *
  *  İşleyiş:
  *
  * syncToServer() çağrılır
@@ -41,9 +39,7 @@ import kotlinx.coroutines.withContext
  * Başarılı olanlar markAsSynced() ile işaretlenir
  */
 
-
 class GpsDataSyncServiceImpl(private val locationRepository: ILocationRepository,
-                             private val backgroundScheduler: IBackgroundTaskScheduler,
                              private val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)):
     IGpsDataSyncService {
     //region Field
@@ -192,19 +188,6 @@ class GpsDataSyncServiceImpl(private val locationRepository: ILocationRepository
         } catch (e: Exception) {
             Result.Error(DomainException.UnknownException(cause = e))
         }
-    }
-
-    override fun schedulePeriodicSync(intervalMinutes: Int) {
-        backgroundScheduler.scheduleDataSync(
-            intervalMinutes = intervalMinutes,
-            requiresNetwork = true
-        ).onError { e ->
-            Logger.error("GpsDataSync", Exception(e))
-        }
-    }
-
-    override fun cancelScheduledSync() {
-        backgroundScheduler.cancelDataSync()
     }
 
     override fun observeSyncStatus(): Flow<SyncStatus> {

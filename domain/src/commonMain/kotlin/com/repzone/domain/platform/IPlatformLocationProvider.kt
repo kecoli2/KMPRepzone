@@ -4,6 +4,7 @@ import com.repzone.core.enums.LocationAccuracy
 import com.repzone.core.util.PermissionStatus
 import com.repzone.domain.model.gps.GpsLocation
 import com.repzone.domain.common.Result
+import com.repzone.domain.model.gps.GpsConfig
 
 /**
  * Platform Location Provider Interface
@@ -62,4 +63,5 @@ expect interface IPlatformLocationProvider {
      * Konum servisi doğruluğunu ayarlar (high/balanced/low)
      */
     fun setLocationAccuracy(priority: LocationAccuracy)
+    fun setConfig(config: GpsConfig)
 }

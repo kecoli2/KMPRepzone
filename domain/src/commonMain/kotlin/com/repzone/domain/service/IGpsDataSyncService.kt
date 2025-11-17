@@ -11,8 +11,6 @@ interface IGpsDataSyncService {
     suspend fun syncLocations(locations: List<GpsLocation>): Result<SyncResult>
     suspend fun getPendingDataCount(): Int
     suspend fun clearSyncedData(): Result<Int>
-    fun schedulePeriodicSync(intervalMinutes: Int)
-    fun cancelScheduledSync()
     fun observeSyncStatus(): Flow<SyncStatus>
     suspend fun getLastSyncTime(): Long?
 }

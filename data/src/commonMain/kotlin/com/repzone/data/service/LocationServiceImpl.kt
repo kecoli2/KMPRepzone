@@ -8,7 +8,6 @@ import com.repzone.domain.common.ErrorCode
 import com.repzone.domain.model.gps.GpsConfig
 import com.repzone.domain.model.gps.GpsLocation
 import com.repzone.domain.model.gps.ServiceState
-import com.repzone.domain.platform.IBackgroundTaskScheduler
 import com.repzone.domain.platform.IPlatformLocationProvider
 import com.repzone.domain.repository.ILocationRepository
 import com.repzone.domain.service.ILocationService
@@ -31,7 +30,6 @@ import kotlinx.coroutines.withContext
  *  Özellikler:
  *
  * PlatformLocationProvider kullanımı
- * BackgroundTaskScheduler entegrasyonu
  * Accuracy ve distance filtering
  * Battery optimization logic
  * Service state management
@@ -42,7 +40,6 @@ import kotlinx.coroutines.withContext
  * startService() çağrılır
  * İzinler kontrol edilir (Ama bunu zaten splash da yapıyoruz kullanıcı izni tekrardan kapatabilir)
  * Platform location updates başlatılır
- * Background task'lar planlanır
  * Her GPS güncellemesinde processNewLocation() çalışır
  *
  * Accuracy kontrolü
@@ -52,7 +49,6 @@ import kotlinx.coroutines.withContext
 
 class LocationServiceImpl(private val platformProvider: IPlatformLocationProvider,
                           private val locationRepository: ILocationRepository,
-                          private val backgroundScheduler: IBackgroundTaskScheduler,
                           private val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)):
     ILocationService {
     //region Field
@@ -74,7 +70,7 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
     override suspend fun startService(config: GpsConfig): Result<Unit> {
         return try {
             if (isRunning) {
-                return Result.Error(DomainException.UnknownException(cause = IllegalStateException("Service already running")))
+                return Result.Error(DomainException.BusinessRuleException(ErrorCode.ALREADY_RUNNING))
             }
 
             _serviceState.value = ServiceState.Starting
@@ -82,39 +78,33 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             // Konfigürasyonu kaydet
             currentConfig = config
 
+            //Config'i platform provider'a gönder
+            platformProvider.setConfig(config)
+
+            //Schedule kontrolü
             if (config.enableSchedule && !config.isWithinSchedule()) {
                 val minutesUntilNext = config.getMinutesUntilNextScheduledTime()
                 val message = "Şu an çalışma saatleri dışında. Bir sonraki çalışma: $minutesUntilNext dakika sonra"
-                _serviceState.value = ServiceState.Error(DomainException.BusinessRuleException(ErrorCode.ERROR_OUT_OF_WORKING_HOURS))
+                _serviceState.value = ServiceState.Error(DomainException.BusinessRuleException(ErrorCode.UNKNOWN_ERROR,cause = Exception(message)))
                 println(message)
 
                 // Bir sonraki çalışma zamanında otomatik başlat
                 scheduleNextStart(config, minutesUntilNext)
 
-                return Result.Error(DomainException.BusinessRuleException(ErrorCode.ERROR_OUT_OF_WORKING_HOURS))
+                return Result.Error(DomainException.UnknownException(cause = IllegalStateException(message)))
             }
-
 
             // İzinleri kontrol et
             val permissionStatus = platformProvider.checkPermissions()
             if (permissionStatus != PermissionStatus.Granted) {
-                _serviceState.value = ServiceState.Error(DomainException.BusinessRuleException(errorCode = ErrorCode.GPS_PERMISSION_NOT_GRANTED))
-                return Result.Error(DomainException.BusinessRuleException(ErrorCode.GPS_PERMISSION_NOT_GRANTED))
+                _serviceState.value = ServiceState.Error(DomainException.UnknownException(cause = Exception("Location permission not granted")))
+                return Result.Error(DomainException.UnknownException(cause = Exception("Location permission not granted")))
             }
 
             // Platform location updates'i başlat
             startPlatformLocationUpdates(config)
 
-            // Background task'ları planla
-            if (config.enableBackgroundTracking) {
-                backgroundScheduler.scheduleGpsCollection(
-                    intervalMinutes = config.gpsIntervalMinutes,
-                    flexIntervalMinutes = 5
-                ).onError { e ->
-                    Logger.error("LocationServiceImpl", Exception(e))
-                }
-            }
-
+            // ⭐ Schedule aktifse, periyodik kontrol başlat
             if (config.enableSchedule) {
                 startScheduleMonitoring(config)
             }
@@ -125,7 +115,7 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
 
             Result.Success(Unit)
         } catch (e: Exception) {
-            _serviceState.value = ServiceState.Error(DomainException.UnknownException(cause = e))
+            _serviceState.value = ServiceState.Error(DomainException.UnknownException(cause = Exception(e.message ?: "Unknown error")))
             Result.Error(DomainException.UnknownException(cause = e))
         }
     }
@@ -140,9 +130,6 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
 
             // Platform updates'i durdur
             platformProvider.stopLocationUpdates()
-
-            // Background task'ları iptal et
-            backgroundScheduler.cancelGpsCollection()
 
             isRunning = false
             isPaused = false
@@ -164,7 +151,6 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             }
 
             platformProvider.stopLocationUpdates()
-            backgroundScheduler.cancelGpsCollection()
 
             isPaused = true
             _serviceState.value = ServiceState.Paused
@@ -184,12 +170,6 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             val config = currentConfig ?: return Result.Error(DomainException.UnknownException(cause = IllegalStateException("No config available")))
 
             startPlatformLocationUpdates(config)
-
-            if (config.enableBackgroundTracking) {
-                backgroundScheduler.scheduleGpsCollection(
-                    intervalMinutes = config.gpsIntervalMinutes
-                )
-            }
 
             isPaused = false
             _serviceState.value = ServiceState.Running
@@ -263,10 +243,9 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
 
     //region Private Method
     private fun scheduleNextStart(config: GpsConfig, delayMinutes: Int) {
-        backgroundScheduler.scheduleOneTimeTask(
-            taskId = "gps_scheduled_start",
-            delayMinutes = delayMinutes
-        ) {
+        coroutineScope.launch {
+            println("Schedule: $delayMinutes dakika sonra servis başlatılacak...")
+            delay(delayMinutes * 60 * 1000L)
             startService(config)
         }
     }
@@ -291,10 +270,9 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
     }
 
     private fun scheduleNextResume(config: GpsConfig, delayMinutes: Int) {
-        backgroundScheduler.scheduleOneTimeTask(
-            taskId = "gps_scheduled_resume",
-            delayMinutes = delayMinutes
-        ) {
+        coroutineScope.launch {
+            println("Schedule: $delayMinutes dakika sonra servis devam edecek...")
+            delay(delayMinutes * 60 * 1000L)
             resumeService().onSuccess {
                 // Resume sonrası monitoring'i tekrar başlat
                 if (config.enableSchedule) {
