@@ -14,6 +14,11 @@ import kotlin.math.round
 import kotlin.math.sin
 import kotlin.math.sqrt
 import com.repzone.domain.common.Result
+import kotlinx.datetime.DayOfWeek
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Distance Calculator
@@ -78,25 +83,6 @@ object DistanceCalculator {
     }
 }
 
-
-/**
- * Time utilities
- */
-object TimeUtils {
-    fun formatDuration(durationMillis: Long): UiText {
-        val seconds = durationMillis / 1000
-        val minutes = seconds / 60
-        val hours = minutes / 60
-        val days = hours / 24
-
-        return when {
-            days > 0 -> UiText.resource(StringResource.TIME_DAYS_AGO, days)
-            hours > 0 -> UiText.resource(StringResource.TIME_HOURS_AGO, hours)
-            minutes > 0 -> UiText.resource(StringResource.TIME_MINUTES_AGO, minutes)
-            else -> UiText.resource(StringResource.TIME_JUST_NOW)
-        }
-    }
-}
 
 /**
  * Extension functions

@@ -917,4 +917,26 @@
     <string name="error_already_running_gps">Gps servisleri çalışıyor</string>
     <string name="try_again">Tekrar dene</string>
     <string name="error_gps_timeout">Gps alımı zaman aşımına uğradı</string>
+    <string name="error_gps_not_active">Gps Modulü kapalı sistem gps verisi alamaz...</string>
+    <string name="gps_tracking_active">Gps Takibi Aktif</string>
+    <string name="gps_tracking_pull_location_information">Konum bilgileriniz toplanıyor...</string>
+    <string name="gps_tracking_start">Gps Takibi Çalışıyor</string>
+    <string name="gps_tracking_first_pull_location_information">İlk konum bekleniyor...</string>
+    <string name="error_gps_tracking">Gps Takibi Hatası</string>
+    <string name="gps_tracking_pause">Gps Takibi Duraklatıldı</string>
+    <string name="gps_tracking_pause_information">Geçici olarak durduruldu</string>
+
+    <string name="gps_tracking_resume">Gps Takibi Devam Ediyor</string>
+
+
+    <string name="gps_tracking">Gps Takibi</string>
+    <string name="gps_tracking_scheduler">(Zamanlı)</string>
+    <string name="gps_tracking_location_desc">Konum: %1$s</string>
+    <string name="gps_tracking_location_accuracy_desc">Hassasiyet: %1$s metre</string>
+    <string name="gps_tracking_location_statics_desc">%1$s konum | %2$s</string>
+    <string name="gps_tracking_location_sync_statics_desc">%1$s konum bekliyor</string>
+    <string name="gps_tracking_location_syncall_desc">Tüm gps verileri gönderildi...</string>
+    <string name="gps_tracking_location_dataall_desc">Veri toplanıyor...</string>
+    <string name="gps_tracking_location_scheduler_end_desc">Takip bitişi: %1$s: %2$s</string>
+
 </resources>

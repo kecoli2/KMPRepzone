@@ -912,4 +912,25 @@
     <string name="error_already_running_gps">GPS services are already running</string>
     <string name="try_again">Try again</string>
     <string name="error_gps_timeout">GPS acquisition has timed out</string>
+    <string name="error_gps_not_active">GPS module is turned off, the system cannot receive GPS data...</string>
+
+    <string name="gps_tracking_active">GPS Tracking Active</string>
+    <string name="gps_tracking_pull_location_information">Your location information is being collected...</string>
+    <string name="gps_tracking_start">GPS Tracking Running</string>
+    <string name="gps_tracking_first_pull_location_information">Waiting for the first location...</string>
+    <string name="error_gps_tracking">GPS Tracking Error</string>
+    <string name="gps_tracking_pause">GPS Tracking Paused</string>
+    <string name="gps_tracking_pause_information">Temporarily paused</string>
+
+    <string name="gps_tracking_resume">Gps Tracking Resume</string>
+    <string name="gps_tracking">GPS Tracking</string>
+    <string name="gps_tracking_scheduler">(Scheduled)</string>
+    <string name="gps_tracking_location_desc">Location: %1$s</string>
+    <string name="gps_tracking_location_accuracy_desc">Accuracy: %1$s meters</string>
+    <string name="gps_tracking_location_statics_desc">%1$s locations | %2$s</string>
+    <string name="gps_tracking_location_sync_statics_desc">%1$s locations waiting</string>
+    <string name="gps_tracking_location_syncall_desc">All GPS data has been sent...</string>
+    <string name="gps_tracking_location_dataall_desc">Collecting data...</string>
+    <string name="gps_tracking_location_scheduler_end_desc">Tracking end: %1$s: %2$s</string>
+
 </resources>

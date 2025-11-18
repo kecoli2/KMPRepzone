@@ -17,8 +17,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import com.repzone.domain.common.Result
+import com.repzone.domain.common.businessRuleException
 import com.repzone.domain.common.onError
 import com.repzone.domain.common.onSuccess
+import com.repzone.domain.platform.IPlatformServiceController
 import com.repzone.domain.util.isRecent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -49,6 +51,7 @@ import kotlinx.coroutines.launch
 
 class LocationServiceImpl(private val platformProvider: IPlatformLocationProvider,
                           private val locationRepository: ILocationRepository,
+                          private val serviceController: IPlatformServiceController? = null,
                           private val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)):
     ILocationService {
     //region Field
@@ -84,17 +87,12 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             //Config'i platform provider'a gönder
             platformProvider.setConfig(config)
 
-            //Schedule kontrolü
-            if (config.enableSchedule && !config.isWithinSchedule()) {
-                val minutesUntilNext = config.getMinutesUntilNextScheduledTime()
-                val message = "Şu an çalışma saatleri dışında. Bir sonraki çalışma: $minutesUntilNext dakika sonra"
-                _serviceState.value = ServiceState.Error(DomainException.BusinessRuleException(ErrorCode.UNKNOWN_ERROR, cause = Exception(message)))
-                println(message)
-
-                // Bir sonraki çalışma zamanında otomatik başlat
-                scheduleNextStart(config, minutesUntilNext)
-
-                return Result.Error(DomainException.UnknownException(cause = IllegalStateException(message)))
+            //Active kontrolü
+            if (!config.isActive) {
+                val message = "GPS tracking is not active (isActive = false)"
+                _serviceState.value = ServiceState.Error(businessRuleException(ErrorCode.ERROR_GPS_ISNOT_ACTIVE))
+                println("LocationService: $message")
+                return Result.Error(businessRuleException(ErrorCode.ERROR_GPS_ISNOT_ACTIVE))
             }
 
             // İzinleri kontrol et
@@ -107,10 +105,8 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             // Platform location updates'i başlat
             startPlatformLocationUpdates(config)
 
-            // ⭐ Schedule aktifse, periyodik kontrol başlat
-            if (config.enableSchedule) {
-                startScheduleMonitoring(config)
-            }
+            // Schedule monitoring başlat (her zaman - service start/stop kontrolü için)
+            startScheduleMonitoring(config)
 
             isRunning = true
             isPaused = false
@@ -212,7 +208,7 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
                     return Result.Error(DomainException.UnknownException(cause = IllegalStateException("Invalid GPS location")))
                 }
                 processNewLocation(location)
-                delay(1000)
+                delay(500)
                 restartPeriodicUpdates()
                 Result.Success(location)
             } else {
@@ -259,46 +255,32 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             }
         }
     }
-    private fun scheduleNextStart(config: GpsConfig, delayMinutes: Int) {
-        coroutineScope.launch {
-            println("Schedule: $delayMinutes dakika sonra servis başlatılacak...")
-            delay(delayMinutes * 60 * 1000L)
-            startService(config)
-        }
-    }
 
     private fun startScheduleMonitoring(config: GpsConfig) {
         coroutineScope.launch {
             while (isRunning && !isPaused) {
                 delay(60_000) // Her 1 dakikada kontrol et
 
-                if (!config.isWithinSchedule()) {
-                    // Çalışma saatleri dışına çıkıldı
-                    Logger.d("Schedule: Çalışma saatleri dışına çıkıldı, servis duraklatılıyor...")
-                    pauseService()
+                // Background service kontrolü
+                val shouldRun = config.shouldRunBackgroundService()
+                val currentlyRunning = serviceController?.isServiceRunning() ?: false
 
-                    // Bir sonraki çalışma zamanında devam et
-                    val minutesUntilNext = config.getMinutesUntilNextScheduledTime()
-                    scheduleNextResume(config, minutesUntilNext)
-                    break
+                when {
+                    // Schedule içine girildi → Service başlat
+                    shouldRun && !currentlyRunning -> {
+                        Logger.d("LOCATION_SERVICE", "Schedule içine girildi, Foreground Service başlatılıyor...")
+                        serviceController?.startForegroundService()
+                    }
+
+                    // Schedule dışına çıkıldı → Service durdur
+                    !shouldRun && currentlyRunning -> {
+                        Logger.d("LOCATION_SERVICE", "Schedule dışına çıkıldı, Foreground Service durduruluyor...")
+                        serviceController.stopForegroundService()
+                    }
                 }
             }
         }
     }
-
-    private fun scheduleNextResume(config: GpsConfig, delayMinutes: Int) {
-        coroutineScope.launch {
-            println("Schedule: $delayMinutes dakika sonra servis devam edecek...")
-            delay(delayMinutes * 60 * 1000L)
-            resumeService().onSuccess {
-                // Resume sonrası monitoring'i tekrar başlat
-                if (config.enableSchedule) {
-                    startScheduleMonitoring(config)
-                }
-            }
-        }
-    }
-
     private fun startPlatformLocationUpdates(config: GpsConfig) {
         // Doğruluk seviyesini ayarla
         val accuracy = if (config.batteryOptimizationEnabled) {
@@ -311,10 +293,7 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
         // Platform location updates'i başlat
         val intervalMs = config.gpsIntervalMinutes * 60 * 1000L
 
-        platformProvider.startLocationUpdates(
-            intervalMs = intervalMs,
-            minDistanceMeters = config.minDistanceMeters
-        ) { location ->
+        platformProvider.startLocationUpdates(intervalMs = intervalMs, minDistanceMeters = config.minDistanceMeters) { location ->
             coroutineScope.launch {
                 processNewLocation(location)
             }
@@ -332,6 +311,12 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             }
 
             val config = currentConfig ?: return
+
+            if (!config.isActive) {
+                Logger.d("LOCATION_SERVICE: Location rejected - service not active")
+                return
+            }
+
 
             // Doğruluk kontrolü
             if (location.accuracy > config.accuracyThreshold) {
@@ -356,6 +341,11 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
                 _locationUpdates.value = location
                 lastProcessedLocationId = location.id
                 lastProcessedTime = now
+                if (config.shouldSendToFirebase() && config.shouldRunBackgroundService()) {
+                    coroutineScope.launch {
+                        //sendToFirebase(location)
+                    }
+                }
                 Logger.d("LOCATION_SERVICE","Location saved: ${location.toReadableString()}")
             }.onError { e ->
                 Logger.error("LOCATION_SERVICE",e)

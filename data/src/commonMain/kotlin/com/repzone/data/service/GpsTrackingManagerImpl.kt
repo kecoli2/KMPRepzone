@@ -1,9 +1,10 @@
 package com.repzone.data.service
 
+import com.repzone.core.platform.Logger
 import com.repzone.core.util.PermissionStatus
-import com.repzone.core.util.extensions.getLocalDateTime
 import com.repzone.core.util.extensions.now
 import com.repzone.domain.common.DomainException
+import com.repzone.domain.common.ErrorCode
 import com.repzone.domain.manager.gps.IGpsTrackingManager
 import com.repzone.domain.model.gps.GpsConfig
 import com.repzone.domain.platform.IPlatformLocationProvider
@@ -11,6 +12,7 @@ import com.repzone.domain.repository.ILocationRepository
 import com.repzone.domain.service.IGpsConfigManager
 import com.repzone.domain.service.ILocationService
 import com.repzone.domain.common.Result
+import com.repzone.domain.common.businessRuleException
 import com.repzone.domain.common.onError
 import com.repzone.domain.common.onSuccess
 import com.repzone.domain.model.SyncResult
@@ -72,9 +74,8 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
     //region Public Method
     override suspend fun initialize(): Result<Unit> {
         return try {
-            val sss = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackStartTime?.getLocalDateTime()
             var config = GpsConfig()
-            config = config.copy(
+          /*  config = config.copy(
                 autoSyncOnGpsUpdate = true,
                 batteryOptimizationEnabled = true,
                 enableBackgroundTracking = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.backgroundTracking ?: false,
@@ -85,7 +86,21 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
                 endTimeMinute = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackEndTime?.getLocalDateTime()?.minute ?: 0,
                 activeDays = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackDays ?: emptyList(),
                 serverSyncIntervalMinutes = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackInterval ?: 1,
+            )*/
+
+            config = config.copy(
+                autoSyncOnGpsUpdate = true,
+                batteryOptimizationEnabled = true,
+                enableBackgroundTracking = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.backgroundTracking ?: false,
+                gpsIntervalMinutes = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackInterval ?: 1,
+                startTimeHour = 12,
+                startTimeMinute = 32,
+                endTimeHour = 23,
+                endTimeMinute = 59,
+                activeDays = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackDays ?: emptyList(),
+                serverSyncIntervalMinutes = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackInterval ?: 1,
             )
+
             // Konfigürasyonu validate et
             val validationResult = config.validate()
             if (validationResult.isError) {
@@ -118,6 +133,18 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
 
         val config = configManager.getConfig()
 
+        if (!config.isActive) {
+            return Result.Error(businessRuleException(ErrorCode.ERROR_GPS_ISNOT_ACTIVE))
+        }
+
+        // Background Service kontrolü (schedule içindeyse başlat)
+        if (config.shouldRunBackgroundService()) {
+            Logger.d("GpsTrackingManager", "Starting Foreground Service (schedule içi)...")
+            serviceController.startForegroundService()
+        } else {
+            Logger.d("GpsTrackingManager", "Foreground Service başlatılmadı (schedule dışı)")
+        }
+
         // Location service'i başlat
         val serviceResult = locationService.startService(config)
         if (serviceResult.isError) {
@@ -126,11 +153,9 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
 
         // Auto sync özelliği aktifse, location updates'i dinle
         if (config.autoSyncOnGpsUpdate) {
-            startAutoSyncObserver()
-        }
-
-        if(!serviceController.isServiceRunning()){
-            serviceController.startForegroundService()
+            if (config.shouldSendToFirebase() && config.shouldRunBackgroundService()) {
+                startAutoSyncObserver()
+            }
         }
 
         return Result.Success(Unit)

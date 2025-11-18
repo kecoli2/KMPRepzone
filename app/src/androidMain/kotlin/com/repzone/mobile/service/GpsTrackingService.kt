@@ -11,13 +11,10 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.repzone.core.util.extensions.getCurrentHour
-import com.repzone.core.util.extensions.getCurrentMinute
-import com.repzone.data.service.GpsTrackingManagerImpl
+import com.repzone.core.util.extensions.fromResource
 import com.repzone.domain.common.onError
 import com.repzone.domain.common.onSuccess
 import com.repzone.domain.manager.gps.IGpsTrackingManager
-import com.repzone.domain.model.gps.GpsConfig
 import com.repzone.domain.model.gps.GpsLocation
 import com.repzone.domain.model.gps.ServiceState
 import kotlinx.coroutines.CoroutineScope
@@ -25,8 +22,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
+import org.jetbrains.compose.resources.getString
 import org.koin.android.ext.android.inject
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.*
+import kotlin.time.Clock
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
+@OptIn(ExperimentalTime::class)
 class GpsTrackingService: Service() {
     //region Field
     private val gpsTrackingManager: IGpsTrackingManager by inject()
@@ -84,13 +88,14 @@ class GpsTrackingService: Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when (intent?.action) {
-            ACTION_START -> startTracking()
-            ACTION_STOP -> stopTracking()
-            ACTION_PAUSE -> pauseTracking()
-            ACTION_RESUME -> resumeTracking()
+        serviceScope.launch {
+            when (intent?.action) {
+                ACTION_START -> startTracking()
+                ACTION_STOP -> stopTracking()
+                ACTION_PAUSE -> pauseTracking()
+                ACTION_RESUME -> resumeTracking()
+            }
         }
-
         return START_STICKY
     }
 
@@ -106,13 +111,13 @@ class GpsTrackingService: Service() {
 
     //region Private Method
     @SuppressLint("ForegroundServiceType")
-    private fun startTracking() {
+    private suspend fun startTracking() {
         if (isRunning) return
 
-        // Foreground notification göster
+        // Foreground notification gösteriyor ama içeriği haluk bey ile görüş
         val notification = createNotification(
-            title = "GPS Tracking Aktif",
-            text = "Konum bilgileriniz toplanıyor...",
+            title = getString(Res.string.gps_tracking_active),
+            text = getString(Res.string.gps_tracking_pull_location_information),
             showLocation = false
         )
         startForeground(NOTIFICATION_ID, notification)
@@ -122,13 +127,13 @@ class GpsTrackingService: Service() {
                 // GPS tracking'i başlat
                 gpsTrackingManager.start().onSuccess {
                     isRunning = true
-                    updateNotificationWithLocation("GPS Tracking Çalışıyor", "İlk konum bekleniyor...")
+                    updateNotificationWithLocation(getString(Res.string.gps_tracking_start), getString(Res.string.gps_tracking_first_pull_location_information))
                 }.onError { e ->
-                    updateNotification("GPS Tracking Hatası", e.message ?: "Bilinmeyen hata")
+                    updateNotification(getString(Res.string.error_gps_tracking), e.message ?: getString(Res.string.unknown_error))
                     stopSelf()
                 }
 
-                // ⭐ YENİ: Location updates'i dinle ve notification'ı güncelle
+                // Location updates'i dinle ve notification'ı güncelle
                 launch {
                     gpsTrackingManager.observeLastLocation()
                         .collect { location ->
@@ -138,7 +143,7 @@ class GpsTrackingService: Service() {
                         }
                 }
 
-                // ⭐ YENİ: Sync status'u dinle (her sync'te notification güncelle)
+                // Sync status'u dinle (her sync'te notification güncelle)
                 launch {
                     gpsTrackingManager.observeSyncStatus()
                         .collect { syncStatus ->
@@ -157,10 +162,10 @@ class GpsTrackingService: Service() {
                             // Location updates zaten hallediliyor
                         }
                         is ServiceState.Paused -> {
-                            updateNotification("GPS Tracking Duraklatıldı", "Geçici olarak durduruldu")
+                            updateNotification(getString(Res.string.gps_tracking_pause), getString(Res.string.gps_tracking_pause_information))
                         }
                         is ServiceState.Error -> {
-                            updateNotification("GPS Hatası", state.domainException.message ?: "")
+                            updateNotification(getString(Res.string.error_gps_tracking), state.domainException.message ?: "")
                         }
                         else -> {}
                     }
@@ -188,76 +193,62 @@ class GpsTrackingService: Service() {
         val config = gpsTrackingManager.getCurrentConfig()
 
         val title = buildString {
-            append("GPS Tracking")
-            if (config.enableSchedule) append(" (Zamanlı)")
+            append(getString(Res.string.gps_tracking))
+            if (config.shouldRunBackgroundService()) append(" ${getString(Res.string.gps_tracking_scheduler)}")
         }
 
         val text = buildString {
-            // 📍 Koordinatlar + 🎯 Accuracy + 🚗 Hız
-            append("📍 ${formatCoordinate(location.latitude, location.longitude)}")
-            append(" | 🎯 ${location.accuracy.toInt()}m")
+            //  Koordinatlar + Accuracy + Hız
+
+            append(" ${getString(Res.string.gps_tracking_location_desc, formatCoordinate(location.latitude, location.longitude))}")
+            append(" | ${getString(Res.string.gps_tracking_location_accuracy_desc, location.accuracy.toInt())}")
 
             location.speed?.let {
                 if(it > 0f){
                     val speedKmh = (it * 3.6).toInt()
-                    append(" | 🚗 $speedKmh km/s")
+                    append(" | $speedKmh km/s")
                 }
             }
             append("\n")
 
-            // 🧭 Yön + ⏰ Zaman
+            // Yön + Zaman
             location.bearing?.let {
-                append("🧭 ${getBearingDirection(it)} | ")
+                append("${getBearingDirection(it)} | ")
             }
-            append("⏰ ${formatTimeSince(location.timestamp)}\n")
+            append("${formatTimeSince(location.timestamp)}\n")
 
-            // 📊 İstatistikler
+            // İstatistikler
             if (stats != null) {
-                append("\n📊 ${stats.totalLocations} konum | ${stats.getFormattedDistance()}\n")
+                append("\n ${getString(Res.string.gps_tracking_location_statics_desc,stats.totalLocations,stats.getFormattedDistance())}\n")
 
                 // ☁️ Sync durumu
                 if (stats.unsyncedCount > 0) {
-                    append("📤 ${stats.unsyncedCount} konum bekliyor\n")
+
+                    append("${getString(Res.string.gps_tracking_location_sync_statics_desc,stats.unsyncedCount)}\n")
                 } else {
-                    append("✅ Tümü senkronize\n")
+                    append("${getString(Res.string.gps_tracking_location_syncall_desc)}\n")
                 }
             } else {
-                append("\n📊 Veri toplanıyor...\n")
+                append("\n${getString(Res.string.gps_tracking_location_dataall_desc)}\n")
             }
 
-            // 📅 Schedule bilgisi
-            if (config.enableSchedule && config.isWithinSchedule()) {
-                val remainingMinutes = calculateRemainingMinutes(config)
-                if (remainingMinutes > 0) {
-                    append("\n⏳ Bitiş: $remainingMinutes dakika sonra")
-                }
+            //Schedule bilgisi
+            if (config.shouldRunBackgroundService()) {
+                append("\n ${getString(Res.string.gps_tracking_location_scheduler_end_desc,config.endTimeHour,config.endTimeMinute)}")
             }
         }
 
         updateNotification(title, text, location)
     }
-    private fun updateBasicNotification(location: GpsLocation) {
-        val title = "GPS Tracking Aktif"
+    private suspend fun updateBasicNotification(location: GpsLocation) {
+        val title = getString(Res.string.gps_tracking_active)
         val text = buildString {
-            append("📍 ${formatCoordinate(location.latitude, location.longitude)}\n")
-            append("🎯 Hassasiyet: ${location.accuracy.toInt()}m\n")
+            append("📍 ${getString(Res.string.gps_tracking_location_statics_desc,String.format("%.4f", location.latitude), String.format("%.4f", location.longitude))}\n")
+            append("🎯 ${getString(Res.string.gps_tracking_location_accuracy_desc, location.accuracy.toInt())}\n")
             append("⏰ ${formatTimeSince(location.timestamp)}")
         }
 
         updateNotification(title, text, location)
-    }
-    private fun calculateRemainingMinutes(config: GpsConfig): Int {
-        val now = System.currentTimeMillis()
-        val currentHour = now.getCurrentHour()
-        val currentMinute = now.getCurrentMinute()
-        val currentTimeInMinutes = currentHour * 60 + currentMinute
-        val endTimeInMinutes = config.endTimeHour * 60 + config.endTimeMinute
-
-        return if (endTimeInMinutes > currentTimeInMinutes) {
-            endTimeInMinutes - currentTimeInMinutes
-        } else {
-            0
-        }
     }
     private fun getBearingDirection(bearing: Float): String {
         return when {
@@ -275,21 +266,20 @@ class GpsTrackingService: Service() {
     private fun formatCoordinate(lat: Double, lon: Double): String {
         return "${String.format("%.4f", lat)}, ${String.format("%.4f", lon)}"
     }
-    private fun formatTimeSince(timestamp: Long): String {
-        val now = System.currentTimeMillis()
-        val diffMillis = now - timestamp
-        val diffSeconds = diffMillis / 1000
-        val diffMinutes = diffSeconds / 60
-
+    private suspend fun formatTimeSince(timestamp: Long): String {
+        val now = Instant.fromEpochMilliseconds(System.currentTimeMillis())
+        val instant = Instant.fromEpochMilliseconds(timestamp)
+        val duration = now - instant
         return when {
-            diffSeconds < 10 -> "Az önce"
-            diffSeconds < 60 -> "$diffSeconds saniye önce"
-            diffMinutes < 60 -> "$diffMinutes dakika önce"
-            else -> {
-                val diffHours = diffMinutes / 60
-                "$diffHours saat önce"
-            }
+            duration.inWholeSeconds < 60 -> getString(Res.string.time_just_now)
+            duration.inWholeMinutes < 60 -> getString(Res.string.time_minutes_ago,duration.inWholeMinutes)
+            duration.inWholeHours   < 24 -> getString(Res.string.time_hours_ago,duration.inWholeHours)
+            duration.inWholeDays    < 7  -> getString(Res.string.time_days_ago,duration.inWholeDays)
+            duration.inWholeDays    < 30 -> getString(Res.string.time_weeks_ago,duration.inWholeDays)
+            duration.inWholeDays    < 365 -> getString(Res.string.time_months_ago,duration.inWholeDays)
+            else -> getString(Res.string.time_years_ago,duration.inWholeDays / 365)
         }
+
     }
     private fun updateNotificationWithLocation(title: String, text: String) {
         updateNotification(title, text, null)
@@ -308,14 +298,14 @@ class GpsTrackingService: Service() {
     private fun pauseTracking() {
         serviceScope.launch {
             gpsTrackingManager.pause()
-            updateNotification("GPS Tracking Duraklatıldı", "Tracking geçici olarak durduruldu")
+            updateNotification(getString(Res.string.gps_tracking_pause), getString(Res.string.gps_tracking_pause_information))
         }
     }
 
     private fun resumeTracking() {
         serviceScope.launch {
             gpsTrackingManager.resume()
-            updateNotification("GPS Tracking Devam Ediyor", "Konum toplanıyor")
+            updateNotification(getString(Res.string.gps_tracking_resume), getString(Res.string.gps_tracking_pull_location_information))
         }
     }
 
@@ -326,7 +316,7 @@ class GpsTrackingService: Service() {
                 setShowBadge(false)
             }
 
-            val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
     }

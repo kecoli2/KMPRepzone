@@ -1,8 +1,5 @@
 package com.repzone.domain.model.gps
-import com.repzone.core.util.extensions.getCurrentDayOfWeek
-import com.repzone.core.util.extensions.getCurrentHour
-import com.repzone.core.util.extensions.getCurrentMinute
-import com.repzone.core.util.extensions.now
+import com.repzone.core.util.TimeUtils
 import com.repzone.domain.common.DomainException
 import com.repzone.domain.common.ErrorCode
 import com.repzone.domain.common.Result
@@ -12,69 +9,105 @@ import kotlinx.datetime.DayOfWeek
  * Gps Configuration sonrasında calisma anında degisebilir default
  */
 data class GpsConfig(
-    val gpsIntervalMinutes: Int = 5, // GPS toplama aralığı
-    val serverSyncIntervalMinutes: Int = 15, // Sync aralığı
-    val minDistanceMeters: Float = 0f,  // Min hareket mesafesi
-    val accuracyThreshold: Float = 250f, // Max GPS hatası
-    val batteryOptimizationEnabled: Boolean = true,
-    val enableBackgroundTracking: Boolean = true,
-    val autoSyncOnGpsUpdate: Boolean = true, // GPS güncellemelerinde otomatik olarak sync yap
-
-    val enableSchedule: Boolean = true,  // Schedule aktif mi?
-    val startTimeHour: Int = 9,          // Başlangıç saati (0-23)
-    val startTimeMinute: Int = 0,        // Başlangıç dakikası (0-59)
-    val endTimeHour: Int = 18,           // Bitiş saati (0-23)
-    val endTimeMinute: Int = 0,          // Bitiş dakikası (0-59)
-    val activeDays: List<DayOfWeek> = listOf(
+    val isActive: Boolean = true,                          // Aktif (ON/OFF switch)
+    val enableLiveTracking: Boolean = true,                // Canlı Takip (Evet/Hayır)
+    val gpsIntervalMinutes: Int = 1,                       // Konum Gönderim Sıklığı (dakika)
+    val startTimeHour: Int = 9,                            // Takip Başlangıç Saati
+    val startTimeMinute: Int = 0,
+    val endTimeHour: Int = 18,                             // Takip Bitiş Saati
+    val endTimeMinute: Int = 0,
+    val activeDays: List<DayOfWeek> = listOf(                // Takip Günleri
         DayOfWeek.MONDAY,
         DayOfWeek.TUESDAY,
         DayOfWeek.WEDNESDAY,
         DayOfWeek.THURSDAY,
-        DayOfWeek.FRIDAY,
-        DayOfWeek.SATURDAY,
-        DayOfWeek.SUNDAY
-    )
+        DayOfWeek.FRIDAY
+    ),
+    val enableBackgroundTracking: Boolean = true,          // Arkaplanlda İzleme (Evet/Hayır)
+
+    // Mobil taraf parametreleri (backend'de yok, mobilde kullanılıyor) bunları da sonrasında ekleyeceğiz
+    val minDistanceMeters: Float = 0f,                    // Minimum mesafe filtresi
+    val accuracyThreshold: Float = 250f,                   // Doğruluk eşiği
+    val batteryOptimizationEnabled: Boolean = false,       // Batarya optimizasyonu
+    val serverSyncIntervalMinutes: Int = 15,               // Server sync aralığı
+    val autoSyncOnGpsUpdate: Boolean = true                // Her GPS'te sync
 ){
     fun validate(): Result<Unit> {
         return when {
             gpsIntervalMinutes < 1 -> Result.Error(DomainException.BusinessRuleException(ErrorCode.GPS_INTERVAL_TOO_SHORT))
-            serverSyncIntervalMinutes < 1 -> Result.Error(DomainException.BusinessRuleException(ErrorCode.SYNC_INTERVAL_TOO_SHORT))
             minDistanceMeters < 0 -> Result.Error(DomainException.BusinessRuleException(ErrorCode.GPS_MIN_DISTANCE_NAGATIVE))
             accuracyThreshold < 0 -> Result.Error(DomainException.BusinessRuleException(ErrorCode.GPS_ACCURACY_THRESHOLD_NEGATIVE))
             startTimeHour !in 0..23 -> Result.Error(DomainException.BusinessRuleException(ErrorCode.ERROR_START_HOUR_RANGE))
             startTimeMinute !in 0..59 -> Result.Error(DomainException.BusinessRuleException(ErrorCode.ERROR_START_MINUTE_RANGE))
             endTimeHour !in 0..23 -> Result.Error(DomainException.BusinessRuleException(ErrorCode.ERROR_END_HOUR_RANGE))
             endTimeMinute !in 0..59 -> Result.Error(DomainException.BusinessRuleException(ErrorCode.ERROR_END_MINUTE_RANGE))
-            enableSchedule && activeDays.isEmpty() -> Result.Error(DomainException.BusinessRuleException(ErrorCode.ERROR_ACTIVE_DAYS_REQUIRED))
+            activeDays.isEmpty() -> Result.Error(DomainException.BusinessRuleException(ErrorCode.ERROR_ACTIVE_DAYS_REQUIRED))
             else -> Result.Success(Unit)
         }
     }
 
-    fun isWithinSchedule(currentTimeMillis: Long = now()): Boolean {
-        if (!enableSchedule) return true  // Schedule kapalıysa her zaman çalış
+    /**
+     * Servis aktif mi ve schedule içinde mi?
+     */
+    fun isActiveAndWithinSchedule(currentTimeMillis: Long = TimeUtils.currentTimeMillis()): Boolean {
+        if (!isActive) return false
 
+        return isWithinSchedule(currentTimeMillis)
+    }
+
+    /**
+     * Background tracking (Foreground Service + Firebase) çalışmalı mı? Burası tekrardan sorulacak TODO
+     *
+     * Koşullar:
+     * 1. isActive = true olmalı
+     * 2. enableBackgroundTracking = true olmalı (Arkaplanlda İzleme)
+     * 3. Schedule içinde olmalı (09:00-18:00, aktif günler)
+     *
+     * @return true ise Foreground Service aktif + Firebase gönder
+     *         false ise sadece Repository'e kaydet
+     */
+    fun shouldRunBackgroundService(currentTimeMillis: Long = TimeUtils.currentTimeMillis()): Boolean {
+        if (!isActive) return false
+        if (!enableBackgroundTracking) return false
+
+        return isWithinSchedule(currentTimeMillis)
+    }
+
+    /**
+     * Canlı takip aktif mi?
+     * enableLiveTracking = true ise, Firebase'e real-time gönder
+     */
+    fun shouldSendToFirebase(): Boolean {
+        return isActive && enableLiveTracking && enableBackgroundTracking
+    }
+
+    /**
+     * Schedule içinde mi?
+     */
+    fun isWithinSchedule(currentTimeMillis: Long = TimeUtils.currentTimeMillis()): Boolean {
         // Günü kontrol et
-        val currentDay = currentTimeMillis.getCurrentDayOfWeek()
+        val currentDay = TimeUtils.getCurrentDayOfWeek(currentTimeMillis)
         if (currentDay !in activeDays) return false
 
         // Saati kontrol et
-        val currentHour = currentTimeMillis.getCurrentHour()
-        val currentMinute = currentTimeMillis.getCurrentMinute()
+        val currentHour = TimeUtils.getCurrentHour(currentTimeMillis)
+        val currentMinute = TimeUtils.getCurrentMinute(currentTimeMillis)
         val currentTimeInMinutes = currentHour * 60 + currentMinute
         val startTimeInMinutes = startTimeHour * 60 + startTimeMinute
         val endTimeInMinutes = endTimeHour * 60 + endTimeMinute
-
         return currentTimeInMinutes in startTimeInMinutes..endTimeInMinutes
     }
 
-    fun getMinutesUntilNextScheduledTime(currentTimeMillis: Long = now()): Int {
-        if (!enableSchedule) return 0
+    /**
+     * Bir sonraki çalışma zamanına kadar kaç dakika var?
+     */
+    fun getMinutesUntilNextScheduledTime(currentTimeMillis: Long = TimeUtils.currentTimeMillis()): Int {
         if (isWithinSchedule(currentTimeMillis)) return 0
 
         // Şu anki gün ve saat
-        val currentDay = currentTimeMillis.getCurrentDayOfWeek()
-        val currentHour = currentTimeMillis.getCurrentHour()
-        val currentMinute = currentTimeMillis.getCurrentMinute()
+        val currentDay = TimeUtils.getCurrentDayOfWeek(currentTimeMillis)
+        val currentHour = TimeUtils.getCurrentHour(currentTimeMillis)
+        val currentMinute = TimeUtils.getCurrentMinute(currentTimeMillis)
         val currentTimeInMinutes = currentHour * 60 + currentMinute
         val startTimeInMinutes = startTimeHour * 60 + startTimeMinute
 
@@ -108,16 +141,7 @@ data class GpsConfig(
                 return i
             }
         }
+
         return 1  // Fallback
-    }
-
-    fun getScheduleDescription(): String {
-        if (!enableSchedule) return "Her zaman aktif"
-
-        val startTime = "${startTimeHour.toString().padStart(2, '0')}:${startTimeMinute.toString().padStart(2, '0')}"
-        val endTime = "${endTimeHour.toString().padStart(2, '0')}:${endTimeMinute.toString().padStart(2, '0')}"
-        val days = activeDays.sortedBy { it.ordinal }.joinToString(", ") { it.name }
-
-        return "$startTime - $endTime | $days"
     }
 }

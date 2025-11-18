@@ -2,8 +2,8 @@ package com.repzone.domain.model.gps
 
 import com.repzone.core.model.StringResource
 import com.repzone.core.model.UiText
+import com.repzone.core.util.TimeUtils
 import com.repzone.core.util.extensions.now
-import com.repzone.domain.util.TimeUtils
 
 data class SyncStatistics(
     val totalLocations: Int,

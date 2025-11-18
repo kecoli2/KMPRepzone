@@ -53,7 +53,7 @@ class GpsDataSyncServiceImpl(private val locationRepository: ILocationRepository
 
     //region Public Method
     override suspend fun syncToServer(): Result<SyncResult> {
-        return withContext(Dispatchers.Default) {
+        return withContext(coroutineScope.coroutineContext) {
             try {
                 if (isSyncing) {
                     return@withContext Result.Error(DomainException.UnknownException(cause = IllegalStateException("Sync already in progress")) )
@@ -101,7 +101,7 @@ class GpsDataSyncServiceImpl(private val locationRepository: ILocationRepository
     }
 
     override suspend fun syncLocations(locations: List<GpsLocation>): Result<SyncResult> {
-        return withContext(Dispatchers.Default) {
+        return withContext(coroutineScope.coroutineContext) {
             try {
                 if (locations.isEmpty()) {
                     return@withContext Result.Success(

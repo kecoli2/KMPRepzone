@@ -6,7 +6,6 @@ import com.repzone.domain.common.ErrorCode
 import com.repzone.domain.model.gps.GpsLocation
 import com.repzone.domain.repository.ILocationRepository
 import com.repzone.domain.util.DistanceCalculator
-import com.repzone.domain.util.TimeUtils
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
