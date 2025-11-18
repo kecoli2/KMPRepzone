@@ -3,6 +3,7 @@ package com.repzone.data.service
 import com.repzone.core.enums.LocationAccuracy
 import com.repzone.core.platform.Logger
 import com.repzone.core.util.PermissionStatus
+import com.repzone.core.util.extensions.now
 import com.repzone.domain.common.DomainException
 import com.repzone.domain.common.ErrorCode
 import com.repzone.domain.model.gps.GpsConfig
@@ -23,7 +24,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 /**
  *  Sorumluluk: GPS toplama servisini yönetir
@@ -58,6 +58,9 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
     private var currentConfig: GpsConfig? = null
     private var isRunning = false
     private var isPaused = false
+    private var lastProcessedTime: Long = 0
+    private val debouncePeriod = 3000L // 3 saniye
+    private var lastProcessedLocationId: String? = null
     //endregion
 
     //region Properties
@@ -196,23 +199,29 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
     }
 
     override suspend fun forceGpsUpdate(): Result<GpsLocation> {
-        return withContext(Dispatchers.Default) {
-            try {
-                // Force immediate GPS update
-                val location = platformProvider.requestLocation().getOrThrow()
+        return try {
+            platformProvider.stopLocationUpdates()
+            delay(500)
+            val locationResult = platformProvider.requestLocation()
+            if (locationResult.isSuccess) {
+                val location = locationResult.getOrThrow()
 
                 // Validate
                 if (!location.isValid()) {
-                    return@withContext Result.Error(DomainException.UnknownException(cause = IllegalStateException("Invalid GPS location")))
+                    restartPeriodicUpdates()
+                    return Result.Error(DomainException.UnknownException(cause = IllegalStateException("Invalid GPS location")))
                 }
-
-                // Process and save
                 processNewLocation(location)
-
+                delay(1000)
+                restartPeriodicUpdates()
                 Result.Success(location)
-            } catch (e: Exception) {
-                Result.Error(DomainException.UnknownException(cause = e))
+            } else {
+                restartPeriodicUpdates()
+                Result.Error(DomainException.UnknownException(cause = IllegalStateException("Force GPS failed")))
             }
+        } catch (e: Exception) {
+            restartPeriodicUpdates()
+            Result.Error(DomainException.UnknownException(cause = e))
         }
     }
 
@@ -242,6 +251,14 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
 
 
     //region Private Method
+
+    private fun restartPeriodicUpdates() {
+        currentConfig?.let { config ->
+            if (isServiceRunning()) {
+                startPlatformLocationUpdates(config)
+            }
+        }
+    }
     private fun scheduleNextStart(config: GpsConfig, delayMinutes: Int) {
         coroutineScope.launch {
             println("Schedule: $delayMinutes dakika sonra servis başlatılacak...")
@@ -305,6 +322,15 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
     }
     private suspend fun processNewLocation(location: GpsLocation) {
         try {
+            val now = now()
+            val isDuplicate = location.id == lastProcessedLocationId
+            val isTooRecent = (now - lastProcessedTime) < debouncePeriod
+
+            if (isDuplicate || isTooRecent) {
+                Logger.d("LOCATION_SERVICE", "Location skipped - duplicate: $isDuplicate, too recent: $isTooRecent, id: ${location.id}")
+                return
+            }
+
             val config = currentConfig ?: return
 
             // Doğruluk kontrolü
@@ -327,7 +353,9 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
 
             // Konumu kaydet
             locationRepository.saveLocation(location).onSuccess {
-                //_locationUpdates.value = location
+                _locationUpdates.value = location
+                lastProcessedLocationId = location.id
+                lastProcessedTime = now
                 Logger.d("LOCATION_SERVICE","Location saved: ${location.toReadableString()}")
             }.onError { e ->
                 Logger.error("LOCATION_SERVICE",e)
@@ -338,16 +366,5 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
         }
     }
 
-    private fun shouldCollectLocation(config: GpsConfig): Boolean {
-        if (!config.batteryOptimizationEnabled) return true
-
-        // TODO: Daha akıllı logic eklenebilir
-        // - Şarj durumu
-        // - Hareket durumu (accelerometer)
-        // - Ekran durumu
-        // - Network durumu
-
-        return true
-    }
     //endregion
 }
