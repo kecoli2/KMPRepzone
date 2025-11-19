@@ -32,6 +32,8 @@ import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.platform.HandleBackPress
 import com.repzone.core.ui.viewmodel.sync.SyncViewModel
 import com.repzone.core.util.extensions.fromResource
+import com.repzone.domain.common.onError
+import com.repzone.domain.common.onSuccess
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.util.getProgressPercentage
 import org.jetbrains.compose.resources.painterResource
@@ -57,7 +59,12 @@ fun SyncScreenLegacy(onSyncCompleted: () -> Unit) = ViewModelHost<SyncViewModel>
                 status is SyncJobStatus.Success || status is SyncJobStatus.Failed
             }
             if (allCompleted) {
-                onSyncCompleted()
+                viewModel.onEvent(SyncViewModel.Event.Success).onSuccess {
+                    onSyncCompleted()
+                }.onError {
+
+                }
+
             }
         }
     }

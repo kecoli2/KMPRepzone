@@ -17,8 +17,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashScreenViewModel(private val tokenController: ITokenApiController,
-                            private val userSession: IUserSession,
-                            private val gpsTrackingManager: IGpsTrackingManager
+                            private val userSession: IUserSession
 ): BaseViewModel<SplashScreenUiState, SplashScreenViewModel.Event>(SplashScreenUiState()) {
 
     //region Field
@@ -117,32 +116,6 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
             SplashScreenOperation.CEHCK_PERMISSION -> {
 
             }
-
-            SplashScreenOperation.REGISTER_GPS_SERVICES -> {
-                registerGpsService()
-            }
-        }
-    }
-
-    private suspend fun registerGpsService() {
-        if(state.value.domainException != null){
-            updateState { currentState ->
-                currentState.copy(
-                    domainException = null
-                )
-            }
-        }
-        gpsTrackingManager.initialize()
-        gpsTrackingManager.start()
-            .onSuccess {
-            _nextOprerations.remove(SplashScreenOperation.REGISTER_GPS_SERVICES)
-            nextOperation()
-        }.onError {
-            updateState { currentState ->
-                currentState.copy(
-                    domainException = it
-                )
-            }
         }
     }
 
@@ -151,7 +124,6 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
         _nextOprerations.put(SplashScreenOperation.CHECK_TOKEN, null)
         _nextOprerations.put(SplashScreenOperation.REGISTER_SMS_SERVICE, null)
         _nextOprerations.put(SplashScreenOperation.REGISTER_NOTIFICATION_SERVICE, null)
-        _nextOprerations.put(SplashScreenOperation.REGISTER_GPS_SERVICES, null)
     }
     private suspend fun checkToken(){
         try {
@@ -216,8 +188,7 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
         CEHCK_PERMISSION,
         CHECK_TOKEN,
         REGISTER_SMS_SERVICE,
-        REGISTER_NOTIFICATION_SERVICE,
-        REGISTER_GPS_SERVICES
+        REGISTER_NOTIFICATION_SERVICE
     }
     //endregion Enums
 }

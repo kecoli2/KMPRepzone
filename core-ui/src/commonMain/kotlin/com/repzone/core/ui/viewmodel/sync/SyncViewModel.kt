@@ -4,12 +4,21 @@ import com.repzone.core.enums.UserRole
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.core.ui.ui.sync.SyncUiState
+import com.repzone.core.ui.viewmodel.splash.SplashScreenViewModel.SplashScreenOperation
+import com.repzone.domain.common.DomainException
 import com.repzone.sync.interfaces.ISyncManager
 import com.repzone.sync.transaction.TransactionCoordinator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.repzone.domain.common.Result
+import com.repzone.domain.common.onError
+import com.repzone.domain.common.onSuccess
+import com.repzone.domain.manager.gps.IGpsTrackingManager
 
-class SyncViewModel(private val syncManager: ISyncManager, private val iusereSession: IUserSession, private val transactionCoordinator: TransactionCoordinator,)
+class SyncViewModel(private val syncManager: ISyncManager,
+                    private val iusereSession: IUserSession,
+                    private val transactionCoordinator: TransactionCoordinator,
+                    private val gpsTrackingManager: IGpsTrackingManager)
         : BaseViewModel<SyncUiState, SyncViewModel.Event>(SyncUiState()) {
     //region Field
     //endregion
@@ -47,18 +56,22 @@ class SyncViewModel(private val syncManager: ISyncManager, private val iusereSes
     //endregion
 
     //region Public Method
-    override fun onStart() {
-        super.onStart()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        //transactionCoordinator.shutdown()
-    }
-
-    override fun onDispose() {
-        super.onDispose()
-        //transactionCoordinator.shutdown()
+    suspend fun onEvent(event: Event): Result<Unit> {
+        return try {
+            when(event){
+                Event.Success -> {
+                    gpsTrackingManager.initialize()
+                    gpsTrackingManager.start()
+                        .onSuccess {
+                            it
+                        }.onError {
+                            it
+                        }
+                }
+            }
+        }catch (e: Exception){
+            Result.Error(DomainException.UnknownException(cause = e))
+        }
     }
     //endregion
 
