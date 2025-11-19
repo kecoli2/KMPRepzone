@@ -1,5 +1,6 @@
 package com.repzone.core.ui.viewmodel.splash
 
+import com.repzone.core.interfaces.IFirebaseManager
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.core.ui.base.setError
@@ -17,7 +18,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SplashScreenViewModel(private val tokenController: ITokenApiController,
-                            private val userSession: IUserSession
+                            private val userSession: IUserSession,
+                            private val firebaseManager: IFirebaseManager,
 ): BaseViewModel<SplashScreenUiState, SplashScreenViewModel.Event>(SplashScreenUiState()) {
 
     //region Field
@@ -116,6 +118,12 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
             SplashScreenOperation.CEHCK_PERMISSION -> {
 
             }
+
+            SplashScreenOperation.FIREBASE_AUTHENTICATION -> {
+                firebaseManager.initialize(userSession.getActiveSession()!!.identity!!.userId.toString(), email = userSession.getActiveSession()!!.identity!!.email!!)
+                _nextOprerations.remove(SplashScreenOperation.FIREBASE_AUTHENTICATION)
+                nextOperation()
+            }
         }
     }
 
@@ -124,6 +132,7 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
         _nextOprerations.put(SplashScreenOperation.CHECK_TOKEN, null)
         _nextOprerations.put(SplashScreenOperation.REGISTER_SMS_SERVICE, null)
         _nextOprerations.put(SplashScreenOperation.REGISTER_NOTIFICATION_SERVICE, null)
+        _nextOprerations.put(SplashScreenOperation.FIREBASE_AUTHENTICATION, null)
     }
     private suspend fun checkToken(){
         try {
@@ -188,7 +197,8 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
         CEHCK_PERMISSION,
         CHECK_TOKEN,
         REGISTER_SMS_SERVICE,
-        REGISTER_NOTIFICATION_SERVICE
+        REGISTER_NOTIFICATION_SERVICE,
+        FIREBASE_AUTHENTICATION,
     }
     //endregion Enums
 }

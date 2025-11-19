@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
-        firebaseManager.initialize()
         themeManager.initialize(presentationConfig)
         lifecycleScope.launch {
             themeManager.languageChangeEvent.collect { languageCode ->

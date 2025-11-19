@@ -1,7 +1,6 @@
 package com.repzone.domain.firebase
 
 import com.repzone.domain.common.Result
-import com.repzone.domain.model.DailyOperationLogInformationModel
 import com.repzone.domain.model.gps.GpsLocation
 
 interface IFirebaseCrashlytics {
@@ -29,5 +28,5 @@ interface IFirebaseRealtimeDatabase {
     suspend fun sendToFirebase(data: GpsLocation): Result<Boolean>
     fun listenToData(path: String, onDataChange: (Map<String, Any>?) -> Unit)
     fun stopListening(path: String)
-
+    suspend fun userAuthentication(email: String): Result<Unit>
 }

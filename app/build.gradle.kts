@@ -47,6 +47,8 @@ kotlin {
             implementation(libs.firebase.crashlytics.ktx)
             implementation(libs.firebase.messaging.ktx)
             implementation(libs.firebase.database.ktx)
+            implementation(libs.firebase.auth.ktx)
+
 
         }
         commonMain.dependencies {

@@ -1,5 +1,8 @@
 package com.repzone.mobile.firebase
 
+import com.google.firebase.FirebaseApp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -30,7 +33,7 @@ class AndroidFirebaseRealtimeDatabase(
     private val iRouteAppointmentRepository: IRouteAppointmentRepository) : IFirebaseRealtimeDatabase {
 
     //region Field
-    private val database = FirebaseDatabase.getInstance()
+    private var database = FirebaseDatabase.getInstance()
     private val listeners = mutableMapOf<String, ValueEventListener>()
     //endregion Field
 
@@ -102,6 +105,19 @@ class AndroidFirebaseRealtimeDatabase(
             database.getReference(path).removeEventListener(listener)
             listeners.remove(path)
         }
+    }
+
+    override suspend fun userAuthentication(email: String): Result<Unit> {
+        return try {
+            val result = FirebaseAuth.getInstance().signInWithEmailAndPassword(email, "bilgera2018").await()
+            result.user?.let {
+                Result.Success(Unit)
+            }
+            Result.Success(Unit)
+        }catch (e: Exception){
+            Result.Error(DomainException.UnknownException(cause = e))
+        }
+
     }
     //endregion Public Method
 

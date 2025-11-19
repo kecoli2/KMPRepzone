@@ -126,6 +126,7 @@ firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics" }
 firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging" }
 firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics" }
 firebase-database-ktx = { module = "com.google.firebase:firebase-database" }
+firebase-auth-ktx = { module = "com.google.firebase:firebase-auth" }
 
 # Google Play Services
 play-services-location = { module = "com.google.android.gms:play-services-location", version.ref = "play-services-location" }

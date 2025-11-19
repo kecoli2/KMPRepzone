@@ -76,7 +76,7 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
     override suspend fun initialize(): Result<Unit> {
         return try {
             var config = GpsConfig()
-            config = config.copy(
+          /*  config = config.copy(
                 autoSyncOnGpsUpdate = true,
                 batteryOptimizationEnabled = true,
                 enableBackgroundTracking = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.backgroundTracking ?: false,
@@ -87,20 +87,20 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
                 endTimeMinute = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackEndTime?.getLocalDateTime()?.minute ?: 0,
                 activeDays = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackDays ?: emptyList(),
                 serverSyncIntervalMinutes = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackInterval ?: 1,
-            )
-/*
+            )*/
+
             config = config.copy(
                 autoSyncOnGpsUpdate = true,
                 batteryOptimizationEnabled = true,
                 enableBackgroundTracking = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.backgroundTracking ?: false,
                 gpsIntervalMinutes = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackInterval ?: 1,
-                startTimeHour = 9,
-                startTimeMinute = 10,
-                endTimeHour = 0,
-                endTimeMinute = 35,
+                startTimeHour = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackStartTime?.getLocalDateTime()?.hour ?: 0,
+                startTimeMinute = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackStartTime?.getLocalDateTime()?.minute ?: 0,
+                endTimeHour = 23,
+                endTimeMinute = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackEndTime?.getLocalDateTime()?.minute ?: 0,
                 activeDays = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackDays ?: emptyList(),
                 serverSyncIntervalMinutes = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackInterval ?: 1,
-            )*/
+            )
 
             // Konfigürasyonu validate et
             val validationResult = config.validate()

@@ -1,6 +1,7 @@
 package com.repzone.mobile.di
 
 import com.repzone.core.interfaces.IDeviceInfo
+import com.repzone.core.interfaces.IFirebaseManager
 import com.repzone.core.interfaces.IPreferencesManager
 import com.repzone.domain.firebase.IFirebaseCrashlytics
 import com.repzone.domain.firebase.IFirebaseMessaging
@@ -39,7 +40,7 @@ val FirebaseAndroidModule = module {
     singleOf(::AndroidFirebaseCrashlytics) {  bind<IFirebaseCrashlytics>() }
     singleOf(::AndroidFirebaseMessaging) {  bind<IFirebaseMessaging>() }
 
-    singleOf(::FirebaseManager)
+    singleOf(::FirebaseManager) {bind<IFirebaseManager>()}
 }
 
 val FirebaseMockAndroidModule = module {

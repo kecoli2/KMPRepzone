@@ -1,10 +1,10 @@
 package com.repzone.core.ui.viewmodel.sync
 
 import com.repzone.core.enums.UserRole
+import com.repzone.core.interfaces.IFirebaseManager
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.core.ui.ui.sync.SyncUiState
-import com.repzone.core.ui.viewmodel.splash.SplashScreenViewModel.SplashScreenOperation
 import com.repzone.domain.common.DomainException
 import com.repzone.sync.interfaces.ISyncManager
 import com.repzone.sync.transaction.TransactionCoordinator
@@ -18,7 +18,9 @@ import com.repzone.domain.manager.gps.IGpsTrackingManager
 class SyncViewModel(private val syncManager: ISyncManager,
                     private val iusereSession: IUserSession,
                     private val transactionCoordinator: TransactionCoordinator,
-                    private val gpsTrackingManager: IGpsTrackingManager)
+                    private val gpsTrackingManager: IGpsTrackingManager,
+                    private val iFirebaseManager: IFirebaseManager)
+
         : BaseViewModel<SyncUiState, SyncViewModel.Event>(SyncUiState()) {
     //region Field
     //endregion
@@ -60,6 +62,7 @@ class SyncViewModel(private val syncManager: ISyncManager,
         return try {
             when(event){
                 Event.Success -> {
+                    iFirebaseManager.initialize(iusereSession.getActiveSession()!!.identity!!.userId.toString(), email = iusereSession.getActiveSession()!!.identity!!.email!!)
                     gpsTrackingManager.initialize()
                     gpsTrackingManager.start()
                         .onSuccess {
