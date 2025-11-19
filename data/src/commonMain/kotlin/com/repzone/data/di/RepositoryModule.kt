@@ -40,7 +40,7 @@ val RepositoryModule = module {
     //region DBMAPPERS
     //region Customer
     single { CustomerEntityDbMapper() }
-    single { CustomerEntityDbMapper() }
+    singleOf(::SyncCustomerEntityDbMapper)
     single { CustomerItemViewEntityDbMapper() }
     //endregion
 

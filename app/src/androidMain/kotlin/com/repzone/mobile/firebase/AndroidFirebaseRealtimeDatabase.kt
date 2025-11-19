@@ -129,20 +129,20 @@ class AndroidFirebaseRealtimeDatabase(
 
             val lastLoc = lastLocNode.child(model.representativeId.toString())
 
-            val map = hashMapOf<String, Any?>(
+            val map = hashMapOf(
                 "Latitude" to model.latitude,
                 "Longitude" to model.longitude,
                 "Time" to now().toDateString("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"),
                 "Accuracy" to model.accuracy,
                 "Altitude" to model.altitude,
                 "AltitudeAccuracy" to model.altitudeAccuracy,
-                "Heading" to model.bearing,
-                "Speed" to model.speed,
+                "Heading" to (model.bearing ?: 0f),
+                "Speed" to (model.speed ?: 0f),
                 "RepresentativeId" to model.representativeId,
                 "DailyOperationType" to model.dailyOperationType,
                 "Description" to model.description,
                 "ReverseGeocoded" to model.reverseGeocoded,
-                "BatteryLevel" to model.batteryLevel,
+                "BatteryLevel" to (model.batteryLevel ?: 0),
                 "TenantId" to model.tenantId,
                 "TimeStamp" to ServerValue.TIMESTAMP
             )
@@ -270,6 +270,7 @@ class AndroidFirebaseRealtimeDatabase(
             }
 
             // Firebase'e yaz
+            newLoc.setValue(map)
             lastLoc.setValue(map)
             return Result.Success(true)
         }catch (e: Exception){

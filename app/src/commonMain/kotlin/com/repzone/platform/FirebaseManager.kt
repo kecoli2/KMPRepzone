@@ -4,7 +4,8 @@ import com.repzone.domain.firebase.IFirebaseCrashlytics
 import com.repzone.domain.firebase.IFirebaseMessaging
 import com.repzone.domain.firebase.IFirebaseRealtimeDatabase
 
-class FirebaseManager(val realtimeDatabase: IFirebaseRealtimeDatabase, val crashlytics: IFirebaseCrashlytics, val messaging: IFirebaseMessaging) {
+class FirebaseManager(val realtimeDatabase: IFirebaseRealtimeDatabase,
+                      val crashlytics: IFirebaseCrashlytics, val messaging: IFirebaseMessaging) {
 
     //region Constructor
     fun initialize() {

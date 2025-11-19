@@ -1,125 +1,27 @@
 {
   "project_info": {
-    "project_number": "821671896424",
-    "firebase_url": "https://repzone-199313.firebaseio.com",
-    "project_id": "repzone-199313",
-    "storage_bucket": "repzone-199313.firebasestorage.app"
+    "project_number": "557982499023",
+    "firebase_url": "https://repzone-mobile-test-default-rtdb.firebaseio.com",
+    "project_id": "repzone-mobile-test",
+    "storage_bucket": "repzone-mobile-test.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:821671896424:android:7f34d380869e1712",
-        "android_client_info": {
-          "package_name": "com.repzon.repzonedroid"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "821671896424-sse9ha91s5qmett9h1fc76oc0e8aor4j.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBDySQnPkjIuYbbZyYGF9qccTH5gbHo41s"
-        },
-        {
-          "current_key": "AIzaSyD7SOmkAtTA6XMZb0tRMI9T53nf6kQs9gY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "821671896424-sse9ha91s5qmett9h1fc76oc0e8aor4j.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "821671896424-0bk31jq1nctvgmvkk5gv3bqbgdrv30m0.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "Repzone.Repzone.iOS"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:821671896424:android:5f2595f542be684ae022dd",
-        "android_client_info": {
-          "package_name": "com.repzon.repzonedroid_ldezone"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "821671896424-sse9ha91s5qmett9h1fc76oc0e8aor4j.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBDySQnPkjIuYbbZyYGF9qccTH5gbHo41s"
-        },
-        {
-          "current_key": "AIzaSyD7SOmkAtTA6XMZb0tRMI9T53nf6kQs9gY"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "821671896424-sse9ha91s5qmett9h1fc76oc0e8aor4j.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "821671896424-0bk31jq1nctvgmvkk5gv3bqbgdrv30m0.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "Repzone.Repzone.iOS"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:821671896424:android:7a5d65cb727421f4e022dd",
+        "mobilesdk_app_id": "1:557982499023:android:d9823e35ce11c43db837ba",
         "android_client_info": {
           "package_name": "com.repzone.mobile"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "821671896424-sse9ha91s5qmett9h1fc76oc0e8aor4j.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBDySQnPkjIuYbbZyYGF9qccTH5gbHo41s"
-        },
-        {
-          "current_key": "AIzaSyD7SOmkAtTA6XMZb0tRMI9T53nf6kQs9gY"
+          "current_key": "AIzaSyAZ40Qvm_lZX-wDJGdrRhlcwMktyBTOg-8"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "821671896424-sse9ha91s5qmett9h1fc76oc0e8aor4j.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "821671896424-0bk31jq1nctvgmvkk5gv3bqbgdrv30m0.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "Repzone.Repzone.iOS"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

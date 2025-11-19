@@ -20,7 +20,7 @@ data class GpsLocation(
     val isSynced: Boolean = false,
     val altitudeAccuracy: Float? = null,
     val batteryLevel: Int? = null,
-    val representativeId: Long? = null,
+    val representativeId: Long,
     var reverseGeocoded: String? = null,
     val organizationId: Int,
     val tenantId: Int,
