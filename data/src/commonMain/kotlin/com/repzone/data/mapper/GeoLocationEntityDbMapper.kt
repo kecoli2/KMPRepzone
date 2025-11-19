@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.SyncStatusType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.GeoLocationEntity
 import com.repzone.domain.model.GeoLocationModel
@@ -22,7 +25,8 @@ class GeoLocationEntityDbMapper : Mapper<GeoLocationEntity, GeoLocationModel> {
             representativeId = from.RepresentativeId,
             reverseGeocoded = from.ReverseGeocoded,
             speed = from.Speed,
-            time = from.Time
+            time = from.Time,
+            syncStatus = from.SyncStatus.toEnum<SyncStatusType>() ?: SyncStatusType.IDLE
         )
     }
 
@@ -41,7 +45,8 @@ class GeoLocationEntityDbMapper : Mapper<GeoLocationEntity, GeoLocationModel> {
             RepresentativeId = domain.representativeId,
             ReverseGeocoded = domain.reverseGeocoded,
             Speed = domain.speed,
-            Time = domain.time
+            Time = domain.time,
+            SyncStatus = domain.syncStatus.enumToLong()
         )
     }
 
@@ -61,6 +66,7 @@ class GeoLocationEntityDbMapper : Mapper<GeoLocationEntity, GeoLocationModel> {
             ReverseGeocoded = model.reverseGeocoded,
             Speed = model.speed?.toDouble() ,
             Time = model.timestamp,
+            SyncStatus = SyncStatusType.IDLE.enumToLong()
         )
     }
     //endregion

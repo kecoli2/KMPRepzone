@@ -16,5 +16,6 @@ CREATE TABLE IF NOT EXISTS GeoLocationEntity (
     RepresentativeId INTEGER,
     ReverseGeocoded TEXT,
     Speed REAL,
-    Time INTEGER
+    Time INTEGER,
+    SyncStatus INTEGER NOT NULL DEFAULT(0)
 );

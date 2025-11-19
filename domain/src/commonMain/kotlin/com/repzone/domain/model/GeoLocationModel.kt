@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.SyncStatusType
+
 data class GeoLocationModel(
   val id: Long,
   val accuracy: Double?,
@@ -15,4 +17,5 @@ data class GeoLocationModel(
   val reverseGeocoded: String?,
   val speed: Double?,
   val time: Long?,
+  val syncStatus: SyncStatusType
 )
