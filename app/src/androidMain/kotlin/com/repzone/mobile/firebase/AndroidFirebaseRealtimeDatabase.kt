@@ -9,12 +9,19 @@ import com.repzone.core.platform.Logger
 import com.repzone.domain.common.DomainException
 import kotlinx.coroutines.tasks.await
 import com.repzone.domain.common.Result
+import com.repzone.domain.model.DailyOperationLogInformationModel
+import com.repzone.domain.model.gps.GpsLocation
+import com.repzone.domain.service.ILocationService
 
 
 class AndroidFirebaseRealtimeDatabase : IFirebaseRealtimeDatabase {
+
+    //region Field
     private val database = FirebaseDatabase.getInstance()
     private val listeners = mutableMapOf<String, ValueEventListener>()
+    //endregion Field
 
+    //region Public Method
     override suspend fun writeData(path: String, data: Map<String, Any>): Result<Unit> {
         return try {
             database.getReference(path).setValue(data).await()
@@ -53,6 +60,11 @@ class AndroidFirebaseRealtimeDatabase : IFirebaseRealtimeDatabase {
         }
     }
 
+    override suspend fun sendToFirebase(data: DailyOperationLogInformationModel): Result<Boolean> {
+        //val location  = iLocationManager.getLastKnownLocation()
+        return Result.Success(true)
+    }
+
     override fun listenToData(path: String, onDataChange: (Map<String, Any>?) -> Unit) {
         val reference = database.getReference(path)
         val listener = object : ValueEventListener {
@@ -78,4 +90,12 @@ class AndroidFirebaseRealtimeDatabase : IFirebaseRealtimeDatabase {
             listeners.remove(path)
         }
     }
+    //endregion Public Method
+
+    //region Private Method
+    private fun connectLocationDatabaseAndSendLocation(model: GpsLocation): Boolean {
+
+        return true
+    }
+    //endregion Private Method
 }

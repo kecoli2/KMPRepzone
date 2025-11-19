@@ -116,6 +116,7 @@ class GpsTrackingService: Service() {
     private suspend fun startTracking() {
         if (isRunning) return
 
+        //TODO RELEASE DE DARALTILACAKTIR SUANLIK BILGILENDIRME ICIN BOYLE
         // Foreground notification gösteriyor ama içeriği haluk bey ile görüş
         val notification = createNotification(
             title = getString(Res.string.gps_tracking_active),

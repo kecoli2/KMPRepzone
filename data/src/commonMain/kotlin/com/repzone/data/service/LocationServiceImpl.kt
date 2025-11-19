@@ -137,7 +137,6 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             // Platform updates'i durdur
             platformProvider.stopLocationUpdates()
 
-
             isRunning = false
             isPaused = false
             currentConfig = null
@@ -231,7 +230,7 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
     override suspend fun getLastKnownLocation(): GpsLocation? {
         // Önce repository'den dene
         val repoLocation = locationRepository.getLastLocation()
-        if (repoLocation != null && repoLocation.isRecent(maxAgeMillis = 60_000)) {
+        if (repoLocation != null && repoLocation.isRecent(maxAgeMillis = 30_000)) {
             return repoLocation
         }
 
@@ -315,6 +314,13 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
                 return
             }
 
+            if(iGeocoder.isAvailable()){
+                val adress = iGeocoder.getAddress(location.latitude,location.longitude)
+                adress?.let {
+                    location.reverseGeocoded = it.fullAddress
+                }
+            }
+
             val config = currentConfig ?: return
 
             if (!config.isActive) {
@@ -337,12 +343,6 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
                         Logger.d("LOCATION_SERVICE","Location rejected: distance too small (${distance}m < ${config.minDistanceMeters}m)")
                         return
                     }
-                }
-            }
-            if(iGeocoder.isAvailable()){
-                val adress = iGeocoder.getAddress(location.latitude,location.longitude)
-                adress?.let {
-                    location.reverseGeocoded = it.fullAddress
                 }
             }
 

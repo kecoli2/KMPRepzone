@@ -1,6 +1,8 @@
 package com.repzone.domain.firebase
 
 import com.repzone.domain.common.Result
+import com.repzone.domain.model.DailyOperationLogInformationModel
+
 interface IFirebaseCrashlytics {
     fun initialize()
     fun recordException(exception: Throwable)
@@ -23,6 +25,8 @@ interface IFirebaseRealtimeDatabase {
     suspend fun readData(path: String): Result<Map<String, Any>?>
     suspend fun updateData(path: String, updates: Map<String, Any>): Result<Unit>
     suspend fun deleteData(path: String): Result<Unit>
+    suspend fun sendToFirebase(data : DailyOperationLogInformationModel): Result<Boolean>
     fun listenToData(path: String, onDataChange: (Map<String, Any>?) -> Unit)
     fun stopListening(path: String)
+
 }
