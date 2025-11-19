@@ -14,7 +14,7 @@ expect interface IPlatformLocationProvider {
     /**
      * Tek bir GPS konumu ister
      */
-    suspend fun requestLocation(timeoutSecond: Int = 30): Result<GpsLocation>
+    suspend fun requestLocation(timeoutSecond: Int = 15): Result<GpsLocation>
 
     /**
      * Sürekli konum güncellemelerini başlatır

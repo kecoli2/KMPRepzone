@@ -17,6 +17,8 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.Priority
 import com.repzone.core.enums.LocationAccuracy
+import com.repzone.core.interfaces.IDeviceInfo
+import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.platform.Logger
 import com.repzone.core.platform.randomUUID
 import com.repzone.core.util.PermissionStatus
@@ -32,7 +34,8 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlin.coroutines.resume
 
-class AndroidLocationProvider(private val context: Context): IPlatformLocationProvider {
+class AndroidLocationProvider(private val context: Context,
+    private val iUserSession: IUserSession, private val iDeviceInfoService: IDeviceInfo): IPlatformLocationProvider {
     //region Field
     private val fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context)
     private var currentAccuracy: LocationAccuracy = LocationAccuracy.HIGH
@@ -107,7 +110,7 @@ class AndroidLocationProvider(private val context: Context): IPlatformLocationPr
                         )
 
                         continuation.invokeOnCancellation {
-                            callback?.let { forceGpsClient.removeLocationUpdates(it) }
+                            callback.let { forceGpsClient.removeLocationUpdates(it) }
                         }
 
                     } catch (e: Exception) {
@@ -268,7 +271,12 @@ class AndroidLocationProvider(private val context: Context): IPlatformLocationPr
             bearing = if (hasBearing()) bearing else null,
             altitude = if (hasAltitude()) altitude else null,
             provider = provider ?: "unknown",
-            isSynced = false
+            isSynced = false,
+            altitudeAccuracy = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && hasVerticalAccuracy()) {
+                verticalAccuracyMeters
+            } else null,
+            batteryLevel = iDeviceInfoService.getBatteryLevel(),
+            representativeId = iUserSession.getActiveSession()?.userId?.toLong()
         )
     }
     //endregion

@@ -3,6 +3,7 @@ package com.repzone.data.mapper
 import com.repzone.data.util.Mapper
 import com.repzone.database.GeoLocationEntity
 import com.repzone.domain.model.GeoLocationModel
+import com.repzone.domain.model.gps.GpsLocation
 
 class GeoLocationEntityDbMapper : Mapper<GeoLocationEntity, GeoLocationModel> {
     //region Public Method
@@ -41,6 +42,25 @@ class GeoLocationEntityDbMapper : Mapper<GeoLocationEntity, GeoLocationModel> {
             ReverseGeocoded = domain.reverseGeocoded,
             Speed = domain.speed,
             Time = domain.time
+        )
+    }
+
+    fun fromGeoLocationFromDomain(model: GpsLocation): GeoLocationEntity{
+        return GeoLocationEntity(
+            Id = 0,
+            Accuracy = model.accuracy.toDouble(),
+            Altitude = model.altitude,
+            AltitudeAccuracy = model.altitudeAccuracy?.toDouble(),
+            BatteryLevel = model.batteryLevel?.toLong(),
+            DailyOperationType = 0,
+            Description = model.provider,
+            Heading = model.bearing?.toDouble(),
+            Latitude = model.latitude,
+            Longitude = model.longitude,
+            RepresentativeId = model.representativeId,
+            ReverseGeocoded = model.reverseGeocoded,
+            Speed = model.speed?.toDouble() ,
+            Time = model.timestamp
         )
     }
     //endregion

@@ -1,6 +1,9 @@
 package com.repzone.data.repository.imp
 
 import com.repzone.core.util.extensions.now
+import com.repzone.data.mapper.GeoLocationEntityDbMapper
+import com.repzone.database.interfaces.IDatabaseManager
+import com.repzone.database.runtime.insert
 import com.repzone.domain.common.DomainException
 import com.repzone.domain.common.ErrorCode
 import com.repzone.domain.model.gps.GpsLocation
@@ -28,7 +31,7 @@ import com.repzone.domain.common.Result
  * TODO: SQLDelight ile database persistence
  */
 
-class LocationRepositoryImpl: ILocationRepository {
+class LocationRepositoryImpl(private val mapper: GeoLocationEntityDbMapper, private val iDatabaseManager: IDatabaseManager): ILocationRepository {
     //region Field
     // In-memory storage (geçici - database ile değiştirilecek)
     private val locationHistory = mutableListOf<GpsLocation>()
@@ -62,7 +65,8 @@ class LocationRepositoryImpl: ILocationRepository {
                 val toRemove = locationHistory.size - 1000
                 locationHistory.subList(0, toRemove).clear()
             }
-
+            val entity = mapper.fromGeoLocationFromDomain(location)
+            iDatabaseManager.getSqlDriver().insert(entity)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(DomainException.UnknownException(cause = e))

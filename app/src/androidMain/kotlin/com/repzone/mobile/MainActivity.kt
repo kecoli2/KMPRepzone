@@ -32,6 +32,7 @@ import com.repzone.mobile.di.FirebaseMockAndroidModule
 import com.repzone.navigation.AppRouter
 import com.repzone.network.di.NetworkModule
 import com.repzone.network.di.PlatformNetworkModule
+import com.repzone.platform.FirebaseManager
 import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
 import com.repzone.presentation.legacy.ui.visit.VisitActionList
@@ -48,10 +49,12 @@ import kotlin.time.ExperimentalTime
 class MainActivity : AppCompatActivity() {
     private val themeManager: ThemeManager by inject()
     private val presentationConfig: IPresentationConfig by inject()
+    private val firebaseManager: FirebaseManager by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+        firebaseManager.initialize()
         themeManager.initialize(presentationConfig)
         lifecycleScope.launch {
             themeManager.languageChangeEvent.collect { languageCode ->

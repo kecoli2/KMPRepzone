@@ -103,6 +103,8 @@ class GpsTrackingService: Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(NOTIFICATION_ID)
         serviceScope.cancel()
         stopTracking()
 
@@ -182,7 +184,6 @@ class GpsTrackingService: Service() {
             try {
                 updateCompleteNotification(location)
             } catch (e: Exception) {
-                // Fallback: basit güncelleme
                 updateBasicNotification(location)
             }
         }
@@ -221,7 +222,7 @@ class GpsTrackingService: Service() {
             if (stats != null) {
                 append("\n ${getString(Res.string.gps_tracking_location_statics_desc,stats.totalLocations,stats.getFormattedDistance())}\n")
 
-                // ☁️ Sync durumu
+                // Sync durumu
                 if (stats.unsyncedCount > 0) {
 
                     append("${getString(Res.string.gps_tracking_location_sync_statics_desc,stats.unsyncedCount)}\n")
@@ -252,13 +253,13 @@ class GpsTrackingService: Service() {
     }
     private fun getBearingDirection(bearing: Float): String {
         return when {
-            bearing >= 337.5 || bearing < 22.5 -> "Kuzey ↑"
-            bearing >= 22.5 && bearing < 67.5 -> "Kuzeydoğu ↗"
-            bearing >= 67.5 && bearing < 112.5 -> "Doğu →"
-            bearing >= 112.5 && bearing < 157.5 -> "Güneydoğu ↘"
-            bearing >= 157.5 && bearing < 202.5 -> "Güney ↓"
-            bearing >= 202.5 && bearing < 247.5 -> "Güneybatı ↙"
-            bearing >= 247.5 && bearing < 292.5 -> "Batı ←"
+            bearing >= 337.5 || bearing < 22.5 -> "Kuzey"
+            bearing >= 22.5 && bearing < 67.5 -> "Kuzeydoğu"
+            bearing >= 67.5 && bearing < 112.5 -> "Doğu"
+            bearing >= 112.5 && bearing < 157.5 -> "Güneydoğu"
+            bearing >= 157.5 && bearing < 202.5 -> "Güney"
+            bearing >= 202.5 && bearing < 247.5 -> "Güneybatı"
+            bearing >= 247.5 && bearing < 292.5 -> "Batı"
             else -> "Kuzeybatı ↖"
         }
     }
@@ -286,7 +287,8 @@ class GpsTrackingService: Service() {
     }
     private fun stopTracking() {
         if (!isRunning) return
-
+        val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.cancel(NOTIFICATION_ID)
         serviceScope.launch {
             gpsTrackingManager.stop()
             isRunning = false

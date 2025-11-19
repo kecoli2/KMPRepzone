@@ -16,7 +16,11 @@ data class GpsLocation(
     val bearing: Float? = null,
     val altitude: Double? = null,
     val provider: String,
-    val isSynced: Boolean = false
+    val isSynced: Boolean = false,
+    val altitudeAccuracy: Float? = null,
+    val batteryLevel: Int? = null,
+    val representativeId: Long? = null,
+    var reverseGeocoded: String? = null
 ){
     fun isValid(): Boolean {
         return latitude in -90.0..90.0 &&

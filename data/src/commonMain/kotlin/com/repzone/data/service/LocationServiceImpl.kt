@@ -4,6 +4,8 @@ import com.repzone.core.enums.LocationAccuracy
 import com.repzone.core.platform.Logger
 import com.repzone.core.util.PermissionStatus
 import com.repzone.core.util.extensions.now
+import com.repzone.database.interfaces.IDatabaseManager
+import com.repzone.database.runtime.rawExecute
 import com.repzone.domain.common.DomainException
 import com.repzone.domain.common.ErrorCode
 import com.repzone.domain.model.gps.GpsConfig
@@ -21,6 +23,7 @@ import com.repzone.domain.common.businessRuleException
 import com.repzone.domain.common.onError
 import com.repzone.domain.common.onSuccess
 import com.repzone.domain.platform.IPlatformServiceController
+import com.repzone.domain.service.IPlatformGeocoder
 import com.repzone.domain.util.isRecent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -52,7 +55,10 @@ import kotlinx.coroutines.launch
 class LocationServiceImpl(private val platformProvider: IPlatformLocationProvider,
                           private val locationRepository: ILocationRepository,
                           private val serviceController: IPlatformServiceController? = null,
-                          private val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)):
+                          private val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default),
+                          private val iDAtabaseManager: IDatabaseManager,
+                         private val iGeocoder: IPlatformGeocoder
+):
     ILocationService {
     //region Field
     private val _serviceState = MutableStateFlow<ServiceState>(ServiceState.Idle)
@@ -111,7 +117,8 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             isRunning = true
             isPaused = false
             _serviceState.value = ServiceState.Running
-
+            val deleteSql = "DELETE FROM GeoLocationEntity WHERE Time < (strftime('%s', 'now', 'utc', '-2 days') * 1000)"
+            iDAtabaseManager.getSqlDriver().rawExecute(deleteSql)
             Result.Success(Unit)
         } catch (e: Exception) {
             _serviceState.value = ServiceState.Error(DomainException.UnknownException(cause = Exception(e.message ?: "Unknown error")))
@@ -129,6 +136,7 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
 
             // Platform updates'i durdur
             platformProvider.stopLocationUpdates()
+
 
             isRunning = false
             isPaused = false
@@ -178,7 +186,6 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             Result.Error(DomainException.UnknownException(cause = e))
         }
     }
-
     override fun isServiceRunning(): Boolean {
         return isRunning && !isPaused
     }
@@ -213,7 +220,7 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
                 Result.Success(location)
             } else {
                 restartPeriodicUpdates()
-                Result.Error(DomainException.UnknownException(cause = IllegalStateException("Force GPS failed")))
+                locationResult
             }
         } catch (e: Exception) {
             restartPeriodicUpdates()
@@ -247,7 +254,6 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
 
 
     //region Private Method
-
     private fun restartPeriodicUpdates() {
         currentConfig?.let { config ->
             if (isServiceRunning()) {
@@ -255,7 +261,6 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             }
         }
     }
-
     private fun startScheduleMonitoring(config: GpsConfig) {
         coroutineScope.launch {
             while (isRunning && !isPaused) {
@@ -317,7 +322,6 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
                 return
             }
 
-
             // Doğruluk kontrolü
             if (location.accuracy > config.accuracyThreshold) {
                 Logger.d("LOCATION_SERVICE","Location rejected: accuracy too low (${location.accuracy}m > ${config.accuracyThreshold}m)")
@@ -333,6 +337,12 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
                         Logger.d("LOCATION_SERVICE","Location rejected: distance too small (${distance}m < ${config.minDistanceMeters}m)")
                         return
                     }
+                }
+            }
+            if(iGeocoder.isAvailable()){
+                val adress = iGeocoder.getAddress(location.latitude,location.longitude)
+                adress?.let {
+                    location.reverseGeocoded = it.fullAddress
                 }
             }
 
