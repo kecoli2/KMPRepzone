@@ -12,9 +12,7 @@ import kotlin.time.ExperimentalTime
 // SqlDriver Extensions (Ana Kullanım)
 // ========================================
 
-inline fun <reified T : Any> SqlDriver.select(
-    block: SelectBuilder<T>.() -> Unit = {}
-): SelectBuilder<T> {
+inline fun <reified T : Any> SqlDriver.select(block: SelectBuilder<T>.() -> Unit = {}): SelectBuilder<T> {
     val metadata = EntityMetadataRegistry.get<T>()
     return SelectBuilder<T>(metadata, this).apply(block)
 }
@@ -116,9 +114,7 @@ fun SqlDriver.insertOrReplace(entity: Any): Long {
     return insertOrReplaceGenerated(entity)
 }
 
-inline fun <reified T : Any> SqlDriver.delete(
-    block: DeleteBuilder<T>.() -> Unit
-): Int {
+inline fun <reified T : Any> SqlDriver.delete(block: DeleteBuilder<T>.() -> Unit): Int {
     val metadata = EntityMetadataRegistry.get<T>()
     val builder = DeleteBuilder<T>(metadata, this)
     builder.block()
@@ -180,10 +176,7 @@ fun <R> SqlDriver.transaction(block: TransactionScope.() -> R): R {
 // DeleteBuilder
 // ========================================
 
-class DeleteBuilder<T : Any>(
-    private val metadata: EntityMetadata,
-    private val driver: SqlDriver
-) {
+class DeleteBuilder<T : Any>(private val metadata: EntityMetadata, private val driver: SqlDriver) {
     private var whereCondition: Condition = NoCondition
 
     fun where(block: CriteriaBuilder.() -> Unit) {

@@ -12,6 +12,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import com.repzone.domain.common.Result
 import com.repzone.domain.common.onError
+import com.repzone.domain.firebase.IFirebaseRealtimeDatabase
 import com.repzone.domain.model.SyncResult
 import com.repzone.domain.model.gps.GpsLocation
 import com.repzone.domain.util.retryWithBackoff
@@ -40,6 +41,7 @@ import kotlinx.coroutines.withContext
  */
 
 class GpsDataSyncServiceImpl(private val locationRepository: ILocationRepository,
+                             private val iFirebaseRealtimeDatabase: IFirebaseRealtimeDatabase,
                              private val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)):
     IGpsDataSyncService {
     //region Field
@@ -126,11 +128,12 @@ class GpsDataSyncServiceImpl(private val locationRepository: ILocationRepository
                     val batchResult = syncBatch(batch)
 
                     if (batchResult.isSuccess) {
-                        val successCount = batchResult.getOrNull() ?: 0
-                        totalSuccess += successCount
+                        val successList = batchResult.getOrNull()
+                        successList?.let { it ->
+                            totalSuccess += it.successCount
+                        }
 
-                        // Başarılı olanları işaretle
-                        syncedIds.addAll(batch.map { it.id })
+                        syncedIds.addAll(successList?.successfulIds ?: emptyList())
                     } else {
                         totalFailed += batch.size
                     }
@@ -200,35 +203,47 @@ class GpsDataSyncServiceImpl(private val locationRepository: ILocationRepository
     //endregion
 
     //region Private Method
-    private suspend fun syncBatch(locations: List<GpsLocation>): Result<Int> {
-        return retryWithBackoff(times = 3, initialDelayMillis = 1000) {
-            // API'ye gönder
-            //apiClient.sendLocations(locations)
-            // SONRASINDA BURAYA SIGNALR CONNECTION DA GELEBILIR AYRICA BURADA FIREBASE ENTEGRASYONUDA YAPACAGIZ
+    private suspend fun syncBatch(locations: List<GpsLocation>): Result<SyncResult> {
+        val successfulIds = mutableSetOf<String>()
+        val failedIds = mutableSetOf<String>()
 
-            locations.size
-        }
-    }
-
-    suspend fun syncWithRetry(maxRetries: Int = 3): Result<SyncResult> {
-        var lastError: Throwable? = null
-
-        repeat(maxRetries) { attempt ->
-            val result = syncToServer()
-            if (result.isSuccess) {
-                return result
+        repeat(3) { attempt ->
+            // Sadece başarısız olanları tekrar dene
+            val locationsToTry = if (attempt == 0) {
+                locations
+            } else {
+                locations.filter { it.id in failedIds }
             }
-            lastError = result.getOrThrow().error
 
-            // Son denemeden sonra bekleme
-            if (attempt < maxRetries - 1) {
-                delay(2000L * (attempt + 1))
+            if (locationsToTry.isEmpty()) {
+                return@repeat // Hepsi başarılı
+            }
+
+            locationsToTry.forEach { location ->
+                val success = iFirebaseRealtimeDatabase.sendToFirebase(location)
+
+                if (success.isSuccess) {
+                    successfulIds.add(location.id)
+                    failedIds.remove(location.id)
+                } else {
+                    failedIds.add(location.id)
+                }
+            }
+
+            // Başarısız varsa ve son deneme değilse bekle
+            if (failedIds.isNotEmpty() && attempt < 2) {
+                delay(1000L * (attempt + 1)) // Exponential backoff
             }
         }
-        if(lastError != null){
-            return Result.Error(DomainException.UnknownException(cause = lastError) )
-        }
-        return Result.Error(DomainException.UnknownException(cause = Exception("Sync failed after $maxRetries retries")) )
+
+        return Result.Success(SyncResult(
+            totalCount = locations.size,
+            successCount = successfulIds.size,
+            failedCount = failedIds.size,
+            successfulIds = successfulIds.toList(),
+            failedIds = failedIds.toList(),
+            timestamp = now()
+        ))
     }
     //endregion
 }

@@ -1,9 +1,11 @@
 package com.repzone.domain.repository
 
 import com.repzone.domain.model.RouteInformationModel
+import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.util.models.SprintInformation
 
 interface IRouteAppointmentRepository {
    suspend fun getActiveSprintInformation(): SprintInformation?
    suspend fun getRouteInformation(appointmentId: Long): RouteInformationModel?
+   suspend fun getRouteInformationForCustomer(appointmentId: Long): SyncCustomerModel?
 }

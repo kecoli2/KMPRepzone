@@ -12,6 +12,8 @@ import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.util.extensions.jsonToModel
 import com.repzone.core.util.extensions.toJson
 import com.repzone.database.interfaces.IDatabaseManager
+import com.repzone.domain.common.onError
+import com.repzone.domain.manager.gps.IGpsTrackingManager
 import com.repzone.network.api.ITokenApiController
 import com.repzone.network.http.wrapper.ApiException
 import com.repzone.network.http.wrapper.ApiResult
@@ -35,7 +37,8 @@ class LoginScreenViewModel(
     private val tokenApiController: ITokenApiController,
     private val isharedPreferences: IPreferencesManager,
     private val iDatabaseManager: IDatabaseManager,
-    private val iThemeManager: ThemeManager
+    private val iThemeManager: ThemeManager,
+    private val iGpsTrackingManager: IGpsTrackingManager
 ) : BaseViewModel<LoginScreenUiState, LoginScreenViewModel.Event>(LoginScreenUiState()) {
     //region Public Method
     @OptIn(ExperimentalUuidApi::class)
@@ -130,6 +133,24 @@ class LoginScreenViewModel(
                     )
                 }
                 iThemeManager.loadSavedSettings()
+                iGpsTrackingManager.initialize().onError { it ->
+                    updateState { currentState ->
+                        currentState.copy(
+                            uiFrame = UiFrame(domainException = it)
+                        )
+                    }
+                    return
+                }
+                iGpsTrackingManager.start().onError { it ->
+                    updateState { currentState ->
+                        currentState.copy(
+                            uiFrame = UiFrame(domainException = it)
+                        )
+                    }
+
+                    return
+                }
+
                 emitEvent(Event.Login)
             }
             is ApiResult.Error -> {

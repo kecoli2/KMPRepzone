@@ -122,8 +122,7 @@ fun Instant.toDayName(timeZone: TimeZone = TimeZone.currentSystemDefault()): Str
 fun Instant?.toDayNameOrEmpty(timeZone: TimeZone = TimeZone.currentSystemDefault()): String =
     this?.toDayName(timeZone) ?: ""
 
-fun Long.toDateString(pattern: String, timeZone: TimeZone = TimeZone.currentSystemDefault()
-): String {
+fun Long.toDateString(pattern: String, timeZone: TimeZone = TimeZone.currentSystemDefault()): String {
     val instant = Instant.fromEpochMilliseconds(this)
     val local = instant.toLocalDateTime(timeZone)
 
@@ -178,6 +177,24 @@ fun Long.toDateString(pattern: String, timeZone: TimeZone = TimeZone.currentSyst
             append(local.minute.toString().padStart(2, '0')); append(":")
             append(local.second.toString().padStart(2, '0')); append(".")
             append(local.nanosecond.div(1_000_000).toString().padStart(3, '0'))
+        }
+
+        "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'" -> {
+            val utc = instant.toLocalDateTime(TimeZone.UTC)
+            val micros = (instant.nanosecondsOfSecond / 1_000)
+                .toString()
+                .padStart(6, '0')
+
+            buildString {
+                append(utc.year); append("-")
+                append(utc.month.number.toString().padStart(2, '0')); append("-")
+                append(utc.day.toString().padStart(2, '0')); append("T")
+                append(utc.hour.toString().padStart(2, '0')); append(":")
+                append(utc.minute.toString().padStart(2, '0')); append(":")
+                append(utc.second.toString().padStart(2, '0')); append(".")
+                append(micros)
+                append("Z")
+            }
         }
 
         else -> local.toString()

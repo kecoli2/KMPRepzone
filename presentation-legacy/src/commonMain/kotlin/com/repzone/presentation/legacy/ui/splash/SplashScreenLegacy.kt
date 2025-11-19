@@ -49,6 +49,7 @@ import com.repzone.core.ui.ui.rememberPermissionManager
 import com.repzone.presentation.legacy.navigation.LocalNavController
 import com.repzone.core.ui.viewmodel.splash.SplashScreenViewModel
 import com.repzone.core.util.extensions.fromResource
+import com.repzone.domain.common.toMessage
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import repzonemobile.core.generated.resources.Res
@@ -157,11 +158,11 @@ fun SplashScreenLegacy(onNavigateToLogin: () -> Unit, onNavigateToMain: () -> Un
             )
         }
 
-        if(state.isGpsServiceStart) {
+        if(state.domainException != null) {
             RepzoneDialog(
-                isOpen = state.isGpsServiceStart,
+                isOpen = state.domainException != null,
                 title = StringResource.ERROR.fromResource(),
-                message = state.domainException?.message ?: StringResource.ERROR.fromResource(),
+                message = state.domainException?.toMessage() ?: "",
                 showNoButton = false,
                 showYesButton = true,
                 yesText = StringResource.TRY_AGAIN.fromResource(),

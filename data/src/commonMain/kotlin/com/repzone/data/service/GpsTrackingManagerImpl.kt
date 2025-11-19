@@ -2,6 +2,7 @@ package com.repzone.data.service
 
 import com.repzone.core.platform.Logger
 import com.repzone.core.util.PermissionStatus
+import com.repzone.core.util.extensions.getLocalDateTime
 import com.repzone.core.util.extensions.now
 import com.repzone.domain.common.DomainException
 import com.repzone.domain.common.ErrorCode
@@ -75,7 +76,7 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
     override suspend fun initialize(): Result<Unit> {
         return try {
             var config = GpsConfig()
-          /*  config = config.copy(
+            config = config.copy(
                 autoSyncOnGpsUpdate = true,
                 batteryOptimizationEnabled = true,
                 enableBackgroundTracking = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.backgroundTracking ?: false,
@@ -86,8 +87,8 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
                 endTimeMinute = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackEndTime?.getLocalDateTime()?.minute ?: 0,
                 activeDays = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackDays ?: emptyList(),
                 serverSyncIntervalMinutes = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackInterval ?: 1,
-            )*/
-
+            )
+/*
             config = config.copy(
                 autoSyncOnGpsUpdate = true,
                 batteryOptimizationEnabled = true,
@@ -95,11 +96,11 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
                 gpsIntervalMinutes = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackInterval ?: 1,
                 startTimeHour = 9,
                 startTimeMinute = 10,
-                endTimeHour = 10,
+                endTimeHour = 0,
                 endTimeMinute = 35,
                 activeDays = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackDays ?: emptyList(),
                 serverSyncIntervalMinutes = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackInterval ?: 1,
-            )
+            )*/
 
             // Konfigürasyonu validate et
             val validationResult = config.validate()
@@ -300,13 +301,13 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
             iLocationRepository.observeLocationUpdates()
                 .collect { newLocation ->
                     // Yeni GPS alındığında hemen sync yap
-                    println("Auto sync: New GPS received, triggering sync...")
+                    Logger.d("Auto sync: New GPS received, triggering sync...")
                     dataSyncService.syncToServer()
                         .onSuccess { result ->
-                            println("Auto sync completed: ${result.successCount} locations synced")
+                            Logger.d(("Auto sync completed: ${result.successCount} locations synced"))
                         }
                         .onError { error ->
-                            println("Auto sync failed: ${error.message}")
+                            Logger.d(("Auto sync failed: ${error.message}"))
                         }
                 }
         }

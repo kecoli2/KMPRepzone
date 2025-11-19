@@ -32,8 +32,10 @@ fun UiText.fromResource(): String {
  * StringResource'u direkt kullan - argümansız
  */
 @Composable
-fun StringResource.fromResource(): String =
-    stringResource(this.toComposeResource())
+fun StringResource.fromResource(): String {
+    return stringResource(this.toComposeResource())
+}
+
 
 /**
  * StringResource'u direkt kullan - 1 argüman

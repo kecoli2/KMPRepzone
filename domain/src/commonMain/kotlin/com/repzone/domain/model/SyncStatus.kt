@@ -23,6 +23,8 @@ data class SyncResult(
     val successCount: Int,
     val failedCount: Int,
     val timestamp: Long,
+    val successfulIds: List<String> = emptyList(),
+    val failedIds: List<String> = emptyList(),
     val error: DomainException? = null
 ) {
     val isSuccessful: Boolean get() = failedCount == 0

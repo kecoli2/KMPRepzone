@@ -276,7 +276,9 @@ class AndroidLocationProvider(private val context: Context,
                 verticalAccuracyMeters
             } else null,
             batteryLevel = iDeviceInfoService.getBatteryLevel(),
-            representativeId = iUserSession.getActiveSession()?.userId?.toLong()
+            representativeId = iUserSession.getActiveSession()?.userId?.toLong(),
+            organizationId = iUserSession.getActiveSession()?.identity?.organizationId ?: 0,
+            tenantId = iUserSession.getActiveSession()?.identity?.tenantId ?: 0
         )
     }
     //endregion

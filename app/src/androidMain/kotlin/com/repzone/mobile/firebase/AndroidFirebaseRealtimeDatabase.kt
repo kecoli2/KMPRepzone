@@ -3,18 +3,31 @@ package com.repzone.mobile.firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
+import com.repzone.core.enums.DailyOperationType
 import com.repzone.domain.firebase.IFirebaseRealtimeDatabase
 import com.repzone.core.platform.Logger
+import com.repzone.core.util.extensions.now
+import com.repzone.core.util.extensions.toDateString
+import com.repzone.data.mapper.DailyOperationLogInformationEntityDbMapper
+import com.repzone.database.DailyOperationLogInformationEntity
+import com.repzone.database.interfaces.IDatabaseManager
+import com.repzone.database.runtime.maxByOrNull
+import com.repzone.database.runtime.select
 import com.repzone.domain.common.DomainException
 import kotlinx.coroutines.tasks.await
 import com.repzone.domain.common.Result
-import com.repzone.domain.model.DailyOperationLogInformationModel
 import com.repzone.domain.model.gps.GpsLocation
-import com.repzone.domain.service.ILocationService
+import com.repzone.domain.repository.IRouteAppointmentRepository
+import com.repzone.domain.repository.IVisitRepository
 
 
-class AndroidFirebaseRealtimeDatabase : IFirebaseRealtimeDatabase {
+class AndroidFirebaseRealtimeDatabase(
+    private val iDatabaseManager: IDatabaseManager,
+    private val mapper: DailyOperationLogInformationEntityDbMapper,
+    private val iVisitRepository: IVisitRepository,
+    private val iRouteAppointmentRepository: IRouteAppointmentRepository) : IFirebaseRealtimeDatabase {
 
     //region Field
     private val database = FirebaseDatabase.getInstance()
@@ -60,9 +73,9 @@ class AndroidFirebaseRealtimeDatabase : IFirebaseRealtimeDatabase {
         }
     }
 
-    override suspend fun sendToFirebase(data: DailyOperationLogInformationModel): Result<Boolean> {
+    override suspend fun sendToFirebase(data: GpsLocation): Result<Boolean> {
         //val location  = iLocationManager.getLastKnownLocation()
-        return Result.Success(true)
+        return connectLocationDatabaseAndSendLocation(data)
     }
 
     override fun listenToData(path: String, onDataChange: (Map<String, Any>?) -> Unit) {
@@ -93,9 +106,175 @@ class AndroidFirebaseRealtimeDatabase : IFirebaseRealtimeDatabase {
     //endregion Public Method
 
     //region Private Method
-    private fun connectLocationDatabaseAndSendLocation(model: GpsLocation): Boolean {
+    private suspend fun connectLocationDatabaseAndSendLocation(model: GpsLocation): Result<Boolean> {
+        try {
 
-        return true
+            val secondaryDatabase = database
+            val locationRootRef = secondaryDatabase.reference
+
+            // Location node path
+            val today = now().toDateString("yyyy-MM-dd")
+            val locNode = locationRootRef
+                .child(today)
+                .child(model.organizationId.toString())
+                .child("locations")
+
+            val newLoc = locNode.push()
+
+            // Last location node
+            val lastLocNode = locationRootRef
+                .child(today)
+                .child("live")
+                .child(model.tenantId.toString())
+
+            val lastLoc = lastLocNode.child(model.representativeId.toString())
+
+            val map = hashMapOf<String, Any?>(
+                "Latitude" to model.latitude,
+                "Longitude" to model.longitude,
+                "Time" to now().toDateString("yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"),
+                "Accuracy" to model.accuracy,
+                "Altitude" to model.altitude,
+                "AltitudeAccuracy" to model.altitudeAccuracy,
+                "Heading" to model.bearing,
+                "Speed" to model.speed,
+                "RepresentativeId" to model.representativeId,
+                "DailyOperationType" to model.dailyOperationType,
+                "Description" to model.description,
+                "ReverseGeocoded" to model.reverseGeocoded,
+                "BatteryLevel" to model.batteryLevel,
+                "TenantId" to model.tenantId,
+                "TimeStamp" to ServerValue.TIMESTAMP
+            )
+
+            val lastOperation = iDatabaseManager.getSqlDriver().select<DailyOperationLogInformationEntity> {
+                where {
+                    criteria("Date", now())
+                }
+
+                orderBy {
+                    order("Date")
+                }
+            }.firstOrNull()?.let {
+                mapper.toDomain(it)
+            }
+
+            if (model.dailyOperationType == DailyOperationType.ERROR) {
+                when (lastOperation?.type) {
+                    DailyOperationType.DAYOFF,
+                    DailyOperationType.PAUSE,
+                    DailyOperationType.VISITSTART,
+                    DailyOperationType.LOGOUT -> {
+                        map["DailyOperationType"] = lastOperation.type.ordinal
+                    }
+                    DailyOperationType.CONTINUE -> {
+
+                        val lastOpBeforeBreak = iDatabaseManager.getSqlDriver().maxByOrNull<DailyOperationLogInformationEntity>("Date") {
+                            where {
+                                criteria("Date", now())
+                                criteria("Type",
+                                    notIn = listOf(DailyOperationType.OPERATION.ordinal,
+                                        DailyOperationType.PAUSE.ordinal,
+                                        DailyOperationType.CONTINUE.ordinal))
+                            }
+                        }?.let {
+                            mapper.toDomain(it)
+                        }
+
+
+                        when (lastOpBeforeBreak?.type) {
+                            DailyOperationType.DAYOFF,
+                            DailyOperationType.PAUSE,
+                            DailyOperationType.VISITSTART,
+                            DailyOperationType.LOGOUT -> {
+                                map["DailyOperationType"] = lastOpBeforeBreak.type.ordinal
+                            }
+                            else -> {
+                                map["DailyOperationType"] = DailyOperationType.ERROR.ordinal
+                            }
+                        }
+                    }
+                    else -> {
+                        map["DailyOperationType"] = DailyOperationType.ERROR.ordinal
+                    }
+                }
+            } else if (model.dailyOperationType == DailyOperationType.CONTINUE) {
+                val lastOpBeforeBreak = iDatabaseManager.getSqlDriver().maxByOrNull<DailyOperationLogInformationEntity>("Date") {
+                    where {
+                        criteria("Date", now())
+                        criteria("Type",
+                            notIn = listOf(DailyOperationType.OPERATION.ordinal,
+                                DailyOperationType.PAUSE.ordinal,
+                                DailyOperationType.CONTINUE.ordinal))
+                    }
+                }?.let {
+                    mapper.toDomain(it)
+                }
+
+                when (lastOpBeforeBreak?.type) {
+                    DailyOperationType.DAYOFF,
+                    DailyOperationType.PAUSE,
+                    DailyOperationType.VISITSTART,
+                    DailyOperationType.LOGOUT -> {
+                        map["DailyOperationType"] = lastOpBeforeBreak.type.ordinal
+                    }
+                    else -> {
+                        map["DailyOperationType"] = DailyOperationType.ERROR.ordinal
+                    }
+                }
+            }
+
+            // Visit kontrolü
+
+            val lastOpAboutVisit = iDatabaseManager.getSqlDriver().maxByOrNull<DailyOperationLogInformationEntity>("Date") {
+                where {
+                    criteria("Date", now())
+                    criteria("Type",
+                        In = listOf(DailyOperationType.OPERATION.ordinal,
+                            DailyOperationType.PAUSE.ordinal,
+                            DailyOperationType.CONTINUE.ordinal))
+                }
+            }?.let {
+                mapper.toDomain(it)
+            }
+
+            if (lastOpAboutVisit?.type == DailyOperationType.VISITSTART) {
+                map["DailyOperationType"] = DailyOperationType.VISITSTART.ordinal
+            }
+
+            // VisitStart ise customer bilgilerini ekle
+            if (map["DailyOperationType"] == DailyOperationType.VISITSTART.ordinal) {
+                val activeVisit = iVisitRepository.getActiveVisit()
+                if (activeVisit != null) {
+                    val customer = iRouteAppointmentRepository.getRouteInformationForCustomer(activeVisit.appointmentId)
+                    if (customer != null) {
+                        val desc = map["Description"] as String
+                        map["Description"] = "$desc|${customer.code}|${customer.name}"
+                    }
+                }
+            }
+
+            // Break kontrolü
+            val lastOpAboutBreak = iDatabaseManager.getSqlDriver().maxByOrNull<DailyOperationLogInformationEntity>("Date") {
+                where {
+                    criteria("Date", now())
+                    criteria("Type",
+                        In = listOf(DailyOperationType.PAUSE.ordinal, DailyOperationType.CONTINUE.ordinal))
+                }
+            }?.let {
+                mapper.toDomain(it)
+            }
+
+            if (lastOpAboutBreak?.type == DailyOperationType.PAUSE) {
+                map["DailyOperationType"] = DailyOperationType.PAUSE.ordinal
+            }
+
+            // Firebase'e yaz
+            lastLoc.setValue(map)
+            return Result.Success(true)
+        }catch (e: Exception){
+            return Result.Error(DomainException.UnknownException(cause = e))
+        }
     }
     //endregion Private Method
 }

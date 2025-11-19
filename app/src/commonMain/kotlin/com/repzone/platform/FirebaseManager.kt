@@ -24,18 +24,3 @@ class FirebaseManager(val realtimeDatabase: IFirebaseRealtimeDatabase, val crash
     //region Protected Method
     //endregion
 }
-
-expect class FirebaseFactory() {
-    fun createRealtimeDatabase(): IFirebaseRealtimeDatabase
-    fun createCrashlytics(): IFirebaseCrashlytics
-    fun createMessaging(): IFirebaseMessaging
-}
-
-fun createFirebaseManager(): FirebaseManager {
-    val factory = FirebaseFactory()
-    return FirebaseManager(
-        realtimeDatabase = factory.createRealtimeDatabase(),
-        crashlytics = factory.createCrashlytics(),
-        messaging = factory.createMessaging()
-    )
-}

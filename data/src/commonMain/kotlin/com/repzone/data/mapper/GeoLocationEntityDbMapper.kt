@@ -60,7 +60,7 @@ class GeoLocationEntityDbMapper : Mapper<GeoLocationEntity, GeoLocationModel> {
             RepresentativeId = model.representativeId,
             ReverseGeocoded = model.reverseGeocoded,
             Speed = model.speed?.toDouble() ,
-            Time = model.timestamp
+            Time = model.timestamp,
         )
     }
     //endregion

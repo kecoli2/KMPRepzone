@@ -20,6 +20,7 @@ import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.domain.events.base.IEventBus
 import com.repzone.domain.events.base.events.DomainEvent
 import com.repzone.domain.events.base.subscribeToEvents
+import com.repzone.domain.manager.gps.IGpsTrackingManager
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.IDynamicPageReport
@@ -49,7 +50,8 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                             private val iDatabaseManager: IDatabaseManager,
                             private val iEventBus: IEventBus,
                             private val iUserSession: IUserSession,
-                            private val iDynamicReportRepository: IDynamicPageReport
+                            private val iDynamicReportRepository: IDynamicPageReport,
+                            private val iGpsTrackingManager: IGpsTrackingManager
 ): BaseViewModel<CustomerListScreenUiState, CustomerListViewModel.Event>(CustomerListScreenUiState()) {
     //region Field
     private var searchQuery: String = ""
@@ -117,8 +119,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                 }
 
                 is Event.LogOut -> {
-                    iDatabaseManager.logout()
-                    iPreferencesManager.setActiveUserCode(0)
+                   userLogout()
                 }
 
                 is Event.OnClickCustomerItem -> {
@@ -423,6 +424,12 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                 currentState.copy(uiFrame = currentState.uiFrame.copy(false, null))
             }
         }
+    }
+
+    private suspend fun userLogout(){
+        iDatabaseManager.logout()
+        iPreferencesManager.setActiveUserCode(0)
+        iGpsTrackingManager.stop()
     }
     //endregion
 

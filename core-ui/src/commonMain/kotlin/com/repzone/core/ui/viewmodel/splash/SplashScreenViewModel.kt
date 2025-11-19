@@ -125,10 +125,9 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
     }
 
     private suspend fun registerGpsService() {
-        if(state.value.isGpsServiceStart){
+        if(state.value.domainException != null){
             updateState { currentState ->
                 currentState.copy(
-                    isGpsServiceStart = false,
                     domainException = null
                 )
             }
@@ -141,7 +140,6 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
         }.onError {
             updateState { currentState ->
                 currentState.copy(
-                    isGpsServiceStart = true,
                     domainException = it
                 )
             }

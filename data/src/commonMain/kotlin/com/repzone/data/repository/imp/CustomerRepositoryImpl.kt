@@ -35,6 +35,11 @@ class CustomerRepositoryImpl(private val mapper: CustomerEntityDbMapper,
     override suspend fun pending(): List<SyncCustomerModel> {
         return  iDatabaseManager.getSqlDriver().select<SyncCustomerEntity>{}.toList().map {  mapper.toDomain(it)}
     }
+
+    suspend fun getCustomerBy(appointmentId: Long): SyncCustomerModel? {
+
+        return null
+    }
     //endregion
 
 }

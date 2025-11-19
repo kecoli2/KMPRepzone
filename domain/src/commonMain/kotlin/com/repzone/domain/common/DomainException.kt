@@ -84,3 +84,11 @@ fun businessRuleException(errorCode: ErrorCode, params: Map<String, Any> = empty
 
 fun networkException(errorCode: ErrorCode = ErrorCode.NETWORK_ERROR, cause: Throwable? = null): DomainException.NetworkException =
     DomainException.NetworkException(errorCode, emptyMap(), cause)
+
+fun DomainException.toMessage(): String {
+    if(this.cause != null){
+        return cause?.message ?: "unknow"
+    }
+
+    return this.errorCode.code.fromResource()
+}

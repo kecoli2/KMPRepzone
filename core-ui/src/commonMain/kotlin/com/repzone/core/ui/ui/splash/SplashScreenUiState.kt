@@ -7,7 +7,6 @@ import com.repzone.domain.common.DomainException
 data class SplashScreenUiState(
     val isControllSucces: Boolean = false,
     override val uiFrame: UiFrame = UiFrame(),
-    val isGpsServiceStart: Boolean = false,
     val domainException: DomainException? = null
 ): HasUiFrame {
 

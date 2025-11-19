@@ -1,5 +1,6 @@
 package com.repzone.domain.model.gps
 
+import com.repzone.core.enums.DailyOperationType
 import com.repzone.core.platform.randomUUID
 import com.repzone.domain.util.format
 
@@ -20,7 +21,11 @@ data class GpsLocation(
     val altitudeAccuracy: Float? = null,
     val batteryLevel: Int? = null,
     val representativeId: Long? = null,
-    var reverseGeocoded: String? = null
+    var reverseGeocoded: String? = null,
+    val organizationId: Int,
+    val tenantId: Int,
+    var dailyOperationType: DailyOperationType = DailyOperationType.ERROR,
+    var description: String? = null
 ){
     fun isValid(): Boolean {
         return latitude in -90.0..90.0 &&

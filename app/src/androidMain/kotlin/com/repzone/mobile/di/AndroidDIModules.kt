@@ -1,6 +1,5 @@
 package com.repzone.mobile.di
 
-import android.system.Os.bind
 import com.repzone.core.interfaces.IDeviceInfo
 import com.repzone.core.interfaces.IPreferencesManager
 import com.repzone.domain.firebase.IFirebaseCrashlytics
@@ -10,12 +9,14 @@ import com.repzone.domain.platform.IPlatformLocationProvider
 import com.repzone.domain.platform.IPlatformServiceController
 import com.repzone.domain.platform.providerImpl.AndroidLocationProvider
 import com.repzone.domain.service.IPlatformGeocoder
+import com.repzone.mobile.firebase.AndroidFirebaseCrashlytics
+import com.repzone.mobile.firebase.AndroidFirebaseMessaging
+import com.repzone.mobile.firebase.AndroidFirebaseRealtimeDatabase
 import com.repzone.mobile.impl.AndroidGeocoderImpl
 import com.repzone.mobile.impl.DeviceInfoImpl
 import com.repzone.mobile.managers.pref.AndroidPreferencesManager
 import com.repzone.mobile.managers.pref.AndroidPreferencesManagerPreview
 import com.repzone.mobile.platform.AndroidServiceController
-import com.repzone.platform.FirebaseFactory
 import com.repzone.platform.FirebaseManager
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.singleOf
@@ -34,10 +35,10 @@ val AndroidDIModulePreview = module {
 }
 
 val FirebaseAndroidModule = module {
-    single { FirebaseFactory() }
-    single<IFirebaseRealtimeDatabase> { get<FirebaseFactory>().createRealtimeDatabase() }
-    single<IFirebaseCrashlytics> { get<FirebaseFactory>().createCrashlytics() }
-    single<IFirebaseMessaging> { get<FirebaseFactory>().createMessaging() }
+    singleOf(::AndroidFirebaseRealtimeDatabase) {  bind<IFirebaseRealtimeDatabase>() }
+    singleOf(::AndroidFirebaseCrashlytics) {  bind<IFirebaseCrashlytics>() }
+    singleOf(::AndroidFirebaseMessaging) {  bind<IFirebaseMessaging>() }
+
     singleOf(::FirebaseManager)
 }
 

@@ -808,7 +808,7 @@ class DatabaseTest(private val driver: SqlDriver) {
 
     private fun verify(condition: Boolean, message: String) {
         if (!condition) {
-            throw AssertionError("❌ VERIFICATION FAILED: $message")
+            throw AssertionError("VERIFICATION FAILED: $message")
         }
     }
 
@@ -830,7 +830,7 @@ class DatabaseTest(private val driver: SqlDriver) {
 
     private fun printFailure(e: Exception) {
         println("\n${"=".repeat(70)}")
-        println(" ".repeat(20) + "❌ TEST FAILED ❌")
+        println(" ".repeat(20) + "TEST FAILED")
         println("${"=".repeat(70)}")
         println("Error: ${e.message}")
         println("Type: ${e::class.simpleName}")
@@ -839,6 +839,90 @@ class DatabaseTest(private val driver: SqlDriver) {
         println("${"=".repeat(70)}\n")
     }
 }
+
+fun exampleUsage(driver: SqlDriver) {
+    // maxByOrNull - En pahalı ürün
+    val mostExpensive = driver.maxByOrNull<SyncModuleEntity>("price") {
+        where { criteria("category", equal = "Electronics") }
+    }
+
+    // minByOrNull - En ucuz ürün
+    val cheapest = driver.minByOrNull<SyncModuleEntity>("price") {
+        where { criteria("category", equal = "Electronics") }
+    }
+
+
+    // maxOfOrNull - En yüksek fiyat
+    val maxPrice = driver.maxOfOrNull<SyncModuleEntity, Double>("price") {
+        where { criteria("stock", greaterThan = 0) }
+    }
+    println("Max price: $maxPrice")
+
+    // minOfOrNull - En düşük fiyat
+    val minPrice = driver.minOfOrNull<SyncModuleEntity, Double>("price") {
+        where { criteria("stock", greaterThan = 0) }
+    }
+    println("Min price: $minPrice")
+
+    // sumOf - Toplam değer
+    val totalValue = driver.sumOf<SyncModuleEntity, Double>("price") {
+        where { criteria("category", equal = "Electronics") }
+    }
+    println("Total value: $totalValue")
+
+    // averageOfOrNull - Ortalama fiyat
+    val avgPrice = driver.averageOfOrNull<SyncModuleEntity>("price") {
+        where { criteria("category", equal = "Electronics") }
+    }
+
+    /**
+     * ═══════════════════════════════════════════════════════════════
+     * GENERATED SQL EXAMPLES
+     * ═══════════════════════════════════════════════════════════════
+     */
+
+    /*
+    maxByOrNull:
+    ═══════════════════════════════════════════
+    SELECT id, name, price, category, stock
+    FROM Product
+    WHERE category = 'Electronics'
+    ORDER BY price DESC
+    LIMIT 1
+    ═══════════════════════════════════════════
+
+    minByOrNull:
+    ═══════════════════════════════════════════
+    SELECT id, name, price, category, stock
+    FROM Product
+    WHERE category = 'Electronics'
+    ORDER BY price ASC
+    LIMIT 1
+    ═══════════════════════════════════════════
+
+    maxOfOrNull:
+    ═══════════════════════════════════════════
+    SELECT MAX(price) FROM Product WHERE stock > 0
+    ═══════════════════════════════════════════
+
+    minOfOrNull:
+    ═══════════════════════════════════════════
+    SELECT MIN(price) FROM Product WHERE stock > 0
+    ═══════════════════════════════════════════
+
+    sumOf:
+    ═══════════════════════════════════════════
+    SELECT SUM(price) FROM Product WHERE category = 'Electronics'
+    ═══════════════════════════════════════════
+
+    averageOfOrNull:
+    ═══════════════════════════════════════════
+    SELECT AVG(price) FROM Product WHERE category = 'Electronics'
+    ═══════════════════════════════════════════
+    */
+
+}
+
 
 /**
  * USAGE:
