@@ -230,7 +230,7 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
     override suspend fun getLastKnownLocation(): GpsLocation? {
         // Önce repository'den dene
         val repoLocation = locationRepository.getLastLocation()
-        if (repoLocation != null && repoLocation.isRecent(maxAgeMillis = 30_000)) {
+        if (repoLocation != null) {
             return repoLocation
         }
 

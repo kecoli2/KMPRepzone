@@ -80,7 +80,7 @@ class LocationRepositoryImpl(private val mapper: GeoLocationEntityDbMapper, priv
     }
 
     override suspend fun getLastLocation(): GpsLocation? {
-        return locationHistory.lastOrNull()
+        return getBestRecentLocation()
     }
 
     override suspend fun getLocationHistory(limit: Int): List<GpsLocation> {
@@ -170,9 +170,26 @@ class LocationRepositoryImpl(private val mapper: GeoLocationEntityDbMapper, priv
 
     //endregion
 
-    //region Protected Method
-    //endregion
-
     //region Private Method
+    private fun getBestRecentLocation(maxAgeMillis: Long = 30_000): GpsLocation? {
+        val now = now()
+        val lastTime = now - maxAgeMillis
+
+        // Son 30 saniyedeki GPS'leri filtrele
+        val recentLocations = locationHistory.filter { location ->
+            location.timestamp >= lastTime
+        }
+
+        if (recentLocations.isEmpty()) return null
+
+        // En iyi accuracy'ye sahip olanı bul
+        return recentLocations.minByOrNull { location ->
+            val ageSeconds = (now - location.timestamp) / 1000.0
+            val accuracyPenalty = location.accuracy
+            val agePenalty = ageSeconds * 2
+
+            accuracyPenalty + agePenalty
+        }
+    }
     //endregion
 }
