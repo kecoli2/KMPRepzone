@@ -13,6 +13,7 @@ interface ILocationRepository {
     suspend fun getUnsyncedLocations(): List<GpsLocation>
     suspend fun markAsSynced(locationIds: List<String>): Result<Unit>
     suspend fun getTimeSinceLastGps(): Duration
+    suspend fun loadNotSycGpslist(): Result<Unit>
     fun calculateDistance(from: GpsLocation, to: GpsLocation): Double
     fun observeLastLocation(): Flow<GpsLocation?>
     fun observeLocationUpdates(): Flow<GpsLocation>

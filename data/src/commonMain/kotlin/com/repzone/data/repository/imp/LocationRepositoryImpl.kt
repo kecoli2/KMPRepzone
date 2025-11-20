@@ -1,9 +1,13 @@
 package com.repzone.data.repository.imp
 
+import com.repzone.core.enums.SyncStatusType
 import com.repzone.core.util.extensions.now
 import com.repzone.data.mapper.GeoLocationEntityDbMapper
+import com.repzone.database.GeoLocationEntity
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.database.runtime.insert
+import com.repzone.database.runtime.rawExecute
+import com.repzone.database.runtime.select
 import com.repzone.domain.common.DomainException
 import com.repzone.domain.common.ErrorCode
 import com.repzone.domain.model.gps.GpsLocation
@@ -16,6 +20,8 @@ import kotlinx.coroutines.flow.flow
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.milliseconds
 import com.repzone.domain.common.Result
+import com.repzone.domain.model.SyncStatus
+
 /**
  * Location Repository Implementation
  * GPS verilerinin saklanması ve yönetimi
@@ -104,6 +110,13 @@ class LocationRepositoryImpl(private val mapper: GeoLocationEntityDbMapper, priv
                     locationHistory[index] = location.copy(isSynced = true)
                 }
             }
+            val whereCondition = "WHERE GpsGuId IN (${locationIds.joinToString(
+                separator = ",",
+                prefix = "",
+                postfix = ""
+            ) { "'$it'" }})"
+            val sqlString = "UPDATE GeoLocationEntity  SET SyncStatus = ${SyncStatusType.SUCCESS.ordinal} $whereCondition"
+            iDatabaseManager.getSqlDriver().rawExecute(sqlString)
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(DomainException.UnknownException(cause = e))
@@ -117,6 +130,25 @@ class LocationRepositoryImpl(private val mapper: GeoLocationEntityDbMapper, priv
             (currentTime - lastLocation.timestamp).milliseconds
         } else {
             Duration.INFINITE
+        }
+    }
+
+    override suspend fun loadNotSycGpslist(): Result<Unit> {
+        return try {
+            val list = iDatabaseManager.getSqlDriver().select<GeoLocationEntity> {
+                where {
+                    criteria("SyncStatus", In = listOf(SyncStatusType.IDLE, SyncStatusType.FAILED, SyncStatusType.WAITING))
+                }
+            }.toList().map {
+                mapper.fromGeoLocationToDomain(it)
+            }
+
+            val existingIds = this.locationHistory.map { it.id }.toSet()
+            val newItems = list.filter { it.id !in existingIds }
+            this.locationHistory.addAll(newItems)
+            Result.Success(Unit)
+        }catch (ex: Exception){
+            Result.Error(DomainException.UnknownException(cause = ex))
         }
     }
 

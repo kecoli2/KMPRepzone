@@ -17,5 +17,8 @@ data class GeoLocationModel(
   val reverseGeocoded: String?,
   val speed: Double?,
   val time: Long?,
-  val syncStatus: SyncStatusType
+  val syncStatus: SyncStatusType,
+  val gpsGuId: String,
+  val organizationId: Long,
+  val tenantId: Long,
 )

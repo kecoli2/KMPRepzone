@@ -146,6 +146,9 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
             Logger.d("GpsTrackingManager", "Foreground Service başlatılmadı (schedule dışı)")
         }
 
+        //Gönderilmemiş Kayıtları Çek
+        iLocationRepository.loadNotSycGpslist()
+
         // Location service'i başlat
         val serviceResult = locationService.startService(config)
         if (serviceResult.isError) {

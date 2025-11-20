@@ -17,5 +17,8 @@ CREATE TABLE IF NOT EXISTS GeoLocationEntity (
     ReverseGeocoded TEXT,
     Speed REAL,
     Time INTEGER,
-    SyncStatus INTEGER NOT NULL DEFAULT(0)
+    SyncStatus INTEGER NOT NULL DEFAULT(0),
+    GpsGuId Text NOT NULL,
+    OrganizationId INTEGER NOT NULL,
+    TenantId INTEGER NOT NULL
 );
