@@ -1,5 +1,7 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import java.io.FileInputStream
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -91,6 +93,18 @@ kotlin {
 }
 
 android {
+    val keystorePropertiesFile = rootProject.file("keystore.properties")
+    val keystoreProperties = Properties().apply {
+        if (keystorePropertiesFile.exists()) {
+            println("KEYSTORE BULUNDU ${keystorePropertiesFile.path}")
+            load(FileInputStream(keystorePropertiesFile))
+        } else {
+            println("WARNING: keystore.properties not found at ${keystorePropertiesFile.path}")
+        }
+    }
+
+    fun prop(name: String): String? = keystoreProperties.getProperty(name)
+
     namespace = providers.gradleProperty("APP_NAMESPACE_APPLICATION_ID").get()
     compileSdk = libs.versions.android.compileSdk.get().toInt()
 
@@ -101,6 +115,20 @@ android {
         versionCode =  libs.versions.application.version.get().toInt()
         versionName = libs.versions.application.versionname.get()
     }
+
+    signingConfigs {
+        create("keyStore") {
+            val storeFilePath = prop("RELEASE_KEYSTORE_FILE")
+            if (!storeFilePath.isNullOrBlank()) {
+                storeFile = file(storeFilePath)
+                storePassword = prop("RELEASE_KEYSTORE_PASSWORD") ?: ""
+                keyAlias = prop("RELEASE_KEY_ALIAS") ?: ""
+                keyPassword = prop("RELEASE_KEY_PASSWORD") ?: ""
+            } else {
+                println("No RELEASE_KEYSTORE_FILE provided - keyStore signingConfig not fully configured")
+            }
+        }
+    }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
@@ -108,10 +136,11 @@ android {
     }
     buildTypes {
         getByName("debug") {
-
+            signingConfig = signingConfigs.getByName("keyStore")
         }
         getByName("release") {
             isMinifyEnabled = true
+            signingConfig = signingConfigs.getByName("keyStore")
         }
     }
     compileOptions {

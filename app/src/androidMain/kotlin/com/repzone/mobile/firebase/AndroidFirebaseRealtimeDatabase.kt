@@ -1,6 +1,7 @@
 package com.repzone.mobile.firebase
 
 import com.google.firebase.FirebaseApp
+import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.database.DataSnapshot
@@ -33,7 +34,26 @@ class AndroidFirebaseRealtimeDatabase(
     private val iRouteAppointmentRepository: IRouteAppointmentRepository) : IFirebaseRealtimeDatabase {
 
     //region Field
-    private var database = FirebaseDatabase.getInstance()
+
+    val fireBaseAuth: FirebaseAuth by lazy {
+        FirebaseAuth.getInstance(secondApp)
+    }
+
+    val database: FirebaseDatabase by lazy {
+        FirebaseDatabase.getInstance(secondApp)
+    }
+
+    private val secondApp: FirebaseApp by lazy {
+        val options = FirebaseOptions.Builder()
+            .setApplicationId("1:821671896424:android:7a5d65cb727421f4e022dd")
+            .setApiKey("AIzaSyD7SOmkAtTA6XMZb0tRMI9T53nf6kQs9gY")
+            .setDatabaseUrl("https://repzone-199313.firebaseio.com")
+            .setProjectId("repzone-199313")
+            .setStorageBucket("repzone-199313.appspot.com")
+            .build()
+
+        FirebaseApp.initializeApp(FirebaseApp.getInstance().applicationContext, options,"SecondaryApp")
+    }
     private val listeners = mutableMapOf<String, ValueEventListener>()
     //endregion Field
 
@@ -77,7 +97,6 @@ class AndroidFirebaseRealtimeDatabase(
     }
 
     override suspend fun sendToFirebase(data: GpsLocation): Result<Boolean> {
-        //val location  = iLocationManager.getLastKnownLocation()
         return connectLocationDatabaseAndSendLocation(data)
     }
 
@@ -109,28 +128,28 @@ class AndroidFirebaseRealtimeDatabase(
 
     override suspend fun userAuthentication(email: String): Result<Unit> {
         return try {
-            val result = FirebaseAuth.getInstance().signInWithEmailAndPassword(email, "bilgera2018").await()
+            val result = fireBaseAuth.signInWithEmailAndPassword(email, "bilgera2018").await()
             result.user?.let {
                 Result.Success(Unit)
             }
             Result.Success(Unit)
         }catch (e: Exception){
-            Result.Error(DomainException.UnknownException(cause = e))
+            try {
+                val result = fireBaseAuth.createUserWithEmailAndPassword(email, "bilgera2018").await()
+                Result.Success(Unit)
+            }catch (ex: Exception){
+                Result.Error(DomainException.UnknownException(cause = ex))
+            }
         }
-
     }
     //endregion Public Method
 
     //region Private Method
     private suspend fun connectLocationDatabaseAndSendLocation(model: GpsLocation): Result<Boolean> {
         try {
-
-            val secondaryDatabase = database
-            val locationRootRef = secondaryDatabase.reference
-
             // Location node path
             val today = now().toDateString("yyyy-MM-dd")
-            val locNode = locationRootRef
+            val locNode = database.reference
                 .child(today)
                 .child(model.organizationId.toString())
                 .child("locations")
@@ -138,7 +157,7 @@ class AndroidFirebaseRealtimeDatabase(
             val newLoc = locNode.push()
 
             // Last location node
-            val lastLocNode = locationRootRef
+            val lastLocNode = database.reference
                 .child(today)
                 .child("live")
                 .child(model.tenantId.toString())
@@ -288,6 +307,7 @@ class AndroidFirebaseRealtimeDatabase(
             // Firebase'e yaz
             newLoc.setValue(map)
             lastLoc.setValue(map)
+
             return Result.Success(true)
         }catch (e: Exception){
             return Result.Error(DomainException.UnknownException(cause = e))

@@ -13,6 +13,10 @@ class FirebaseManager(val realtimeDatabase: IFirebaseRealtimeDatabase,
         crashlytics.initialize()
         setUser(userId, userName)
         userAuthentication(email)
+
+
+
+
     }
 
     //endregion
