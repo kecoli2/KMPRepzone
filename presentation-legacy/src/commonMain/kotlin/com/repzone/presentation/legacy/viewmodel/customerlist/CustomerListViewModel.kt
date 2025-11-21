@@ -16,6 +16,7 @@ import com.repzone.core.ui.component.floatactionbutton.model.FabAction
 import com.repzone.core.ui.component.floatactionbutton.model.FabMenuItem
 import com.repzone.core.ui.component.floatactionbutton.model.FabMenuItemType
 import com.repzone.core.util.extensions.moveToFirst
+import com.repzone.core.util.extensions.toInstant
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.domain.events.base.IEventBus
 import com.repzone.domain.events.base.events.DomainEvent
@@ -169,9 +170,24 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                             predicate =  { it.customerId == event.customerId },
                             transform = { it.copy(visitId = event.visitId) }
                         )
+                        lst.firstOrNull()?.visitStartDate = event.timestamp.toInstant()
+                        lst.firstOrNull()?.visitFinishDate = null
+
                         currentState.copy(
                             filteredCustomers = lst,
                             representSummary = representRepository.getSummary(currentState.selectedDate, lst))
+                    }
+                }
+                is DomainEvent.VisitStoptEvent -> {
+                    updateState { currentState ->
+                        val item = currentState.filteredCustomers.firstOrNull { model ->
+                            model.visitId == event.visitId
+                            model.appointmentId == event.appointmentId
+                        }
+                        item?.visitFinishDate = event.timestamp.toInstant()
+                        currentState.copy(
+                            filteredCustomers = currentState.filteredCustomers,
+                            representSummary = representRepository.getSummary(currentState.selectedDate, currentState.filteredCustomers))
                     }
                 }
                 else -> null
@@ -213,10 +229,10 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
 
                 // 2. Sıralama uygula
                 filtered = when (sortOption) {
-                    CustomerSortOption.NAME_ASC -> filtered.sortedBy { it.name?.lowercase() }.sortedByDescending { it.visitId != null && it.finishDate == null }
-                    CustomerSortOption.NAME_DESC -> filtered.sortedByDescending { it.name?.lowercase() }.sortedByDescending { it.visitId != null && it.finishDate == null }
-                    CustomerSortOption.DATE_ASC -> filtered.sortedBy { it.date?.toEpochMilliseconds() }.sortedByDescending { it.visitId != null && it.finishDate == null }
-                    CustomerSortOption.DATE_DESC -> filtered.sortedByDescending { it.date?.toEpochMilliseconds() }.sortedByDescending { it.visitId != null && it.finishDate == null }
+                    CustomerSortOption.NAME_ASC -> filtered.sortedBy { it.name?.lowercase() }.sortedByDescending { it.visitId != null && it.visitFinishDate == null }
+                    CustomerSortOption.NAME_DESC -> filtered.sortedByDescending { it.name?.lowercase() }.sortedByDescending { it.visitId != null && it.visitFinishDate == null }
+                    CustomerSortOption.DATE_ASC -> filtered.sortedBy { it.date?.toEpochMilliseconds() }.sortedByDescending { it.visitId != null && it.visitFinishDate == null }
+                    CustomerSortOption.DATE_DESC -> filtered.sortedByDescending { it.date?.toEpochMilliseconds() }.sortedByDescending { it.visitId != null && it.visitFinishDate == null }
                 }
 
                 currentState.copy(

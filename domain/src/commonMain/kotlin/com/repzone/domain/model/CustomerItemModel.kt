@@ -8,7 +8,6 @@ data class CustomerItemModel(
     val customerId: Long,
     val visitId: Long?,
     val iconIndex: Long?,
-    val finishDate: Instant?,
     val appointmentId: Long,
     val date: Instant?,
     val tagRaw: List<String> = emptyList(),
@@ -32,6 +31,12 @@ data class CustomerItemModel(
     val displayOrder: Int? = null,
     val showDisplayOrder: Boolean = false,
     val isECustomer: Boolean = false,
-    val balance : Double = 0.0) {
+    val balance : Double = 0.0,
+    var visitFinishDate: Instant?,
+    var visitStartDate: Instant?) {
     var customerRiskBalance: Double = 0.0
+
+    fun showVisitTimer(): Boolean {
+        return visitStartDate != null && visitFinishDate == null
+    }
 }

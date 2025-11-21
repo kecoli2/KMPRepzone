@@ -67,6 +67,7 @@ class VisitRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
     }
 
     override suspend fun complateVisit(info: VisitReasonInformation?){
+        val visitEndTime = now()
         var visit = iDatabaseManager.getSqlDriver().select<VisitEntity> {
             where {
                 criteria("Finish", isNull = true)
@@ -76,9 +77,9 @@ class VisitRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
             return
         //TODO LOCATION SERVICE DEN SON LOKASYON ALINACAK
 
-        visit = visit.copy(Finish = now())
+        visit = visit.copy(Finish = visitEndTime)
         iDatabaseManager.getSqlDriver().insertOrReplace(visit)
-        eventBus.publish(DomainEvent.VisitStoptEvent(visit.Id))
+        eventBus.publish(DomainEvent.VisitStoptEvent(visit.Id, visit.AppointmentId ,timestamp = visitEndTime))
         //TODO FIREBASE VE MERKEZE LOGLAMALAR BURALARA KONULACAK
     }
     //endregion
@@ -92,12 +93,13 @@ class VisitRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
         var onAtLocation = true
         var distance = 0.0
         val routeInfo = iRouteAppointmentRepository.getRouteInformation(customerItemModel.appointmentId)!!
+        val nowInstant = now().toInstant()
         if(customerItemModel.latitude > 0 && customerItemModel.longitude > 0){
             onAtLocation = false
             distance = 10.0
         }
-        val isItOnRoute = (((routeInfo.start?.compareTo(now().toInstant()) ?: 0) > 0))
-        val isItOneTime = (((routeInfo.start?.compareTo(now().toInstant()) ?: 0) < 0) && ((routeInfo.end?.compareTo(now().toInstant()) ?: 0) > 0))
+        val isItOnRoute = (((routeInfo.start?.compareTo(nowInstant) ?: 0) > 0))
+        val isItOneTime = (((routeInfo.start?.compareTo(nowInstant) ?: 0) < 0) && ((routeInfo.end?.compareTo(nowInstant) ?: 0) > 0))
 
         val visit = VisitModel(
             id = 0,
@@ -114,7 +116,7 @@ class VisitRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
             longitude = 0.0,
             orderIdsRaw = null,
             selectedCustomerOrganizationId = null,
-            start = now().toInstant(),
+            start = nowInstant,
             visitNote = info?.reason ?: "",
             visitType = info?.selectedVisitType?.enumToLong() ?: 0L
         )
@@ -123,7 +125,8 @@ class VisitRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
         eventBus.publish(DomainEvent.VisitStartEvent(
             visitId = visitId,
             customerId = customerItemModel.customerId,
-            appointmentId = customerItemModel.appointmentId
+            appointmentId = customerItemModel.appointmentId,
+            timestamp = nowInstant.toEpochMilliseconds()
         ))
 
         return VisitInformation(

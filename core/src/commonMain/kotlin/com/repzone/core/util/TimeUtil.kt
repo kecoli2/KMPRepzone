@@ -6,6 +6,7 @@ import com.repzone.core.util.extensions.now
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
+import kotlin.time.Duration
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -52,5 +53,17 @@ object TimeUtils {
         val instant = Instant.fromEpochMilliseconds(value)
         val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
         return localDateTime.second
+    }
+
+    fun Duration.toTimerFormat(): String {
+        return toComponents { hours, minutes, seconds, _ ->
+            buildString {
+                append(hours.toString().padStart(2, '0'))
+                append(':')
+                append(minutes.toString().padStart(2, '0'))
+                append(':')
+                append(seconds.toString().padStart(2, '0'))
+            }
+        }
     }
 }

@@ -1,32 +1,32 @@
 CREATE VIEW IF NOT EXISTS CustomerItemViewEntity AS
-SELECT
-    CAST (C.Id AS INTEGER) CustomerId,
-    CAST (V.Id AS INTEGER) VisitId,
-    CAST (C.IconIndex AS INTEGER) IconIndex,
-    CAST (V.Finish AS INTEGER) FinishDate,
-    CAST(RA.Id AS INTEGER) AppointmentId,
-    CAST(RA.StartDate AS INTEGER) Date,
-    CAST(C.Tags AS TEXT) TagRaw,
-    CAST(C.Name AS TEXT) Name,
-    CAST(C.Code AS TEXT) CustomerCode,
-    CAST(C.GroupName AS TEXT ) CustomerGroupName,
-    CAST((A.Street || ' ' || A.District) AS TEXT) Address,
-    CAST(A.Latitude AS REAL) Latitude,
-    CAST(A.Longitude AS REAL) Longitude,
-    CAST(A.AddressType AS INTEGER) AddressType,
-    CAST(C.PhotoPath AS TEXT) ImageUri,
-    CAST(C.ParentId AS INTEGER) ParentCustomerId,
-    CAST(RA.EndDate AS INTEGER) EndDate,
-    CAST(C.Blocked AS INTEGER) CustomerBlocked,
-    CAST(RA.SprintId AS INTEGER) SprintId,
-    CAST (1 AS INTEGER) ShowDisplayClock,
-    CAST(C.IsECustomer AS INTEGER) IsECustomer,
-    C.Balance
-FROM SyncRouteAppointmentEntity RA
-INNER JOIN SyncCustomerEntity C ON RA.CustomerId = C.Id
-INNER JOIN SyncAddressEntity A ON A.CustomerId = C.Id
-LEFT JOIN VisitEntity V ON V.AppointmentId = RA.Id
-WHERE RA.State = 1
-    AND C.State = 1
-    AND C.IsVisible = 1
-    AND A.State = 1;
+ SELECT CAST (C.Id AS INTEGER) CustomerId,
+           CAST (V.Id AS INTEGER) VisitId,
+           CAST (C.IconIndex AS INTEGER) IconIndex,
+           CAST (V.Finish AS INTEGER) VisitFinishDate,
+           CAST (V.Start AS INTEGER) VisitStartDate,
+           CAST (RA.Id AS INTEGER) AppointmentId,
+           CAST (RA.StartDate AS INTEGER) Date,
+           CAST (C.Tags AS TEXT) TagRaw,
+           CAST (C.Name AS TEXT) Name,
+           CAST (C.Code AS TEXT) CustomerCode,
+           CAST (C.GroupName AS TEXT) CustomerGroupName,
+           CAST ( (A.Street || ' ' || A.District) AS TEXT) Address,
+           CAST (A.Latitude AS REAL) Latitude,
+           CAST (A.Longitude AS REAL) Longitude,
+           CAST (A.AddressType AS INTEGER) AddressType,
+           CAST (C.PhotoPath AS TEXT) ImageUri,
+           CAST (C.ParentId AS INTEGER) ParentCustomerId,
+           CAST (RA.EndDate AS INTEGER) EndDate,
+           CAST (C.Blocked AS INTEGER) CustomerBlocked,
+           CAST (RA.SprintId AS INTEGER) SprintId,
+           CAST (1 AS INTEGER) ShowDisplayClock,
+           CAST (C.IsECustomer AS INTEGER) IsECustomer,
+           C.Balance
+      FROM SyncRouteAppointmentEntity RA
+           INNER JOIN SyncCustomerEntity C ON RA.CustomerId = C.Id
+           INNER JOIN SyncAddressEntity A ON A.CustomerId = C.Id
+           LEFT JOIN VisitEntity V ON V.AppointmentId = RA.Id
+     WHERE RA.State = 1 AND
+           C.State = 1 AND
+           C.IsVisible = 1 AND
+           A.State = 1;

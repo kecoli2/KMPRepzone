@@ -18,7 +18,7 @@ class CustomerItemViewEntityDbMapper: Mapper<CustomerItemViewEntity, CustomerIte
             customerId = from.CustomerId,
             visitId = from.VisitId,
             iconIndex = from.IconIndex,
-            finishDate = from.FinishDate?.toInstant(),
+            visitFinishDate = from.VisitFinishDate?.toInstant(),
             appointmentId = from.AppointmentId,
             date = from.Date?.toInstant(),
             tagRaw = from.TagRaw?.split(",") ?: emptyList(),
@@ -35,7 +35,8 @@ class CustomerItemViewEntityDbMapper: Mapper<CustomerItemViewEntity, CustomerIte
             customerBlocked = from.CustomerBlocked?.toBoolean() ?: false,
             sprintId = from.SprintId,
             isECustomer = from.IsECustomer?.toBoolean() ?: false,
-            balance = from.Balance ?: 0.0
+            balance = from.Balance ?: 0.0,
+            visitStartDate = from.VisitStartDate?.toInstant()
         )
     }
 
@@ -44,7 +45,7 @@ class CustomerItemViewEntityDbMapper: Mapper<CustomerItemViewEntity, CustomerIte
             CustomerId = domain.customerId,
             VisitId = domain.visitId,
             IconIndex = domain.iconIndex,
-            FinishDate = domain.finishDate?.toEpochMilliseconds(),
+            VisitFinishDate = domain.visitFinishDate?.toEpochMilliseconds(),
             AppointmentId = domain.appointmentId,
             Date = domain.date?.toEpochMilliseconds(),
             TagRaw = domain.tagRaw.joinToString(","),
@@ -62,7 +63,8 @@ class CustomerItemViewEntityDbMapper: Mapper<CustomerItemViewEntity, CustomerIte
             SprintId = domain.sprintId,
             ShowDisplayClock = domain.showDisplayClock.toLong(),
             IsECustomer = domain.isECustomer.toLong(),
-            Balance = domain.balance
+            Balance = domain.balance,
+            VisitStartDate = domain.visitStartDate?.toEpochMilliseconds(),
         )
 
     }

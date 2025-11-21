@@ -21,6 +21,6 @@ sealed interface DomainEvent {
     ):DomainEvent
 
     data class VisitStartEvent(val visitId: Long, val customerId: Long, val appointmentId: Long, override val timestamp: Long = now()):DomainEvent
-    data class VisitStoptEvent(val visitId: Long, override val timestamp: Long = now()):DomainEvent
+    data class VisitStoptEvent(val visitId: Long, val appointmentId: Long?,override val timestamp: Long = now()):DomainEvent
 
 }
