@@ -29,7 +29,7 @@ class ActiveVisitCheckRule(
 
     //region Public Method
     override suspend fun canExecute(context: PipelineContext): Boolean {
-        val decision = context.getData<DecisionOptionTypeEnum>("decision_customer_blocked_check")
+        val decision = context.getData<DecisionOptionTypeEnum>("decision_customer_blocked_check") ?: DecisionOptionTypeEnum.CONTINUE
         return decision == DecisionOptionTypeEnum.CONTINUE
     }
 

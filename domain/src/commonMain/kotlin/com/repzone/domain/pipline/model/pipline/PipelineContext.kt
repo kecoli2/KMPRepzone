@@ -12,4 +12,8 @@ data class PipelineContext(
     fun putData(key: String, value: Any) {
         data[key] = value
     }
+
+    fun remove(id: String){
+        data.remove(id)
+    }
 }

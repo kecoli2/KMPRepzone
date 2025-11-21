@@ -38,5 +38,6 @@ enum class DecisionOptionTypeEnum{
     YES,
     NO,
     CONTINUE,
-    CANCEL
+    CANCEL,
+    RETRY
 }

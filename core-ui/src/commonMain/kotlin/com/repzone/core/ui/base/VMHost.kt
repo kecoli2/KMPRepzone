@@ -41,8 +41,6 @@ object SmartViewModelStore {
 
         return entry.viewModel as VM
     }
-
-    // Composition active/inactive tracking
     fun markCompositionActive(key: String, depth: Int = 0) {
         activeCompositions.add(key)
         navigationDepth[key] = depth

@@ -46,41 +46,49 @@ class PipelineExecutor(private val eventBus: IEventBus) {
                         continue
                     }
 
-                    val result = rule.execute(context)
+                    var shouldRetry = true
 
-                    when (result) {
-                        is RuleResult.Success -> {
-                            result.data?.forEach { (k, v) ->
-                                context.putData(k, v)
+                    while (shouldRetry){
+                        context.remove("retry_${rule.id}")
+                        val result = rule.execute(context)
+
+                        when (result) {
+                            is RuleResult.Success -> {
+                                result.data?.forEach { (k, v) ->
+                                    context.putData(k, v)
+                                }
+                                shouldRetry = false
                             }
-                        }
 
-                        is RuleResult.AwaitingScreen -> {
-                            waitingRules[rule.id] = WaitingState(
-                                rule = rule,
-                                stage = stage,
-                                context = context
-                            )
+                            is RuleResult.AwaitingScreen -> {
+                                waitingRules[rule.id] = WaitingState(
+                                    rule = rule,
+                                    stage = stage,
+                                    context = context
+                                )
 
-                            suspendCancellableCoroutine<Unit> { continuation ->
-                                waitingRules[rule.id]?.continuation = continuation
+                                suspendCancellableCoroutine<Unit> { continuation ->
+                                    waitingRules[rule.id]?.continuation = continuation
+                                }
+                                shouldRetry = context.getData<Boolean>("retry_${rule.id}") ?: false
                             }
-                        }
 
-                        is RuleResult.AwaitingDecision -> {
-                            waitingRules[rule.id] = WaitingState(
-                                rule = rule,
-                                stage = stage,
-                                context = context
-                            )
+                            is RuleResult.AwaitingDecision -> {
+                                waitingRules[rule.id] = WaitingState(
+                                    rule = rule,
+                                    stage = stage,
+                                    context = context
+                                )
 
-                            suspendCancellableCoroutine<Unit> { continuation ->
-                                waitingRules[rule.id]?.continuation = continuation
+                                suspendCancellableCoroutine<Unit> { continuation ->
+                                    waitingRules[rule.id]?.continuation = continuation
+                                }
+                                shouldRetry = context.getData<Boolean>("retry_${rule.id}") ?: false
                             }
-                        }
 
-                        is RuleResult.Failed -> {
-                            throw Exception(result.message)
+                            is RuleResult.Failed -> {
+                                throw Exception(result.message)
+                            }
                         }
                     }
                 }
@@ -150,7 +158,9 @@ class PipelineExecutor(private val eventBus: IEventBus) {
 
         state.context.putData("screen_${event.screenId}", event.screenData)
 
-        state.continuation?.resume(Unit, null)
+        state.continuation?.resume(Unit){
+            cause, _, _ -> null
+        }
         waitingRules.remove(event.ruleId)
     }
 
@@ -164,18 +174,31 @@ class PipelineExecutor(private val eventBus: IEventBus) {
     private fun handleDecisionMade(event: DecisionEvents.DecisionMade) {
         val state = waitingRules[event.ruleId] ?: return
 
-        state.context.putData("decision_${event.ruleId}", event.selectedOption.id)
+        when (event.selectedOption.id) {
+            DecisionOptionTypeEnum.CANCEL -> {
+                state.continuation?.cancel(
+                    CancellationException("User cancelled: ${event.selectedOption.label}")
+                )
+                waitingRules.remove(event.ruleId)
+                return
+            }
 
-        if (event.selectedOption.id == DecisionOptionTypeEnum.CANCEL) {
-            state.continuation?.cancel(
-                CancellationException("Pipeline cancelled by user: ${event.selectedOption.label}")
-            )
-            waitingRules.remove(event.ruleId)
-            return
+            DecisionOptionTypeEnum.RETRY -> {
+                state.context.putData("retry_${event.ruleId}", true)
+
+                state.continuation?.resume(Unit) { cause, _, _ -> null }
+                waitingRules.remove(event.ruleId)
+                return
+            }
+
+            else -> {
+                state.context.putData("decision_${event.ruleId}", event.selectedOption.id)
+
+                // ✅ Doğru kullanım
+                state.continuation?.resume(Unit){ cause, _, _ -> null }
+                waitingRules.remove(event.ruleId)
+            }
         }
-
-        state.continuation?.resume(Unit, null)
-        waitingRules.remove(event.ruleId)
     }
     //endregion
 }
