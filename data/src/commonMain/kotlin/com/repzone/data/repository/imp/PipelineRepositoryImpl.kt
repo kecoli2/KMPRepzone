@@ -60,14 +60,9 @@ class PipelineRepositoryImpl(private val eventBus: IEventBus,
                 ),
                 isConditional = true,
                 condition = {
-                  val hasActiveVisit =  it.getData<Boolean>("has_active_visit") ?: false
-
-
-                  hasActiveVisit
-
+                    it.getData<Boolean>("has_active_visit") ?: false
                 }
             ),
-
             Stage(
                 id = "start_visit_stage",
                 name = "Ziyaret Başlat",

@@ -7,10 +7,11 @@ import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule
 import com.repzone.domain.pipline.model.pipline.RuleResult
 import com.repzone.domain.pipline.model.pipline.RuleType
+import com.repzone.domain.pipline.rules.util.RuleId
 import com.repzone.domain.repository.IVisitRepository
 
 class StartVisitActionRule(
-    override val id: String = "start_visit",
+    override val id: RuleId = RuleId.START_VISIT,
     override val title: UiText = UiText.dynamic("Ziyaret Başlat"),
     val iVisitRepository: IVisitRepository,
     val customerItemModel: CustomerItemModel,

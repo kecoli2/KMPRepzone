@@ -2,8 +2,6 @@ package com.repzone.domain.pipline.rules.decision
 
 import com.repzone.core.model.StringResource
 import com.repzone.core.model.UiText
-import com.repzone.domain.common.DomainException
-import com.repzone.domain.common.ErrorCode
 import com.repzone.domain.events.base.IEventBus
 import com.repzone.domain.events.base.events.DecisionEvents
 import com.repzone.domain.model.CustomerItemModel
@@ -13,9 +11,10 @@ import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule
 import com.repzone.domain.pipline.model.pipline.RuleResult
 import com.repzone.domain.pipline.model.pipline.RuleType
+import com.repzone.domain.pipline.rules.util.RuleId
 
 class CustomerBlockedDecisionRule(
-    override val id: String = "customer_blocked_check",
+    override val id: RuleId = RuleId.CUSTOMER_BLOCKED_CHECK,
     override val title: UiText = UiText.resource(StringResource.WARNING),
     private val customerItemModel: CustomerItemModel,
     private val eventBus: IEventBus
@@ -27,7 +26,6 @@ class CustomerBlockedDecisionRule(
     //region Public Method
     override suspend fun execute(context: PipelineContext): RuleResult {
         if(customerItemModel.customerBlocked){
-
             val options = listOf(
                 DecisionOption(DecisionOptionTypeEnum.CONTINUE, UiText.resource(StringResource.DIALOGCONTINUE)),
                 DecisionOption(DecisionOptionTypeEnum.CANCEL, UiText.resource(StringResource.BUTTONCANCEL))

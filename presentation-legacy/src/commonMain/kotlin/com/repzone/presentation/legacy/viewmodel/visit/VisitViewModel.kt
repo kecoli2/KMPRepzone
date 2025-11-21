@@ -16,6 +16,7 @@ import com.repzone.domain.manager.visitmanager.IVisitManager
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.pipline.model.DecisionDialogState
 import com.repzone.domain.pipline.model.pipline.DecisionOption
+import com.repzone.domain.pipline.rules.util.RuleId
 import com.repzone.domain.pipline.usecase.ExecuteActionUseCase
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.util.enums.ActionButtonType
@@ -221,7 +222,7 @@ class VisitViewModel(private val iModuleParameters: IMobileModuleParameterReposi
     //region Event
     sealed class Event {
         data class OnActionButton(val actionButton: ActionButtonType) : Event()
-        data class OnDecisionMade(val ruleId: String, val selectedOptions: DecisionOption, val sessionId: String): Event()
+        data class OnDecisionMade(val ruleId: RuleId, val selectedOptions: DecisionOption, val sessionId: String): Event()
     }
     //endregion Event
 }

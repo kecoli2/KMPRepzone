@@ -10,9 +10,10 @@ import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule
 import com.repzone.domain.pipline.model.pipline.RuleResult
 import com.repzone.domain.pipline.model.pipline.RuleType
+import com.repzone.domain.pipline.rules.util.RuleId
 
 class EndVisitDecisionRule(
-    override val id: String = "end_visit_decision",
+    override val id: RuleId = RuleId.END_VISIT_DECISION,
     override val title: UiText = UiText.dynamic("Ziyaret Sonlandır"),
     private val eventBus: IEventBus
 ) : Rule {

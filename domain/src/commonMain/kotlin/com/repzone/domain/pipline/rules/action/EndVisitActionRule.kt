@@ -6,10 +6,16 @@ import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule
 import com.repzone.domain.pipline.model.pipline.RuleResult
 import com.repzone.domain.pipline.model.pipline.RuleType
+import com.repzone.domain.pipline.rules.util.RuleId
 import com.repzone.domain.repository.IVisitRepository
 
+/**
+ * Context E eklenen parametreler
+ * visit_ended -> true
+ * has_active_visit -> false
+ */
 class EndVisitActionRule(
-    override val id: String = "end_visit",
+    override val id: RuleId = RuleId.END_VISIT,
     override val title: UiText = UiText.dynamic("Ziyaret Sonlandır"),
     val iVisitRepository: IVisitRepository
 ) : Rule {
@@ -25,7 +31,7 @@ class EndVisitActionRule(
 
     //region Public Method
     override suspend fun canExecute(context: PipelineContext): Boolean {
-        val decision = context.getData<DecisionOptionTypeEnum>("decision_end_visit_decision")
+        val decision = context.getData<DecisionOptionTypeEnum>("decision_${RuleId.END_VISIT_DECISION}")
         return decision == DecisionOptionTypeEnum.YES
     }
 

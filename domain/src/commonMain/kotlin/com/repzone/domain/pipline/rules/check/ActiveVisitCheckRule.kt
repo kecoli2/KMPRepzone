@@ -7,11 +7,18 @@ import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule
 import com.repzone.domain.pipline.model.pipline.RuleResult
 import com.repzone.domain.pipline.model.pipline.RuleType
+import com.repzone.domain.pipline.rules.util.RuleId
 import com.repzone.domain.repository.IRouteAppointmentRepository
 import com.repzone.domain.repository.IVisitRepository
 
+/**
+ * Context E eklenen parametreler
+ * has_active_visit -> true
+ * active_visit_id -> activeVisit.VisitID
+ * active_customer_name -> activeAppointment.CustomerName
+ */
 class ActiveVisitCheckRule(
-    override val id: String = "active_visit_check",
+    override val id: RuleId = RuleId.ACTIVE_VISIT_CHECK,
     override val title: UiText = UiText.dynamic("Active Visit Check"),
     private val customerItemModel: CustomerItemModel,
     private val iVisitRepository: IVisitRepository,
@@ -29,7 +36,7 @@ class ActiveVisitCheckRule(
 
     //region Public Method
     override suspend fun canExecute(context: PipelineContext): Boolean {
-        val decision = context.getData<DecisionOptionTypeEnum>("decision_customer_blocked_check") ?: DecisionOptionTypeEnum.CONTINUE
+        val decision = context.getData<DecisionOptionTypeEnum>("decision_${RuleId.CUSTOMER_BLOCKED_CHECK}") ?: DecisionOptionTypeEnum.CONTINUE
         return decision == DecisionOptionTypeEnum.CONTINUE
     }
 

@@ -22,6 +22,7 @@ import com.repzone.database.runtime.select
 import com.repzone.domain.common.DomainException
 import kotlinx.coroutines.tasks.await
 import com.repzone.domain.common.Result
+import com.repzone.domain.common.toResult
 import com.repzone.domain.model.gps.GpsLocation
 import com.repzone.domain.repository.IRouteAppointmentRepository
 import com.repzone.domain.repository.IVisitRepository
@@ -32,7 +33,6 @@ class AndroidFirebaseRealtimeDatabase(
     private val mapper: DailyOperationLogInformationEntityDbMapper,
     private val iVisitRepository: IVisitRepository,
     private val iRouteAppointmentRepository: IRouteAppointmentRepository) : IFirebaseRealtimeDatabase {
-
     //region Field
 
     val fireBaseAuth: FirebaseAuth by lazy {
@@ -305,10 +305,15 @@ class AndroidFirebaseRealtimeDatabase(
             }
 
             // Firebase'e yaz
-            newLoc.setValue(map)
-            lastLoc.setValue(map)
-
-            return Result.Success(true)
+            val result =
+                try {
+                    newLoc.setValue(map).await()
+                    lastLoc.setValue(map).await()
+                    true
+                }catch (e: Exception){
+                    false
+                }
+            return Result.Success(result)
         }catch (e: Exception){
             return Result.Error(DomainException.UnknownException(cause = e))
         }

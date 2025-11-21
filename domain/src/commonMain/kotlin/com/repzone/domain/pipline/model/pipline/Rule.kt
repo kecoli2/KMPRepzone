@@ -1,9 +1,10 @@
 package com.repzone.domain.pipline.model.pipline
 
 import com.repzone.core.model.UiText
+import com.repzone.domain.pipline.rules.util.RuleId
 
 interface Rule {
-    val id: String
+    val id: RuleId
     val title: UiText
     val type: RuleType
 

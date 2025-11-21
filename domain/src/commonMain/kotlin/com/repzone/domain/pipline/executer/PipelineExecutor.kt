@@ -10,6 +10,7 @@ import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule
 import com.repzone.domain.pipline.model.pipline.RuleResult
 import com.repzone.domain.pipline.model.pipline.Stage
+import com.repzone.domain.pipline.rules.util.RuleId
 import kotlinx.coroutines.CancellableContinuation
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -22,7 +23,7 @@ import kotlin.coroutines.cancellation.CancellationException
 class PipelineExecutor(private val eventBus: IEventBus) {
     //region Field
     private var activeSessionId: String? = null
-    private val waitingRules = mutableMapOf<String, WaitingState>()
+    private val waitingRules = mutableMapOf<RuleId, WaitingState>()
     private var eventListenerJob: Job? = null
     //endregion
 
@@ -67,7 +68,7 @@ class PipelineExecutor(private val eventBus: IEventBus) {
                                     context = context
                                 )
 
-                                suspendCancellableCoroutine<Unit> { continuation ->
+                                suspendCancellableCoroutine { continuation ->
                                     waitingRules[rule.id]?.continuation = continuation
                                 }
                                 shouldRetry = context.getData<Boolean>("retry_${rule.id}") ?: false
@@ -193,8 +194,6 @@ class PipelineExecutor(private val eventBus: IEventBus) {
 
             else -> {
                 state.context.putData("decision_${event.ruleId}", event.selectedOption.id)
-
-                // ✅ Doğru kullanım
                 state.continuation?.resume(Unit){ cause, _, _ -> null }
                 waitingRules.remove(event.ruleId)
             }

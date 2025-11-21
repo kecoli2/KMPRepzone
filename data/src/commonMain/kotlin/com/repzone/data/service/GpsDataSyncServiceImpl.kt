@@ -1,6 +1,5 @@
 package com.repzone.data.service
 
-import com.repzone.core.platform.Logger
 import com.repzone.core.util.extensions.now
 import com.repzone.domain.common.DomainException
 import com.repzone.domain.model.SyncStatus
@@ -11,11 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.MutableStateFlow
 import com.repzone.domain.common.Result
-import com.repzone.domain.common.onError
 import com.repzone.domain.firebase.IFirebaseRealtimeDatabase
 import com.repzone.domain.model.SyncResult
 import com.repzone.domain.model.gps.GpsLocation
-import com.repzone.domain.util.retryWithBackoff
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow

@@ -2,18 +2,19 @@ package com.repzone.domain.events.base.events
 
 import com.repzone.core.util.extensions.now
 import com.repzone.domain.pipline.model.Screen
+import com.repzone.domain.pipline.rules.util.RuleId
 
 sealed class ScreenEvents: DomainEvent {
 
     data class ScreenRequired(
-        val ruleId: String,
+        val ruleId: RuleId,
         val screen: Screen,
         val sessionId: String,
         override val timestamp: Long = now()
     ) : ScreenEvents()
 
     data class ScreenCompleted(
-        val ruleId: String,
+        val ruleId: RuleId,
         val screenId: String,
         val screenData: Map<String, Any>,
         val sessionId: String,
@@ -21,7 +22,7 @@ sealed class ScreenEvents: DomainEvent {
     ) : ScreenEvents()
 
     data class ScreenCancelled(
-        val ruleId: String,
+        val ruleId: RuleId,
         val sessionId: String,
         override val timestamp: Long = now()
     ) : ScreenEvents()

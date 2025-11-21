@@ -8,9 +8,10 @@ import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule
 import com.repzone.domain.pipline.model.pipline.RuleResult
 import com.repzone.domain.pipline.model.pipline.RuleType
+import com.repzone.domain.pipline.rules.util.RuleId
 
 class ScreenRule(
-    override val id: String,
+    override val id: RuleId,
     override val title: UiText,
     val screen: Screen,
     val eventBus: IEventBus,
