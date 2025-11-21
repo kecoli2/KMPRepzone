@@ -16,18 +16,12 @@ import com.repzone.domain.pipline.model.pipline.RuleType
 
 class CustomerBlockedDecisionRule(
     override val id: String = "customer_blocked_check",
-    override val title: UiText = UiText.dynamic("CustomerBlockedKontrol"),
+    override val title: UiText = UiText.resource(StringResource.WARNING),
     private val customerItemModel: CustomerItemModel,
     private val eventBus: IEventBus
 ) : Rule {
     //region Field
     override val type: RuleType = RuleType.DECISION
-    //endregion
-
-    //region Properties
-    //endregion
-
-    //region Constructor
     //endregion
 
     //region Public Method
@@ -51,9 +45,6 @@ class CustomerBlockedDecisionRule(
         }
         return RuleResult.Success(this)
     }
-    //endregion
-
-    //region Protected Method
     //endregion
 
     //region Private Method

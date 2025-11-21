@@ -35,7 +35,7 @@ class EndVisitDecisionRule(
 
         val options = listOf(
             DecisionOption(DecisionOptionTypeEnum.YES, UiText.resource(StringResource.YES_TERMINATE)),
-            DecisionOption(DecisionOptionTypeEnum.NO, UiText.resource(StringResource.NO))
+            DecisionOption(DecisionOptionTypeEnum.CANCEL, UiText.resource(StringResource.NO))
         )
 
         eventBus.publish(
