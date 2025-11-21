@@ -2,6 +2,7 @@ package com.repzone.domain.pipline.rules.check
 
 import com.repzone.core.model.UiText
 import com.repzone.domain.model.CustomerItemModel
+import com.repzone.domain.pipline.model.pipline.DecisionOptionTypeEnum
 import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule
 import com.repzone.domain.pipline.model.pipline.RuleResult
@@ -27,6 +28,11 @@ class ActiveVisitCheckRule(
     //endregion
 
     //region Public Method
+    override suspend fun canExecute(context: PipelineContext): Boolean {
+        val decision = context.getData<DecisionOptionTypeEnum>("decision_customer_blocked_check")
+        return decision == DecisionOptionTypeEnum.CONTINUE
+    }
+
     override suspend fun execute(context: PipelineContext): RuleResult {
         val activeVisit = iVisitRepository.getActiveVisit()
         if(activeVisit == null){

@@ -1,6 +1,7 @@
 package com.repzone.domain.pipline.rules.action
 
 import com.repzone.core.model.UiText
+import com.repzone.domain.pipline.model.pipline.DecisionOptionTypeEnum
 import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule
 import com.repzone.domain.pipline.model.pipline.RuleResult
@@ -24,8 +25,8 @@ class EndVisitActionRule(
 
     //region Public Method
     override suspend fun canExecute(context: PipelineContext): Boolean {
-        val decision = context.getData<String>("decision_end_visit_decision")
-        return decision == "yes"
+        val decision = context.getData<DecisionOptionTypeEnum>("decision_end_visit_decision")
+        return decision == DecisionOptionTypeEnum.YES
     }
 
     override suspend fun execute(context: PipelineContext): RuleResult {

@@ -30,6 +30,13 @@ sealed class RuleResult {
 }
 
 data class DecisionOption(
-    val id: String,
+    val id: DecisionOptionTypeEnum,
     val label: UiText
 )
+
+enum class DecisionOptionTypeEnum{
+    YES,
+    NO,
+    CONTINUE,
+    CANCEL
+}

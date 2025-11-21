@@ -8,6 +8,7 @@ import com.repzone.domain.pipline.model.pipline.Stage
 import com.repzone.domain.pipline.rules.action.EndVisitActionRule
 import com.repzone.domain.pipline.rules.action.StartVisitActionRule
 import com.repzone.domain.pipline.rules.check.ActiveVisitCheckRule
+import com.repzone.domain.pipline.rules.decision.CustomerBlockedDecisionRule
 import com.repzone.domain.pipline.rules.decision.EndVisitDecisionRule
 import com.repzone.domain.repository.IPipelineRepository
 import com.repzone.domain.repository.IRouteAppointmentRepository
@@ -41,10 +42,14 @@ class PipelineRepositoryImpl(private val eventBus: IEventBus,
                 id = "check_stage",
                 name = "Kontroller",
                 rules = listOf(
+                    CustomerBlockedDecisionRule(
+                        customerItemModel = customerItemModel,
+                        eventBus = eventBus
+                    ),
                     ActiveVisitCheckRule(customerItemModel = customerItemModel,
                         iVisitRepository = iVisitRepository,
                         iRouteAppointmentRepository = iRouteAppointmentRepository)
-                )
+                ),
             ),
             Stage(
                 id = "end_visit_stage",
@@ -54,7 +59,13 @@ class PipelineRepositoryImpl(private val eventBus: IEventBus,
                     EndVisitActionRule(iVisitRepository = iVisitRepository)
                 ),
                 isConditional = true,
-                condition = { it.getData<Boolean>("has_active_visit") ?: false }
+                condition = {
+                  val hasActiveVisit =  it.getData<Boolean>("has_active_visit") ?: false
+
+
+                  hasActiveVisit
+
+                }
             ),
 
             Stage(

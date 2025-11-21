@@ -8,6 +8,7 @@ import com.repzone.domain.events.base.IEventBus
 import com.repzone.domain.events.base.events.DecisionEvents
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.pipline.model.pipline.DecisionOption
+import com.repzone.domain.pipline.model.pipline.DecisionOptionTypeEnum
 import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule
 import com.repzone.domain.pipline.model.pipline.RuleResult
@@ -34,8 +35,8 @@ class CustomerBlockedDecisionRule(
         if(customerItemModel.customerBlocked){
 
             val options = listOf(
-                DecisionOption("continue", UiText.resource(StringResource.DIALOGCONTINUE)),
-                DecisionOption("cancel", UiText.resource(StringResource.BUTTONCANCEL))
+                DecisionOption(DecisionOptionTypeEnum.CONTINUE, UiText.resource(StringResource.DIALOGCONTINUE)),
+                DecisionOption(DecisionOptionTypeEnum.CANCEL, UiText.resource(StringResource.BUTTONCANCEL))
             )
 
             eventBus.publish(DecisionEvents.DecisionRequired(

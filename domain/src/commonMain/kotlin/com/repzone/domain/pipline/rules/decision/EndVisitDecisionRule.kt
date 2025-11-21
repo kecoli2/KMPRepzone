@@ -5,6 +5,7 @@ import com.repzone.core.model.UiText
 import com.repzone.domain.events.base.IEventBus
 import com.repzone.domain.events.base.events.DecisionEvents
 import com.repzone.domain.pipline.model.pipline.DecisionOption
+import com.repzone.domain.pipline.model.pipline.DecisionOptionTypeEnum
 import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule
 import com.repzone.domain.pipline.model.pipline.RuleResult
@@ -33,8 +34,8 @@ class EndVisitDecisionRule(
         val customerName = context.getData<String>("active_customer_name") ?: ""
 
         val options = listOf(
-            DecisionOption("yes", UiText.resource(StringResource.YES_TERMINATE)),
-            DecisionOption("no", UiText.resource(StringResource.NO))
+            DecisionOption(DecisionOptionTypeEnum.YES, UiText.resource(StringResource.YES_TERMINATE)),
+            DecisionOption(DecisionOptionTypeEnum.NO, UiText.resource(StringResource.NO))
         )
 
         eventBus.publish(

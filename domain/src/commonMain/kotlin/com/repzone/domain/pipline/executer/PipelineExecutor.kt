@@ -4,6 +4,7 @@ import com.repzone.domain.events.base.IEventBus
 import com.repzone.domain.events.base.events.DecisionEvents
 import com.repzone.domain.events.base.events.PipelineEvents
 import com.repzone.domain.events.base.events.ScreenEvents
+import com.repzone.domain.pipline.model.pipline.DecisionOptionTypeEnum
 import com.repzone.domain.pipline.model.pipline.Pipeline
 import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule
@@ -164,6 +165,14 @@ class PipelineExecutor(private val eventBus: IEventBus) {
         val state = waitingRules[event.ruleId] ?: return
 
         state.context.putData("decision_${event.ruleId}", event.selectedOption.id)
+
+        if (event.selectedOption.id == DecisionOptionTypeEnum.CANCEL) {
+            state.continuation?.cancel(
+                CancellationException("Pipeline cancelled by user: ${event.selectedOption.label}")
+            )
+            waitingRules.remove(event.ruleId)
+            return
+        }
 
         state.continuation?.resume(Unit, null)
         waitingRules.remove(event.ruleId)
