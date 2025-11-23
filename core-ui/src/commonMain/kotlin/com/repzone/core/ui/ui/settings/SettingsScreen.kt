@@ -20,12 +20,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.repzone.core.enums.ThemeMode
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.WindowWidthSizeClass
 import com.repzone.core.ui.manager.theme.common.ColorSchemeVariant
 import com.repzone.core.ui.platform.HandleBackPress
 import kotlinx.coroutines.flow.callbackFlow
+import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.stringResource
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.*
@@ -39,6 +41,7 @@ fun SettingsScreen(onBackClick: () -> Unit = {}) {
     val responsiveState by themeManager.responsiveState.collectAsState()
     val colorSchemes = themeManager.getAvailableColorSchemes()
     val currentColorScheme = themeManager.getCurrentColorScheme()
+    val scope = rememberCoroutineScope()
 
     // Dialog states
     var showLanguageDialog by remember { mutableStateOf(false) }
@@ -223,7 +226,10 @@ fun SettingsScreen(onBackClick: () -> Unit = {}) {
     if (showLanguageDialog) {
         LanguageSelectionDialog(
             currentLanguage = currentLanguage,
-            onLanguageSelected = { themeManager.setLanguage(it) },
+            onLanguageSelected = {
+                scope.launch {
+                    themeManager.setLanguage(it)
+                } },
             onDismiss = { showLanguageDialog = false }
         )
     }

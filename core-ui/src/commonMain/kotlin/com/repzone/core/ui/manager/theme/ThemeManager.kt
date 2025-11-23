@@ -140,12 +140,10 @@ class ThemeManager(private val iUserSession: IUserSession? = null) {
         )
     }
 
-    fun setLanguage(languageCode: String) {
+    suspend fun setLanguage(languageCode: String) {
         _currentLanguage.value = languageCode
-        managerScope.launch {
-            iUserSession?.saveLanguage(languageCode)
-            _languageChangeEvent.emit(languageCode)
-        }
+        iUserSession?.saveLanguage(languageCode)
+        _languageChangeEvent.emit(languageCode)
     }
 
     fun getCurrentLanguage(): String {
