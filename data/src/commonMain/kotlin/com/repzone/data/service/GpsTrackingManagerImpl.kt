@@ -1,5 +1,6 @@
 package com.repzone.data.service
 
+import com.repzone.core.enums.GpsStatus
 import com.repzone.core.platform.Logger
 import com.repzone.core.util.PermissionStatus
 import com.repzone.core.util.extensions.getLocalDateTime
@@ -16,6 +17,7 @@ import com.repzone.domain.common.Result
 import com.repzone.domain.common.businessRuleException
 import com.repzone.domain.common.onError
 import com.repzone.domain.common.onSuccess
+import com.repzone.domain.manager.gps.IPlatformGpsEnabler
 import com.repzone.domain.model.SyncResult
 import com.repzone.domain.model.SyncStatus
 import com.repzone.domain.model.gps.GpsLocation
@@ -265,7 +267,6 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
     override suspend fun requestPermissions(): PermissionStatus {
         return platformProvider.requestPermissions()
     }
-
     private fun calculateTotalDistance(locations: List<GpsLocation>): Double {
         if (locations.size < 2) return 0.0
 
@@ -289,6 +290,10 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
             timeSinceLastGps = timeSinceLastGps,
             unsyncedCount = iLocationRepository.getUnsyncedLocations().size
         )
+    }
+
+    override fun observeGpsStatus(): Flow<GpsStatus> {
+        return locationService.observeGpsStatus()
     }
 
     suspend fun cleanupOldData(daysToKeep: Int = 7): Result<Int> {

@@ -58,6 +58,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".ui.GpsEnableActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:exported="false" />
+
         <service
             android:name="androidx.appcompat.app.AppLocalesMetadataHolderService"
             android:enabled="false"

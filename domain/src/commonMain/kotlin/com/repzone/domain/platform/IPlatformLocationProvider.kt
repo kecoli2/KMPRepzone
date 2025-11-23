@@ -64,6 +64,10 @@ expect interface IPlatformLocationProvider {
      */
     fun setLocationAccuracy(priority: LocationAccuracy)
     fun setConfig(config: GpsConfig)
+
+    suspend fun requestEnableLocation(): Boolean
+    suspend fun startGpsStatusMonitoring(onGpsStatusChanged: (Boolean) -> Unit)
+    fun stopGpsStatusMonitoring()
 }
 
 expect interface IPlatformServiceController {

@@ -2,6 +2,7 @@
 
 package com.repzone.mobile
 
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.compose.setContent
@@ -26,6 +27,7 @@ import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.data.di.RepositoryModulePreview
 import com.repzone.database.di.DatabaseAndroidPreviewModule
 import com.repzone.database.di.DatabaseModulePreview
+import com.repzone.domain.platform.providerImpl.AndroidGpsEnabler
 import com.repzone.domain.util.models.VisitActionItem
 import com.repzone.mobile.di.AndroidDIModulePreview
 import com.repzone.mobile.di.FirebaseMockAndroidModule
@@ -80,6 +82,11 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         themeManager.onDestroy()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        AndroidGpsEnabler.handleActivityResult(requestCode, resultCode)
     }
 }
 

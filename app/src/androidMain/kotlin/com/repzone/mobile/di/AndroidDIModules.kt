@@ -6,10 +6,14 @@ import com.repzone.core.interfaces.IPreferencesManager
 import com.repzone.domain.firebase.IFirebaseCrashlytics
 import com.repzone.domain.firebase.IFirebaseMessaging
 import com.repzone.domain.firebase.IFirebaseRealtimeDatabase
+import com.repzone.domain.manager.gps.IPlatformGpsEnabler
 import com.repzone.domain.platform.IPlatformLocationProvider
 import com.repzone.domain.platform.IPlatformServiceController
+import com.repzone.domain.platform.providerImpl.AndroidGpsEnabler
 import com.repzone.domain.platform.providerImpl.AndroidLocationProvider
 import com.repzone.domain.service.IPlatformGeocoder
+import com.repzone.domain.util.IPlatformNotificationHelper
+import com.repzone.domain.util.notification.AndroidNotificationHelper
 import com.repzone.mobile.firebase.AndroidFirebaseCrashlytics
 import com.repzone.mobile.firebase.AndroidFirebaseMessaging
 import com.repzone.mobile.firebase.AndroidFirebaseRealtimeDatabase
@@ -29,6 +33,8 @@ val AndroidDIModule = module {
     singleOf(::AndroidServiceController) { bind<IPlatformServiceController>() }
     singleOf(::DeviceInfoImpl) {bind<IDeviceInfo>()}
     singleOf(::AndroidGeocoderImpl) { bind<IPlatformGeocoder>() }
+    singleOf(::AndroidNotificationHelper) { bind<IPlatformNotificationHelper>() }
+    singleOf(::AndroidGpsEnabler){ bind<IPlatformGpsEnabler>()}
 }
 
 val AndroidDIModulePreview = module {
@@ -39,7 +45,6 @@ val FirebaseAndroidModule = module {
     singleOf(::AndroidFirebaseRealtimeDatabase) {  bind<IFirebaseRealtimeDatabase>() }
     singleOf(::AndroidFirebaseCrashlytics) {  bind<IFirebaseCrashlytics>() }
     singleOf(::AndroidFirebaseMessaging) {  bind<IFirebaseMessaging>() }
-
     singleOf(::FirebaseManager) {bind<IFirebaseManager>()}
 }
 

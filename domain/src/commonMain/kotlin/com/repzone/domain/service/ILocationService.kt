@@ -1,5 +1,6 @@
 package com.repzone.domain.service
 
+import com.repzone.core.enums.GpsStatus
 import com.repzone.domain.model.gps.GpsConfig
 import com.repzone.domain.model.gps.GpsLocation
 import com.repzone.domain.model.gps.ServiceState
@@ -20,4 +21,6 @@ interface ILocationService {
     suspend fun getLastKnownLocation(): GpsLocation?
     fun observeLocationUpdates(): Flow<GpsLocation>
     fun observeServiceState(): Flow<ServiceState>
+    fun observeGpsStatus(): Flow<GpsStatus>
+    suspend fun requestEnableGps(): Boolean
 }

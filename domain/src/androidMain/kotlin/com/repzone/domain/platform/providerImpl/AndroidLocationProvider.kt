@@ -15,6 +15,7 @@ import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
 import com.repzone.core.enums.LocationAccuracy
 import com.repzone.core.interfaces.IDeviceInfo
@@ -43,6 +44,8 @@ class AndroidLocationProvider(private val context: Context,
     private var periodicLocationCallback: LocationCallback? = null
     private var externalLocationCallback: ((GpsLocation) -> Unit)? = null
     private var isPeriodicUpdatesRunning = false
+    private var gpsStatusReceiver: android.content.BroadcastReceiver? = null
+    private var isGpsReceiverRegistered = false
     //endregion
 
     //region Properties
@@ -251,12 +254,125 @@ class AndroidLocationProvider(private val context: Context,
     override fun setLocationAccuracy(priority: LocationAccuracy) {
         currentAccuracy = priority
     }
-    //endregion
 
-    //region Protected Method
-    //endregion
+    override suspend fun requestEnableLocation(): Boolean {
+        return suspendCancellableCoroutine { continuation ->
+            try {
+                val locationRequest = LocationRequest.Builder(
+                    Priority.PRIORITY_HIGH_ACCURACY,
+                    10000L
+                ).build()
+
+                val builder = LocationSettingsRequest.Builder()
+                    .addLocationRequest(locationRequest)
+                    .setAlwaysShow(true)
+
+                val settingsClient = LocationServices.getSettingsClient(context)
+                val task = settingsClient.checkLocationSettings(builder.build())
+
+                task.addOnSuccessListener {
+                    // GPS zaten açık
+                    Logger.d("AndroidLocationProvider: GPS already enabled")
+                    if (continuation.isActive) {
+                        continuation.resume(true)
+                    }
+                }
+
+                task.addOnFailureListener { exception ->
+                    if (exception is com.google.android.gms.common.api.ResolvableApiException) {
+
+                        if (continuation.isActive) {
+                            continuation.resume(false)
+                        }
+                    } else {
+                        if (continuation.isActive) {
+                            continuation.resume(false)
+                        }
+                    }
+                }
+
+                continuation.invokeOnCancellation {
+                    Logger.d("AndroidLocationProvider: requestEnableLocation cancelled")
+                }
+
+            } catch (e: Exception) {
+                Logger.d("AndroidLocationProvider: Error requesting GPS - ${e.message}")
+                if (continuation.isActive) {
+                    continuation.resume(false)
+                }
+            }
+        }
+    }
+
+    override fun stopGpsStatusMonitoring() {
+        if (!isGpsReceiverRegistered || gpsStatusReceiver == null) {
+            return
+        }
+
+        try {
+            context.unregisterReceiver(gpsStatusReceiver)
+            isGpsReceiverRegistered = false
+            gpsStatusReceiver = null
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+    //endregion Public Method
 
     //region Private Method
+
+    override suspend fun startGpsStatusMonitoring(onGpsStatusChanged: (Boolean) -> Unit) {
+        if (isGpsReceiverRegistered) {
+            Logger.d("AndroidLocationProvider: GPS receiver reg edildi")
+            return
+        }
+
+        gpsStatusReceiver = object : android.content.BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: android.content.Intent?) {
+                if (intent?.action == android.location.LocationManager.PROVIDERS_CHANGED_ACTION) {
+                    val locationManager = context?.getSystemService(Context.LOCATION_SERVICE)
+                            as? android.location.LocationManager
+
+                    val isGpsEnabled = locationManager?.isProviderEnabled(
+                        android.location.LocationManager.GPS_PROVIDER
+                    ) ?: false
+
+                    val isNetworkEnabled = locationManager?.isProviderEnabled(
+                        android.location.LocationManager.NETWORK_PROVIDER
+                    ) ?: false
+
+                    val isLocationEnabled = isGpsEnabled || isNetworkEnabled
+
+                    Logger.d("AndroidLocationProvider: GPS=$isGpsEnabled, Network=$isNetworkEnabled")
+
+                    // Callback'i çağır
+                    onGpsStatusChanged(isLocationEnabled)
+                }
+            }
+        }
+
+        val filter = android.content.IntentFilter(
+            android.location.LocationManager.PROVIDERS_CHANGED_ACTION
+        )
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                context.registerReceiver(
+                    gpsStatusReceiver,
+                    filter,
+                    Context.RECEIVER_NOT_EXPORTED  // Android 13+
+                )
+            } else {
+                context.registerReceiver(gpsStatusReceiver, filter)
+            }
+
+            isGpsReceiverRegistered = true
+
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
     private fun hasLocationPermission(): Boolean {
         return checkPermissions() == PermissionStatus.Granted
     }

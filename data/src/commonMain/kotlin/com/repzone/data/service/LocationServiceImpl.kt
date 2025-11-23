@@ -1,5 +1,6 @@
 package com.repzone.data.service
 
+import com.repzone.core.enums.GpsStatus
 import com.repzone.core.enums.LocationAccuracy
 import com.repzone.core.platform.Logger
 import com.repzone.core.util.PermissionStatus
@@ -22,9 +23,10 @@ import com.repzone.domain.common.Result
 import com.repzone.domain.common.businessRuleException
 import com.repzone.domain.common.onError
 import com.repzone.domain.common.onSuccess
+import com.repzone.domain.manager.gps.IPlatformGpsEnabler
 import com.repzone.domain.platform.IPlatformServiceController
 import com.repzone.domain.service.IPlatformGeocoder
-import com.repzone.domain.util.isRecent
+import com.repzone.domain.util.IPlatformNotificationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
@@ -55,9 +57,11 @@ import kotlinx.coroutines.launch
 class LocationServiceImpl(private val platformProvider: IPlatformLocationProvider,
                           private val locationRepository: ILocationRepository,
                           private val serviceController: IPlatformServiceController? = null,
-                          private val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default),
                           private val iDAtabaseManager: IDatabaseManager,
-                         private val iGeocoder: IPlatformGeocoder
+                          private val iGeocoder: IPlatformGeocoder,
+                          private val notificationHelper: IPlatformNotificationHelper,
+                          private val gpsEnabler: IPlatformGpsEnabler,
+                          private val coroutineScope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 ):
     ILocationService {
     //region Field
@@ -70,6 +74,7 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
     private var lastProcessedTime: Long = 0
     private val debouncePeriod = 3000L // 3 saniye
     private var lastProcessedLocationId: String? = null
+    private val _gpsStatus = MutableStateFlow<GpsStatus>(GpsStatus.DISABLED)
     //endregion
 
     //region Properties
@@ -114,6 +119,12 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             // Schedule monitoring başlat (her zaman - service start/stop kontrolü için)
             startScheduleMonitoring(config)
 
+            startGpsMonitoring()
+            if (!platformProvider.isLocationEnabled()) {
+                Logger.d("LocationService:️ GPS kapalı! Bildirim gösteriliyor...")
+                notificationHelper.showGpsDisabledNotification()
+            }
+
             isRunning = true
             isPaused = false
             _serviceState.value = ServiceState.Running
@@ -136,6 +147,8 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
 
             // Platform updates'i durdur
             platformProvider.stopLocationUpdates()
+            platformProvider.stopGpsStatusMonitoring()
+            notificationHelper.dismissAllTrackingNotifications()
 
             isRunning = false
             isPaused = false
@@ -249,10 +262,90 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
     override fun observeServiceState(): Flow<ServiceState> {
         return _serviceState.asStateFlow()
     }
+
+    override fun observeGpsStatus(): Flow<GpsStatus> {
+        return _gpsStatus.asStateFlow()
+    }
+
+    override suspend fun requestEnableGps(): Boolean {
+        TODO("Not yet implemented")
+    }
     //endregion
 
 
     //region Private Method
+
+    private suspend fun startGpsMonitoring() {
+        updateGpsStatus()
+
+        platformProvider.startGpsStatusMonitoring { isEnabled ->
+            coroutineScope.launch {
+                if (isEnabled) {
+                    // GPS açıldı
+                    notificationHelper.dismissGpsDisabledNotification()
+                } else {
+                    // GPS kapatıldı
+                    notificationHelper.showGpsDisabledNotification()
+
+                    tryEnableGpsAutomatically()
+                }
+
+                updateGpsStatus()
+            }
+        }
+
+        coroutineScope.launch {
+            var lastGpsState = platformProvider.isLocationEnabled()
+            while (isRunning && !isPaused) {
+                delay(2 * 60 * 1000L) // 2 dakika
+
+                val currentGpsState = platformProvider.isLocationEnabled()
+                if (lastGpsState && !currentGpsState) {
+                    notificationHelper.showGpsDisabledNotification()
+                }
+                if (!lastGpsState && currentGpsState) {
+                    notificationHelper.dismissGpsDisabledNotification()
+                    tryEnableGpsAutomatically()
+                }
+                updateGpsStatus()
+                lastGpsState = currentGpsState
+            }
+        }
+    }
+
+    private fun tryEnableGpsAutomatically() {
+        coroutineScope.launch {
+            var success = false
+            while (!success){
+                try {
+                    success = gpsEnabler.requestEnableGps()
+                    if (success) {
+                        Logger.d("LocationService","GPS otomatik açıldı!")
+                        notificationHelper.dismissGpsDisabledNotification()
+                        updateGpsStatus()
+                    } else {
+                        Logger.d("LocationService","Kullanıcı GPS açmayı reddetti")
+                    }
+                } catch (e: Exception) {
+                    Logger.d("LocationService","GPS açma hatası: ${e.message}")
+                    e.printStackTrace()
+                }
+            }
+
+        }
+    }
+
+    private fun updateGpsStatus() {
+        val isGpsEnabled = platformProvider.isLocationEnabled()
+
+        _gpsStatus.value = when {
+            isGpsEnabled -> GpsStatus.ENABLED
+            else -> GpsStatus.NO_LOCATION
+        }
+
+        Logger.d("LocationService: GPS Status = ${_gpsStatus.value}")
+    }
+
     private fun restartPeriodicUpdates() {
         currentConfig?.let { config ->
             if (isServiceRunning()) {

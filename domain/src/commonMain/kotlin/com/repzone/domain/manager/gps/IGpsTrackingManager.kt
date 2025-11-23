@@ -1,5 +1,6 @@
 package com.repzone.domain.manager.gps
 
+import com.repzone.core.enums.GpsStatus
 import com.repzone.core.util.PermissionStatus
 import com.repzone.domain.model.gps.GpsConfig
 import com.repzone.domain.model.gps.GpsLocation
@@ -32,6 +33,6 @@ interface IGpsTrackingManager {
     fun observeSyncStatus(): Flow<SyncStatus>
     suspend fun checkPermissions(): PermissionStatus
     suspend fun requestPermissions(): PermissionStatus
-
     suspend fun getStatistics(): TrackingStatistics?
+    fun observeGpsStatus(): Flow<GpsStatus>
 }

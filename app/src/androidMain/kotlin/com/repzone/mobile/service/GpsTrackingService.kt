@@ -11,7 +11,6 @@ import android.content.Intent
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
-import com.repzone.core.util.extensions.fromResource
 import com.repzone.domain.common.onError
 import com.repzone.domain.common.onSuccess
 import com.repzone.domain.manager.gps.IGpsTrackingManager
@@ -26,7 +25,6 @@ import org.jetbrains.compose.resources.getString
 import org.koin.android.ext.android.inject
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.*
-import kotlin.time.Clock
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -343,7 +341,7 @@ class GpsTrackingService: Service() {
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
-        // ⭐ YENİ: Pause action
+        // Pause action
         val pauseIntent = Intent(this, GpsTrackingService::class.java).apply {
             action = ACTION_PAUSE
         }
