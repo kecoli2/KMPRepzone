@@ -1,38 +1,38 @@
-package com.repzone.domain.util
+package com.repzone.domain.util.notification
 
 interface IPlatformNotificationHelper {
     /**
      * GPS kapalı bildirimi göster
      */
-    fun showGpsDisabledNotification()
+    suspend fun showGpsDisabledNotification()
 
     /**
      * GPS kapalı bildirimini kaldır
      */
-    fun dismissGpsDisabledNotification()
+    suspend fun dismissGpsDisabledNotification()
 
     /**
      * Schedule başlangıç bildirimi
      */
-    fun showScheduleStartingNotification(minutesUntilStart: Int)
+    suspend fun showScheduleStartingNotification(minutesUntilStart: Int)
 
     /**
      * Schedule bitiş bildirimi
      */
-    fun showScheduleEndingNotification(minutesUntilEnd: Int)
+    suspend fun showScheduleEndingNotification(minutesUntilEnd: Int)
 
     /**
      * Batarya düşük bildirimi
      */
-    fun showBatteryLowNotification(batteryLevel: Int, newInterval: Int)
+    suspend fun showBatteryLowNotification(batteryLevel: Int, newInterval: Int)
 
     /**
      * Network yok - sync bekliyor bildirimi
      */
-    fun showSyncPendingNotification(pendingCount: Int)
+    suspend fun showSyncPendingNotification(pendingCount: Int)
 
     /**
      * Tüm tracking bildirimlerini kaldır (GPS kapalı hariç)
      */
-    fun dismissAllTrackingNotifications()
+    suspend fun dismissAllTrackingNotifications()
 }

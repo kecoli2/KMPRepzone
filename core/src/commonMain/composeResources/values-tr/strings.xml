@@ -916,6 +916,7 @@
     <string name="error_out_of_working_hours">Şu an çalışma saatleri dışında. Bir sonraki çalışma: %1$d dakika sonra.</string>
     <string name="error_already_running_gps">Gps servisleri çalışıyor</string>
     <string name="try_again">Tekrar dene</string>
+
     <string name="error_gps_timeout">Gps alımı zaman aşımına uğradı</string>
     <string name="error_gps_not_active">Gps Modulü kapalı sistem gps verisi alamaz...</string>
     <string name="gps_tracking_active">Gps Takibi Aktif</string>
@@ -925,7 +926,6 @@
     <string name="error_gps_tracking">Gps Takibi Hatası</string>
     <string name="gps_tracking_pause">Gps Takibi Duraklatıldı</string>
     <string name="gps_tracking_pause_information">Geçici olarak durduruldu</string>
-
     <string name="gps_tracking_resume">Gps Takibi Devam Ediyor</string>
 
 
@@ -938,5 +938,34 @@
     <string name="gps_tracking_location_syncall_desc">Tüm gps verileri gönderildi...</string>
     <string name="gps_tracking_location_dataall_desc">Veri toplanıyor...</string>
     <string name="gps_tracking_location_scheduler_end_desc">Takip bitişi: %1$s: %2$s</string>
+
+    <!-- Kanal -->
+    <string name="notification_channel_name">GPS Takip Bildirimleri</string>
+    <string name="notification_channel_description">GPS takip uyarıları ve bildirimleri</string>
+
+    <!-- GPS kapalı -->
+    <string name="notification_gps_disabled_title">GPS Kapalı</string>
+    <string name="notification_gps_disabled_text">GPS tracking için konum servislerini açmalısınız</string>
+    <string name="notification_gps_disabled_bigtext">GPS tracking çalışabilmesi için cihazınızın konum servislerini (GPS) açmalısınız. Ayarlara gitmek için tıklayın.</string>
+    <string name="action_open_settings">Ayarları Aç</string>
+    <string name="enable_location_services_message">Konum servislerini açmanız gerekmektedir</string>
+
+    <!-- Program başlangıcı / bitişi -->
+    <string name="notification_schedule_starting_title">GPS Tracking Başlayacak</string>
+    <string name="notification_schedule_starting_text">%1$d dakika sonra GPS tracking başlayacak</string>
+
+    <string name="notification_schedule_ending_title">GPS Tracking Duracak</string>
+    <string name="notification_schedule_ending_text">%1$d dakika sonra GPS tracking duracak</string>
+
+    <!-- Batarya düşük -->
+    <string name="notification_battery_low_title">Batarya Düşük</string>
+    <string name="notification_battery_low_text">Batarya %1$d - GPS aralığı %2$d dakikaya çıkarıldı</string>
+    <string name="notification_battery_low_bigtext">Batarya seviyeniz düşük (%1$d). Batarya tasarrufu için GPS tracking aralığı %2$d dakikaya çıkarıldı.</string>
+
+    <!-- Senkronizasyon bekliyor -->
+    <string name="notification_sync_pending_title">Senkronizasyon Bekliyor</string>
+    <string name="notification_sync_pending_text">%1$d konum senkronize edilmeyi bekliyor</string>
+    <string name="notification_sync_pending_bigtext">%1$d konum senkronize edilmeyi bekliyor. WiFi'ye bağlandığınızda otomatik olarak gönderilecek.</string>
+
 
 </resources>

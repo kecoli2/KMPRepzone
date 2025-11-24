@@ -5,8 +5,11 @@ import android.content.Context
 import android.content.Intent
 import android.location.LocationManager
 import com.repzone.core.platform.Logger
-import com.repzone.domain.util.IPlatformNotificationHelper
+import com.repzone.domain.util.notification.IPlatformNotificationHelper
 import com.repzone.mobile.ui.GpsEnableActivity
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.jvm.java
@@ -26,6 +29,7 @@ class GpsStatusReceiver: BroadcastReceiver(), KoinComponent {
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == LocationManager.PROVIDERS_CHANGED_ACTION) {
             context?.let { ctx ->
+                val pendingResult = goAsync()
                 val locationManager = ctx.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
                 val isGpsEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
@@ -33,29 +37,28 @@ class GpsStatusReceiver: BroadcastReceiver(), KoinComponent {
 
                 Logger.d("GpsStatusReceiver: GPS=$isGpsEnabled, Network=$isNetworkEnabled")
 
-                when {
-                    // GPS ve Network ikisi de kapalı → KRITIK
-                    !isGpsEnabled && !isNetworkEnabled -> {
-                        println("GpsStatusReceiver:KRITIK - Tüm konum servisleri kapalı")
-                        notificationHelper.showGpsDisabledNotification()
+                CoroutineScope(Dispatchers.IO).launch {
+                    when {
+                        // GPS ve Network ikisi de kapalı → KRITIK
+                        !isGpsEnabled && !isNetworkEnabled -> {
+                            notificationHelper.showGpsDisabledNotification()
 
-                        // Otomatik aç dialog'unu göster
-                        showEnableLocationDialog(ctx)
-                    }
+                            // Otomatik aç dialog'unu göster
+                            showEnableLocationDialog(ctx)
+                        }
 
-                    // Sadece GPS kapalı
-                    !isGpsEnabled -> {
-                        println("GpsStatusReceiver: GPS kapalı")
-                        notificationHelper.showGpsDisabledNotification()
+                        // Sadece GPS kapalı
+                        !isGpsEnabled -> {
+                            notificationHelper.showGpsDisabledNotification()
 
-                        // Otomatik aç dialog'unu göster
-                        showEnableLocationDialog(ctx)
-                    }
+                            // Otomatik aç dialog'unu göster
+                            showEnableLocationDialog(ctx)
+                        }
 
-                    // GPS açık
-                    isGpsEnabled -> {
-                        println("GpsStatusReceiver: GPS açık!")
-                        notificationHelper.dismissGpsDisabledNotification()
+                        // GPS açık
+                        isGpsEnabled -> {
+                            notificationHelper.dismissGpsDisabledNotification()
+                        }
                     }
                 }
             }

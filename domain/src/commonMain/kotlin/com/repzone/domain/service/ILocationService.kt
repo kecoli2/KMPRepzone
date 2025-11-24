@@ -22,5 +22,4 @@ interface ILocationService {
     fun observeLocationUpdates(): Flow<GpsLocation>
     fun observeServiceState(): Flow<ServiceState>
     fun observeGpsStatus(): Flow<GpsStatus>
-    suspend fun requestEnableGps(): Boolean
 }

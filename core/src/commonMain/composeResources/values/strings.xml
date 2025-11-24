@@ -933,4 +933,33 @@
     <string name="gps_tracking_location_dataall_desc">Collecting data...</string>
     <string name="gps_tracking_location_scheduler_end_desc">Tracking end: %1$s: %2$s</string>
 
+    <!-- Channel -->
+    <string name="notification_channel_name">GPS Tracking Alerts</string>
+    <string name="notification_channel_description">GPS tracking alerts and notifications</string>
+
+    <!-- GPS disabled -->
+    <string name="notification_gps_disabled_title">GPS Disabled</string>
+    <string name="notification_gps_disabled_text">Please enable location services for GPS tracking</string>
+    <string name="notification_gps_disabled_bigtext">To allow GPS tracking your device's location services (GPS) must be turned on. Tap to open settings.</string>
+    <string name="action_open_settings">Open Settings</string>
+    <string name="enable_location_services_message">You need to enable location services</string>
+
+    <!-- Schedule start / end -->
+    <string name="notification_schedule_starting_title">GPS Tracking Will Start</string>
+    <string name="notification_schedule_starting_text">GPS tracking will start in %1$d minutes</string>
+
+    <string name="notification_schedule_ending_title">GPS Tracking Will Stop</string>
+    <string name="notification_schedule_ending_text">GPS tracking will stop in %1$d minutes</string>
+
+    <!-- Battery low -->
+    <string name="notification_battery_low_title">Battery Low</string>
+    <string name="notification_battery_low_text">Battery %1$d — GPS interval raised to %2$d minutes</string>
+    <string name="notification_battery_low_bigtext">Your battery level is low (%1$d). To save battery, GPS tracking interval was raised to %2$d minutes.</string>
+
+    <!-- Sync pending -->
+    <string name="notification_sync_pending_title">Sync Pending</string>
+    <string name="notification_sync_pending_text">%1$d locations are pending sync</string>
+    <string name="notification_sync_pending_bigtext">%1$d locations are pending sync. They will be sent automatically when connected to Wi-Fi.</string>
+
+
 </resources>

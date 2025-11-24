@@ -12,8 +12,8 @@ import com.repzone.domain.platform.IPlatformServiceController
 import com.repzone.domain.platform.providerImpl.AndroidGpsEnabler
 import com.repzone.domain.platform.providerImpl.AndroidLocationProvider
 import com.repzone.domain.service.IPlatformGeocoder
-import com.repzone.domain.util.IPlatformNotificationHelper
-import com.repzone.domain.util.notification.AndroidNotificationHelper
+import com.repzone.domain.util.notification.IPlatformNotificationHelper
+import com.repzone.mobile.util.notification.AndroidNotificationHelper
 import com.repzone.mobile.firebase.AndroidFirebaseCrashlytics
 import com.repzone.mobile.firebase.AndroidFirebaseMessaging
 import com.repzone.mobile.firebase.AndroidFirebaseRealtimeDatabase

@@ -23,7 +23,6 @@ actual interface IPlatformLocationProvider {
     actual fun isLocationEnabled(): Boolean
     actual fun setLocationAccuracy(priority: LocationAccuracy)
     actual fun setConfig(config: GpsConfig)
-    actual suspend fun requestEnableLocation(): Boolean
     actual suspend fun startGpsStatusMonitoring(onGpsStatusChanged: (Boolean) -> Unit)
     actual fun stopGpsStatusMonitoring()
 }

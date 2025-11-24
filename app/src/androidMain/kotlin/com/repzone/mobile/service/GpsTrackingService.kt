@@ -8,9 +8,11 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
+import com.repzone.core.enums.GpsStatus
 import com.repzone.domain.common.onError
 import com.repzone.domain.common.onSuccess
 import com.repzone.domain.manager.gps.IGpsTrackingManager
@@ -34,6 +36,7 @@ class GpsTrackingService: Service() {
     private val gpsTrackingManager: IGpsTrackingManager by inject()
     private val serviceScope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
     private var isRunning = false
+    private var currentGpsStatus: GpsStatus = GpsStatus.DISABLED
     //endregion
 
     //region Public Method
@@ -156,6 +159,23 @@ class GpsTrackingService: Service() {
                         }
                 }
 
+                //GPS status'u dinle ve notification icon rengini güncelle
+                launch {
+                    gpsTrackingManager.observeGpsStatus()
+                        .collect { status ->
+                            println("GpsTrackingService: GPS Status değişti: $status")
+                            currentGpsStatus = status
+
+                            // Notification'ı güncelle
+                            val lastLocation = gpsTrackingManager.getLastLocation()
+                            if (lastLocation != null) {
+                                updateNotificationWithLocationData(lastLocation)
+                            } else {
+                                updateNotificationForGpsStatus(status)
+                            }
+                        }
+                }
+
                 // State'i dinle ve notification'ı güncelle
                 gpsTrackingManager.observeServiceState().collect { state ->
                     when (state) {
@@ -243,9 +263,9 @@ class GpsTrackingService: Service() {
     private suspend fun updateBasicNotification(location: GpsLocation) {
         val title = getString(Res.string.gps_tracking_active)
         val text = buildString {
-            append("📍 ${getString(Res.string.gps_tracking_location_statics_desc,String.format("%.4f", location.latitude), String.format("%.4f", location.longitude))}\n")
-            append("🎯 ${getString(Res.string.gps_tracking_location_accuracy_desc, location.accuracy.toInt())}\n")
-            append("⏰ ${formatTimeSince(location.timestamp)}")
+            append("${getString(Res.string.gps_tracking_location_statics_desc,String.format("%.4f", location.latitude), String.format("%.4f", location.longitude))}\n")
+            append("${getString(Res.string.gps_tracking_location_accuracy_desc, location.accuracy.toInt())}\n")
+            append("${formatTimeSince(location.timestamp)}")
         }
 
         updateNotification(title, text, location)
@@ -295,21 +315,18 @@ class GpsTrackingService: Service() {
             stopSelf()
         }
     }
-
     private fun pauseTracking() {
         serviceScope.launch {
             gpsTrackingManager.pause()
             updateNotification(getString(Res.string.gps_tracking_pause), getString(Res.string.gps_tracking_pause_information))
         }
     }
-
     private fun resumeTracking() {
         serviceScope.launch {
             gpsTrackingManager.resume()
             updateNotification(getString(Res.string.gps_tracking_resume), getString(Res.string.gps_tracking_pull_location_information))
         }
     }
-
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(CHANNEL_ID, "GPS Tracking", NotificationManager.IMPORTANCE_LOW).apply {
@@ -360,12 +377,20 @@ class GpsTrackingService: Service() {
             bigTextStyle.setSummaryText("GPS Tracking")
         }
 
+        val iconColor = when (currentGpsStatus) {
+            GpsStatus.ENABLED -> Color.GREEN
+            GpsStatus.DISABLED -> Color.YELLOW
+            GpsStatus.NO_LOCATION -> Color.RED
+        }
+
         return NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle(title)
             .setContentText(text)
+            .setColor(iconColor)
             .setSmallIcon(android.R.drawable.ic_menu_mylocation)
             .setContentIntent(pendingIntent)
             .setStyle(bigTextStyle)
+
             .addAction(
                 android.R.drawable.ic_media_pause,
                 "Duraklat",
@@ -381,11 +406,26 @@ class GpsTrackingService: Service() {
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .build()
     }
-
     private fun updateNotification(title: String, text: String, location: GpsLocation? = null) {
         val notification = createNotification(title, text, showLocation = location != null, location = location)
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(NOTIFICATION_ID, notification)
+    }
+
+    private suspend fun updateNotificationForGpsStatus(status: GpsStatus) {
+        val title = when (status) {
+            GpsStatus.ENABLED -> getString(Res.string.gps_tracking_active)
+            GpsStatus.DISABLED -> getString(Res.string.notification_gps_disabled_title)
+            GpsStatus.NO_LOCATION -> getString(Res.string.notification_gps_disabled_text)
+        }
+
+        val text = when (status) {
+            GpsStatus.ENABLED -> getString(Res.string.gps_tracking_pull_location_information)
+            GpsStatus.DISABLED -> getString(Res.string.notification_gps_disabled_text)
+            GpsStatus.NO_LOCATION -> getString(Res.string.enable_location_services_message)
+        }
+
+        updateNotification(title, text, null)
     }
     //endregion
 

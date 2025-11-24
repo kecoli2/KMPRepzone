@@ -255,55 +255,6 @@ class AndroidLocationProvider(private val context: Context,
         currentAccuracy = priority
     }
 
-    override suspend fun requestEnableLocation(): Boolean {
-        return suspendCancellableCoroutine { continuation ->
-            try {
-                val locationRequest = LocationRequest.Builder(
-                    Priority.PRIORITY_HIGH_ACCURACY,
-                    10000L
-                ).build()
-
-                val builder = LocationSettingsRequest.Builder()
-                    .addLocationRequest(locationRequest)
-                    .setAlwaysShow(true)
-
-                val settingsClient = LocationServices.getSettingsClient(context)
-                val task = settingsClient.checkLocationSettings(builder.build())
-
-                task.addOnSuccessListener {
-                    // GPS zaten açık
-                    Logger.d("AndroidLocationProvider: GPS already enabled")
-                    if (continuation.isActive) {
-                        continuation.resume(true)
-                    }
-                }
-
-                task.addOnFailureListener { exception ->
-                    if (exception is com.google.android.gms.common.api.ResolvableApiException) {
-
-                        if (continuation.isActive) {
-                            continuation.resume(false)
-                        }
-                    } else {
-                        if (continuation.isActive) {
-                            continuation.resume(false)
-                        }
-                    }
-                }
-
-                continuation.invokeOnCancellation {
-                    Logger.d("AndroidLocationProvider: requestEnableLocation cancelled")
-                }
-
-            } catch (e: Exception) {
-                Logger.d("AndroidLocationProvider: Error requesting GPS - ${e.message}")
-                if (continuation.isActive) {
-                    continuation.resume(false)
-                }
-            }
-        }
-    }
-
     override fun stopGpsStatusMonitoring() {
         if (!isGpsReceiverRegistered || gpsStatusReceiver == null) {
             return

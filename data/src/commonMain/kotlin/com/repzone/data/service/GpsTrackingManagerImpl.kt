@@ -295,11 +295,6 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
     override fun observeGpsStatus(): Flow<GpsStatus> {
         return locationService.observeGpsStatus()
     }
-
-    suspend fun cleanupOldData(daysToKeep: Int = 7): Result<Int> {
-        val cutoffTime = now() - (daysToKeep * 24 * 60 * 60 * 1000L)
-        return iLocationRepository.clearOldLocations(cutoffTime)
-    }
     //endregion
 
     //region Private Method

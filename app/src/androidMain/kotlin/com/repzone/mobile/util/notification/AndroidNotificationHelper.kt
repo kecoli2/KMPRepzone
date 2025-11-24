@@ -1,4 +1,4 @@
-package com.repzone.domain.util.notification
+package com.repzone.mobile.util.notification
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -8,7 +8,11 @@ import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import androidx.core.app.NotificationCompat
-import com.repzone.domain.util.IPlatformNotificationHelper
+import com.repzone.domain.util.notification.IPlatformNotificationHelper
+import com.repzone.domain.util.notification.NotificationIds
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.*
+import org.jetbrains.compose.resources.getString
 
 class AndroidNotificationHelper(private val context: Context): IPlatformNotificationHelper {
     //region Field
@@ -31,34 +35,35 @@ class AndroidNotificationHelper(private val context: Context): IPlatformNotifica
     //endregion
 
     //region Public Method
-    override fun showGpsDisabledNotification() {
+    override suspend fun showGpsDisabledNotification() {
         val intent = Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)
         val pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT)
+        val sss = getString(Res.string.note)
 
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_alert)
-            .setContentTitle("GPS Kapalı")
-            .setContentText("GPS tracking için konum servislerini açmalısınız")
+            .setContentTitle(getString(Res.string.notification_gps_disabled_title))
+            .setContentText(getString(Res.string.notification_gps_disabled_text))
             .setStyle(NotificationCompat.BigTextStyle()
-                .bigText("GPS tracking çalışabilmesi için cihazınızın konum servislerini (GPS) açmalısınız. Ayarlara gitmek için tıklayın."))
+                .bigText(getString(Res.string.notification_gps_disabled_bigtext)))
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
-            .addAction(android.R.drawable.ic_menu_preferences, "Ayarları Aç", pendingIntent)
+            .addAction(android.R.drawable.ic_menu_preferences, getString(Res.string.action_open_settings), pendingIntent)
             .build()
 
         notificationManager.notify(NotificationIds.GPS_DISABLED, notification)
     }
 
-    override fun dismissGpsDisabledNotification() {
+    override suspend fun dismissGpsDisabledNotification() {
         notificationManager.cancel(NotificationIds.GPS_DISABLED)
     }
 
-    override fun showScheduleStartingNotification(minutesUntilStart: Int) {
+    override suspend fun showScheduleStartingNotification(minutesUntilStart: Int) {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_menu_recent_history)
-            .setContentTitle("⏰ GPS Tracking Başlayacak")
-            .setContentText("$minutesUntilStart dakika sonra GPS tracking başlayacak")
+            .setContentTitle(getString(Res.string.notification_schedule_starting_title))
+            .setContentText(getString(Res.string.notification_schedule_starting_text, minutesUntilStart))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
             .build()
@@ -66,11 +71,11 @@ class AndroidNotificationHelper(private val context: Context): IPlatformNotifica
         notificationManager.notify(NotificationIds.SCHEDULE_STARTING, notification)
     }
 
-    override fun showScheduleEndingNotification(minutesUntilEnd: Int) {
+    override suspend fun showScheduleEndingNotification(minutesUntilEnd: Int) {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_menu_recent_history)
-            .setContentTitle("⏰ GPS Tracking Duracak")
-            .setContentText("$minutesUntilEnd dakika sonra GPS tracking duracak")
+            .setContentTitle(getString(Res.string.notification_schedule_ending_title))
+            .setContentText(getString(Res.string.notification_schedule_ending_text, minutesUntilEnd))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
             .build()
@@ -78,13 +83,13 @@ class AndroidNotificationHelper(private val context: Context): IPlatformNotifica
         notificationManager.notify(NotificationIds.SCHEDULE_ENDING, notification)
     }
 
-    override fun showBatteryLowNotification(batteryLevel: Int, newInterval: Int) {
+    override suspend fun showBatteryLowNotification(batteryLevel: Int, newInterval: Int) {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.ic_dialog_info)
-            .setContentTitle("🔋 Batarya Düşük")
-            .setContentText("Batarya %$batteryLevel - GPS aralığı $newInterval dakikaya çıkarıldı")
+            .setContentTitle(getString(Res.string.notification_battery_low_title))
+            .setContentText(getString(Res.string.notification_battery_low_text, batteryLevel, newInterval))
             .setStyle(NotificationCompat.BigTextStyle()
-                .bigText("Batarya seviyeniz düşük (%$batteryLevel). Batarya tasarrufu için GPS tracking aralığı $newInterval dakikaya çıkarıldı."))
+                .bigText(getString(Res.string.notification_battery_low_bigtext, batteryLevel, newInterval)))
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .setAutoCancel(true)
             .build()
@@ -92,13 +97,13 @@ class AndroidNotificationHelper(private val context: Context): IPlatformNotifica
         notificationManager.notify(NotificationIds.BATTERY_LOW, notification)
     }
 
-    override fun showSyncPendingNotification(pendingCount: Int) {
+    override suspend fun showSyncPendingNotification(pendingCount: Int) {
         val notification = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(android.R.drawable.stat_notify_sync)
-            .setContentTitle("📤 Senkronizasyon Bekliyor")
-            .setContentText("$pendingCount konum senkronize edilmeyi bekliyor")
+            .setContentTitle(getString(Res.string.notification_sync_pending_title))
+            .setContentText(getString(Res.string.notification_sync_pending_text, pendingCount))
             .setStyle(NotificationCompat.BigTextStyle()
-                .bigText("$pendingCount konum senkronize edilmeyi bekliyor. WiFi'ye bağlandığınızda otomatik olarak gönderilecek."))
+                .bigText(getString(Res.string.notification_sync_pending_bigtext, pendingCount) ))
             .setPriority(NotificationCompat.PRIORITY_LOW)
             .setAutoCancel(true)
             .build()
@@ -106,7 +111,7 @@ class AndroidNotificationHelper(private val context: Context): IPlatformNotifica
         notificationManager.notify(NotificationIds.SYNC_PENDING, notification)
     }
 
-    override fun dismissAllTrackingNotifications() {
+    override suspend fun dismissAllTrackingNotifications() {
         notificationManager.cancel(NotificationIds.SCHEDULE_STARTING)
         notificationManager.cancel(NotificationIds.SCHEDULE_ENDING)
         notificationManager.cancel(NotificationIds.BATTERY_LOW)

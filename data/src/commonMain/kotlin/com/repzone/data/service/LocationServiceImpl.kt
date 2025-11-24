@@ -26,7 +26,7 @@ import com.repzone.domain.common.onSuccess
 import com.repzone.domain.manager.gps.IPlatformGpsEnabler
 import com.repzone.domain.platform.IPlatformServiceController
 import com.repzone.domain.service.IPlatformGeocoder
-import com.repzone.domain.util.IPlatformNotificationHelper
+import com.repzone.domain.util.notification.IPlatformNotificationHelper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
@@ -265,10 +265,6 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
 
     override fun observeGpsStatus(): Flow<GpsStatus> {
         return _gpsStatus.asStateFlow()
-    }
-
-    override suspend fun requestEnableGps(): Boolean {
-        TODO("Not yet implemented")
     }
     //endregion
 

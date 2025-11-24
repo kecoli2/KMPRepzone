@@ -1,7 +1,6 @@
 package com.repzone.domain.util.notification
 
 import com.repzone.core.platform.Logger
-import com.repzone.domain.util.IPlatformNotificationHelper
 
 class IosNotificationHelper: IPlatformNotificationHelper {
     //region Field
