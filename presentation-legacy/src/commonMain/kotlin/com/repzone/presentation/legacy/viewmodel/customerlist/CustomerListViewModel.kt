@@ -31,11 +31,16 @@ import com.repzone.presentation.legacy.model.CustomerGroup
 import com.repzone.presentation.legacy.model.enum.CustomerSortOption
 import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListScreenUiState.CustomerListState
 import com.repzone.sync.interfaces.ISyncManager
+import com.repzone.sync.model.SyncJobGroup
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -78,8 +83,23 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                     updateState { currentState ->
                         currentState.copy(isSyncInProgress = true)
                     }
-                    iSyncManager.startSpecificJobs(listOf(SyncJobType.COMMON_MODULES, SyncJobType.ROUTE))
-                    iSyncManager.allJobsStatus.collect { jobStatuses ->
+                    iSyncManager.startSync(listOf(SyncJobGroup.NONE, SyncJobGroup.CUSTOMER))
+                    iSyncManager.allJobsStatus
+                        .map { jobStatuses ->
+                            // Tüm job'ların terminal (tamamlanmış) durumda olup olmadığı
+                            jobStatuses.values.all { it is SyncJobStatus.Failed || it is SyncJobStatus.Success }
+                        }
+                        .distinctUntilChanged()
+                        .onEach { allDone ->
+                            if (allDone) {
+                                updateState { currentState ->
+                                    currentState.copy(isSyncInProgress = false)
+                                }
+                                updateUiWithPermissions()
+                                loadCustomerList(state.value.selectedDate)
+                            }
+                        }.launchIn(scope)
+                    /*iSyncManager.allJobsStatus.collect { jobStatuses ->
                         when(jobStatuses[SyncJobType.COMMON_MODULES]){
                             is SyncJobStatus.Idle,
                             is SyncJobStatus.Failed,
@@ -93,7 +113,7 @@ class CustomerListViewModel(private val iCustomerListRepository: ICustomerListRe
                             }
                             else -> {}
                         }
-                    }
+                    }*/
                 }
 
                 is Event.LoadCustomerList -> {

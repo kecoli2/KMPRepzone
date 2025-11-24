@@ -10,6 +10,7 @@ import com.repzone.sync.interfaces.ISyncApiService
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.datetime.TimeZone
 import kotlinx.serialization.SerializationException
 
 abstract class BaseSyncApiService<TDto : Any>(val client: HttpClient) : ISyncApiService<TDto> {
@@ -69,7 +70,7 @@ abstract class BaseSyncApiService<TDto : Any>(val client: HttpClient) : ISyncApi
             requestModel?.fetchOnlyActive = true
         } else {
             requestModel?.lastModDate =
-                model.lastSyncDate?.toDateString("yyyy-MM-dd HH:mm:ss.fff")
+                model.lastSyncDate?.toDateString("yyyy-MM-dd HH:mm:ss.fff", TimeZone.UTC)
         }
     }
     protected open fun onPageFetched(data: TDto, requestModel: FilterModelRequest?) {

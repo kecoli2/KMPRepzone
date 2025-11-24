@@ -74,9 +74,9 @@ class SyncManagerImpl(private val syncJobs: Map<SyncJobType, ISyncJob>,
         startSpecificJobs(applicableJobs)
     }
 
-    override suspend fun startSync(jobGroup: SyncJobGroup) {
+    override suspend fun startSync(jobGroup: List<SyncJobGroup>) {
         val applicableJobs = syncJobs.filter { (_, job) ->
-            job.isApplicableForRole(iUserSession.getActiveSession()?.identity?.role ?: UserRole.SALES_REP) && job.jobGroup == jobGroup
+            job.isApplicableForRole(iUserSession.getActiveSession()?.identity?.role ?: UserRole.SALES_REP) && jobGroup.contains(job.jobGroup)
         }.keys.toList()
 
         startSpecificJobs(applicableJobs)
