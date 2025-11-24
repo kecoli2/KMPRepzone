@@ -3,6 +3,7 @@ package com.repzone.domain.pipline.rules.action
 import com.repzone.core.model.UiText
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.model.VisitReasonInformation
+import com.repzone.domain.model.gps.GpsLocation
 import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule
 import com.repzone.domain.pipline.model.pipline.RuleResult
@@ -29,7 +30,8 @@ class StartVisitActionRule(
     //region Public Method
     override suspend fun execute(context: PipelineContext): RuleResult {
         try {
-            iVisitRepository.startVisit(customerItemModel, visitInfo)
+            val activeLocation = context.getData<GpsLocation>("active_gps_location")
+            iVisitRepository.startVisit(customerItemModel, visitInfo, activeLocation!!)
             return RuleResult.Success(this)
         }catch (ex: Exception){
             return RuleResult.Failed(this, ex.message ?: "Unknown error")

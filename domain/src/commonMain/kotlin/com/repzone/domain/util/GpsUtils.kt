@@ -38,6 +38,13 @@ object DistanceCalculator {
         )
     }
 
+    fun calculateDistance(from: GpsLocation, latitude: Double, longitude: Double): Double {
+        return calculateDistance(
+            from.latitude, from.longitude,
+            latitude, longitude
+        )
+    }
+
     /**
      * İki koordinat arası mesafeyi hesaplar (metre)
      */
@@ -91,6 +98,10 @@ object DistanceCalculator {
 // GpsLocation extensions
 fun GpsLocation.distanceTo(other: GpsLocation): Double {
     return DistanceCalculator.calculateDistance(this, other)
+}
+
+fun GpsLocation.distanceTo(latitude: Double, longitude: Double): Double {
+    return DistanceCalculator.calculateDistance(this, latitude, longitude)
 }
 
 fun GpsLocation.bearingTo(other: GpsLocation): Double {

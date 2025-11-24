@@ -65,7 +65,7 @@ class GeoLocationEntityDbMapper : Mapper<GeoLocationEntity, GeoLocationModel> {
             Altitude = model.altitude,
             AltitudeAccuracy = model.altitudeAccuracy?.toDouble(),
             BatteryLevel = model.batteryLevel?.toLong(),
-            DailyOperationType = 0,
+            DailyOperationType = model.dailyOperationType.enumToLong(),
             Description = model.provider,
             Heading = model.bearing?.toDouble(),
             Latitude = model.latitude,

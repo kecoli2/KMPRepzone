@@ -1,6 +1,7 @@
 package com.repzone.domain.pipline.rules.action
 
 import com.repzone.core.model.UiText
+import com.repzone.domain.model.gps.GpsLocation
 import com.repzone.domain.pipline.model.pipline.DecisionOptionTypeEnum
 import com.repzone.domain.pipline.model.pipline.PipelineContext
 import com.repzone.domain.pipline.model.pipline.Rule

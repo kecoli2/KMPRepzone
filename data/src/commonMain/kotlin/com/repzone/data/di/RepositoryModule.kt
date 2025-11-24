@@ -5,6 +5,7 @@ import com.repzone.data.repository.imp.VisitRepositoryImpl
 import com.repzone.data.repository.imp.EventReasonRepositoryImpl
 import com.repzone.data.repository.imp.CustomerListRepositoryImpl
 import com.repzone.data.repository.imp.CustomerRepositoryImpl
+import com.repzone.data.repository.imp.DailyOparationRepository
 import com.repzone.data.repository.imp.DocumentMapRepositoryImpl
 import com.repzone.data.repository.imp.DynamicFormRepositoryImpl
 import com.repzone.data.repository.imp.DynamicPageReportImpl
@@ -34,6 +35,7 @@ val RepositoryModule = module {
     factoryOf(::VisitRepositoryImpl) { bind<IVisitRepository>() }
     factoryOf(::DocumentMapRepositoryImpl) { bind<IDocumentMapRepository>() }
     factoryOf(::DynamicFormRepositoryImpl) { bind<IDynamicFormRepository>() }
+    factoryOf(::DailyOparationRepository) { bind<IDailyOparationRepository>() }
 
     //endregion REPOSITORY
 

@@ -3,7 +3,6 @@ package com.repzone.mobile.firebase
 import com.google.firebase.FirebaseApp
 import com.google.firebase.FirebaseOptions
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
@@ -14,6 +13,7 @@ import com.repzone.domain.firebase.IFirebaseRealtimeDatabase
 import com.repzone.core.platform.Logger
 import com.repzone.core.util.extensions.now
 import com.repzone.core.util.extensions.toDateString
+import com.repzone.core.util.extensions.todayRange
 import com.repzone.data.mapper.DailyOperationLogInformationEntityDbMapper
 import com.repzone.database.DailyOperationLogInformationEntity
 import com.repzone.database.interfaces.IDatabaseManager
@@ -22,7 +22,6 @@ import com.repzone.database.runtime.select
 import com.repzone.domain.common.DomainException
 import kotlinx.coroutines.tasks.await
 import com.repzone.domain.common.Result
-import com.repzone.domain.common.toResult
 import com.repzone.domain.model.gps.GpsLocation
 import com.repzone.domain.repository.IRouteAppointmentRepository
 import com.repzone.domain.repository.IVisitRepository
@@ -148,6 +147,8 @@ class AndroidFirebaseRealtimeDatabase(
     private suspend fun connectLocationDatabaseAndSendLocation(model: GpsLocation): Result<Boolean> {
         try {
             // Location node path
+            val (todayStart, todayEnd) = todayRange()
+
             val today = now().toDateString("yyyy-MM-dd")
             val locNode = database.reference
                 .child(today)
@@ -174,7 +175,7 @@ class AndroidFirebaseRealtimeDatabase(
                 "Heading" to (model.bearing ?: 0f),
                 "Speed" to (model.speed ?: 0f),
                 "RepresentativeId" to model.representativeId,
-                "DailyOperationType" to model.dailyOperationType,
+                "DailyOperationType" to model.dailyOperationType.ordinal,
                 "Description" to model.description,
                 "ReverseGeocoded" to model.reverseGeocoded,
                 "BatteryLevel" to (model.batteryLevel ?: 0),
@@ -184,7 +185,7 @@ class AndroidFirebaseRealtimeDatabase(
 
             val lastOperation = iDatabaseManager.getSqlDriver().select<DailyOperationLogInformationEntity> {
                 where {
-                    criteria("Date", now())
+                    criteria("Date", between = todayStart to todayEnd)
                 }
 
                 orderBy {
@@ -206,7 +207,7 @@ class AndroidFirebaseRealtimeDatabase(
 
                         val lastOpBeforeBreak = iDatabaseManager.getSqlDriver().maxByOrNull<DailyOperationLogInformationEntity>("Date") {
                             where {
-                                criteria("Date", now())
+                                criteria("Date", between = todayStart to todayEnd)
                                 criteria("Type",
                                     notIn = listOf(DailyOperationType.OPERATION.ordinal,
                                         DailyOperationType.PAUSE.ordinal,
@@ -236,7 +237,7 @@ class AndroidFirebaseRealtimeDatabase(
             } else if (model.dailyOperationType == DailyOperationType.CONTINUE) {
                 val lastOpBeforeBreak = iDatabaseManager.getSqlDriver().maxByOrNull<DailyOperationLogInformationEntity>("Date") {
                     where {
-                        criteria("Date", now())
+                        criteria("Date", between = todayStart to todayEnd)
                         criteria("Type",
                             notIn = listOf(DailyOperationType.OPERATION.ordinal,
                                 DailyOperationType.PAUSE.ordinal,
@@ -263,7 +264,7 @@ class AndroidFirebaseRealtimeDatabase(
 
             val lastOpAboutVisit = iDatabaseManager.getSqlDriver().maxByOrNull<DailyOperationLogInformationEntity>("Date") {
                 where {
-                    criteria("Date", now())
+                    criteria("Date", between = todayStart to todayEnd)
                     criteria("Type",
                         In = listOf(DailyOperationType.OPERATION.ordinal,
                             DailyOperationType.PAUSE.ordinal,
@@ -283,7 +284,7 @@ class AndroidFirebaseRealtimeDatabase(
                 if (activeVisit != null) {
                     val customer = iRouteAppointmentRepository.getRouteInformationForCustomer(activeVisit.appointmentId)
                     if (customer != null) {
-                        val desc = map["Description"] as String
+                        val desc = map["Description"] as String? ?: ""
                         map["Description"] = "$desc|${customer.code}|${customer.name}"
                     }
                 }
@@ -292,7 +293,7 @@ class AndroidFirebaseRealtimeDatabase(
             // Break kontrolü
             val lastOpAboutBreak = iDatabaseManager.getSqlDriver().maxByOrNull<DailyOperationLogInformationEntity>("Date") {
                 where {
-                    criteria("Date", now())
+                    criteria("Date", between = todayStart to todayEnd)
                     criteria("Type",
                         In = listOf(DailyOperationType.PAUSE.ordinal, DailyOperationType.CONTINUE.ordinal))
                 }

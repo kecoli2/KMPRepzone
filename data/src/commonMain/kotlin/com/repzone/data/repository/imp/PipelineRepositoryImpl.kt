@@ -10,13 +10,19 @@ import com.repzone.domain.pipline.rules.action.StartVisitActionRule
 import com.repzone.domain.pipline.rules.check.ActiveVisitCheckRule
 import com.repzone.domain.pipline.rules.decision.CustomerBlockedDecisionRule
 import com.repzone.domain.pipline.rules.decision.EndVisitDecisionRule
+import com.repzone.domain.pipline.rules.decision.EndVisitGpsDistanceDecisionRule
+import com.repzone.domain.pipline.rules.decision.StartVisitGpsDistanceDecisionRule
+import com.repzone.domain.repository.ILocationRepository
+import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.repository.IPipelineRepository
 import com.repzone.domain.repository.IRouteAppointmentRepository
 import com.repzone.domain.repository.IVisitRepository
+import com.repzone.domain.service.ILocationService
 
 class PipelineRepositoryImpl(private val eventBus: IEventBus,
                              private val iVisitRepository: IVisitRepository,
-                             private val iRouteAppointmentRepository: IRouteAppointmentRepository): IPipelineRepository {
+                             private val iRouteAppointmentRepository: IRouteAppointmentRepository,
+                             private val iModuleParameterRepository: IMobileModuleParameterRepository, private val iLocationService: ILocationService): IPipelineRepository {
     //region Field
     //endregion
 
@@ -55,8 +61,11 @@ class PipelineRepositoryImpl(private val eventBus: IEventBus,
                 id = "end_visit_stage",
                 name = "Ziyaret Sonlandırma",
                 rules = listOf(
+                    /*EndVisitGpsDistanceDecisionRule(eventBus = eventBus,
+                        iModuleParameterRepository = iModuleParameterRepository,
+                        iLocationService = iLocationService, customerItem = customerItemModel),*/
                     EndVisitDecisionRule(eventBus = eventBus),
-                    EndVisitActionRule(iVisitRepository = iVisitRepository)
+                    EndVisitActionRule(iVisitRepository = iVisitRepository),
                 ),
                 isConditional = true,
                 condition = {
@@ -67,6 +76,9 @@ class PipelineRepositoryImpl(private val eventBus: IEventBus,
                 id = "start_visit_stage",
                 name = "Ziyaret Başlat",
                 rules = listOf(
+                    StartVisitGpsDistanceDecisionRule(eventBus = eventBus,
+                        iModuleParameterRepository = iModuleParameterRepository,
+                        iLocationService = iLocationService, customerItem = customerItemModel),
                     StartVisitActionRule(customerItemModel = customerItemModel, visitInfo = null, iVisitRepository = iVisitRepository)
                 ),
                 isConditional = true,

@@ -2,7 +2,9 @@ package com.repzone.data.mapper
 
 import com.repzone.core.enums.DailyOperationType
 import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.getLocalDateTime
 import com.repzone.core.util.extensions.toEnum
+import com.repzone.core.util.extensions.toEpochMillis
 import com.repzone.core.util.extensions.toInstant
 import com.repzone.data.util.Mapper
 import com.repzone.database.DailyOperationLogInformationEntity
@@ -31,7 +33,7 @@ class DailyOperationLogInformationEntityDbMapper : Mapper<DailyOperationLogInfor
             BatteryLevel = domain.batteryLevel,
             Date = domain.date?.toEpochMilliseconds(),
             Description = domain.description,
-            LocalTime = domain.localTime?.toEpochMilliseconds(),
+            LocalTime = domain.localTime?.getLocalDateTime()?.toEpochMillis(),
             RepzoneLeaveRequestId = domain.repzoneLeaveRequestId,
             RepzoneLeaveRequestUniqueId = domain.repzoneLeaveRequestUniqueId,
             Type = domain.type.enumToLong()

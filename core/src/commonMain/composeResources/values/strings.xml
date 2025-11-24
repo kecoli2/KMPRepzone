@@ -961,5 +961,7 @@
     <string name="notification_sync_pending_text">%1$d locations are pending sync</string>
     <string name="notification_sync_pending_bigtext">%1$d locations are pending sync. They will be sent automatically when connected to Wi-Fi.</string>
 
+    <string name="warning_gps_location_not_found">GPS Location Not Found</string>
+
 
 </resources>

@@ -48,7 +48,8 @@ class ActiveVisitCheckRule(
         val activeAppointment = iRouteAppointmentRepository.getRouteInformation(activeVisit.appointmentId)
         context.putData("has_active_visit", true)
         context.putData("active_visit_id", activeVisit.visitId)
-        context.putData("active_customer_name", activeAppointment?.customerName ?: "")
+        context.putData("active_appointment", activeAppointment!!)
+        context.putData("active_customer_name", activeAppointment.customerName ?: "")
 
         return RuleResult.Success(this)
     }

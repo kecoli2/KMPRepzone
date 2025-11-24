@@ -7,8 +7,10 @@ import kotlinx.datetime.DateTimeUnit
 import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.atStartOfDayIn
 import kotlinx.datetime.number
 import kotlinx.datetime.plus
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.*
@@ -46,6 +48,10 @@ fun String.fromIso8601ToLong(): Long? =
 
 fun Instant.getLocalDateTime(timeZone: TimeZone = TimeZone.currentSystemDefault()): LocalDateTime{
     return this.toLocalDateTime(timeZone)
+}
+
+fun LocalDateTime.toEpochMillis(timeZone: TimeZone = TimeZone.currentSystemDefault()): Long {
+    return this.toInstant(timeZone).toEpochMilliseconds()
 }
 
 // ============================================
@@ -273,3 +279,15 @@ fun Long?.toUserFriendlyOrEmpty(timeZone: TimeZone = TimeZone.currentSystemDefau
 fun now(): Long = Clock.System.now().toEpochMilliseconds()
 
 fun nowInSeconds(): Long = Clock.System.now().epochSeconds
+
+fun todayRange(): Pair<Long, Long> {
+    val now = now()
+    val today = now.toInstant().toLocalDateTime(TimeZone.UTC).date
+
+    val todayStart = today.atStartOfDayIn(TimeZone.UTC).toEpochMilliseconds()
+    val todayEnd = today.plus(1, DateTimeUnit.DAY)
+        .atStartOfDayIn(TimeZone.UTC)
+        .toEpochMilliseconds() - 1
+
+    return todayStart to todayEnd
+}
