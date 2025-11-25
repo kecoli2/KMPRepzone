@@ -570,6 +570,7 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                 CustomerListLoadingHandler(
                     customerListState = uiState.customerListState,
                     themeManager = themeManager,
+                    modifier = Modifier.weight(1f),
                     onRetry = {
                         // Retry butonu için
                         viewModel.onEvent(
@@ -578,7 +579,7 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                     }
                 ) {
                     // LazyColumn içinde kaybolacak alan + Tab + content
-                    LazyColumn(modifier = Modifier.fillMaxSize().weight(1f)) {
+                    LazyColumn(modifier = Modifier.fillMaxWidth().weight(1f)) {
                         // Kaybolacak Alan
                         item {
                             if(uiState.isDashboardActive){

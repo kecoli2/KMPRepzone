@@ -62,9 +62,10 @@ fun CustomerListLoadingHandler(
     customerListState: CustomerListScreenUiState.CustomerListState,
     themeManager: ThemeManager,
     onRetry: () -> Unit = {},
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit
 ) {
-    Box(modifier = Modifier.fillMaxSize()) {
+    Box(modifier = modifier.fillMaxSize()) {
         when (customerListState) {
             is CustomerListScreenUiState.CustomerListState.Loading -> {
                 LoadingScreen(themeManager)
