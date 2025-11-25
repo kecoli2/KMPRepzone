@@ -2,6 +2,7 @@ package com.repzone.data.model.productstate
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.util.extensions.toBigDecimalOrNull
+import com.repzone.domain.document.model.DiscountSlotEntry
 import com.repzone.domain.document.model.DiscountType
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.document.model.ValidationStatus
@@ -30,7 +31,8 @@ data class ProductRowState(
     // Doküman takibi
     val isInDocument: Boolean = false,
     val documentQuantity: BigDecimal = BigDecimal.ZERO,
-    val documentUnit: ProductUnit? = null
+    val documentUnitId: String? = null,      // unitId
+    val documentUnitName: String? = null     // unitName
 ) {
     /**
      * Seçili mevcut birimi getirir
@@ -53,15 +55,4 @@ data class ProductRowState(
                 validationStatus !is ValidationStatus.Error &&
                 currentUnit != null
 }
-
-/**
- * Bir ürün için indirim slot kaydı
- */
-data class DiscountSlotEntry(
-    val slotNumber: Int,
-    val value: String = "",  // TextField değeri (kullanıcı girişi)
-    val type: DiscountType = DiscountType.PERCENTAGE,
-    val isEnabled: Boolean = true,
-    val validationError: String? = null
-)
 

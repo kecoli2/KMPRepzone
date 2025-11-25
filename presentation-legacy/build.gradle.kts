@@ -54,6 +54,7 @@ kotlin {
 
                 implementation(libs.coil.compose)
                 implementation(libs.coil.network.ktor)
+                implementation(libs.paging.compose.common)
 
                 //VICO CHART
                 implementation(libs.vico.compose)
