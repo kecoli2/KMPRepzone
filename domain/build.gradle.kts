@@ -32,6 +32,7 @@ kotlin {
                 implementation(libs.kotlinx.datetime)
                 implementation(projects.core)
                 // Add KMP dependencies here
+                implementation(libs.bignum)
             }
         }
         androidMain {

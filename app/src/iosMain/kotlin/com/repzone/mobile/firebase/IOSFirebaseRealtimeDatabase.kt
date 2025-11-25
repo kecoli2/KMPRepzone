@@ -4,6 +4,7 @@ import com.repzone.core.platform.Logger
 import com.repzone.domain.common.DomainException
 import com.repzone.domain.firebase.IFirebaseRealtimeDatabase
 import com.repzone.domain.common.Result
+import com.repzone.domain.model.gps.GpsLocation
 
 class IOSFirebaseRealtimeDatabase : IFirebaseRealtimeDatabase {
 
@@ -50,6 +51,10 @@ class IOSFirebaseRealtimeDatabase : IFirebaseRealtimeDatabase {
         }
     }
 
+    override suspend fun sendToFirebase(data: GpsLocation): Result<Boolean> {
+        TODO("Not yet implemented")
+    }
+
     override fun listenToData(path: String, onDataChange: (Map<String, Any>?) -> Unit) {
         // TODO: FIRDatabase.database().reference().child(path).observe(.value) { snapshot in
         //     onDataChange(snapshot.value as? Map<String, Any>)
@@ -60,5 +65,9 @@ class IOSFirebaseRealtimeDatabase : IFirebaseRealtimeDatabase {
     override fun stopListening(path: String) {
         // TODO: reference.removeAllObservers()
         Logger.d ("IOSFirebaseRealtimeDatabase","iOS Firebase Database: stopListening not yet implemented")
+    }
+
+    override suspend fun userAuthentication(email: String): Result<Unit> {
+        TODO("Not yet implemented")
     }
 }

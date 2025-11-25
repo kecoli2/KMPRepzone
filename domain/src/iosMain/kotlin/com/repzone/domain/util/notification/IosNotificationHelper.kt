@@ -13,37 +13,37 @@ class IosNotificationHelper: IPlatformNotificationHelper {
     //endregion
 
     //region Public Method
-    override fun showGpsDisabledNotification() {
+    override suspend fun showGpsDisabledNotification() {
         // TODO: UNUserNotificationCenter implementation
         Logger.d("iOS: GPS Disabled notification")
     }
 
-    override fun dismissGpsDisabledNotification() {
+    override suspend fun dismissGpsDisabledNotification() {
         // TODO: UNUserNotificationCenter implementation
         Logger.d("iOS: Dismiss GPS Disabled notification")
     }
 
-    override fun showScheduleStartingNotification(minutesUntilStart: Int) {
+    override suspend fun showScheduleStartingNotification(minutesUntilStart: Int) {
         // TODO: UNUserNotificationCenter implementation
         Logger.d("iOS: Schedule starting in $minutesUntilStart minutes")
     }
 
-    override fun showScheduleEndingNotification(minutesUntilEnd: Int) {
+    override suspend fun showScheduleEndingNotification(minutesUntilEnd: Int) {
         // TODO: UNUserNotificationCenter implementation
         Logger.d("iOS: Schedule ending in $minutesUntilEnd minutes")
     }
 
-    override fun showBatteryLowNotification(batteryLevel: Int, newInterval: Int) {
+    override suspend fun showBatteryLowNotification(batteryLevel: Int, newInterval: Int) {
         // TODO: UNUserNotificationCenter implementation
         Logger.d("iOS: Battery low $batteryLevel% - interval changed to $newInterval min")
     }
 
-    override fun showSyncPendingNotification(pendingCount: Int) {
+    override suspend fun showSyncPendingNotification(pendingCount: Int) {
         // TODO: UNUserNotificationCenter implementation
         Logger.d("iOS: $pendingCount locations pending sync")
     }
 
-    override fun dismissAllTrackingNotifications() {
+    override suspend fun dismissAllTrackingNotifications() {
         // TODO: UNUserNotificationCenter implementation
         Logger.d("iOS: Dismiss all tracking notifications")
     }

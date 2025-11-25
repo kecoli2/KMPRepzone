@@ -1,6 +1,6 @@
 package com.repzone.mobile
 
 import androidx.compose.ui.window.ComposeUIViewController
-import com.repzone.mobile.App
+import com.repzone.navigation.AppRouter
 
-fun MainViewController() = ComposeUIViewController { App() }
+fun MainViewController() = ComposeUIViewController { AppRouter() }

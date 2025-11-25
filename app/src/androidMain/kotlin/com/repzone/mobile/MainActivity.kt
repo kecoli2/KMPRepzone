@@ -38,6 +38,7 @@ import com.repzone.platform.FirebaseManager
 import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
 import com.repzone.presentation.legacy.ui.visit.VisitActionList
+import com.repzone.preview.ActivityVisit_Sample
 import com.repzone.sync.di.SyncModule
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -123,101 +124,7 @@ fun AppAndroidPreview() {
     loadKoinModules(FirebaseMockAndroidModule)
     val themeManager: ThemeManager = koinInject()
     themeManager.initialize(LegacyThemeConfig())
-    val lists =  listOf(
-        VisitActionItem(
-            name = "Sipariş Oluştur",
-            description = "Yeni sipariş kaydı oluşturun",
-            documentType = DocumentActionType.ORDER,
-            isMandatory = true,
-            hasDone = false,
-            displayOrder = 1,
-            interval = TaskRepeatInterval.NONE
-        ),
-        VisitActionItem(
-            name = "Acil Sipariş",
-            description = "Acil sipariş kaydı",
-            documentType = DocumentActionType.ORDER,
-            isMandatory = false,
-            hasDone = true,
-            displayOrder = 2,
-            interval = TaskRepeatInterval.WEEK
-        ),
-        VisitActionItem(
-            name = "Fatura Kes",
-            description = "Müşteriye fatura düzenleyin",
-            documentType = DocumentActionType.INVOICE,
-            hasDone = false,
-            displayOrder = 3,
-            interval = TaskRepeatInterval.NONE
-        ),
-        VisitActionItem(
-            name = "Proforma Fatura",
-            description = "Proforma fatura düzenleyin",
-            documentType = DocumentActionType.INVOICE,
-            hasDone = true,
-            displayOrder = 4,
-            interval = TaskRepeatInterval.NONE
-        ),
-        VisitActionItem(
-            name = "Sevkiyat Hazırla",
-            description = "Sevkiyat belgesi hazırlayın",
-            documentType = DocumentActionType.DISPATCH,
-            hasDone = false,
-            isFulfillment = true,
-            displayOrder = 5,
-            interval = TaskRepeatInterval.NONE
-        ),
-        VisitActionItem(
-            name = "Müşteri Formu",
-            description = "Müşteri bilgi formunu doldurun",
-            documentType = DocumentActionType.FORM,
-            interval = TaskRepeatInterval.ONE_TIME,
-            isMandatory = true,
-            hasDone = false,
-            displayOrder = 6
-        ),
-        VisitActionItem(
-            name = "Memnuniyet Anketi",
-            description = "Müşteri memnuniyet anketini doldurun",
-            documentType = DocumentActionType.FORM,
-            hasDone = false,
-            displayOrder = 7,
-            interval = TaskRepeatInterval.NONE
-        ),
-        VisitActionItem(
-            name = "Tahsilat Yap",
-            description = "Müşteriden tahsilat yapın",
-            documentType = DocumentActionType.COLLECTION,
-            hasDone = false,
-            displayOrder = 8,
-            interval = TaskRepeatInterval.NONE
-        ),
-        VisitActionItem(
-            name = "Depo Fişi",
-            description = "Depo giriş fişi oluşturun",
-            documentType = DocumentActionType.WAREHOUSERECEIPT,
-            hasDone = true,
-            displayOrder = 9,
-            interval = TaskRepeatInterval.NONE
-        ),
-        VisitActionItem(
-            name = "Diğer İşlem",
-            description = "Diğer işlemleri gerçekleştirin",
-            documentType = DocumentActionType.OTHER,
-            hasDone = false,
-            displayOrder = 10,
-            interval = TaskRepeatInterval.ATVISITSTART
-        )
-    )
-    AppTheme(themeManager = themeManager) {
-        VisitActionList(
-            items = lists,
-            onItemClick = {
 
-            },
-            themeManager = themeManager,
-            modifier = Modifier
-        )
-    }
+    ActivityVisit_Sample(themeManager)
 
 }

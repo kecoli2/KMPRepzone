@@ -968,6 +968,10 @@
     <string name="notification_sync_pending_bigtext">%1$d konum senkronize edilmeyi bekliyor. WiFi'ye bağlandığınızda otomatik olarak gönderilecek.</string>
 
     <string name="warning_gps_location_not_found">GPS Bilgisi Bulunamadı</string>
+    <string name="error_invalid_promotion_slot">Geçerli Iskonto Promosyon Sırası Bulunamadı...</string>
+    <string name="error_invalid_promotion_slot_manuel">%1$s adlı iskonto satırıya manuel giriş izniniz yok...</string>
+    <string name="error_invalid_promotion_slot_maximum_percentage">Maksimum %1$d girebilirsiniz... </string>
+    <string name="error_line_not_found">Satır bulunamadı...</string>
 
 
 </resources>

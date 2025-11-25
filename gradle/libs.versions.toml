@@ -54,6 +54,8 @@ coil = "3.3.0"
 vico = "1.13.1"
 jetbrainsKotlinJvm = "2.2.20"
 
+bignum = "0.3.10"
+
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
 androidLibrary = { id = "com.android.library", version.ref = "agp" }
@@ -141,5 +143,8 @@ coil-mp = { module = "io.coil-kt.coil3:coil", version.ref = "coil" }
 vico-compose = { module = "com.patrykandpatrick.vico:compose", version.ref = "vico" }
 vico-compose-m3 = { module = "com.patrykandpatrick.vico:compose-m3", version.ref = "vico" }
 vico-core = { module = "com.patrykandpatrick.vico:core", version.ref = "vico" }
+
+# BigDecimal
+bignum = { module = "com.ionspin.kotlin:bignum", version.ref = "bignum" }
 
 
