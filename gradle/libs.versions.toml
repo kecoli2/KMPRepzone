@@ -54,7 +54,11 @@ coil = "3.3.0"
 vico = "1.13.1"
 jetbrainsKotlinJvm = "2.2.20"
 
+# BigInteger
 bignum = "0.3.10"
+
+# Paging Lib
+paging = "3.3.0-alpha02-0.5.1"
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -146,5 +150,10 @@ vico-core = { module = "com.patrykandpatrick.vico:core", version.ref = "vico" }
 
 # BigDecimal
 bignum = { module = "com.ionspin.kotlin:bignum", version.ref = "bignum" }
+
+# Paging
+paging-compose-common = { module = "app.cash.paging:paging-compose-common", version.ref = "paging" }
+paging-runtime-composeui-jvm = { module = "app.cash.paging:paging-runtime-composeui-jvm", version.ref = "paging" }
+
 
 

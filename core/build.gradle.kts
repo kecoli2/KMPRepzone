@@ -53,6 +53,7 @@ kotlin {
                 implementation(libs.koin.core)
                 implementation(compose.components.resources)
                 implementation(compose.ui)
+                implementation(libs.bignum)
             }
             kotlin.srcDir("build/generated/ksp/metadata/commonMain/kotlin")
         }

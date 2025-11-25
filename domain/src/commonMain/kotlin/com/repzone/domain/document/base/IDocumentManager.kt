@@ -13,6 +13,7 @@ import com.repzone.domain.document.model.PendingLine
 import com.repzone.domain.document.model.PendingUpdate
 import com.repzone.domain.document.model.Product
 import com.repzone.domain.document.model.ProductUnit
+import com.repzone.domain.document.model.StockSettings
 import com.repzone.domain.document.model.StockStatus
 import com.repzone.domain.document.model.StockValidationResult
 
@@ -65,10 +66,7 @@ interface IDocumentManager {
     /**
      * Manuel iskontoyu temizler
      */
-    suspend fun clearManualDiscount(
-        lineId: String,
-        slotNumber: Int
-    ): Result<Unit>
+    suspend fun clearManualDiscount(lineId: String, slotNumber: Int): Result<Unit>
 
     //endregion ============ Discount Operations ============
 
@@ -105,7 +103,6 @@ interface IDocumentManager {
     //endregion ============ Stock Operations ============
 
     //region ============ Document Operations ============
-
     /**
      * Belgeyi oluşturur
      */

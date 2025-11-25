@@ -40,6 +40,7 @@ kotlin {
                 implementation(projects.network)
 
                 implementation(libs.bignum)
+                implementation(libs.paging.compose.common)
             }
         }
     }
