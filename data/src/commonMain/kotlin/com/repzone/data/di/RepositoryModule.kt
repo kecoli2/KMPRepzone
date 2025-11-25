@@ -12,6 +12,7 @@ import com.repzone.data.repository.imp.DynamicPageReportImpl
 import com.repzone.data.repository.imp.MobileModuleParameterRepositoryImpl
 import com.repzone.data.repository.imp.RepresentativeRepositoryImpl
 import com.repzone.data.repository.imp.RouteAppointmentRepositoryImpl
+import com.repzone.data.repository.imp.SettingsRepositoryImpl
 import com.repzone.data.repository.imp.SyncModuleRepositoryImpl
 import com.repzone.domain.repository.*
 import com.repzone.domain.repository.IMobileModuleParameterRepository
@@ -36,6 +37,8 @@ val RepositoryModule = module {
     factoryOf(::DocumentMapRepositoryImpl) { bind<IDocumentMapRepository>() }
     factoryOf(::DynamicFormRepositoryImpl) { bind<IDynamicFormRepository>() }
     factoryOf(::DailyOparationRepository) { bind<IDailyOparationRepository>() }
+
+    factoryOf(::SettingsRepositoryImpl) {bind<ISettingsRepository>()}
 
     //endregion REPOSITORY
 
@@ -507,9 +510,12 @@ val RepositoryModule = module {
     //endregion
     //endregion DBMAPPERS
 
+    //region OTHER MODULE
     includes(
         EventBusModule,
         PublineModule,
-        GpsModule
+        GpsModule,
+        DocumentModule
     )
+    //endregion OTHER MODULE
 }

@@ -12,6 +12,13 @@ interface IDocumentLine {
     val conversionFactor: BigDecimal
     val quantity: BigDecimal
     val unitPrice: BigDecimal
+    val vatRate: BigDecimal
+
+    // Computed properties
+    val vatAmount: BigDecimal
+    val grossUnitPrice: BigDecimal
+    val lineTotalVat: BigDecimal
+    val lineTotalGross: BigDecimal
 
     // Discount slots (1-8)
     val discount1: DiscountSlot

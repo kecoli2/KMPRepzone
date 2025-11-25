@@ -24,9 +24,23 @@ data class DocumentLine(
     override val discount5: DiscountSlot = DiscountSlot.Empty,
     override val discount6: DiscountSlot = DiscountSlot.Empty,
     override val discount7: DiscountSlot = DiscountSlot.Empty,
-    override val discount8: DiscountSlot = DiscountSlot.Empty
+    override val discount8: DiscountSlot = DiscountSlot.Empty,
+    override val vatRate: BigDecimal
 ) : IDocumentLine {
-    
+
+    // Computed properties
+
+    override val vatAmount: BigDecimal
+        get() = netUnitPrice * vatRate / 100
+
+    override val grossUnitPrice: BigDecimal  // KDV dahil
+        get() = netUnitPrice + vatAmount
+
+    override val lineTotalVat: BigDecimal  // KDV tutarı
+        get() = vatAmount * quantity
+
+    override val lineTotalGross: BigDecimal  // KDV dahil satır toplamı
+        get() = lineTotal + lineTotalVat
     override val discountSlots: List<DiscountSlot>
         get() = listOf(
             discount1, discount2, discount3, discount4,

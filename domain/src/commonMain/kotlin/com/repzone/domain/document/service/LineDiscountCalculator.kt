@@ -18,31 +18,35 @@ import com.repzone.domain.common.businessRuleException
  * Satır iskonto hesaplama servisi
  */
 class LineDiscountCalculator(private val slotConfigs: List<DiscountSlotConfig>,
-                             private val settings: GeneralSettings
-) {
-    
+                             private val settings: GeneralSettings) {
+
+
+    //region Field
+    //endregion
+
+    //region Public Method
     /**
      * Net fiyat hesaplama
      */
     fun calculateNetPrice(line: IDocumentLine): DiscountCalculationResult {
         val basePrice = line.unitPrice
         val steps = mutableListOf<DiscountStep>()
-        
+
         var runningNet = basePrice
         var totalDiscountAmount = BigDecimal.ZERO
-        
+
         line.discountSlots.forEachIndexed { index, slot ->
             if (slot !is DiscountSlot.Applied) return@forEachIndexed
-            
+
             // Hesaplama modunu belirle
             val mode = slot.calculationMode ?: settings.defaultCalculationMode
-            
+
             // Referans fiyat (hangi tutar üzerinden hesaplanacak)
             val referencePrice = when (mode) {
                 DiscountCalculationMode.CASCADING -> runningNet
                 DiscountCalculationMode.BASE -> basePrice
             }
-            
+
             // İskonto tutarını hesapla
             val discountAmount = when (slot.type) {
                 DiscountType.PERCENTAGE -> {
@@ -52,11 +56,11 @@ class LineDiscountCalculator(private val slotConfigs: List<DiscountSlotConfig>,
                     slot.value
                 }
             }
-            
+
             // Net'ten düş
             runningNet -= discountAmount
             totalDiscountAmount += discountAmount
-            
+
             // Adımı kaydet
             steps.add(
                 DiscountStep(
@@ -71,7 +75,7 @@ class LineDiscountCalculator(private val slotConfigs: List<DiscountSlotConfig>,
                 )
             )
         }
-        
+
         return DiscountCalculationResult(
             basePrice = basePrice,
             steps = steps,
@@ -79,7 +83,7 @@ class LineDiscountCalculator(private val slotConfigs: List<DiscountSlotConfig>,
             netPrice = runningNet.coerceAtLeast(BigDecimal.ZERO)
         )
     }
-    
+
     /**
      * Kurala göre iskonto uygular
      */
@@ -87,12 +91,12 @@ class LineDiscountCalculator(private val slotConfigs: List<DiscountSlotConfig>,
         val targetSlot = rule.targetSlot
         val config = slotConfigs.find { it.slotNumber == targetSlot }
             ?: throw IllegalArgumentException("Invalid slot: $targetSlot")
-        
+
         // Otomatik yazılabilir mi?
         if (!config.allowAutomatic) {
             return line // Değişiklik yapma
         }
-        
+
         // Max limit kontrolü
         val finalValue = if (rule.discountType == DiscountType.PERCENTAGE) {
             config.maxPercentage?.let { max ->
@@ -101,7 +105,7 @@ class LineDiscountCalculator(private val slotConfigs: List<DiscountSlotConfig>,
         } else {
             rule.value
         }
-        
+
         val slot = DiscountSlot.Applied(
             ruleId = rule.id,
             type = rule.discountType,
@@ -110,30 +114,30 @@ class LineDiscountCalculator(private val slotConfigs: List<DiscountSlotConfig>,
             calculationMode = rule.calculationMode,
             isManual = false
         )
-        
+
         return line.withSlot(targetSlot, slot)
     }
-    
+
     /**
      * Manuel iskonto uygular
      */
     fun applyManualDiscount(line: IDocumentLine, slotNumber: Int, type: DiscountType, value: BigDecimal): Result<IDocumentLine> {
         val config = slotConfigs.find { it.slotNumber == slotNumber }
             ?: return Result.Error(businessRuleException(ErrorCode.ERROR_INVALID_PROMOTION_SLOT))
-        
+
         // Manuel girişe açık mı?
         if (!config.allowManualEntry) {
             return Result.Error(businessRuleException(ErrorCode.ERROR_INVALID_PROMOTION_SLOT_MANUEL,mapOf("slotNumber" to slotNumber.toString())))
             /*IllegalStateException("Slot $slotNumber does not allow manual entry")*/
         }
-        
+
         // Max limit kontrolü
         if (type == DiscountType.PERCENTAGE && config.maxPercentage != null) {
             if (value > config.maxPercentage) {
                 return Result.Error(businessRuleException(ErrorCode.ERROR_INVALID_PROMOTION_SLOT_MANUEL_MAXIMUM,mapOf("slotNumber" to config.maxPercentage)))
             }
         }
-        
+
         val slot = DiscountSlot.Applied(
             ruleId = null,
             type = type,
@@ -142,7 +146,11 @@ class LineDiscountCalculator(private val slotConfigs: List<DiscountSlotConfig>,
             calculationMode = null,
             isManual = true
         )
-        
+
         return Result.Success(line.withSlot(slotNumber, slot))
     }
+    //endregion
+
+    //region Private Method
+    //endregion
 }

@@ -8,7 +8,11 @@ import com.repzone.domain.document.model.Product
  * Stok hesaplama servisi
  */
 class StockCalculator {
-    
+
+    //region Field
+    //endregion
+
+    //region Public Method
     /**
      * Bir ürün için tüm satırlardaki toplam kullanılan stok (base unit cinsinden)
      */
@@ -17,7 +21,7 @@ class StockCalculator {
             .filter { it.productId == productId }
             .fold(BigDecimal.ZERO) { acc, line -> acc + line.lineTotal }
     }
-    
+
     /**
      * Kalan stok (base unit cinsinden)
      */
@@ -25,7 +29,7 @@ class StockCalculator {
         val used = calculateUsedStock(product.id, lines)
         return product.stockQuantity - used
     }
-    
+
     /**
      * Belirli birimde kalan stok
      */
@@ -33,4 +37,8 @@ class StockCalculator {
         val remainingBase = calculateRemainingStock(product, lines)
         return remainingBase / unitConversionFactor
     }
+    //endregion
+
+    //region Private Method
+    //endregion
 }

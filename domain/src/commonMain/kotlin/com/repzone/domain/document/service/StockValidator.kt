@@ -13,44 +13,47 @@ import com.repzone.domain.document.model.StockValidationResult
  * Stok validasyon servisi
  */
 class StockValidator(private val stockCalculator: StockCalculator,
-                     private val settings: StockSettings
-) {
-    
+                     private val settings: StockSettings) {
+
+    //region Field
+    //endregion
+
+    //region Public Method
     /**
      * Stok validasyonu yapar
      */
     fun validate(product: Product, newQuantity: BigDecimal, newUnit: ProductUnit, existingLines: List<IDocumentLine>, currentLineId: String?, documentType: DocumentType): StockValidationResult {
-        
+
         // Mevcut satırı hariç tut (edit durumu için)
         val otherLines = existingLines.filter { it.id != currentLineId }
-        
+
         // Yeni eklenen miktarın base unit karşılığı
         val newBaseQuantity = newQuantity * newUnit.conversionFactor
-        
+
         // Diğer satırlardaki kullanılan stok
         val usedStock = stockCalculator.calculateUsedStock(product.id, otherLines)
-        
+
         // Toplam talep
         val totalDemand = usedStock + newBaseQuantity
-        
+
         // Stok yeterli mi?
         val stockAvailable = product.stockQuantity
         val isOverStock = totalDemand > stockAvailable
-        
+
         if (!isOverStock) {
             return StockValidationResult.Valid
         }
-        
+
         // Stok aşıldı - belge tipine göre davran
         val behavior = when (documentType) {
             DocumentType.INVOICE -> settings.invoiceStockBehavior
             DocumentType.ORDER -> settings.orderStockBehavior
             DocumentType.WAYBILL -> settings.waybillStockBehavior
         }
-        
+
         val overAmount = totalDemand - stockAvailable
         val maxAllowedInUnit = (stockAvailable - usedStock) / newUnit.conversionFactor
-        
+
         return when (behavior) {
             StockBehavior.BLOCK -> StockValidationResult.Blocked(
                 message = "Stok yetersiz",
@@ -71,4 +74,8 @@ class StockValidator(private val stockCalculator: StockCalculator,
             StockBehavior.IGNORE -> StockValidationResult.Valid
         }
     }
+    //endregion
+
+    //region Private Method
+    //endregion
 }

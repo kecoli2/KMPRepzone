@@ -28,18 +28,22 @@ import com.repzone.domain.repository.IPromotionRuleRepository
 class PromotionEngine(private val ruleRepository: IPromotionRuleRepository,
                       private val lineCalculator: LineDiscountCalculator,
                       private val settings: GeneralSettings) : IPromotionEngine {
-    
+
+    //region Field
+    //endregion
+
+    //region Public Method
     override suspend fun evaluate(context: PromotionContext): PromotionResult {
         val rules = ruleRepository.getActiveRules()
-        
+
         // Satır iskontolarını değerlendir
         val lineDiscounts = mutableMapOf<String, LineDiscountEvaluation>()
         val conflicts = mutableListOf<LineConflict>()
-        
+
         context.allLines.forEach { line ->
             val evaluation = evaluateLineDiscountsForLine(line, context, rules)
             lineDiscounts[line.id] = evaluation
-            
+
             if (evaluation.conflicts.isNotEmpty()) {
                 conflicts.add(
                     LineConflict(
@@ -50,13 +54,13 @@ class PromotionEngine(private val ruleRepository: IPromotionRuleRepository,
                 )
             }
         }
-        
+
         // Belge iskontolarını değerlendir
         val documentDiscounts = evaluateDocumentDiscounts(context)
-        
+
         // Hediyeleri değerlendir
         val giftEvaluation = evaluateGifts(context)
-        
+
         return PromotionResult(
             lineDiscounts = lineDiscounts,
             documentDiscounts = documentDiscounts,
@@ -65,73 +69,19 @@ class PromotionEngine(private val ruleRepository: IPromotionRuleRepository,
             conflicts = conflicts
         )
     }
-    
+
     override suspend fun evaluateLineDiscounts(lines: List<IDocumentLine>, context: PromotionContext): List<LineDiscountEvaluation> {
         val rules = ruleRepository.getActiveRules()
         return lines.map { line ->
             evaluateLineDiscountsForLine(line, context, rules)
         }
     }
-    
-    private fun evaluateLineDiscountsForLine(line: IDocumentLine, context: PromotionContext, allRules: List<PromotionRule>): LineDiscountEvaluation {
-        
-        val discountRules = allRules
-            .filterIsInstance<DiscountRule>()
-            .filter { it.scope == DiscountScope.LINE }
-            .sortedBy { it.priority }
-        
-        val lineContext = context.copy(currentLine = line)
-        
-        val applicableRules = discountRules.filter { 
-            it.isApplicable(lineContext) 
-        }
-        
-        // Slot bazında grupla
-        val rulesBySlot = applicableRules.groupBy { it.targetSlot }
-        
-        val autoApplied = mutableMapOf<Int, DiscountSlot>()
-        val conflicts = mutableListOf<SlotConflict>()
-        
-        rulesBySlot.forEach { (slot, rules) ->
-            when {
-                rules.size == 1 -> {
-                    // Tek kural - direkt uygula
-                    autoApplied[slot] = rules.first().toDiscountSlot()
-                }
-                rules.size > 1 -> {
-                    // Birden fazla kural - conflict resolution
-                    val resolution = resolveConflict(rules, settings.defaultConflictResolution)
-                    
-                    when (resolution) {
-                        is ConflictResult.AutoResolved -> {
-                            autoApplied[slot] = resolution.slot
-                        }
-                        is ConflictResult.NeedsUserInput -> {
-                            conflicts.add(
-                                SlotConflict(
-                                    slotNumber = slot,
-                                    options = resolution.options
-                                )
-                            )
-                        }
-                    }
-                }
-            }
-        }
-        
-        return LineDiscountEvaluation(
-            lineId = line.id,
-            autoApplied = autoApplied,
-            conflicts = conflicts
-        )
-    }
-    
     override suspend fun evaluateDocumentDiscounts(context: PromotionContext): List<AppliedDiscount> {
         val rules = ruleRepository.getActiveDiscountRules()
             .filter { it.scope == DiscountScope.DOCUMENT }
             .filter { it.isApplicable(context) }
             .sortedBy { it.priority }
-        
+
         return rules.map { rule ->
             AppliedDiscount(
                 ruleId = rule.id,
@@ -142,15 +92,14 @@ class PromotionEngine(private val ruleRepository: IPromotionRuleRepository,
             )
         }
     }
-    
     override suspend fun evaluateGifts(context: PromotionContext): GiftEvaluation {
         val giftRules = ruleRepository.getActiveGiftRules()
             .filter { it.isApplicable(context) }
             .sortedBy { it.priority }
-        
+
         val automaticGifts = mutableListOf<AppliedGift>()
         val pendingSelections = mutableListOf<PendingGiftSelection>()
-        
+
         giftRules.forEach { rule ->
             when (rule.giftType) {
                 GiftType.AUTOMATIC -> {
@@ -177,24 +126,79 @@ class PromotionEngine(private val ruleRepository: IPromotionRuleRepository,
                 }
             }
         }
-        
+
         return GiftEvaluation(
             automaticGifts = automaticGifts,
             pendingSelections = pendingSelections
         )
     }
-    
+    //endregion
+
+    //region Private Method
+    private fun evaluateLineDiscountsForLine(line: IDocumentLine, context: PromotionContext, allRules: List<PromotionRule>): LineDiscountEvaluation {
+
+        val discountRules = allRules
+            .filterIsInstance<DiscountRule>()
+            .filter { it.scope == DiscountScope.LINE }
+            .sortedBy { it.priority }
+
+        val lineContext = context.copy(currentLine = line)
+
+        val applicableRules = discountRules.filter {
+            it.isApplicable(lineContext)
+        }
+
+        // Slot bazında grupla
+        val rulesBySlot = applicableRules.groupBy { it.targetSlot }
+
+        val autoApplied = mutableMapOf<Int, DiscountSlot>()
+        val conflicts = mutableListOf<SlotConflict>()
+
+        rulesBySlot.forEach { (slot, rules) ->
+            when {
+                rules.size == 1 -> {
+                    // Tek kural - direkt uygula
+                    autoApplied[slot] = rules.first().toDiscountSlot()
+                }
+                rules.size > 1 -> {
+                    // Birden fazla kural - conflict resolution
+                    val resolution = resolveConflict(rules, settings.defaultConflictResolution)
+
+                    when (resolution) {
+                        is ConflictResult.AutoResolved -> {
+                            autoApplied[slot] = resolution.slot
+                        }
+                        is ConflictResult.NeedsUserInput -> {
+                            conflicts.add(
+                                SlotConflict(
+                                    slotNumber = slot,
+                                    options = resolution.options
+                                )
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
+        return LineDiscountEvaluation(
+            lineId = line.id,
+            autoApplied = autoApplied,
+            conflicts = conflicts
+        )
+    }
+
     /**
      * Conflict'i çözer
      */
     private fun resolveConflict(rules: List<DiscountRule>, defaultResolution: ConflictResolution): ConflictResult {
-        
+
         // Herhangi biri ASK_USER ise kullanıcıya sor
         val resolution = rules
             .map { it.conflictResolution }
             .firstOrNull { it == ConflictResolution.ASK_USER }
             ?: defaultResolution
-        
+
         return when (resolution) {
             ConflictResolution.ASK_USER -> {
                 ConflictResult.NeedsUserInput(
@@ -229,7 +233,7 @@ class PromotionEngine(private val ruleRepository: IPromotionRuleRepository,
             }
         }
     }
-    
+
     /**
      * DiscountRule'u DiscountSlot'a çevirir
      */
@@ -243,7 +247,7 @@ class PromotionEngine(private val ruleRepository: IPromotionRuleRepository,
             isManual = false
         )
     }
-    
+
     /**
      * DiscountRule'u ConflictOption'a çevirir
      */
@@ -256,6 +260,9 @@ class PromotionEngine(private val ruleRepository: IPromotionRuleRepository,
             description = name
         )
     }
+    //endregion
+    
+
 }
 
 /**

@@ -43,22 +43,23 @@ class DocumentManager(override val documentType: DocumentType,
                       private val promotionEngine: IPromotionEngine,
                       private val stockValidator: StockValidator,
                       private val lineCalculator: LineDiscountCalculator) : IDocumentManager {
-    
+    //region Fields
     private val _lines = MutableStateFlow<List<IDocumentLine>>(emptyList())
     override val lines: StateFlow<List<IDocumentLine>> = _lines.asStateFlow()
-    
+
     private val _pendingConflicts = MutableStateFlow<List<LineConflict>>(emptyList())
     override val pendingConflicts: StateFlow<List<LineConflict>> = _pendingConflicts.asStateFlow()
-    
+
     private val _pendingGiftSelections = MutableStateFlow<List<PendingGiftSelection>>(emptyList())
     override val pendingGiftSelections: StateFlow<List<PendingGiftSelection>> = _pendingGiftSelections.asStateFlow()
-    
     private var currentCustomer: Customer? = null
-    
-    // ============ Line Operations ============
-    
+    //endregion Fields
+
+    //region Public Method
+    //region ============ Line Operations ============
+
     override suspend fun addLine(product: Product, unit: ProductUnit, quantity: BigDecimal): AddLineResult {
-        
+
         // Stok kontrolü
         val validation = stockValidator.validate(
             product = product,
@@ -68,10 +69,10 @@ class DocumentManager(override val documentType: DocumentType,
             currentLineId = null,
             documentType = documentType
         )
-        
+
         return when (validation) {
             is StockValidationResult.Valid -> {
-                val line = createLine(product, unit, quantity)
+                val line = createLine(product, unit, quantity, product.vatRate)
                 _lines.value = _lines.value + line
                 recalculatePromotions()
                 AddLineResult.Success(line)
@@ -84,31 +85,27 @@ class DocumentManager(override val documentType: DocumentType,
             }
             is StockValidationResult.Blocked -> {
                 AddLineResult.Blocked(validation)
-            }else -> {
-                val line = createLine(product, unit, quantity)
-                _lines.value = _lines.value + line
-                recalculatePromotions()
-                AddLineResult.Success(line)
             }
         }
     }
-    
+
     override suspend fun updateLine(lineId: String, newUnit: ProductUnit, newQuantity: BigDecimal): UpdateLineResult {
-        val existingLine = _lines.value.find { it.id == lineId } 
+        val existingLine = _lines.value.find { it.id == lineId }
             ?: return UpdateLineResult.NotFound
-        
+
         // Product bilgisi gerekli - TODO: Product cache veya repository
         // Şimdilik simplified
         return UpdateLineResult.Success
     }
-    
+
     override suspend fun removeLine(lineId: String) {
         _lines.value = _lines.value.filter { it.id != lineId }
         recalculatePromotions()
     }
-    
-    // ============ Discount Operations ============
-    
+    //endregion ============ Line Operations ============
+
+    //region ============ Discount Operations ============
+
     override suspend fun applyManualDiscount(lineId: String, slotNumber: Int, type: DiscountType, value: BigDecimal): Result<Unit> {
         return try {
             val lineIndex = _lines.value.indexOfFirst { it.id == lineId }
@@ -132,36 +129,36 @@ class DocumentManager(override val documentType: DocumentType,
             Result.Error(DomainException.UnknownException(cause = e))
         }
     }
-    
+
     override suspend fun clearManualDiscount(lineId: String, slotNumber: Int): Result<Unit> {
         return try {
             val lineIndex = _lines.value.indexOfFirst { it.id == lineId }
             if (lineIndex < 0) return Result.Error(businessRuleException(ErrorCode.ERROR_LINE_NOT_FOUND))
-            
+
             val line = _lines.value[lineIndex]
             val updatedLine = line.withSlot(slotNumber, DiscountSlot.Empty)
-            
+
             _lines.value = _lines.value.toMutableList().apply {
                 set(lineIndex, updatedLine)
             }
-            
+
             Result.Success(Unit)
         } catch (e: Exception) {
             Result.Error(DomainException.UnknownException(cause = e))
         }
     }
-    
-    // ============ Promotion Operations ============
-    
+    //endregion ============ Discount Operations ============
+
+    //region ============ Promotion Operations ============
     override suspend fun recalculatePromotions() {
         val context = buildPromotionContext()
         val result = promotionEngine.evaluate(context)
-        
+
         // İskontola uygula
         _lines.value = _lines.value.map { line ->
             val evaluation = result.lineDiscounts[line.id] ?: return@map line
             var updatedLine = line
-            
+
             evaluation.autoApplied.forEach { (slot, discount) ->
                 // Manuel değilse üzerine yaz
                 val currentSlot = line.getSlot(slot)
@@ -169,27 +166,27 @@ class DocumentManager(override val documentType: DocumentType,
                     updatedLine = updatedLine.withSlot(slot, discount)
                 }
             }
-            
+
             updatedLine
         }
-        
+
         // Conflict'leri güncelle
         _pendingConflicts.value = result.conflicts
-        
+
         // Hediye seçimlerini güncelle
         _pendingGiftSelections.value = result.pendingSelections
     }
-    
+
     override suspend fun resolveConflict(lineId: String, slotNumber: Int, selectedRuleId: String) {
         val conflict = _pendingConflicts.value
             .find { it.lineId == lineId }
             ?.conflicts
             ?.find { it.slotNumber == slotNumber }
             ?: return
-        
+
         val selectedOption = conflict.options.find { it.ruleId == selectedRuleId }
             ?: return
-        
+
         val lineIndex = _lines.value.indexOfFirst { it.id == lineId }
         if (lineIndex >= 0) {
             val slot = DiscountSlot.Applied(
@@ -204,18 +201,18 @@ class DocumentManager(override val documentType: DocumentType,
                 set(lineIndex, get(lineIndex).withSlot(slotNumber, slot))
             }
         }
-        
+
         // Conflict'i kaldır
         removeConflict(lineId, slotNumber)
     }
-    
+
     override suspend fun confirmGiftSelection(ruleId: String, selections: List<GiftSelection>) {
         // TODO: Hediye satırlarını ekle
         _pendingGiftSelections.value = _pendingGiftSelections.value.filter { it.ruleId != ruleId }
     }
-    
-    // ============ Stock Operations ============
-    
+    //endregion ============ Promotion Operations ============
+
+    //region ============ Stock Operations ============
     override fun getStockStatus(product: Product): StockStatus {
         // TODO: Implement
         return StockStatus(
@@ -226,9 +223,9 @@ class DocumentManager(override val documentType: DocumentType,
             lineBreakdown = emptyList()
         )
     }
-    
-    // ============ Document Operations ============
-    
+    //endregion ============ Stock Operations ============
+
+    //region ============ Document Operations ============
     override fun toDocument(): Document {
         return Document(
             id = randomUUID(),
@@ -240,17 +237,19 @@ class DocumentManager(override val documentType: DocumentType,
             updatedAt = now().toInstant()
         )
     }
-    
+
     override fun clear() {
         _lines.value = emptyList()
         _pendingConflicts.value = emptyList()
         _pendingGiftSelections.value = emptyList()
         currentCustomer = null
     }
-    
-    // ============ Private Helpers ============
-    
-    private fun createLine(product: Product, unit: ProductUnit, quantity: BigDecimal): DocumentLine {
+    //endregion ============ Document Operations ============
+    //endregion Public Method
+
+    //region Private Method
+    //region ============ Private Helpers ============
+    private fun createLine(product: Product, unit: ProductUnit, quantity: BigDecimal, vatTate: BigDecimal): DocumentLine {
         return DocumentLine(
             id = randomUUID(),
             productId = product.id,
@@ -259,10 +258,10 @@ class DocumentManager(override val documentType: DocumentType,
             unitName = unit.unitName,
             conversionFactor = unit.conversionFactor,
             quantity = quantity,
-            unitPrice = unit.price
+            unitPrice = unit.price,
+            vatRate = vatTate
         )
     }
-    
     private fun buildPromotionContext(): PromotionContext {
         return PromotionContext(
             currentLine = null,
@@ -273,7 +272,6 @@ class DocumentManager(override val documentType: DocumentType,
             customerPurchaseHistory = null
         )
     }
-    
     private fun removeConflict(lineId: String, slotNumber: Int) {
         _pendingConflicts.value = _pendingConflicts.value.map { lineConflict ->
             if (lineConflict.lineId == lineId) {
@@ -285,4 +283,7 @@ class DocumentManager(override val documentType: DocumentType,
             }
         }.filter { it.conflicts.isNotEmpty() }
     }
+
+    //endregion ============ Private Helpers ============
+    //endregion Private Method
 }

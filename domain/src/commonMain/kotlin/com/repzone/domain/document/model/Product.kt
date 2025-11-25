@@ -13,7 +13,8 @@ data class Product(
     val tags: List<String> = emptyList(),
     val stockQuantity: BigDecimal,
     val stockUnitId: String,
-    val units: List<ProductUnit>
+    val units: List<ProductUnit>,
+    val vatRate: BigDecimal
 ) {
     /**
      * Base birim (stok bu birimde tutuluyor)
@@ -32,6 +33,8 @@ data class ProductUnit(
     val unitName: String,
     val conversionFactor: BigDecimal,
     val isBaseUnit: Boolean,
-    val price: BigDecimal,
-    val barcode: String?
+    val price: BigDecimal, // KDV HARİÇ fiyat mı yok sa kdv dahilmi onu soracagım
+    val barcode: String?,
+    val priceIncludesVat: Boolean = false  // Fiyat KDV dahil mi? parametresi kullanılacak mıdır
+
 )

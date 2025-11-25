@@ -38,6 +38,8 @@ kotlin {
                 implementation(projects.database)
                 implementation(projects.core)
                 implementation(projects.network)
+
+                implementation(libs.bignum)
             }
         }
     }
