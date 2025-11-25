@@ -24,7 +24,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
 
-class VisitViewModel(private val iModuleParameters: IMobileModuleParameterRepository,
+class
+VisitViewModel(private val iModuleParameters: IMobileModuleParameterRepository,
                      private val iVisitManager: IVisitManager,
                      private val executeActionUseCase: ExecuteActionUseCase,
                      private val eventBus: IEventBus): BaseViewModel<VisitUiState, VisitViewModel.Event>(VisitUiState()) {

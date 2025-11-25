@@ -32,6 +32,7 @@ class StartVisitActionRule(
         try {
             val activeLocation = context.getData<GpsLocation>("active_gps_location")
             iVisitRepository.startVisit(customerItemModel, visitInfo, activeLocation!!)
+            context.putData("has_visit_started", true)
             return RuleResult.Success(this)
         }catch (ex: Exception){
             return RuleResult.Failed(this, ex.message ?: "Unknown error")

@@ -10,9 +10,7 @@ import com.repzone.domain.pipline.rules.action.StartVisitActionRule
 import com.repzone.domain.pipline.rules.check.ActiveVisitCheckRule
 import com.repzone.domain.pipline.rules.decision.CustomerBlockedDecisionRule
 import com.repzone.domain.pipline.rules.decision.EndVisitDecisionRule
-import com.repzone.domain.pipline.rules.decision.EndVisitGpsDistanceDecisionRule
 import com.repzone.domain.pipline.rules.decision.StartVisitGpsDistanceDecisionRule
-import com.repzone.domain.repository.ILocationRepository
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.repository.IPipelineRepository
 import com.repzone.domain.repository.IRouteAppointmentRepository
@@ -37,13 +35,19 @@ class PipelineRepositoryImpl(private val eventBus: IEventBus,
     override fun getStartVisit(customerItemModel: CustomerItemModel): Pipeline {
         return startVisitPipeline(customerItemModel)
     }
+
+    override fun getFinishVisit(customerItemModel: CustomerItemModel): Pipeline {
+        return Pipeline(
+            id = "finish_visit",
+            actionType = DocumentActionType.END_VISIT,
+            stages = baseFinishVisitStage(customerItemModel)
+        )
+    }
     //endregion
 
     //region Private Method
-    private fun startVisitPipeline(customerItemModel: CustomerItemModel) = Pipeline(
-        id = "start_visit",
-        actionType = DocumentActionType.START_VISIT,
-        stages = listOf(
+    private fun baseStartVisitStage(customerItemModel: CustomerItemModel): List<Stage> {
+        return listOf(
             Stage(
                 id = "check_stage",
                 name = "Kontroller",
@@ -90,6 +94,24 @@ class PipelineRepositoryImpl(private val eventBus: IEventBus,
                 }
             )
         )
+    }
+
+    private fun baseFinishVisitStage(customerItemModel: CustomerItemModel): List<Stage> {
+        return listOf(
+            Stage(
+                id = "end_visit_stage",
+                name = "Ziyareti Bitir",
+                rules = listOf(
+                    EndVisitActionRule(iVisitRepository = iVisitRepository)
+                ),
+                isConditional = false
+            )
+        )
+    }
+    private fun startVisitPipeline(customerItemModel: CustomerItemModel) = Pipeline(
+        id = "start_visit",
+        actionType = DocumentActionType.START_VISIT,
+        stages = baseStartVisitStage(customerItemModel)
     )
 
     //endregion

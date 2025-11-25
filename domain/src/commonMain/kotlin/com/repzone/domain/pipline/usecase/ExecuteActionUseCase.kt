@@ -19,7 +19,7 @@ class ExecuteActionUseCase(
                 pipelineRepository.getStartVisit(customerItemModel)
             }
             DocumentActionType.END_VISIT -> {
-                pipelineRepository.getStartVisit(customerItemModel)
+                pipelineRepository.getFinishVisit(customerItemModel)
             }
             else -> {
                 null

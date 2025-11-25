@@ -32,7 +32,7 @@ class EndVisitActionRule(
 
     //region Public Method
     override suspend fun canExecute(context: PipelineContext): Boolean {
-        val decision = context.getData<DecisionOptionTypeEnum>("decision_${RuleId.END_VISIT_DECISION}")
+        val decision = context.getData<DecisionOptionTypeEnum>("decision_${RuleId.END_VISIT_DECISION}") ?: DecisionOptionTypeEnum.YES
         return decision == DecisionOptionTypeEnum.YES
     }
 

@@ -7,4 +7,6 @@ import com.repzone.domain.pipline.model.pipline.Pipeline
 interface IPipelineRepository {
     fun getPipelineForAction(actionType: DocumentActionType): Pipeline
     fun getStartVisit(customerItemModel: CustomerItemModel): Pipeline
+    fun getFinishVisit(customerItemModel: CustomerItemModel): Pipeline
+
 }
