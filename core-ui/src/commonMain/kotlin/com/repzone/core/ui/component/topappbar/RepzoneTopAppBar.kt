@@ -1,4 +1,4 @@
-package com.repzone.core.ui.component
+package com.repzone.core.ui.component.topappbar
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement

@@ -39,6 +39,7 @@ import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
 import com.repzone.presentation.legacy.ui.visit.VisitActionList
 import com.repzone.preview.ActivityVisit_Sample
+import com.repzone.preview.ProductListScreen_Sample
 import com.repzone.sync.di.SyncModule
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -125,6 +126,6 @@ fun AppAndroidPreview() {
     val themeManager: ThemeManager = koinInject()
     themeManager.initialize(LegacyThemeConfig())
 
-    ActivityVisit_Sample(themeManager)
+    ProductListScreen_Sample(themeManager)
 
 }

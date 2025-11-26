@@ -4,64 +4,80 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.SkipNext
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.cash.paging.LoadStateError
 import app.cash.paging.LoadStateLoading
 import app.cash.paging.LoadStateNotLoading
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
+import com.repzone.core.model.StringResource
 import com.repzone.core.ui.base.ViewModelHost
+import com.repzone.core.ui.component.floatactionbutton.SmartFabScaffold
+import com.repzone.core.ui.component.floatactionbutton.model.FabAction
+import com.repzone.core.ui.component.topappbar.RepzoneTopAppBar
+import com.repzone.core.ui.component.topappbar.TopBarAction
+import com.repzone.core.ui.component.topappbar.TopBarLeftIcon
+import com.repzone.core.ui.manager.theme.ThemeManager
+import com.repzone.core.util.extensions.fromResource
 import com.repzone.domain.document.model.Product
 import com.repzone.domain.model.product.ProductRowState
+import com.repzone.presentation.legacy.model.enum.ProductSortOption
 import com.repzone.presentation.legacy.ui.productlist.component.DiscountDialogLegacy
+import com.repzone.presentation.legacy.ui.productlist.component.ProductFilterBottomSheet
 import com.repzone.presentation.legacy.ui.productlist.component.ProductListFilterBar
 import com.repzone.presentation.legacy.ui.productlist.component.ProductRow
 import com.repzone.presentation.legacy.viewmodel.productlist.ProductListViewModel
 import kotlinx.coroutines.flow.collectLatest
+import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListViewModel>(){ viewModel ->
+    val themeManager: ThemeManager = koinInject()
+    val scope = rememberCoroutineScope()
+
     // 1. UiState
-    val uiState  by viewModel.state.collectAsState()
+    val uiState by viewModel.state.collectAsState()
     // 2. PagingData (ayrı Flow)
     val products = viewModel.products.collectAsLazyPagingItems()
     // 3. RowStates (ayrı StateFlow - performance)
     val rowStates by viewModel.rowStates.collectAsState()
     // Snackbar
     val snackbarHostState = remember { SnackbarHostState() }
+
+    // Filter BottomSheet state
+    var showFilterSheet by remember { mutableStateOf(false) }
+    var selectedSort by remember { mutableStateOf(ProductSortOption.NAME_ASC) }
 
     // Initialize document
     LaunchedEffect(Unit) {
@@ -104,38 +120,32 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
         }
     }
 
-    Scaffold(
+    SmartFabScaffold(
         modifier = Modifier,
-        topBar = {
-            TopAppBar(
-                title = { Text("Ürün Listesi") },
-                actions = {
-                    TextButton(onClick = { viewModel.onNextClicked() }) {
-                        Row(
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text("Sepete Git")
-                            Icon(Icons.Default.ArrowForward, null)
-                        }
-                    }
-                }
-            )
-        },
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { viewModel.onNextClicked() },
-                icon = { Icon(Icons.Default.ArrowForward, "İleri") },
-                text = { Text("İleri") }
-            )
-        }
+        fabAction = FabAction.Single(icon = Icons.Default.SkipNext, "Satış Siparişi Oluştur"),
     ) { padding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
+
         ) {
+            RepzoneTopAppBar(
+                modifier = Modifier.padding(0.dp),
+                themeManager = themeManager,
+                leftIconType = TopBarLeftIcon.Back(
+                    onClick = {
+                        onDissmiss()
+                    }
+                ),
+                rightIcons = listOf(
+                    TopBarAction(Icons.Default.Timer, "Timer", Color.White, {}),
+                    TopBarAction(Icons.Default.Map, "Map", Color.White, {}),
+                ),
+                title = StringResource.PRODUCTS.fromResource(),
+                subtitle = "Satış Siparişi - Salih Müşterisi"
+            )
             // Initial loading (UiFrame)
             if (uiState.uiFrame.isLoading) {
                 Box(
@@ -145,18 +155,13 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
                     CircularProgressIndicator()
                 }
             } else {
-                // Filter bar
+                // Filter bar (Search + Filter Button)
                 ProductListFilterBar(
                     filterState = uiState.filterState,
-                    availableFilters = uiState.availableFilters,
                     onSearchQueryChanged = viewModel::onSearchQueryChanged,
-                    onBrandsChanged = viewModel::onBrandsChanged,
-                    onCategoriesChanged = viewModel::onCategoriesChanged,
-                    onColorsChanged = viewModel::onColorsChanged,
-                    onTagsChanged = viewModel::onTagsChanged,
-                    onPriceRangeChanged = viewModel::onPriceRangeChanged,
-                    onClearFilters = viewModel::clearFilters,
-                    modifier = Modifier.padding(vertical = 8.dp)
+                    onFilterButtonClick = { showFilterSheet = true },
+                    modifier = Modifier,
+                    themeManager = themeManager
                 )
 
                 HorizontalDivider()
@@ -170,6 +175,32 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
                 )
             }
         }
+    }
+
+    // Filter Bottom Sheet
+    uiState.availableFilters?.let { filters ->
+        ProductFilterBottomSheet(
+            showBottomSheet = showFilterSheet,
+            onDismiss = { showFilterSheet = false },
+            filterState = uiState.filterState,
+            availableFilters = filters,
+            selectedSort = selectedSort,
+            onApplyFilters = { brands, categories, colors, tags, priceRange, sort ->
+                selectedSort = sort
+                viewModel.onBrandsChanged(brands)
+                viewModel.onCategoriesChanged(categories)
+                viewModel.onColorsChanged(colors)
+                viewModel.onTagsChanged(tags)
+                viewModel.onPriceRangeChanged(priceRange)
+                // TODO: viewModel.onSortChanged(sort) eklenebilir
+                showFilterSheet = false
+            },
+            onClearFilters = {
+                selectedSort = ProductSortOption.NAME_ASC
+                viewModel.clearFilters()
+                showFilterSheet = false
+            }
+        )
     }
 
     // Discount dialog
@@ -297,10 +328,7 @@ private fun ProductList(
 }
 
 @Composable
-private fun ErrorState(
-    message: String,
-    onRetry: () -> Unit
-) {
+private fun ErrorState(message: String, onRetry: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()

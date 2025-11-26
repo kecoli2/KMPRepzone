@@ -1,7 +1,6 @@
 package com.repzone.presentation.legacy.ui.customerlist
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,27 +13,19 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTimeFilled
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Cloud
 import androidx.compose.material.icons.filled.DocumentScanner
 import androidx.compose.material.icons.filled.EditNotifications
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.ModeComment
 import androidx.compose.material.icons.filled.People
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Room
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.filled.Task
@@ -45,12 +36,10 @@ import androidx.compose.material.icons.outlined.EditNotifications
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.Room
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.Badge
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
@@ -77,55 +66,41 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
-import com.repzone.core.constant.CdnConfig
 import com.repzone.core.interfaces.IUserSession
-import com.repzone.core.model.StringResource
 import com.repzone.core.ui.base.ViewModelHost
-import com.repzone.core.ui.component.RepzoneTopAppBar
-import com.repzone.core.ui.component.TopBarAction
-import com.repzone.core.ui.component.TopBarLeftIcon
 import com.repzone.core.ui.component.floatactionbutton.SmartFabScaffold
+import com.repzone.core.ui.component.searchtextfield.SearchTextField
 import com.repzone.core.ui.component.selectiondialog.GenericPopupList
 import com.repzone.core.ui.component.selectiondialog.SelectionMode
-import com.repzone.core.ui.manager.theme.AppTheme
+import com.repzone.core.ui.component.topappbar.RepzoneTopAppBar
+import com.repzone.core.ui.component.topappbar.TopBarAction
+import com.repzone.core.ui.component.topappbar.TopBarLeftIcon
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.ui.model.NavigationItem
 import com.repzone.core.ui.util.enum.NavigationItemType
 import com.repzone.core.util.extensions.addDays
 import com.repzone.core.util.extensions.fromResource
-import com.repzone.core.util.extensions.isToday
-import com.repzone.core.util.extensions.isTomorrow
 import com.repzone.core.util.extensions.now
-import com.repzone.core.util.extensions.toDateString
-import com.repzone.core.util.extensions.toDayName
 import com.repzone.core.util.extensions.toInstant
 import com.repzone.domain.model.CustomerItemModel
-import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListScreenUiState
 import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListViewModel
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
 import repzonemobile.core.generated.resources.Res
-import repzonemobile.core.generated.resources.customerblockedtitle
 import repzonemobile.core.generated.resources.customernotestitle
 import repzonemobile.core.generated.resources.dailyoperationstitle
 import repzonemobile.core.generated.resources.documents
 import repzonemobile.core.generated.resources.eagleeyelogstitle
 import repzonemobile.core.generated.resources.exit
 import repzonemobile.core.generated.resources.generalsettings
-import repzonemobile.core.generated.resources.image_not_found
 import repzonemobile.core.generated.resources.notificationlogpagetitle
 import repzonemobile.core.generated.resources.onlinehubtitle
 import repzonemobile.core.generated.resources.profile
@@ -425,7 +400,7 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                         }
                     ),
                     rightIcons = listOf(
-                        TopBarAction(Icons.Default.Timer, "Timer", Color.White,{
+                        TopBarAction(Icons.Default.Timer, "Timer", Color.White, {
 
                         }),
                         TopBarAction(Icons.Default.Map, "Map",Color.White, {
@@ -455,84 +430,25 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
-                    BasicTextField(
+                    SearchTextField(
                         value = searchQuery,
-                        onValueChange = {
-                                searchQuery = it
-                                viewModel.scope.launch {
-                                    viewModel.onEvent(CustomerListViewModel.Event.FilterCustomerList(searchQuery))
-
-                                }
-                            },
+                        onValueChange = { searchQuery = it },
+                        placeholder = Res.string.routesearchcustomer.fromResource(),
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f)
-                            .height(40.dp)
-                            .padding(start = 8.dp, end = 4.dp, top = 4.dp, bottom = 4.dp)
-                            .background(Color.White, RoundedCornerShape(22.dp))
-                            .padding(horizontal = 12.dp, vertical = 8.dp),
-                        textStyle = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
-                        singleLine = true,
-                        cursorBrush = SolidColor(Color.Red),
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Text,
-                            imeAction = ImeAction.Search
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onSearch = {
-                                println("Search: $searchQuery")
-                                viewModel.scope.launch {
-                                    viewModel.onEvent(CustomerListViewModel.Event.FilterCustomerList(searchQuery))
-                                }
-                                focusManager.clearFocus()
+                            .padding(start = 8.dp, end = 4.dp, top = 4.dp, bottom = 4.dp),
+                        onSearch = {
+                            viewModel.scope.launch {
+                                viewModel.onEvent(CustomerListViewModel.Event.FilterCustomerList(searchQuery))
                             }
-                        ),
-                        decorationBox = { innerTextField ->
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                // Search Icon
-                                Icon(
-                                    imageVector = Icons.Default.Search,
-                                    contentDescription = "Search",
-                                    tint = Color.Gray,
-                                    modifier = Modifier.size(18.dp)
-                                )
-
-                                Spacer(modifier = Modifier.width(8.dp))
-
-                                // TextField + Placeholder
-                                Box(modifier = Modifier.weight(1f)) {
-                                    if (searchQuery.isEmpty()) {
-                                        Text(
-                                            Res.string.routesearchcustomer.fromResource(),
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = Color.Gray
-                                        )
-                                    }
-                                    innerTextField()
-                                }
-
-                                // Clear Icon
-                                if (searchQuery.isNotEmpty()) {
-                                    IconButton(
-                                        onClick = {
-                                            searchQuery = ""
-                                            focusManager.clearFocus()
-                                            viewModel.scope.launch {
-                                                viewModel.onEvent(CustomerListViewModel.Event.FilterCustomerList(searchQuery)) }
-                                            },
-                                        modifier = Modifier.size(32.dp)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Default.Close,
-                                            contentDescription = "Clear",
-                                            tint = Color.Gray,
-                                            modifier = Modifier.size(18.dp)
-                                        )
-                                    }
-                                }
+                            focusManager.clearFocus()
+                        },
+                        onClear = {
+                            searchQuery = ""
+                            focusManager.clearFocus()
+                            viewModel.scope.launch {
+                                viewModel.onEvent(CustomerListViewModel.Event.FilterCustomerList(""))
                             }
                         }
                     )

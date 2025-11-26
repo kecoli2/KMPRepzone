@@ -83,10 +83,10 @@ import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.TaskRepeatInterval
 import com.repzone.core.model.StringResource
 import com.repzone.core.ui.base.ViewModelHost
-import com.repzone.core.ui.component.RepzoneTopAppBar
-import com.repzone.core.ui.component.TopBarAction
-import com.repzone.core.ui.component.TopBarLeftIcon
 import com.repzone.core.ui.component.dialog.RepzoneDialog
+import com.repzone.core.ui.component.topappbar.RepzoneTopAppBar
+import com.repzone.core.ui.component.topappbar.TopBarAction
+import com.repzone.core.ui.component.topappbar.TopBarLeftIcon
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.ui.platform.HandleBackPress
 import com.repzone.core.util.extensions.fromResource
@@ -99,7 +99,6 @@ import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.util.enums.ActionButtonType
 import com.repzone.domain.util.models.VisitActionItem
 import com.repzone.domain.util.models.VisitButtonItem
-import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListViewModel
 import com.repzone.presentation.legacy.viewmodel.visit.VisitUiState
 import com.repzone.presentation.legacy.viewmodel.visit.VisitViewModel
 import org.jetbrains.compose.resources.painterResource

@@ -9,10 +9,11 @@ import com.repzone.core.enums.TaskRepeatInterval
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.domain.util.models.VisitActionItem
+import com.repzone.presentation.legacy.ui.productlist.ProductListScreenLegacy
 import com.repzone.presentation.legacy.ui.visit.VisitActionList
 import kotlin.time.ExperimentalTime
 
-//region VİSİT SAMPLE PREVİEW
+//region -------------------- VISIT SAMPLE PREVIEW --------------------
 
 @Composable
 fun ActivityVisit_Sample(themeManager: ThemeManager){
@@ -114,4 +115,17 @@ fun ActivityVisit_Sample(themeManager: ThemeManager){
     }
 }
 
-//endregion VİSİT SAMPLE PREVİEW
+//endregion -------------------- VISIT SAMPLE PREVIEW --------------------
+
+//region -------------------- PRODUCTLIST SAMPLE PREVIEW --------------------
+@Composable
+fun ProductListScreen_Sample(themeManager: ThemeManager){
+    AppTheme(themeManager) {
+        ProductListScreenLegacy(
+            onDissmiss = {
+
+            }
+        )
+    }
+}
+//endregion -------------------- PRODUCTLIST SAMPLE PREVIEW --------------------

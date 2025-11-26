@@ -118,10 +118,16 @@ import com.repzone.data.mapper.VisitLogInformationEntityDbMapper
 import com.repzone.data.repository.imp.VisitRepositoryImpl
 import com.repzone.data.repository.imp.CustomerListRepositoryImpl
 import com.repzone.data.repository.imp.CustomerRepositoryImpl
+import com.repzone.data.repository.imp.DailyOparationRepository
+import com.repzone.data.repository.imp.DocumentMapRepositoryImpl
+import com.repzone.data.repository.imp.DynamicFormRepositoryImpl
 import com.repzone.data.repository.imp.EventReasonRepositoryImpl
 import com.repzone.data.repository.imp.MobileModuleParameterRepositoryImplPreview
+import com.repzone.data.repository.imp.ProductRepository
+import com.repzone.data.repository.imp.PromotionRuleRepository
 import com.repzone.data.repository.imp.RepresentativeRepositoryImpl
 import com.repzone.data.repository.imp.RouteAppointmentRepositoryImpl
+import com.repzone.data.repository.imp.SettingsRepositoryImpl
 import com.repzone.data.repository.imp.SyncModuleRepositoryImpl
 import com.repzone.data.util.Mapper
 import com.repzone.data.util.MapperDto
@@ -238,6 +244,15 @@ import com.repzone.database.UploadFileTaskEntity
 import com.repzone.database.VisitActivityLogInformationEntity
 import com.repzone.database.VisitEntity
 import com.repzone.database.VisitLogInformationEntity
+import com.repzone.domain.document.IPromotionEngine
+import com.repzone.domain.document.base.IDocumentSession
+import com.repzone.domain.document.model.ProductListValidator
+import com.repzone.domain.document.service.DocumentSession
+import com.repzone.domain.document.service.DocumentSessionPreview
+import com.repzone.domain.document.service.LineDiscountCalculator
+import com.repzone.domain.document.service.PromotionEngine
+import com.repzone.domain.document.service.StockCalculator
+import com.repzone.domain.document.service.StockValidator
 import com.repzone.domain.model.AppSettingModel
 import com.repzone.domain.model.CampaignMasterResultRequiredProductModel
 import com.repzone.domain.model.CollectionLogInformationModel
@@ -354,10 +369,16 @@ import com.repzone.domain.model.VisitModel
 import com.repzone.domain.repository.IVisitRepository
 import com.repzone.domain.repository.ICustomerListRepository
 import com.repzone.domain.repository.ICustomerRepository
+import com.repzone.domain.repository.IDailyOparationRepository
+import com.repzone.domain.repository.IDocumentMapRepository
+import com.repzone.domain.repository.IDynamicFormRepository
 import com.repzone.domain.repository.IEventReasonRepository
 import com.repzone.domain.repository.IMobileModuleParameterRepository
+import com.repzone.domain.repository.IProductRepository
+import com.repzone.domain.repository.IPromotionRuleRepository
 import com.repzone.domain.repository.IRepresentativeRepository
 import com.repzone.domain.repository.IRouteAppointmentRepository
+import com.repzone.domain.repository.ISettingsRepository
 import com.repzone.domain.repository.ISyncModuleRepository
 import com.repzone.network.dto.CrmPriceListParameterDto
 import com.repzone.network.dto.CustomerDto
@@ -371,6 +392,7 @@ import com.repzone.network.dto.EventReasonDto
 import com.repzone.network.dto.PackageCustomFieldDto
 import com.repzone.network.dto.PackageCustomFieldProductDto
 import com.repzone.network.dto.RouteDto
+import kotlinx.coroutines.runBlocking
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
@@ -387,10 +409,43 @@ val RepositoryModulePreview = module {
     singleOf(::RouteAppointmentRepositoryImpl) { bind<IRouteAppointmentRepository>() }
     singleOf(::EventReasonRepositoryImpl) { bind<IEventReasonRepository>() }
 
-    factoryOf(::RepresentativeRepositoryImpl){ bind<IRepresentativeRepository>() }
-    factoryOf(::VisitRepositoryImpl){ bind<IVisitRepository>() }
+    factoryOf(::RepresentativeRepositoryImpl) { bind<IRepresentativeRepository>() }
+    factoryOf(::VisitRepositoryImpl) { bind<IVisitRepository>() }
+    factoryOf(::DocumentMapRepositoryImpl) { bind<IDocumentMapRepository>() }
+    factoryOf(::DynamicFormRepositoryImpl) { bind<IDynamicFormRepository>() }
+    factoryOf(::DailyOparationRepository) { bind<IDailyOparationRepository>() }
+
+    factoryOf(::SettingsRepositoryImpl) { bind<ISettingsRepository>() }
+    factoryOf(::ProductRepository) { bind<IProductRepository>() }
     
     //endregion REPOSITORY
+
+    //region Document Module
+    singleOf(::StockCalculator)
+    single {
+        var settings = runBlocking {
+            get<ISettingsRepository>().getStockSettings()
+        }
+        StockValidator(get(), settings)
+    }
+
+    single {
+        var generalSettings = runBlocking {
+            get<ISettingsRepository>().getGeneralSettings()
+        }
+        var slotConfigs = runBlocking {
+            get<ISettingsRepository>().getSlotConfigs()
+        }
+
+        LineDiscountCalculator(slotConfigs, generalSettings)
+    }
+
+    factoryOf(::ProductListValidator)
+
+    singleOf(::PromotionRuleRepository) { bind<IPromotionRuleRepository>() }
+    singleOf(::PromotionEngine) {bind<IPromotionEngine>()}
+    singleOf(::DocumentSessionPreview) {bind<IDocumentSession>()}
+    //endregion Document Module
 
     //region DBMAPPERS
     //region Customer
@@ -859,4 +914,12 @@ val RepositoryModulePreview = module {
     single { SyncWarehouseTotalEntityDbMapper() }
     //endregion
     //endregion DBMAPPERS
+
+    //region OTHER MODULE
+    includes(
+        EventBusModule,
+        PublineModule,
+        GpsModule
+    )
+    //endregion OTHER MODULE
 }
