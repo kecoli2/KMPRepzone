@@ -55,6 +55,7 @@ kotlin {
                 implementation(libs.coil.compose)
                 implementation(libs.coil.network.ktor)
                 implementation(libs.paging.compose.common)
+                implementation(libs.bignum)
 
                 //VICO CHART
                 implementation(libs.vico.compose)
@@ -65,6 +66,7 @@ kotlin {
                 //PROJECT DEPENDCY
                 implementation(projects.core)
                 implementation(projects.coreUi)
+                implementation(projects.data)
                 implementation(projects.domain)
                 implementation(projects.network)
                 implementation(projects.database)

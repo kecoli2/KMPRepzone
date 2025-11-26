@@ -147,7 +147,7 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
         }
 
         val dispatchDocuments = documents.filter {
-            !it.isFulfillment && it.documentTypeGroup == DocumentActionType.DISPATCH && it.isElectronicDocument == (iUserSession.getActiveSession()!!.identity!!.doNotCheckEDocumentWhileSave != 1 && routeInformation.isECustomer)
+            !it.isFulfillment && it.documentTypeGroup == DocumentActionType.WAYBILL && it.isElectronicDocument == (iUserSession.getActiveSession()!!.identity!!.doNotCheckEDocumentWhileSave != 1 && routeInformation.isECustomer)
         }
 
         val paymentDocuments = documents.filter {
@@ -190,7 +190,7 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
                     VisitActionItem(
                         name = it.name,
                         description = it.description,
-                        documentType = DocumentActionType.DISPATCH,
+                        documentType = DocumentActionType.WAYBILL,
                         isFulfillment = it.isFulfillment
                     )
                 )

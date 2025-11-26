@@ -11,6 +11,7 @@ actual fun isInPreview(): Boolean {
     return false
 }
 
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class CurrencyFormatter actual constructor() {
     actual fun format(amount: Double): String {
         val formatter = NSNumberFormatter()

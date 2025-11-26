@@ -5,36 +5,42 @@ import kotlinx.serialization.Serializable
 
 sealed interface LegacyScreen {
 
-    // ============ GRAPH ROUTES ============
+    //region ============ GRAPH ROUTES ============
     @Serializable
     data object AuthGraph : LegacyScreen
 
     @Serializable
     data object MainGraph : LegacyScreen
 
-    // ============ AUTH SCREENS ============
+    @Serializable
+    data object DocumentGraph : LegacyScreen
+    //endregion ============ GRAPH ROUTES ============
+
+    //region ============ AUTH SCREENS ============
     @Serializable
     data object Login : LegacyScreen
-
     @Serializable
     data object Splash : LegacyScreen
-
-    @Serializable
-    data object TestScreen : LegacyScreen
-
     @Serializable
     data class ForgotPassword(val email: String? = null) : LegacyScreen
+    @Serializable
+    data object GpsTrackingScreen : LegacyScreen
+    //endregion ============ AUTH SCREENS ============
 
-    // ============ MAIN SCREENS ============
+    //region ============ MAIN SCREENS ============
     @Serializable
     data object Sync : LegacyScreen
     @Serializable
     data object CustomerList : LegacyScreen
-
     @Serializable
     data object SettingsScreen: LegacyScreen
-
     @Serializable
     data object VisitScreen: LegacyScreen
-    data object ExampleUsageScreen : LegacyScreen
+    //endregion ============ MAIN SCREENS ============
+
+    //region ============ DOCUMENT SCREENS ============
+    @Serializable
+    data object ProductList: LegacyScreen
+    //endregion ============ DOCUMENT SCREENS ============
+
 }

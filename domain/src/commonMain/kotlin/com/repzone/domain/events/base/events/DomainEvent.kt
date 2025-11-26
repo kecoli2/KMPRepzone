@@ -1,6 +1,7 @@
 package com.repzone.domain.events.base.events
 
 import com.repzone.core.util.extensions.now
+import com.repzone.domain.util.models.VisitActionItem
 
 /**
  * Tüm domain event'lerin base interface'i
@@ -22,5 +23,5 @@ sealed interface DomainEvent {
 
     data class VisitStartEvent(val visitId: Long, val customerId: Long, val appointmentId: Long, override val timestamp: Long = now()):DomainEvent
     data class VisitStoptEvent(val visitId: Long, val appointmentId: Long?,override val timestamp: Long = now()):DomainEvent
-
+    data class OpenDocumentEvent(val visitActionItem: VisitActionItem, override val timestamp: Long = now()):DomainEvent
 }

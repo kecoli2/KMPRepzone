@@ -44,7 +44,6 @@ import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Receipt
-import androidx.compose.material.icons.filled.RemoveCircleOutline
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material.icons.filled.Stars
@@ -83,7 +82,6 @@ import com.repzone.core.constant.CdnConfig
 import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.TaskRepeatInterval
 import com.repzone.core.model.StringResource
-import com.repzone.core.model.UiText
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.component.RepzoneTopAppBar
 import com.repzone.core.ui.component.TopBarAction
@@ -109,7 +107,7 @@ import repzonemobile.core.generated.resources.*
 import kotlin.time.ExperimentalTime
 
 @Composable
-fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = ViewModelHost<VisitViewModel> { viewModel ->
+fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit, onOpenDocument: () -> Unit ) = ViewModelHost<VisitViewModel> { viewModel ->
     val themeManager: ThemeManager = koinInject()
     val uiState by viewModel.state.collectAsState()
 
@@ -188,7 +186,7 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit ) = V
             VisitActionList(
                 items = uiState.actionMenuList,
                 onItemClick = { item ->
-                    //viewModel.onActionItemClick(item)
+                    viewModel.onEvent(VisitViewModel.Event.OnActionVisitItem(visitActionItem = item))
                 },
                 themeManager = themeManager,
                 modifier = Modifier.fillMaxSize()
@@ -457,7 +455,7 @@ fun VisitActionItemCard(
 private fun VisitActionItem.getIcon(): ImageVector = when (this.documentType) {
     DocumentActionType.ORDER -> Icons.Default.ShoppingCart
     DocumentActionType.INVOICE -> Icons.Default.Receipt
-    DocumentActionType.DISPATCH -> Icons.Default.LocalShipping
+    DocumentActionType.WAYBILL -> Icons.Default.LocalShipping
     DocumentActionType.WAREHOUSERECEIPT -> Icons.Default.Warehouse
     DocumentActionType.COLLECTION -> Icons.Default.Payments
     DocumentActionType.FORM -> {
@@ -514,7 +512,7 @@ private fun VisitActionItem.getIcon(): ImageVector = when (this.documentType) {
 private fun DocumentActionType.getIcon(): ImageVector = when (this) {
     DocumentActionType.ORDER -> Icons.Default.ShoppingCart
     DocumentActionType.INVOICE -> Icons.Default.Receipt
-    DocumentActionType.DISPATCH -> Icons.Default.LocalShipping
+    DocumentActionType.WAYBILL -> Icons.Default.LocalShipping
     DocumentActionType.WAREHOUSERECEIPT -> Icons.Default.Warehouse
     DocumentActionType.COLLECTION -> Icons.Default.Payments
     DocumentActionType.FORM ->  Icons.Default.Description
@@ -526,7 +524,7 @@ private fun DocumentActionType.getIcon(): ImageVector = when (this) {
 private fun DocumentActionType.getDisplayName(): String = when (this) {
     DocumentActionType.ORDER -> Res.string.orders.fromResource()
     DocumentActionType.INVOICE -> Res.string.invoices.fromResource()
-    DocumentActionType.DISPATCH -> Res.string.dispatches.fromResource()
+    DocumentActionType.WAYBILL -> Res.string.dispatches.fromResource()
     DocumentActionType.WAREHOUSERECEIPT -> Res.string.warehousereceipts.fromResource()
     DocumentActionType.COLLECTION -> Res.string.collections.fromResource()
     DocumentActionType.FORM -> Res.string.forms.fromResource()
@@ -548,7 +546,7 @@ private fun TaskRepeatInterval.getDisplayName(): String = when (this) {
 @Composable
 private fun VisitActionItem.getMenuName(): String {
     return when (this.documentType) {
-        DocumentActionType.ORDER,DocumentActionType.WAREHOUSERECEIPT, DocumentActionType.INVOICE, DocumentActionType.DISPATCH, DocumentActionType.COLLECTION -> {
+        DocumentActionType.ORDER,DocumentActionType.WAREHOUSERECEIPT, DocumentActionType.INVOICE, DocumentActionType.WAYBILL, DocumentActionType.COLLECTION -> {
             when(this.name){
                 "ReceivedOrder" -> Res.string.receivedorder.fromResource()
                 "ElectronicOrder" -> Res.string.electronicorder.fromResource()

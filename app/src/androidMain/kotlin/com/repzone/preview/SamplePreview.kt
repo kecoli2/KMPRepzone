@@ -54,7 +54,7 @@ fun ActivityVisit_Sample(themeManager: ThemeManager){
         VisitActionItem(
             name = "Sevkiyat Hazırla",
             description = "Sevkiyat belgesi hazırlayın",
-            documentType = DocumentActionType.DISPATCH,
+            documentType = DocumentActionType.WAYBILL,
             hasDone = false,
             isFulfillment = true,
             displayOrder = 5,

@@ -4,6 +4,7 @@ import com.repzone.domain.document.IPromotionEngine
 import com.repzone.domain.document.base.IDocumentManager
 import com.repzone.domain.document.base.IDocumentSession
 import com.repzone.domain.document.model.DocumentType
+import com.repzone.domain.model.CustomerItemModel
 
 /**
  * Belge session yöneticisi implementation
@@ -17,13 +18,15 @@ class DocumentSession(private val promotionEngine: IPromotionEngine,
     //endregion
 
     //region Public Method
-    override fun start(type: DocumentType): IDocumentManager {
+    override fun start(type: DocumentType, customerItem: CustomerItemModel, documentName: String): IDocumentManager {
         if (_documentManager == null) {
             _documentManager = DocumentManager(
                 documentType = type,
                 promotionEngine = promotionEngine,
                 stockValidator = stockValidator,
-                lineCalculator = lineCalculator
+                lineCalculator = lineCalculator,
+                customer = customerItem,
+                documentName = documentName
             )
         }
         return _documentManager!!

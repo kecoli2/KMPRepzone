@@ -4,6 +4,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class ZebraPrinterManager actual constructor() {
 
     actual suspend fun printZpl(zpl: String, options: PrintOptions): ZebraResult =

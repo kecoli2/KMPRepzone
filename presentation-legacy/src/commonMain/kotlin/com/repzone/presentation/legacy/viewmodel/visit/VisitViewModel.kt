@@ -20,6 +20,7 @@ import com.repzone.domain.pipline.rules.util.RuleId
 import com.repzone.domain.pipline.usecase.ExecuteActionUseCase
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.util.enums.ActionButtonType
+import com.repzone.domain.util.models.VisitActionItem
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.launch
@@ -135,6 +136,10 @@ VisitViewModel(private val iModuleParameters: IMobileModuleParameterRepository,
                         sessionId = event.sessionId
                     ))
                 }
+
+                is Event.OnActionVisitItem -> {
+
+                }
             }
         }
     }
@@ -223,6 +228,7 @@ VisitViewModel(private val iModuleParameters: IMobileModuleParameterRepository,
     //region Event
     sealed class Event {
         data class OnActionButton(val actionButton: ActionButtonType) : Event()
+        data class OnActionVisitItem(val visitActionItem: VisitActionItem) : Event()
         data class OnDecisionMade(val ruleId: RuleId, val selectedOptions: DecisionOption, val sessionId: String): Event()
     }
     //endregion Event

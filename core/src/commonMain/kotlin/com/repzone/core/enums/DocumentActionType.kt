@@ -10,7 +10,7 @@ enum class DocumentActionType {
     START_VISIT,
     ORDER,
     INVOICE,
-    DISPATCH,
+    WAYBILL,
     WAREHOUSERECEIPT,
     COLLECTION,
     OTHER,

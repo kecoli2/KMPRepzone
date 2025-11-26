@@ -27,7 +27,7 @@ data class VisitActionItem(
     val endDate: Instant? = null,
     val isMandatory: Boolean = false,
     val interval: TaskRepeatInterval = TaskRepeatInterval.NONE,
-    val documentType: DocumentActionType,
+    val documentType: DocumentActionType = DocumentActionType.EMPTY,
     val transactionGroupType: TransactionDocumentGroup? = null,
     val isFulfillment: Boolean = false,
     val smallIcon: String? = null,

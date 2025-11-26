@@ -14,7 +14,8 @@ data class Product(
     val stockQuantity: BigDecimal,
     val stockUnitId: String,
     val units: List<ProductUnit>,
-    val vatRate: BigDecimal
+    val vatRate: BigDecimal,
+    val brand: String = "Deneme",
 ) {
     /**
      * Base birim (stok bu birimde tutuluyor)

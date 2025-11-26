@@ -46,6 +46,12 @@ class ActiveVisitCheckRule(
             return RuleResult.Success(this)
         }
         val activeAppointment = iRouteAppointmentRepository.getRouteInformation(activeVisit.appointmentId)
+        if(activeAppointment != null && activeAppointment.customerId == customerItemModel.customerId) {
+            context.putData("has_active_visit_same_customer", true)
+            return RuleResult.Success(this)
+        }
+
+
         context.putData("has_active_visit", true)
         context.putData("active_visit_id", activeVisit.visitId)
         context.putData("active_appointment", activeAppointment!!)

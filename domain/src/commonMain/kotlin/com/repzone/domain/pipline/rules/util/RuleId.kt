@@ -8,4 +8,6 @@ enum class RuleId(val id: String) {
     START_VISIT("start_visit"),
     START_VISIT_GPS_DISTANCE_CHECK("start_visit_gps_distance_check"),
     END_VISIT_GPS_DISTANCE_CHECK("end_visit_gps_distance_check"),
+    PREPARE_DOCUMENT("prepare_document"),
+
 }

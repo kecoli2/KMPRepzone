@@ -1,11 +1,13 @@
 package com.repzone.data.repository.imp
 
 import com.repzone.core.enums.DocumentActionType
+import com.repzone.domain.document.base.IDocumentSession
 import com.repzone.domain.events.base.IEventBus
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.pipline.model.pipline.Pipeline
 import com.repzone.domain.pipline.model.pipline.Stage
 import com.repzone.domain.pipline.rules.action.EndVisitActionRule
+import com.repzone.domain.pipline.rules.action.PrepareDocumentActionRule
 import com.repzone.domain.pipline.rules.action.StartVisitActionRule
 import com.repzone.domain.pipline.rules.check.ActiveVisitCheckRule
 import com.repzone.domain.pipline.rules.decision.CustomerBlockedDecisionRule
@@ -16,11 +18,14 @@ import com.repzone.domain.repository.IPipelineRepository
 import com.repzone.domain.repository.IRouteAppointmentRepository
 import com.repzone.domain.repository.IVisitRepository
 import com.repzone.domain.service.ILocationService
+import com.repzone.domain.util.models.VisitActionItem
 
 class PipelineRepositoryImpl(private val eventBus: IEventBus,
                              private val iVisitRepository: IVisitRepository,
                              private val iRouteAppointmentRepository: IRouteAppointmentRepository,
-                             private val iModuleParameterRepository: IMobileModuleParameterRepository, private val iLocationService: ILocationService): IPipelineRepository {
+                             private val iModuleParameterRepository: IMobileModuleParameterRepository,
+                             private val iLocationService: ILocationService,
+                             private val iDocumentSession: IDocumentSession): IPipelineRepository {
     //region Field
     //endregion
 
@@ -42,6 +47,31 @@ class PipelineRepositoryImpl(private val eventBus: IEventBus,
             actionType = DocumentActionType.END_VISIT,
             stages = baseFinishVisitStage(customerItemModel)
         )
+    }
+
+    override fun getOrders(customerItemModel: CustomerItemModel, visitActionItem: VisitActionItem): Pipeline {
+        val pipeline = Pipeline(
+            id = "orders",
+            actionType = DocumentActionType.ORDER,
+            stages = baseStartVisitStage(customerItemModel) + listOf(
+                Stage(
+                    id = "orders_stage",
+                    name = "Siparişler",
+                    rules = listOf(PrepareDocumentActionRule(
+                        iDocumentSession = iDocumentSession,
+                        visitActionItem = visitActionItem,
+                        customerItem = customerItemModel,
+                        eventBus = eventBus
+                    )),
+                    isConditional = true,
+                    condition = {
+                        val hasActiveVisitSameCustomer = it.getData<Boolean>("has_active_visit_same_customer") ?: false
+                        val hasVisitStarted = it.getData<Boolean>("has_visit_started") ?: false
+                        hasActiveVisitSameCustomer && hasVisitStarted
+                    }
+            ))
+        )
+            return pipeline
     }
     //endregion
 
@@ -89,8 +119,9 @@ class PipelineRepositoryImpl(private val eventBus: IEventBus,
                 condition = {
                     val hasActiveVisit = it.getData<Boolean>("has_active_visit") ?: false
                     val visitEnded = it.getData<Boolean>("visit_ended") ?: false
+                    val hasActiveVisitSameCustomer = it.getData<Boolean>("has_active_visit_same_customer") ?: false
 
-                    !hasActiveVisit || visitEnded
+                    (!hasActiveVisit || visitEnded) && !hasActiveVisitSameCustomer
                 }
             )
         )

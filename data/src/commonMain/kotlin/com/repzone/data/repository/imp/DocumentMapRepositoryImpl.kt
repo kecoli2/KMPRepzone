@@ -276,7 +276,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
             if(documentMapId == 13 || documentMapId == 29){
                 numberInfoWithId = getDocNumberByDocumentGroup(DocumentActionType.INVOICE)
             }else if (documentMapId == 0 || documentMapId == 30){
-                numberInfoWithId = getDocNumberByDocumentGroup(DocumentActionType.DISPATCH)
+                numberInfoWithId = getDocNumberByDocumentGroup(DocumentActionType.WAYBILL)
             }
         }
 
@@ -376,7 +376,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                 DocumentActionType.INVOICE
             }
             3 -> {
-                DocumentActionType.DISPATCH
+                DocumentActionType.WAYBILL
             }
             4 -> {
                 DocumentActionType.WAREHOUSERECEIPT

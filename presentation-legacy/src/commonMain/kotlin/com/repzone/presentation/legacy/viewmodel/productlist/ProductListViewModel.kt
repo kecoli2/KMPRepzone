@@ -7,14 +7,13 @@ import androidx.paging.cachedIn
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import com.repzone.core.ui.base.BaseViewModel
-import com.repzone.data.model.productstate.ProductRowState
 import com.repzone.data.repository.product.ProductPagingSource
+import com.repzone.domain.model.product.ProductRowState
 import com.repzone.domain.document.base.AddLineResult
 import com.repzone.domain.document.base.IDocumentManager
 import com.repzone.domain.document.base.IDocumentSession
 import com.repzone.domain.document.model.DiscountSlotEntry
 import com.repzone.domain.document.model.DiscountType
-import com.repzone.domain.document.model.DocumentType
 import com.repzone.domain.document.model.Product
 import com.repzone.domain.document.model.ProductListValidator
 import com.repzone.domain.document.model.ProductUnit
@@ -90,6 +89,7 @@ class ProductListViewModel(private val productRepository: IProductRepository,
     //region Constructor
     init {
         loadAvailableFilters()
+        documentManager = documentSession.current()
     }
     //endregion
 
@@ -98,9 +98,7 @@ class ProductListViewModel(private val productRepository: IProductRepository,
      * Belge oturumunu başlat
      * Bu ekran ilk açıldığında çağrılmalıdır
      */
-    fun startDocument(type: DocumentType) {
-        documentManager = documentSession.start(type)
-
+    fun startDocument() {
         // Load existing lines from document into row states
         scope.launch {
             documentManager.lines.collect { lines ->

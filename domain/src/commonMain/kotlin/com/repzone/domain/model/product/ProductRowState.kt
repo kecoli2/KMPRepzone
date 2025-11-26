@@ -1,9 +1,8 @@
-package com.repzone.data.model.productstate
+package com.repzone.domain.model.product
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.util.extensions.toBigDecimalOrNull
 import com.repzone.domain.document.model.DiscountSlotEntry
-import com.repzone.domain.document.model.DiscountType
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.document.model.ValidationStatus
 
@@ -30,7 +29,7 @@ data class ProductRowState(
 
     // Doküman takibi
     val isInDocument: Boolean = false,
-    val documentQuantity: BigDecimal = BigDecimal.ZERO,
+    val documentQuantity: BigDecimal = BigDecimal.Companion.ZERO,
     val documentUnitId: String? = null,      // unitId
     val documentUnitName: String? = null     // unitName
 ) {
@@ -45,7 +44,7 @@ data class ProductRowState(
      */
     val isValidQuantity: Boolean
         get() = quantityText.toBigDecimalOrNull() != null &&
-                quantityText.toBigDecimalOrNull()!! > BigDecimal.ZERO
+                quantityText.toBigDecimalOrNull()!! > BigDecimal.Companion.ZERO
 
     /**
      * Satırın dokümana eklenip eklenemeyeceğini kontrol eder
@@ -55,4 +54,3 @@ data class ProductRowState(
                 validationStatus !is ValidationStatus.Error &&
                 currentUnit != null
 }
-

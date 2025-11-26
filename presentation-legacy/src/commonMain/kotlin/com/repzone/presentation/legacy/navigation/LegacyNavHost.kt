@@ -37,7 +37,7 @@ fun LegacyNavHost(
             modifier = modifier.fillMaxSize(),
         ) {
 
-            // ============ AUTH GRAPH ============
+            //region ============ AUTH GRAPH ============
             navigation<LegacyScreen.AuthGraph>(startDestination = LegacyScreen.Splash) {
                 composable<LegacyScreen.Splash> { backStackEntry ->
                     RegisterBackStackEntry(backStackEntry.id, "SplashViewModel")
@@ -68,13 +68,14 @@ fun LegacyNavHost(
                     )
                 }
 
-                composable<LegacyScreen.TestScreen> { backStackEntry ->
+                composable<LegacyScreen.GpsTrackingScreen> { backStackEntry ->
                     RegisterBackStackEntry(backStackEntry.id, "GpsTrackingViewModel")
                     GpsTrackingScreen()
                 }
             }
+            //endregion ============ AUTH GRAPH ============
 
-            // ============ MAIN APP GRAPH ============
+            //region ============ MAIN APP GRAPH ============
             navigation<LegacyScreen.MainGraph>(startDestination = LegacyScreen.Sync) {
                 composable<LegacyScreen.Sync> { backStackEntry ->
                     RegisterBackStackEntry(backStackEntry.id, "SyncViewModel")
@@ -105,7 +106,7 @@ fun LegacyNavHost(
                             }
 
                             NavigationItemType.GPS_OPERATIONS -> {
-                                navController.navigate(LegacyScreen.TestScreen)
+                                navController.navigate(LegacyScreen.GpsTrackingScreen)
                             }
 
 
@@ -127,19 +128,38 @@ fun LegacyNavHost(
 
                 composable<LegacyScreen.VisitScreen> { backStackEntry ->
                     RegisterBackStackEntry(backStackEntry.id, "VisitViewModel")
-
                     val navigationState: NavigationSharedStateHolder = koinInject()
                     val selectedCustomer by navigationState.selectedCustomer.collectAsState()
-
                     selectedCustomer?.let {
                         VisitScreenLegacy(it,
                             onBackClick = {
                                 navigationState.clearCustomer()
                                 navController.navigateUp()
+                            },
+                            onOpenDocument = {
+
                             })
                     }
                 }
             }
+            //endregion ============ MAIN APP GRAPH ============
+
+            //region ============ DOCUMENT GRAPH ============
+            navigation<LegacyScreen.DocumentGraph>(startDestination = LegacyScreen.ProductList) {
+                /*composable<LegacyScreen.ProductList> { backStackEntry ->
+                    RegisterBackStackEntry(backStackEntry.id, "ProductListViewModel")
+
+                    SyncScreenLegacy(
+                        onSyncCompleted = {
+                            navController.navigate(LegacyScreen.CustomerList) {
+                                popUpTo(LegacyScreen.Sync) { inclusive = true }
+                            }
+                        }
+                    )
+                }*/
+            }
+            //ENDregion ============ DOCUMENT GRAPH ============
+
         }
     }
 }

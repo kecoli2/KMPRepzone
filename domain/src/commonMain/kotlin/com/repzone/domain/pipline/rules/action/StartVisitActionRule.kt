@@ -28,6 +28,15 @@ class StartVisitActionRule(
     //endregion
 
     //region Public Method
+    override suspend fun canExecute(context: PipelineContext): Boolean {
+        val hasActiveVisitSameCustomer = context.getData<Boolean>("has_active_visit_same_customer") ?: false
+        if(hasActiveVisitSameCustomer){
+            context.putData("has_visit_started", true)
+            return false
+        }
+        return true
+    }
+
     override suspend fun execute(context: PipelineContext): RuleResult {
         try {
             val activeLocation = context.getData<GpsLocation>("active_gps_location")

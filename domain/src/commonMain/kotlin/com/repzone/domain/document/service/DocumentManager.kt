@@ -32,6 +32,7 @@ import com.repzone.domain.document.model.DocumentType
 import com.repzone.domain.document.model.GiftSelection
 import com.repzone.domain.document.model.PromotionContext
 import com.repzone.domain.document.model.StockStatus
+import com.repzone.domain.model.CustomerItemModel
 import kotlin.time.ExperimentalTime
 
 
@@ -42,7 +43,8 @@ import kotlin.time.ExperimentalTime
 class DocumentManager(override val documentType: DocumentType,
                       private val promotionEngine: IPromotionEngine,
                       private val stockValidator: StockValidator,
-                      private val lineCalculator: LineDiscountCalculator) : IDocumentManager {
+                      private val lineCalculator: LineDiscountCalculator, customer: CustomerItemModel,
+    private val documentName : String) : IDocumentManager {
     //region Fields
     private val _lines = MutableStateFlow<List<IDocumentLine>>(emptyList())
     override val lines: StateFlow<List<IDocumentLine>> = _lines.asStateFlow()
@@ -52,7 +54,7 @@ class DocumentManager(override val documentType: DocumentType,
 
     private val _pendingGiftSelections = MutableStateFlow<List<PendingGiftSelection>>(emptyList())
     override val pendingGiftSelections: StateFlow<List<PendingGiftSelection>> = _pendingGiftSelections.asStateFlow()
-    private var currentCustomer: Customer? = null
+    private var currentCustomer: CustomerItemModel? = customer
     //endregion Fields
 
     //region Public Method
@@ -231,7 +233,7 @@ class DocumentManager(override val documentType: DocumentType,
             id = randomUUID(),
             type = documentType,
             number = null,
-            customerId = currentCustomer?.id,
+            customer = currentCustomer!!,
             lines = _lines.value,
             createdAt = now().toInstant(),
             updatedAt = now().toInstant()

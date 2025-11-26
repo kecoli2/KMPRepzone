@@ -2,6 +2,7 @@ package com.repzone.domain.document.model
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.domain.document.base.IDocumentLine
+import com.repzone.domain.model.CustomerItemModel
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -14,7 +15,7 @@ data class Document(
     val id: String,
     val type: DocumentType,
     val number: String? = null,
-    val customerId: String? = null,
+    val customer: CustomerItemModel,
     val lines: List<IDocumentLine>,
     val createdAt: Instant,
     val updatedAt: Instant
