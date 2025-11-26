@@ -1,10 +1,8 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
-
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 package com.repzone.presentation.legacy.ui.productlist.component
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -14,18 +12,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.repzone.core.ui.component.FilterSection
+import com.repzone.core.ui.component.textfield.CurrencyTextField
 import com.repzone.core.util.extensions.fromResource
-import com.repzone.core.util.extensions.toBigDecimalOrNull
+import com.repzone.core.util.extensions.toBigDecimalOrNullLocalized
 import com.repzone.domain.model.product.PriceRange
 import com.repzone.domain.model.product.ProductFilterState
 import com.repzone.domain.model.product.ProductFilters
 import com.repzone.presentation.legacy.model.enum.ProductSortOption
-import com.repzone.presentation.legacy.ui.customerlist.FilterSection
 import repzonemobile.core.generated.resources.*
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductFilterBottomSheet(
     showBottomSheet: Boolean,
@@ -185,33 +182,12 @@ fun ProductFilterBottomSheet(
                     FilterSection(
                         title = "Fiyat Aralığı",
                         content = {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                OutlinedTextField(
-                                    value = tempMinPrice,
-                                    onValueChange = { tempMinPrice = it },
-                                    label = { Text("Min") },
-                                    suffix = { Text("₺") },
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                                    modifier = Modifier.weight(1f),
-                                    singleLine = true
-                                )
-
-                                Text("—")
-
-                                OutlinedTextField(
-                                    value = tempMaxPrice,
-                                    onValueChange = { tempMaxPrice = it },
-                                    label = { Text("Max") },
-                                    suffix = { Text("₺") },
-                                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-                                    modifier = Modifier.weight(1f),
-                                    singleLine = true
-                                )
-                            }
+                            PriceRangeInput(
+                                minPrice = tempMinPrice,
+                                maxPrice = tempMaxPrice,
+                                onMinPriceChange = { tempMinPrice = it },
+                                onMaxPriceChange = { tempMaxPrice = it }
+                            )
                         }
                     )
 
@@ -256,8 +232,8 @@ fun ProductFilterBottomSheet(
                     // Uygula Button
                     Button(
                         onClick = {
-                            val minPrice = tempMinPrice.toBigDecimalOrNull()
-                            val maxPrice = tempMaxPrice.toBigDecimalOrNull()
+                            val minPrice = tempMinPrice.toBigDecimalOrNullLocalized()
+                            val maxPrice = tempMaxPrice.toBigDecimalOrNullLocalized()
                             val priceRange = if (minPrice != null || maxPrice != null) {
                                 PriceRange(minPrice, maxPrice)
                             } else null
@@ -281,7 +257,70 @@ fun ProductFilterBottomSheet(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
+/**
+ * Fiyat aralığı input komponenti
+ */
+@Composable
+private fun PriceRangeInput(
+    minPrice: String,
+    maxPrice: String,
+    onMinPriceChange: (String) -> Unit,
+    onMaxPriceChange: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        // Min Price
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "Min",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            CurrencyTextField(
+                value = minPrice,
+                onValueChange = onMinPriceChange,
+                placeholder = "0",
+                modifier = Modifier.fillMaxWidth(),
+                backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
+                cornerRadius = 12.dp,
+                borderWidth = 1.dp
+            )
+        }
+
+        // Separator
+        Text(
+            text = "—",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(top = 24.dp)
+        )
+
+        // Max Price
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = "Max",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(4.dp))
+            CurrencyTextField(
+                value = maxPrice,
+                onValueChange = onMaxPriceChange,
+                placeholder = "0",
+                modifier = Modifier.fillMaxWidth(),
+                backgroundColor = MaterialTheme.colorScheme.surfaceVariant,
+                cornerRadius = 12.dp,
+                borderWidth = 1.dp
+            )
+        }
+    }
+}
+
 @Composable
 private fun MultiSelectChipGroup(
     options: List<String>,
@@ -314,7 +353,6 @@ private fun MultiSelectChipGroup(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun ProductSortChips(
     selectedSort: ProductSortOption,

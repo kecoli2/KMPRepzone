@@ -2,14 +2,13 @@ package com.repzone.presentation.legacy.ui.productlist.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.repzone.core.model.StringResource
-import com.repzone.core.ui.component.searchtextfield.SearchTextField
+import com.repzone.core.ui.component.textfield.RepzoneTextField
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.util.extensions.fromResource
 import com.repzone.domain.model.product.ProductFilterState
@@ -55,7 +54,7 @@ private fun SearchBar(
 ) {
     val focusManager = LocalFocusManager.current
 
-    SearchTextField(
+    RepzoneTextField(
         value = query,
         onValueChange = onQueryChange,
         placeholder = StringResource.SEARCHPRODUCT.fromResource(),

@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.repzone.core.ui.component.FilterSection
 import com.repzone.core.util.extensions.fromResource
 import com.repzone.presentation.legacy.model.CustomerGroup
 import com.repzone.presentation.legacy.model.enum.CustomerSortOption
@@ -24,8 +25,6 @@ import repzonemobile.core.generated.resources.customergroupspickertitle
 import repzonemobile.core.generated.resources.filterapplybuttontext
 import repzonemobile.core.generated.resources.filterclearbuttontext
 import repzonemobile.core.generated.resources.short
-
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -142,17 +141,7 @@ fun FilterBottomSheet(
         }
     }
 }
-@Composable
-fun FilterSection(title: String, content: @Composable () -> Unit) {
-    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.SemiBold
-        )
-        content()
-    }
-}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomerGroupChips(

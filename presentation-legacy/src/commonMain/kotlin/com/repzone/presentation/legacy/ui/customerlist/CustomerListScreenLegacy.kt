@@ -76,9 +76,10 @@ import coil3.compose.AsyncImage
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.component.floatactionbutton.SmartFabScaffold
-import com.repzone.core.ui.component.searchtextfield.SearchTextField
+import com.repzone.core.ui.component.textfield.RepzoneTextField
 import com.repzone.core.ui.component.selectiondialog.GenericPopupList
 import com.repzone.core.ui.component.selectiondialog.SelectionMode
+import com.repzone.core.ui.component.textfield.SearchTextField
 import com.repzone.core.ui.component.topappbar.RepzoneTopAppBar
 import com.repzone.core.ui.component.topappbar.TopBarAction
 import com.repzone.core.ui.component.topappbar.TopBarLeftIcon
@@ -91,6 +92,7 @@ import com.repzone.core.util.extensions.now
 import com.repzone.core.util.extensions.toInstant
 import com.repzone.domain.model.CustomerItemModel
 import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.painterResource
 import org.koin.compose.koinInject
@@ -432,7 +434,13 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
 
                     SearchTextField(
                         value = searchQuery,
-                        onValueChange = { searchQuery = it },
+                        onValueChange = {
+                             searchQuery = it
+                            viewModel.scope.launch {
+                                delay(500)
+                                viewModel.onEvent(CustomerListViewModel.Event.FilterCustomerList(searchQuery))
+                            }
+                       },
                         placeholder = Res.string.routesearchcustomer.fromResource(),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -450,7 +458,7 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                             viewModel.scope.launch {
                                 viewModel.onEvent(CustomerListViewModel.Event.FilterCustomerList(""))
                             }
-                        }
+                        },
                     )
 
                     FilterButtonWithBadge(
