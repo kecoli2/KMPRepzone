@@ -28,30 +28,6 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager): IProduc
         priceRange: PriceRange?,
     ): List<Product> {
         return dummyProducts
-            .filter { product ->
-                (searchQuery.isEmpty() ||
-                        product.name.contains(searchQuery, ignoreCase = true) ||
-                        product.code.contains(searchQuery, ignoreCase = true))
-            }
-            .filter { product ->
-                brands.isEmpty() || brands.contains(product.brand)
-            }
-            .filter { product ->
-                tags.isEmpty() || product.tags.any { it in tags }
-            }
-            .filter { product ->
-                if (priceRange == null) true
-                else {
-                    if(priceRange.min == null && priceRange.max == null){
-                        return@filter true
-                    }
-                    val basePrice = product.baseUnit.price
-                    (priceRange.min == null || basePrice >= priceRange.min!!) &&
-                            (priceRange.max == null || basePrice <= priceRange.max!!)
-                }
-            }
-            .drop((page - 1) * pageSize)
-            .take(pageSize)
     }
 
     override suspend fun getAvailableFilters(): ProductFilters {

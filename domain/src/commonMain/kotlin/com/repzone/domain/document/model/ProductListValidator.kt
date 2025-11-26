@@ -2,6 +2,7 @@ package com.repzone.domain.document.model
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.DecimalMode
+import com.ionspin.kotlin.bignum.decimal.RoundingMode
 import com.repzone.core.util.extensions.toBigDecimalOrNull
 import com.repzone.domain.repository.ISettingsRepository
 
@@ -78,7 +79,10 @@ class ProductListValidator(private val settingsRepository: ISettingsRepository) 
         // Stoku seçili birime dönüştür
         // Örnek: 100 Adet stok, istenen birim Koli (1 Koli = 12 Adet)
         // Sonuç: 100 / 12 = 8.33 Koli
-        return baseStock.divide(unit.conversionFactor, DecimalMode.DEFAULT)
+        return baseStock.divide(
+            unit.conversionFactor,
+            DecimalMode(decimalPrecision = 10, roundingMode = RoundingMode.ROUND_HALF_CEILING)
+        )
     }
 
     /**
