@@ -50,14 +50,15 @@ class PipelineRepositoryImpl(private val eventBus: IEventBus,
     }
 
     override fun getOrders(customerItemModel: CustomerItemModel, visitActionItem: VisitActionItem): Pipeline {
-        val pipeline = Pipeline(
+        return Pipeline(
             id = "orders",
             actionType = DocumentActionType.ORDER,
             stages = baseStartVisitStage(customerItemModel) + listOf(
                 Stage(
                     id = "orders_stage",
                     name = "Siparişler",
-                    rules = listOf(PrepareDocumentActionRule(
+                    rules = listOf(
+                        PrepareDocumentActionRule(
                         iDocumentSession = iDocumentSession,
                         visitActionItem = visitActionItem,
                         customerItem = customerItemModel,
@@ -67,11 +68,10 @@ class PipelineRepositoryImpl(private val eventBus: IEventBus,
                     condition = {
                         val hasActiveVisitSameCustomer = it.getData<Boolean>("has_active_visit_same_customer") ?: false
                         val hasVisitStarted = it.getData<Boolean>("has_visit_started") ?: false
-                        hasActiveVisitSameCustomer && hasVisitStarted
+                        hasActiveVisitSameCustomer || hasVisitStarted
                     }
             ))
         )
-            return pipeline
     }
     //endregion
 

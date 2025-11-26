@@ -21,13 +21,14 @@ import com.repzone.domain.document.model.promotion.DiscountScope
 import com.repzone.domain.document.model.promotion.GiftType
 import com.repzone.domain.document.model.promotion.PromotionRule
 import com.repzone.domain.repository.IPromotionRuleRepository
+import com.repzone.domain.repository.ISettingsRepository
 
 /**
  * Promosyon engine implementation
  */
 class PromotionEngine(private val ruleRepository: IPromotionRuleRepository,
                       private val lineCalculator: LineDiscountCalculator,
-                      private val settings: GeneralSettings) : IPromotionEngine {
+                      private val iSettingsRepository: ISettingsRepository) : IPromotionEngine {
 
     //region Field
     //endregion
@@ -135,7 +136,7 @@ class PromotionEngine(private val ruleRepository: IPromotionRuleRepository,
     //endregion
 
     //region Private Method
-    private fun evaluateLineDiscountsForLine(line: IDocumentLine, context: PromotionContext, allRules: List<PromotionRule>): LineDiscountEvaluation {
+    private suspend fun evaluateLineDiscountsForLine(line: IDocumentLine, context: PromotionContext, allRules: List<PromotionRule>): LineDiscountEvaluation {
 
         val discountRules = allRules
             .filterIsInstance<DiscountRule>()
@@ -162,7 +163,7 @@ class PromotionEngine(private val ruleRepository: IPromotionRuleRepository,
                 }
                 rules.size > 1 -> {
                     // Birden fazla kural - conflict resolution
-                    val resolution = resolveConflict(rules, settings.defaultConflictResolution)
+                    val resolution = resolveConflict(rules, iSettingsRepository.getGeneralSettings().defaultConflictResolution)
 
                     when (resolution) {
                         is ConflictResult.AutoResolved -> {

@@ -138,7 +138,7 @@ VisitViewModel(private val iModuleParameters: IMobileModuleParameterRepository,
                 }
 
                 is Event.OnActionVisitItem -> {
-
+                    executeActionUseCase.invoke(event.visitActionItem, customer!!)
                 }
             }
         }
@@ -216,6 +216,11 @@ VisitViewModel(private val iModuleParameters: IMobileModuleParameterRepository,
 
                         }
                     }
+
+                    is DomainEvent.OpenDocumentEvent -> {
+                        emitEvent(Event.OnActionVisitItem(it.visitActionItem))
+                    }
+
                     else -> {
                         null
                     }

@@ -99,6 +99,7 @@ import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.util.enums.ActionButtonType
 import com.repzone.domain.util.models.VisitActionItem
 import com.repzone.domain.util.models.VisitButtonItem
+import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListViewModel
 import com.repzone.presentation.legacy.viewmodel.visit.VisitUiState
 import com.repzone.presentation.legacy.viewmodel.visit.VisitViewModel
 import org.jetbrains.compose.resources.painterResource
@@ -117,6 +118,30 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit, onOp
 
     HandleBackPress {
         onBackClick()
+    }
+
+    LaunchedEffect(Unit){
+        viewModel.events.collect { event ->
+            when(event){
+                is VisitViewModel.Event.OnActionVisitItem ->{
+                    when(event.visitActionItem.documentType){
+                        DocumentActionType.INVOICE, DocumentActionType.ORDER, DocumentActionType.WAYBILL -> {
+                            onOpenDocument()
+                        }
+                        DocumentActionType.WAREHOUSERECEIPT -> {
+                        }
+                        DocumentActionType.COLLECTION -> {
+                        }
+                        DocumentActionType.FORM -> {
+                        }
+                        else -> {}
+                    }
+                }
+                else -> {
+
+                }
+            }
+        }
     }
 
     Scaffold(modifier = Modifier.fillMaxSize()) { paddingValues ->
@@ -221,7 +246,7 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit, onOp
     }
 
 }
-// YENİ: Sticky Header'lı Liste Composable
+// Sticky Header'lı Liste Composable
 @Composable
 fun VisitActionList(
     items: List<VisitActionItem>,
@@ -452,156 +477,6 @@ fun VisitActionItemCard(
     }
 }
 
-private fun VisitActionItem.getIcon(): ImageVector = when (this.documentType) {
-    DocumentActionType.ORDER -> Icons.Default.ShoppingCart
-    DocumentActionType.INVOICE -> Icons.Default.Receipt
-    DocumentActionType.WAYBILL -> Icons.Default.LocalShipping
-    DocumentActionType.WAREHOUSERECEIPT -> Icons.Default.Warehouse
-    DocumentActionType.COLLECTION -> Icons.Default.Payments
-    DocumentActionType.FORM -> {
-        when(this.smallIcon){
-            "0" ->{
-                Icons.Default.Settings
-            }
-            "1"->{
-                Icons.Default.Flight
-            }
-            "2" -> {
-                Icons.Default.Menu
-            }
-            "3" ->{
-                Icons.Default.ArrowDropDown
-            }
-            "4"->{
-                Icons.AutoMirrored.Default.Sort
-            }
-            "5"->{
-                Icons.Default.ClearAll
-            }
-            "6"->{
-                Icons.Default.ArrowUpward
-            }
-            "7"->{
-                Icons.Default.AttachFile
-            }
-            "8"->{
-                Icons.Default.Mood
-            }
-            "9"->{
-                Icons.Default.Stars
-            }
-            "10"->{
-                Icons.Default.Bookmark
-            }
-            "11"->{
-                Icons.Outlined.TripOrigin
-            }
-            "12"->{
-                Icons.Default.Mode
-            }
-            else -> {
-                Icons.Default.Description
-            }
-        }
-
-    }
-    DocumentActionType.OTHER -> Icons.Default.MoreHoriz
-    else -> Icons.Default.Description
-}
-
-private fun DocumentActionType.getIcon(): ImageVector = when (this) {
-    DocumentActionType.ORDER -> Icons.Default.ShoppingCart
-    DocumentActionType.INVOICE -> Icons.Default.Receipt
-    DocumentActionType.WAYBILL -> Icons.Default.LocalShipping
-    DocumentActionType.WAREHOUSERECEIPT -> Icons.Default.Warehouse
-    DocumentActionType.COLLECTION -> Icons.Default.Payments
-    DocumentActionType.FORM ->  Icons.Default.Description
-    DocumentActionType.OTHER -> Icons.Default.MoreHoriz
-    else -> Icons.Default.Description
-}
-
-@Composable
-private fun DocumentActionType.getDisplayName(): String = when (this) {
-    DocumentActionType.ORDER -> Res.string.orders.fromResource()
-    DocumentActionType.INVOICE -> Res.string.invoices.fromResource()
-    DocumentActionType.WAYBILL -> Res.string.dispatches.fromResource()
-    DocumentActionType.WAREHOUSERECEIPT -> Res.string.warehousereceipts.fromResource()
-    DocumentActionType.COLLECTION -> Res.string.collections.fromResource()
-    DocumentActionType.FORM -> Res.string.forms.fromResource()
-    DocumentActionType.OTHER -> Res.string.other.fromResource()
-    else -> "empty"
-}
-
-@Composable
-private fun TaskRepeatInterval.getDisplayName(): String = when (this) {
-    TaskRepeatInterval.NONE -> ""
-    TaskRepeatInterval.ATVISITSTART -> Res.string.task_repeat_at_visit_start.fromResource()
-    TaskRepeatInterval.ONE_TIME -> Res.string.task_repeat_one_time.fromResource()
-    TaskRepeatInterval.WEEK -> Res.string.task_repeat_week.fromResource()
-    TaskRepeatInterval.MONTH -> Res.string.task_repeat_month.fromResource()
-    TaskRepeatInterval.TWO_WEEK -> Res.string.task_repeat_two_week.fromResource()
-    TaskRepeatInterval.EVERY_VISIT -> Res.string.task_repeat_every_visit.fromResource()
-}
-
-@Composable
-private fun VisitActionItem.getMenuName(): String {
-    return when (this.documentType) {
-        DocumentActionType.ORDER,DocumentActionType.WAREHOUSERECEIPT, DocumentActionType.INVOICE, DocumentActionType.WAYBILL, DocumentActionType.COLLECTION -> {
-            when(this.name){
-                "ReceivedOrder" -> Res.string.receivedorder.fromResource()
-                "ElectronicOrder" -> Res.string.electronicorder.fromResource()
-                "SalesReturnsOrder" -> Res.string.salesreturnsorder.fromResource()
-                "DamagedReturnOrder" -> Res.string.damagedreturnorder.fromResource()
-                "ReturnElectronicOrder" -> Res.string.returnelectronicorder.fromResource()
-                "ReturnWholesaleInvoice" -> Res.string.returnwholesaleinvoice.fromResource()
-                "WholesaleInvoice" -> Res.string.wholesaleinvoice.fromResource()
-                "ElectronicInvoice" -> Res.string.electronicinvoice.fromResource()
-                "ReturnElectronicInvoice" -> Res.string.returnelectronicinvoice.fromResource()
-                "WholesaleDispatch" -> Res.string.wholesaledispatch.fromResource()
-                "ReturnWholesaleDispatch" -> Res.string.returnwholesaledispatch.fromResource()
-                "ElectronicDispatch" -> Res.string.electronicdispatch.fromResource()
-                "ReturnElectronicDispatch" -> Res.string.returnelectronicdispatch.fromResource()
-                "CollectionBill" -> Res.string.collectionbill.fromResource()
-                "CollectionCash" -> Res.string.collectioncash.fromResource()
-                "CollectionCheque" -> Res.string.collectioncheque.fromResource()
-                "CollectionCreditCard" -> Res.string.collectioncreditcard.fromResource()
-                "CollectionMoneyOrder" -> Res.string.collectionmoneyorder.fromResource()
-                "DebitAdvice" -> Res.string.debitadvice.fromResource()
-                "CreditAdvice" -> Res.string.creditadvice.fromResource()
-                "ReturnAssetsPurchaseInvoice" -> Res.string.returnassetspurchaseinvoice.fromResource()
-                "AssetsPurchaseInvoice" -> Res.string.assetspurchaseinvoice.fromResource()
-                "AssetsPurchaseElectronicInvoice" -> Res.string.assetspurchaseelectronicinvoice.fromResource()
-                "AssetsPurchaseReturnElectronicInvoice" -> Res.string.assetspurchasereturnelectronicinvoice.fromResource()
-                "GivenOrder" -> Res.string.givenorder.fromResource()
-                "AssetsPurchaseElectronicOrder" -> Res.string.assetspurchaseelectronicorder.fromResource()
-                "AssetsPurchaseReturnElectronicOrder" -> Res.string.assetspurchasereturnelectronicorder.fromResource()
-                "AssetsPurchaseReturnOrder" -> Res.string.assetspurchasereturnorder.fromResource()
-                "AssetsPurchaseReturnDispatch" -> Res.string.assetspurchasereturndispatch.fromResource()
-                "AssetsPurchaseDispatch" -> Res.string.assetspurchasedispatch.fromResource()
-                "AssetsPurchaseElectronicDispatch" -> Res.string.assetspurchaseelectronicdispatch.fromResource()
-                "AssetsPurchaseReturnElectronicDispatch" -> Res.string.assetspurchasereturnelectronicdispatch.fromResource()
-                "InvoiceVehicleReturn" -> Res.string.invoicevehiclereturn.fromResource()
-                "InvoiceOneToOneReturn" -> Res.string.invoiceonetoonereturn.fromResource()
-                "InvoiceDamagedReturn" -> Res.string.invoicedamagedreturn.fromResource()
-                "InvoiceOneToOneDamagedReturn" -> Res.string.invoiceonetoonedamagedreturn.fromResource()
-                "NamedDeliveryOrder" -> Res.string.nameddeliveryorder.fromResource()
-                "DamagedReturnElectronicOrder" -> Res.string.damaged_return_electronic_order.fromResource()
-                "EInvoiceVehicleReturn" -> Res.string.e_invoice_vehicle_return.fromResource()
-                "EInvoiceDamagedReturn" -> Res.string.e_invoice_damaged_return.fromResource()
-                "EInvoiceOneToOneDamagedReturn" -> Res.string.e_invoice_one_to_one_damaged_return.fromResource()
-                "DamagedReturnElectronicDispatch" -> Res.string.damaged_return_electronic_dispatch.fromResource()
-
-                else -> {
-                    this.name ?: this.documentName ?: ""
-                }
-            }
-        }
-        else -> {
-            this.name ?: this.documentName ?: ""
-        }
-    }
-}
-
 @OptIn(ExperimentalTime::class)
 @Composable
 fun CustomerSummary(customer: CustomerItemModel, themeManager: ThemeManager, visitUiState: VisitUiState){
@@ -774,7 +649,6 @@ fun CustomerSummary(customer: CustomerItemModel, themeManager: ThemeManager, vis
 
     }
 }
-
 @Composable
 fun ActionButton(item: VisitButtonItem, themeManager: ThemeManager, onClick: () -> Unit) {
     Box(
@@ -815,6 +689,156 @@ fun ActionButton(item: VisitButtonItem, themeManager: ThemeManager, onClick: () 
     }
 }
 
+//region -------------- PRIVATE METHOD --------------
+private fun VisitActionItem.getIcon(): ImageVector = when (this.documentType) {
+    DocumentActionType.ORDER -> Icons.Default.ShoppingCart
+    DocumentActionType.INVOICE -> Icons.Default.Receipt
+    DocumentActionType.WAYBILL -> Icons.Default.LocalShipping
+    DocumentActionType.WAREHOUSERECEIPT -> Icons.Default.Warehouse
+    DocumentActionType.COLLECTION -> Icons.Default.Payments
+    DocumentActionType.FORM -> {
+        when(this.smallIcon){
+            "0" ->{
+                Icons.Default.Settings
+            }
+            "1"->{
+                Icons.Default.Flight
+            }
+            "2" -> {
+                Icons.Default.Menu
+            }
+            "3" ->{
+                Icons.Default.ArrowDropDown
+            }
+            "4"->{
+                Icons.AutoMirrored.Default.Sort
+            }
+            "5"->{
+                Icons.Default.ClearAll
+            }
+            "6"->{
+                Icons.Default.ArrowUpward
+            }
+            "7"->{
+                Icons.Default.AttachFile
+            }
+            "8"->{
+                Icons.Default.Mood
+            }
+            "9"->{
+                Icons.Default.Stars
+            }
+            "10"->{
+                Icons.Default.Bookmark
+            }
+            "11"->{
+                Icons.Outlined.TripOrigin
+            }
+            "12"->{
+                Icons.Default.Mode
+            }
+            else -> {
+                Icons.Default.Description
+            }
+        }
+
+    }
+    DocumentActionType.OTHER -> Icons.Default.MoreHoriz
+    else -> Icons.Default.Description
+}
+
+private fun DocumentActionType.getIcon(): ImageVector = when (this) {
+    DocumentActionType.ORDER -> Icons.Default.ShoppingCart
+    DocumentActionType.INVOICE -> Icons.Default.Receipt
+    DocumentActionType.WAYBILL -> Icons.Default.LocalShipping
+    DocumentActionType.WAREHOUSERECEIPT -> Icons.Default.Warehouse
+    DocumentActionType.COLLECTION -> Icons.Default.Payments
+    DocumentActionType.FORM ->  Icons.Default.Description
+    DocumentActionType.OTHER -> Icons.Default.MoreHoriz
+    else -> Icons.Default.Description
+}
+
+@Composable
+private fun DocumentActionType.getDisplayName(): String = when (this) {
+    DocumentActionType.ORDER -> Res.string.orders.fromResource()
+    DocumentActionType.INVOICE -> Res.string.invoices.fromResource()
+    DocumentActionType.WAYBILL -> Res.string.dispatches.fromResource()
+    DocumentActionType.WAREHOUSERECEIPT -> Res.string.warehousereceipts.fromResource()
+    DocumentActionType.COLLECTION -> Res.string.collections.fromResource()
+    DocumentActionType.FORM -> Res.string.forms.fromResource()
+    DocumentActionType.OTHER -> Res.string.other.fromResource()
+    else -> "empty"
+}
+
+@Composable
+private fun TaskRepeatInterval.getDisplayName(): String = when (this) {
+    TaskRepeatInterval.NONE -> ""
+    TaskRepeatInterval.ATVISITSTART -> Res.string.task_repeat_at_visit_start.fromResource()
+    TaskRepeatInterval.ONE_TIME -> Res.string.task_repeat_one_time.fromResource()
+    TaskRepeatInterval.WEEK -> Res.string.task_repeat_week.fromResource()
+    TaskRepeatInterval.MONTH -> Res.string.task_repeat_month.fromResource()
+    TaskRepeatInterval.TWO_WEEK -> Res.string.task_repeat_two_week.fromResource()
+    TaskRepeatInterval.EVERY_VISIT -> Res.string.task_repeat_every_visit.fromResource()
+}
+
+@Composable
+private fun VisitActionItem.getMenuName(): String {
+    return when (this.documentType) {
+        DocumentActionType.ORDER,DocumentActionType.WAREHOUSERECEIPT, DocumentActionType.INVOICE, DocumentActionType.WAYBILL, DocumentActionType.COLLECTION -> {
+            when(this.name){
+                "ReceivedOrder" -> Res.string.receivedorder.fromResource()
+                "ElectronicOrder" -> Res.string.electronicorder.fromResource()
+                "SalesReturnsOrder" -> Res.string.salesreturnsorder.fromResource()
+                "DamagedReturnOrder" -> Res.string.damagedreturnorder.fromResource()
+                "ReturnElectronicOrder" -> Res.string.returnelectronicorder.fromResource()
+                "ReturnWholesaleInvoice" -> Res.string.returnwholesaleinvoice.fromResource()
+                "WholesaleInvoice" -> Res.string.wholesaleinvoice.fromResource()
+                "ElectronicInvoice" -> Res.string.electronicinvoice.fromResource()
+                "ReturnElectronicInvoice" -> Res.string.returnelectronicinvoice.fromResource()
+                "WholesaleDispatch" -> Res.string.wholesaledispatch.fromResource()
+                "ReturnWholesaleDispatch" -> Res.string.returnwholesaledispatch.fromResource()
+                "ElectronicDispatch" -> Res.string.electronicdispatch.fromResource()
+                "ReturnElectronicDispatch" -> Res.string.returnelectronicdispatch.fromResource()
+                "CollectionBill" -> Res.string.collectionbill.fromResource()
+                "CollectionCash" -> Res.string.collectioncash.fromResource()
+                "CollectionCheque" -> Res.string.collectioncheque.fromResource()
+                "CollectionCreditCard" -> Res.string.collectioncreditcard.fromResource()
+                "CollectionMoneyOrder" -> Res.string.collectionmoneyorder.fromResource()
+                "DebitAdvice" -> Res.string.debitadvice.fromResource()
+                "CreditAdvice" -> Res.string.creditadvice.fromResource()
+                "ReturnAssetsPurchaseInvoice" -> Res.string.returnassetspurchaseinvoice.fromResource()
+                "AssetsPurchaseInvoice" -> Res.string.assetspurchaseinvoice.fromResource()
+                "AssetsPurchaseElectronicInvoice" -> Res.string.assetspurchaseelectronicinvoice.fromResource()
+                "AssetsPurchaseReturnElectronicInvoice" -> Res.string.assetspurchasereturnelectronicinvoice.fromResource()
+                "GivenOrder" -> Res.string.givenorder.fromResource()
+                "AssetsPurchaseElectronicOrder" -> Res.string.assetspurchaseelectronicorder.fromResource()
+                "AssetsPurchaseReturnElectronicOrder" -> Res.string.assetspurchasereturnelectronicorder.fromResource()
+                "AssetsPurchaseReturnOrder" -> Res.string.assetspurchasereturnorder.fromResource()
+                "AssetsPurchaseReturnDispatch" -> Res.string.assetspurchasereturndispatch.fromResource()
+                "AssetsPurchaseDispatch" -> Res.string.assetspurchasedispatch.fromResource()
+                "AssetsPurchaseElectronicDispatch" -> Res.string.assetspurchaseelectronicdispatch.fromResource()
+                "AssetsPurchaseReturnElectronicDispatch" -> Res.string.assetspurchasereturnelectronicdispatch.fromResource()
+                "InvoiceVehicleReturn" -> Res.string.invoicevehiclereturn.fromResource()
+                "InvoiceOneToOneReturn" -> Res.string.invoiceonetoonereturn.fromResource()
+                "InvoiceDamagedReturn" -> Res.string.invoicedamagedreturn.fromResource()
+                "InvoiceOneToOneDamagedReturn" -> Res.string.invoiceonetoonedamagedreturn.fromResource()
+                "NamedDeliveryOrder" -> Res.string.nameddeliveryorder.fromResource()
+                "DamagedReturnElectronicOrder" -> Res.string.damaged_return_electronic_order.fromResource()
+                "EInvoiceVehicleReturn" -> Res.string.e_invoice_vehicle_return.fromResource()
+                "EInvoiceDamagedReturn" -> Res.string.e_invoice_damaged_return.fromResource()
+                "EInvoiceOneToOneDamagedReturn" -> Res.string.e_invoice_one_to_one_damaged_return.fromResource()
+                "DamagedReturnElectronicDispatch" -> Res.string.damaged_return_electronic_dispatch.fromResource()
+
+                else -> {
+                    this.name ?: this.documentName ?: ""
+                }
+            }
+        }
+        else -> {
+            this.name ?: this.documentName ?: ""
+        }
+    }
+}
 @Composable
 private fun getIconForActionType(type: ActionButtonType): ImageVector {
     return when (type) {
@@ -827,7 +851,6 @@ private fun getIconForActionType(type: ActionButtonType): ImageVector {
         ActionButtonType.NOTES -> Icons.Default.Note
     }
 }
-
 @Composable
 private fun getIconButtonTypeBackgroundColor(type: ActionButtonType, themeManager: ThemeManager): Color {
     return when (type) {
@@ -843,3 +866,4 @@ private fun getIconButtonTypeBackgroundColor(type: ActionButtonType, themeManage
 
     }
 }
+//endregion -------------- PRIVATE METHOD --------------

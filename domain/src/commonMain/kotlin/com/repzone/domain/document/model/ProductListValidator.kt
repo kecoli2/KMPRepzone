@@ -3,13 +3,12 @@ package com.repzone.domain.document.model
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.DecimalMode
 import com.repzone.core.util.extensions.toBigDecimalOrNull
-import com.repzone.domain.document.base.IDocumentManager
 import com.repzone.domain.repository.ISettingsRepository
 
 /**
  * Ürün miktarlarını stok ve iş kurallarına göre doğrular
  */
-class ProductListValidator(private val documentManager: IDocumentManager, private val settingsRepository: ISettingsRepository) {
+class ProductListValidator(private val settingsRepository: ISettingsRepository) {
     /**
      * Bir ürün birimi için miktar doğrulama işlemi
      */

@@ -28,10 +28,6 @@ class PrepareDocumentActionRule(
     //endregion
 
     //region Public Method
-    override suspend fun canExecute(context: PipelineContext): Boolean {
-        val hasActiveVisit = context.getData<Boolean>("has_active_visit") ?: false
-        return hasActiveVisit
-    }
     override suspend fun execute(context: PipelineContext): RuleResult {
         try {
 

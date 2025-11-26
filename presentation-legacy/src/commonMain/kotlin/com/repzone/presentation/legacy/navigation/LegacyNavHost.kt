@@ -17,6 +17,7 @@ import com.repzone.core.ui.util.enum.NavigationItemType
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
 import com.repzone.presentation.legacy.ui.customerlist.CustomerListScreenLegacy
 import com.repzone.presentation.legacy.ui.gpstest.GpsTrackingScreen
+import com.repzone.presentation.legacy.ui.productlist.ProductListScreenLegacy
 import com.repzone.presentation.legacy.ui.splash.SplashScreenLegacy
 import com.repzone.presentation.legacy.ui.sync.SyncScreenLegacy
 import com.repzone.presentation.legacy.ui.visit.VisitScreenLegacy
@@ -137,7 +138,7 @@ fun LegacyNavHost(
                                 navController.navigateUp()
                             },
                             onOpenDocument = {
-
+                                navController.navigate(LegacyScreen.DocumentGraph)
                             })
                     }
                 }
@@ -146,17 +147,15 @@ fun LegacyNavHost(
 
             //region ============ DOCUMENT GRAPH ============
             navigation<LegacyScreen.DocumentGraph>(startDestination = LegacyScreen.ProductList) {
-                /*composable<LegacyScreen.ProductList> { backStackEntry ->
+                composable<LegacyScreen.ProductList> { backStackEntry ->
                     RegisterBackStackEntry(backStackEntry.id, "ProductListViewModel")
 
-                    SyncScreenLegacy(
-                        onSyncCompleted = {
-                            navController.navigate(LegacyScreen.CustomerList) {
-                                popUpTo(LegacyScreen.Sync) { inclusive = true }
-                            }
+                    ProductListScreenLegacy(
+                        onDissmiss = {
+                            navController.navigateUp()
                         }
                     )
-                }*/
+                }
             }
             //ENDregion ============ DOCUMENT GRAPH ============
 
