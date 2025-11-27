@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.SkipNext
@@ -31,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -58,31 +59,29 @@ import com.repzone.presentation.legacy.ui.productlist.component.ProductListFilte
 import com.repzone.presentation.legacy.ui.productlist.component.ProductRow
 import com.repzone.presentation.legacy.viewmodel.productlist.ProductListViewModel
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListViewModel> { viewModel ->
     val themeManager: ThemeManager = koinInject()
-    // 1. UiState
+    val backgroundColor = remember(themeManager) {
+        themeManager.getCurrentColorScheme().colorPalet.neutral95
+    }
+
     val uiState by viewModel.state.collectAsState()
-    // 2. PagingData (ayrı Flow)
     val products = viewModel.products.collectAsLazyPagingItems()
-    // 3. RowStates (ayrı StateFlow - performance)
     val rowStates by viewModel.rowStates.collectAsState()
-    // Snackbar
     val snackbarHostState = remember { SnackbarHostState() }
 
-    // Filter BottomSheet state
     var showFilterSheet by remember { mutableStateOf(false) }
     var selectedSort by remember { mutableStateOf(ProductSortOption.NAME_ASC) }
 
-    // Initialize document
     LaunchedEffect(Unit) {
         viewModel.startDocument()
     }
 
-    // 4. Handle UI events (BaseViewModel)
     LaunchedEffect(Unit) {
         viewModel.events.collectLatest { event ->
             when (event) {
@@ -102,7 +101,6 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
         }
     }
 
-    // 5. Handle navigation events
     var showDiscountDialog by remember { mutableStateOf<ProductListViewModel.NavigationEvent.OpenDiscountDialog?>(null) }
 
     LaunchedEffect(Unit) {
@@ -119,7 +117,7 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
     SmartFabScaffold(
         modifier = Modifier,
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        fabAction = FabAction.Single(icon = Icons.Default.SkipNext, "Satış Siparişi Oluştur"),
+        fabAction = FabAction.Single(icon = Icons.Default.SkipNext, "."),
     ) { padding ->
         Column(
             modifier = Modifier
@@ -138,7 +136,6 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
                 subtitle = "Satış Siparişi - Salih Müşterisi"
             )
 
-            // Initial loading (UiFrame)
             if (uiState.uiFrame.isLoading) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -147,7 +144,6 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
                     CircularProgressIndicator()
                 }
             } else {
-                // Filter bar (Search + Filter Button)
                 ProductListFilterBar(
                     filterState = uiState.filterState,
                     onSearchQueryChanged = viewModel::onSearchQueryChanged,
@@ -158,19 +154,17 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
 
                 HorizontalDivider()
 
-                // Product list with paging
                 ProductList(
                     products = products,
                     rowStates = rowStates,
                     hasDiscountPermission = true,
                     viewModel = viewModel,
-                    themeManager = themeManager
+                    backgroundColor = backgroundColor
                 )
             }
         }
     }
 
-    // Filter Bottom Sheet
     uiState.availableFilters?.let { filters ->
         ProductFilterBottomSheet(
             showBottomSheet = showFilterSheet,
@@ -195,7 +189,6 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
         )
     }
 
-    // Discount dialog
     showDiscountDialog?.let { dialogEvent ->
         DiscountDialogLegacy(
             product = dialogEvent.product,
@@ -214,22 +207,41 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
     }
 }
 
-private val ProductRowModifier = Modifier.fillMaxWidth()
-
 @Composable
 private fun ProductList(
     products: LazyPagingItems<Product>,
     rowStates: Map<String, ProductRowState>,
     hasDiscountPermission: Boolean,
     viewModel: ProductListViewModel,
-    themeManager: ThemeManager
+    backgroundColor: Color
 ) {
+    val listState = rememberLazyListState()
+    LaunchedEffect(listState) {
+        snapshotFlow {
+            listState.layoutInfo.visibleItemsInfo.mapNotNull { itemInfo ->
+                // Sadece product item'larını al (loading, error vs değil)
+                val index = itemInfo.index
+                if (index >= 0 && index < products.itemCount) {
+                    products.peek(index)
+                } else null
+            }
+        }
+            .distinctUntilChanged()
+            .collect { visibleProducts ->
+                visibleProducts.forEach { product ->
+                    if (!rowStates.containsKey(product.id)) {
+                        viewModel.initializeRowState(product)
+                    }
+                }
+            }
+    }
+
     LazyColumn(
+        state = listState,
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
-        // Refresh loading state
         when (products.loadState.refresh) {
             is LoadStateLoading -> {
                 item(key = "refresh_loading") {
@@ -257,21 +269,25 @@ private fun ProductList(
 
         items(
             count = products.itemCount,
-            key = { index ->
-                products.peek(index)?.id ?: "item_$index"
-            }
+            key = { index -> products.peek(index)?.id ?: "item_$index" }
         ) { index ->
             val product = products[index] ?: return@items
-            ProductRowItem(
+            val rowState = rowStates[product.id]
+
+            if (rowState == null) {
+                Box(modifier = Modifier.fillMaxWidth())
+                return@items
+            }
+
+            ProductRowOptimized(
                 product = product,
-                rowState = rowStates[product.id],
+                rowState = rowState,
                 hasDiscountPermission = hasDiscountPermission,
                 viewModel = viewModel,
-                themeManager = themeManager
+                backgroundColor = backgroundColor
             )
         }
 
-        // Append loading
         when (products.loadState.append) {
             is LoadStateLoading -> {
                 item(key = "append_loading") {
@@ -300,7 +316,6 @@ private fun ProductList(
             else -> Unit
         }
 
-        // Empty state
         if (products.loadState.refresh is LoadStateNotLoading && products.itemCount == 0) {
             item(key = "empty_state") {
                 EmptyState(message = "Ürün bulunamadı")
@@ -308,60 +323,39 @@ private fun ProductList(
         }
     }
 }
-
-/**
- * Ayrı composable - her row kendi recomposition scope'una sahip
- * Bu sayede bir row değiştiğinde sadece o row recompose olur
- */
 @Composable
-private fun ProductRowItem(
+private fun ProductRowOptimized(
     product: Product,
-    rowState: ProductRowState?,
+    rowState: ProductRowState,
     hasDiscountPermission: Boolean,
     viewModel: ProductListViewModel,
-    themeManager: ThemeManager
+    backgroundColor: Color
 ) {
-    LaunchedEffect(product.id) {
-        viewModel.initializeRowState(product)
-    }
-
-    if (rowState == null) {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(80.dp),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator(modifier = Modifier.size(24.dp))
-        }
-        return
-    }
-
-    val onUnitCycle = remember(product.id) {
-        { viewModel.onUnitCycleClicked(product) }
-    }
-
-    val onQuantityChanged = remember(product.id) {
-        { text: String -> viewModel.onQuantityChanged(product, text) }
-    }
-
-    val onDiscountClick = remember(product.id) {
-        { viewModel.onDiscountButtonClicked(product) }
+    val callbacks = remember(product.id) {
+        ProductRowCallbacks(
+            onUnitCycle = { viewModel.onUnitCycleClicked(product) },
+            onQuantityChanged = { text -> viewModel.onQuantityChanged(product, text) },
+            onDiscountClick = { viewModel.onDiscountButtonClicked(product) }
+        )
     }
 
     ProductRow(
         product = product,
         state = rowState,
         hasDiscountPermission = hasDiscountPermission,
-        onUnitCycle = onUnitCycle,
-        onQuantityChanged = onQuantityChanged,
-        onDiscountClick = onDiscountClick,
-        modifier = ProductRowModifier,
-        themeManager = themeManager
+        onUnitCycle = callbacks.onUnitCycle,
+        onQuantityChanged = callbacks.onQuantityChanged,
+        onDiscountClick = callbacks.onDiscountClick,
+        backgroundColor = backgroundColor
     )
 
     HorizontalDivider()
 }
+private data class ProductRowCallbacks(
+    val onUnitCycle: () -> Unit,
+    val onQuantityChanged: (String) -> Unit,
+    val onDiscountClick: () -> Unit
+)
 
 @Composable
 private fun ErrorState(message: String, onRetry: () -> Unit) {

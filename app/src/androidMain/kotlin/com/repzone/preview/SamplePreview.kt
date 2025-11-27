@@ -158,7 +158,7 @@ fun Productrow_Preview(themeManager: ThemeManager){
 
             },
             modifier = Modifier,
-            themeManager = themeManager
+            backgroundColor = themeManager.getCurrentColorScheme().colorPalet.neutral95
         )
     }
 }
