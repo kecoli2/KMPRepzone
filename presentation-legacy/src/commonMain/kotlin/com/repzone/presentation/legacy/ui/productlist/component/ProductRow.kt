@@ -20,10 +20,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.ui.component.textfield.NumberTextField
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.util.extensions.toMoney
 import com.repzone.domain.document.model.Product
+import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.document.model.ValidationStatus
 import com.repzone.domain.model.product.ProductRowState
 import org.jetbrains.compose.resources.painterResource
@@ -53,17 +55,22 @@ fun ProductRow(
             }
         )
 
+        // Discount count'u remember ile cache'le
+        val discountCount by remember(state.discountSlots) {
+            derivedStateOf { state.discountSlots.count { it.value.isNotEmpty() } }
+        }
+
         SwipeToDismissBox(
             state = dismissState,
             backgroundContent = {
                 SwipeBackground(
                     hasDiscount = state.hasDiscount,
-                    discountCount = state.discountSlots.count { it.value.isNotEmpty() }
+                    discountCount = discountCount
                 )
             },
             enableDismissFromStartToEnd = false,
             enableDismissFromEndToStart = true,
-            modifier = Modifier.fillMaxWidth().padding(end = 4.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
             ProductRowContent(
                 product = product,
@@ -71,7 +78,8 @@ fun ProductRow(
                 onUnitCycle = onUnitCycle,
                 onQuantityChanged = onQuantityChanged,
                 themeManager = themeManager,
-                indicatorColor = indicatorColor
+                indicatorColor = indicatorColor,
+                modifier = modifier
             )
         }
     } else {
@@ -81,7 +89,8 @@ fun ProductRow(
             onUnitCycle = onUnitCycle,
             onQuantityChanged = onQuantityChanged,
             themeManager = themeManager,
-            indicatorColor = indicatorColor
+            indicatorColor = indicatorColor,
+            modifier = modifier
         )
     }
 }
@@ -98,6 +107,7 @@ private fun SwipeBackground(
         contentAlignment = Alignment.CenterEnd
     ) {
         Column(
+            modifier = Modifier.padding(end = 24.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
@@ -123,114 +133,100 @@ private fun ProductRowContent(
     state: ProductRowState,
     onUnitCycle: () -> Unit,
     onQuantityChanged: (String) -> Unit,
-    indicatorColor: Color? = null,
+    indicatorColor: Color,
     themeManager: ThemeManager,
-    modifier: Modifier = Modifier,
-
+    modifier: Modifier = Modifier
 ) {
+    // Theme color'ı bir kez hesapla ve cache'le
+    val backgroundColor = remember(themeManager) {
+        themeManager.getCurrentColorScheme().colorPalet.neutral95
+    }
+
+    //  Hesaplamalar derivedStateOf ile cache'le
+    val priceText by remember(state.currentUnit?.price) {
+        derivedStateOf {
+            state.currentUnit?.price?.doubleValue(false)?.toMoney() ?: "-"
+        }
+    }
+
+    val stockQty by remember(product.stockQuantity) {
+        derivedStateOf { product.stockQuantity.doubleValue(false) }
+    }
+
+    val stockText by remember(stockQty, product.baseUnit.unitName) {
+        derivedStateOf { "${stockQty.toInt()} ${product.baseUnit.unitName}" }
+    }
+
+    val hasStock by remember(stockQty) {
+        derivedStateOf { stockQty > 0 }
+    }
+
     Surface(
         modifier = modifier.fillMaxWidth(),
-        color = MaterialTheme.colorScheme.surface
-    ) {
+        color = MaterialTheme.colorScheme.surface) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 4.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                .padding(vertical = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             // Color Indicator Bar
+            Spacer(modifier = Modifier.width(2.dp))
             Box(
                 modifier = Modifier
                     .width(2.dp)
-                    .height(52.dp)
+                    .height(80.dp)
                     .background(
-                        color = indicatorColor ?: MaterialTheme.colorScheme.surface,
+                        color = indicatorColor,
                         shape = RoundedCornerShape(1.dp)
                     )
             )
+            Spacer(modifier = Modifier.width(4.dp))
+            ProductImage(
+                imageUrl = null, // TODO: product.imageUrl
+                productName = product.name
+            )
 
-            //Spacer(modifier = Modifier.width(1.dp))
-            // Product Image
-            ProductImage(imageUrl = "https://www.sourcewatch.org/images/thumb/6/65/Nestle-logo.jpg/300px-Nestle-logo.jpg", productName = product.name)
+            Spacer(modifier = Modifier.width(4.dp))
 
-            // Product Info (Orta)
+            // Product Info
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
-                // Name
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (product.code.isNotEmpty()) {
-                        Text("•", style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant)
-                        Text(
-                            text =  product.code,
-                            maxLines = 1,
-                            style = MaterialTheme.typography.bodySmall,
-                            overflow = TextOverflow.Ellipsis,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                    Text(
-                        text = product.name,
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(start = 4.dp)
-                    )
-                }
+                // Name Row
+                ProductNameRow(
+                    code = product.code,
+                    name = product.name
+                )
 
-                // Brand & Code
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (product.brand.isNotEmpty()) {
-                        Text(
-                            text = product.brand,
-                            style = MaterialTheme.typography.bodySmall,
-                            fontWeight = FontWeight.Medium,
-                            color = MaterialTheme.colorScheme.primary,
-                            overflow = TextOverflow.Ellipsis,
-                            maxLines = 1
-                        )
-                    }
+                // Brand
+                if (product.brand.isNotEmpty()) {
+                    Text(
+                        text = product.brand,
+                        style = MaterialTheme.typography.bodySmall,
+                        fontWeight = FontWeight.Medium,
+                        color = MaterialTheme.colorScheme.primary,
+                        overflow = TextOverflow.Ellipsis,
+                        maxLines = 1
+                    )
                 }
 
                 // Price
                 Text(
-                    text = state.currentUnit?.price?.doubleValue(false)?.toMoney() ?: "-",
+                    text = priceText,
                     style = MaterialTheme.typography.bodyMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
 
                 // Stock
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    val stockQty = product.stockQuantity.doubleValue(false)
-                    val stockColor = if (stockQty > 0) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.error
+                StockInfoRow(
+                    stockText = stockText,
+                    hasStock = hasStock
+                )
 
-                    Icon(
-                        imageVector = Icons.Outlined.Inventory2,
-                        contentDescription = null,
-                        modifier = Modifier.size(12.dp),
-                        tint = stockColor
-                    )
-                    Text(
-                        text = "${stockQty.toInt()} ${product.baseUnit.unitName}",
-                        style = MaterialTheme.typography.bodySmall,
-                        fontSize = 11.sp,
-                        color = stockColor
-                    )
-                }
-
+                // Document Badge
                 if (state.isInDocument) {
                     Badge(
                         containerColor = MaterialTheme.colorScheme.primary,
@@ -252,63 +248,155 @@ private fun ProductRowContent(
                     documentUnitName = state.documentUnitName
                 )
 
-                /*ValidationStatusRow(
-                    validationStatus = ValidationStatus.Empty,
-                    isInDocument = true,
-                    documentQuantity = "15",
-                    documentUnitName = "Koli"
-                )*/
             }
 
             // Sağ taraf: Birim + Miktar
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                // Unit Button
-                state.currentUnit?.let { unit ->
-                    TextButton(
-                        onClick = onUnitCycle,
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
-                        modifier = Modifier.height(28.dp)
-                    ) {
-                        Text(
-                            text = unit.unitName,
-                            style = MaterialTheme.typography.labelMedium,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.width(2.dp))
-                        Icon(
-                            imageVector = Icons.Outlined.Sync,
-                            contentDescription = "Birim değiştir",
-                            modifier = Modifier.size(14.dp)
-                        )
-                    }
-                }
+            QuantityControls(
+                currentUnit = state.currentUnit,
+                quantityText = state.quantityText,
+                validationStatus = state.validationStatus,
+                onUnitCycle = onUnitCycle,
+                onQuantityChanged = onQuantityChanged,
+                backgroundColor = backgroundColor
+            )
+            Spacer(modifier = Modifier.width(4.dp))
+        }
+    }
+}
 
-                // Quantity TextField
-                NumberTextField(
-                    value = state.quantityText,
-                    onValueChange = onQuantityChanged,
-                    modifier = Modifier.width(60.dp),
-                    placeholder = "0",
-                    height = 36.dp,
-                    cornerRadius = 8.dp,
-                    borderWidth = 0.5.dp,
-                    backgroundColor = themeManager.getCurrentColorScheme().colorPalet.neutral95,
-                    showBorder = true,
-                    focusedBorderColor = when (state.validationStatus) {
-                        is ValidationStatus.Error -> MaterialTheme.colorScheme.error
-                        else -> MaterialTheme.colorScheme.primary
-                    },
-                    unfocusedBorderColor = when (state.validationStatus) {
-                        is ValidationStatus.Error -> MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
-                        else -> MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
-                    },
-                    showClearIcon = false
+/**
+ * Ayrı composable - sadece code/name değişirse recompose olur
+ */
+@Composable
+private fun ProductNameRow(
+    code: String,
+    name: String
+) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        if (code.isNotEmpty()) {
+            Text(
+                "•",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Text(
+                text = code,
+                maxLines = 1,
+                style = MaterialTheme.typography.bodySmall,
+                overflow = TextOverflow.Ellipsis,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+        Text(
+            text = name,
+            style = MaterialTheme.typography.titleSmall,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onSurface,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(start = 4.dp)
+        )
+    }
+}
+
+/**
+ * Ayrı composable - sadece stock bilgisi değişirse recompose olur
+ */
+@Composable
+private fun StockInfoRow(
+    stockText: String,
+    hasStock: Boolean
+) {
+    val stockColor = if (hasStock) {
+        MaterialTheme.colorScheme.tertiary
+    } else {
+        MaterialTheme.colorScheme.error
+    }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.Inventory2,
+            contentDescription = null,
+            modifier = Modifier.size(12.dp),
+            tint = stockColor
+        )
+        Text(
+            text = stockText,
+            style = MaterialTheme.typography.bodySmall,
+            fontSize = 11.sp,
+            color = stockColor
+        )
+    }
+}
+
+/**
+ * Ayrı composable - quantity controls izole edildi
+ */
+@Composable
+private fun QuantityControls(
+    currentUnit: ProductUnit?,
+    quantityText: String,
+    validationStatus: ValidationStatus,
+    onUnitCycle: () -> Unit,
+    onQuantityChanged: (String) -> Unit,
+    backgroundColor: Color
+) {
+    // Border renklerini cache'le
+    val isError = validationStatus is ValidationStatus.Error
+    val focusedBorderColor = if (isError) {
+        MaterialTheme.colorScheme.error
+    } else {
+        MaterialTheme.colorScheme.primary
+    }
+    val unfocusedBorderColor = if (isError) {
+        MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+    } else {
+        MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+    }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        // Unit Button
+        currentUnit?.let { unit ->
+            TextButton(
+                onClick = onUnitCycle,
+                contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
+                modifier = Modifier.height(28.dp)
+            ) {
+                Text(
+                    text = unit.unitName,
+                    style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.width(2.dp))
+                Icon(
+                    imageVector = Icons.Outlined.Sync,
+                    contentDescription = "Birim değiştir",
+                    modifier = Modifier.size(14.dp)
                 )
             }
         }
+
+        // Quantity TextField
+        NumberTextField(
+            value = quantityText,
+            onValueChange = onQuantityChanged,
+            modifier = Modifier.width(60.dp),
+            placeholder = "0",
+            height = 36.dp,
+            cornerRadius = 8.dp,
+            borderWidth = 0.5.dp,
+            backgroundColor = backgroundColor,
+            showBorder = true,
+            focusedBorderColor = focusedBorderColor,
+            unfocusedBorderColor = unfocusedBorderColor,
+            showClearIcon = false
+        )
     }
 }
 
@@ -398,6 +486,10 @@ private fun ValidationStatusRow(
         }
         else -> {
             if (isInDocument) {
+                val documentText = remember(documentQuantity, documentUnitName) {
+                    "Sepette: $documentQuantity ${documentUnitName ?: ""}"
+                }
+
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(4.dp),
                     verticalAlignment = Alignment.CenterVertically
@@ -409,7 +501,7 @@ private fun ValidationStatusRow(
                         modifier = Modifier.size(12.dp)
                     )
                     Text(
-                        text = "Sepette: $documentQuantity ${documentUnitName ?: ""}",
+                        text = documentText,
                         style = MaterialTheme.typography.bodySmall,
                         fontSize = 10.sp,
                         color = MaterialTheme.colorScheme.primary,

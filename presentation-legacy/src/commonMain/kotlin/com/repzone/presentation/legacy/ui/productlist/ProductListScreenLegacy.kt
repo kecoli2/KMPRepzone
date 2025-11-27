@@ -6,10 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.SkipNext
@@ -30,7 +30,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -63,10 +62,8 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListViewModel>(){ viewModel ->
+fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListViewModel> { viewModel ->
     val themeManager: ThemeManager = koinInject()
-    val scope = rememberCoroutineScope()
-
     // 1. UiState
     val uiState by viewModel.state.collectAsState()
     // 2. PagingData (ayrı Flow)
@@ -114,9 +111,7 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
                 is ProductListViewModel.NavigationEvent.OpenDiscountDialog -> {
                     showDiscountDialog = event
                 }
-                ProductListViewModel.NavigationEvent.NavigateToCart -> {
-
-                }
+                ProductListViewModel.NavigationEvent.NavigateToCart -> {}
             }
         }
     }
@@ -130,16 +125,11 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-
         ) {
             RepzoneTopAppBar(
                 modifier = Modifier.padding(0.dp),
                 themeManager = themeManager,
-                leftIconType = TopBarLeftIcon.Back(
-                    onClick = {
-                        onDissmiss()
-                    }
-                ),
+                leftIconType = TopBarLeftIcon.Back(onClick = onDissmiss),
                 rightIcons = listOf(
                     TopBarAction(Icons.Default.Timer, "Timer", Color.White, {}),
                     TopBarAction(Icons.Default.Map, "Map", Color.White, {}),
@@ -147,6 +137,7 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
                 title = StringResource.PRODUCTS.fromResource(),
                 subtitle = "Satış Siparişi - Salih Müşterisi"
             )
+
             // Initial loading (UiFrame)
             if (uiState.uiFrame.isLoading) {
                 Box(
@@ -194,7 +185,6 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
                 viewModel.onColorsChanged(colors)
                 viewModel.onTagsChanged(tags)
                 viewModel.onPriceRangeChanged(priceRange)
-                // TODO: viewModel.onSortChanged(sort) eklenebilir
                 showFilterSheet = false
             },
             onClearFilters = {
@@ -212,7 +202,7 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
             unit = dialogEvent.currentUnit,
             quantity = dialogEvent.quantity,
             existingDiscounts = dialogEvent.existingDiscounts,
-            slotConfigs = listOf(), // TODO: Get from settings
+            slotConfigs = listOf(),
             onApply = { discounts ->
                 viewModel.onDiscountsApplied(dialogEvent.productId, discounts)
                 showDiscountDialog = null
@@ -223,6 +213,8 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
         )
     }
 }
+
+private val ProductRowModifier = Modifier.fillMaxWidth()
 
 @Composable
 private fun ProductList(
@@ -235,12 +227,12 @@ private fun ProductList(
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
         contentPadding = PaddingValues(vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
         // Refresh loading state
         when (products.loadState.refresh) {
             is LoadStateLoading -> {
-                item {
+                item(key = "refresh_loading") {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -253,10 +245,10 @@ private fun ProductList(
             }
             is LoadStateError -> {
                 val error = (products.loadState.refresh as LoadStateError).error
-                item {
+                item(key = "refresh_error") {
                     ErrorState(
                         message = "Ürünler yüklenirken hata: ${error.message}",
-                        onRetry = { products.retry() }
+                        onRetry = products::retry
                     )
                 }
             }
@@ -265,38 +257,24 @@ private fun ProductList(
 
         items(
             count = products.itemCount,
-            key = { index -> products[index]?.id ?: index }
-        ) { index ->
-            val product = products[index]
-
-            if (product != null) {
-                LaunchedEffect(product.id) {
-                    viewModel.initializeRowState(product)
-                }
-
-                val rowState = rowStates[product.id]
-
-                if (rowState != null) {
-                    ProductRow(
-                        product = product,
-                        state = rowState,
-                        hasDiscountPermission = hasDiscountPermission,
-                        onUnitCycle = { viewModel.onUnitCycleClicked(product) },
-                        onQuantityChanged = { text -> viewModel.onQuantityChanged(product, text) },
-                        onDiscountClick = { viewModel.onDiscountButtonClicked(product) },
-                        /*onAddClick = { viewModel.onAddToDocument(product) },*/
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        themeManager = themeManager
-                    )
-                    HorizontalDivider()
-                }
+            key = { index ->
+                products.peek(index)?.id ?: "item_$index"
             }
+        ) { index ->
+            val product = products[index] ?: return@items
+            ProductRowItem(
+                product = product,
+                rowState = rowStates[product.id],
+                hasDiscountPermission = hasDiscountPermission,
+                viewModel = viewModel,
+                themeManager = themeManager
+            )
         }
 
-        // Append loading (scroll için daha fazla yükleme)
+        // Append loading
         when (products.loadState.append) {
             is LoadStateLoading -> {
-                item {
+                item(key = "append_loading") {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -308,9 +286,9 @@ private fun ProductList(
                 }
             }
             is LoadStateError -> {
-                item {
+                item(key = "append_error") {
                     TextButton(
-                        onClick = { products.retry() },
+                        onClick = products::retry,
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(16.dp)
@@ -324,11 +302,65 @@ private fun ProductList(
 
         // Empty state
         if (products.loadState.refresh is LoadStateNotLoading && products.itemCount == 0) {
-            item {
+            item(key = "empty_state") {
                 EmptyState(message = "Ürün bulunamadı")
             }
         }
     }
+}
+
+/**
+ * Ayrı composable - her row kendi recomposition scope'una sahip
+ * Bu sayede bir row değiştiğinde sadece o row recompose olur
+ */
+@Composable
+private fun ProductRowItem(
+    product: Product,
+    rowState: ProductRowState?,
+    hasDiscountPermission: Boolean,
+    viewModel: ProductListViewModel,
+    themeManager: ThemeManager
+) {
+    LaunchedEffect(product.id) {
+        viewModel.initializeRowState(product)
+    }
+
+    if (rowState == null) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(80.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(modifier = Modifier.size(24.dp))
+        }
+        return
+    }
+
+    val onUnitCycle = remember(product.id) {
+        { viewModel.onUnitCycleClicked(product) }
+    }
+
+    val onQuantityChanged = remember(product.id) {
+        { text: String -> viewModel.onQuantityChanged(product, text) }
+    }
+
+    val onDiscountClick = remember(product.id) {
+        { viewModel.onDiscountButtonClicked(product) }
+    }
+
+    ProductRow(
+        product = product,
+        state = rowState,
+        hasDiscountPermission = hasDiscountPermission,
+        onUnitCycle = onUnitCycle,
+        onQuantityChanged = onQuantityChanged,
+        onDiscountClick = onDiscountClick,
+        modifier = ProductRowModifier,
+        themeManager = themeManager
+    )
+
+    HorizontalDivider()
 }
 
 @Composable
