@@ -201,7 +201,7 @@ fun VisitScreenLegacy(customer: CustomerItemModel, onBackClick: () -> Unit, onOp
                     }
                 }
             }
-            HorizontalDivider( // ✅ Box yerine HorizontalDivider kullanın
+            HorizontalDivider(
                 modifier = Modifier.padding(top = 4.dp),
                 thickness = 2.dp,
                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)

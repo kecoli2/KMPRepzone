@@ -54,7 +54,7 @@ data class JoinConfig(
         val alias = effectiveTableAlias
         val table = if (tableAliasName != null) "$tableName AS $tableAliasName" else tableName
 
-        // ✅ DÜZELTME: rightColumn'da alias kullan
+        // rightColumn'da alias kullan
         val rightColumnWithAlias = if (tableAliasName != null) {
             // Eğer rightColumn "SyncCustomerEntity.Id" formatındaysa
             // "c.Id" yap

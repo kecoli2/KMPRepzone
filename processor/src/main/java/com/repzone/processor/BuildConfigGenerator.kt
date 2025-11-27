@@ -77,11 +77,11 @@ class BuildConfigGenerator(
                 """.trimIndent())
             }
 
-            logger.warn("✅ Generated BuildConfig.kt successfully")
+            logger.warn("Generated BuildConfig.kt successfully")
         } catch (e: FileAlreadyExistsException) {
-            logger.warn("⚠️ BuildConfig.kt already exists, skipping generation")
+            logger.warn("BuildConfig.kt already exists, skipping generation")
         } catch (e: Exception) {
-            logger.error("❌ Failed to generate BuildConfig.kt: ${e.message}")
+            logger.error("Failed to generate BuildConfig.kt: ${e.message}")
             e.printStackTrace()
         }
     }

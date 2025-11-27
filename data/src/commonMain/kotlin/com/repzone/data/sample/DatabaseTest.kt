@@ -822,7 +822,7 @@ class DatabaseTest(private val driver: SqlDriver) {
 
     private fun printSuccess() {
         println("\n${"=".repeat(70)}")
-        println(" ".repeat(20) + "✅ ALL TESTS PASSED ✅")
+        println(" ".repeat(20) + "ALL TESTS PASSED")
         println("${"=".repeat(70)}")
         println("End Time: ${now()}")
         println("${"=".repeat(70)}\n")

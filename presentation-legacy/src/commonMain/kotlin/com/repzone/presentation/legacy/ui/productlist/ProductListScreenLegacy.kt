@@ -1,5 +1,6 @@
 package com.repzone.presentation.legacy.ui.productlist
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,6 +37,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import app.cash.paging.LoadStateError
@@ -224,9 +226,18 @@ private fun ProductList(
     val listState = rememberLazyListState()
     val focusManager = LocalFocusManager.current
 
+    LaunchedEffect(listState.isScrollInProgress) {
+        if (listState.isScrollInProgress) {
+            focusManager.clearFocus()
+        }
+    }
+
     LazyColumn(
         state = listState,
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize()
+            .pointerInput(Unit) {
+            detectTapGestures(onTap = { focusManager.clearFocus() })
+        },
         contentPadding = PaddingValues(
             top = 8.dp,
             bottom = 88.dp

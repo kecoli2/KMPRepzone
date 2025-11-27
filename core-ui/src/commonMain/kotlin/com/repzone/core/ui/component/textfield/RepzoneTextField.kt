@@ -17,20 +17,28 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.input.OffsetMapping
 import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.repzone.core.platform.NumberFormatter
@@ -39,18 +47,33 @@ import com.repzone.core.platform.NumberFormatter
  * Input tipi için enum
  */
 enum class TextFieldInputType {
-    TEXT,           // Normal metin girişi
-    NUMBER,         // Tam sayı girişi (1234)
-    DECIMAL,        // Ondalık sayı girişi (123,45)
-    CURRENCY,       // Para birimi girişi (1.234,56 ₺)
-    PHONE,          // Telefon numarası
-    EMAIL           // E-posta
+    TEXT,
+    NUMBER,
+    DECIMAL,
+    CURRENCY,
+    PHONE,
+    EMAIL
+}
+
+/**
+ * Border tipi için enum
+ */
+enum class BorderType {
+    FULL,           // Tüm kenarlar (varsayılan)
+    BOTTOM_ONLY     // Sadece alt çizgi
+}
+
+/**
+ * Text hizalama için enum (placeholder ve yazılan text için)
+ */
+enum class TextAlignment {
+    START,          // Sola hizalı (varsayılan)
+    CENTER,         // Ortala
+    END             // Sağa hizalı
 }
 
 /**
  * Genel amaçlı TextField komponenti
- * Search, Currency, Number ve Text girişlerini destekler
- * Platform-aware NumberFormatter kullanır
  */
 @Composable
 fun RepzoneTextField(
@@ -77,20 +100,32 @@ fun RepzoneTextField(
     maxLength: Int? = null,
     decimalPlaces: Int = 2,
     showCurrencySymbol: Boolean = true,
+    // Border parametreleri
     showBorder: Boolean = false,
+    borderType: BorderType = BorderType.FULL,
     borderWidth: Dp = 1.5.dp,
     borderColor: Color = Color.Transparent,
     focusedBorderColor: Color = MaterialTheme.colorScheme.primary,
-    unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f)
+    unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f),
+    // Text hizalama (placeholder ve yazılan text için)
+    textAlignment: TextAlignment = TextAlignment.START,
+    // Focus'ta seçim
+    selectAllOnFocus: Boolean = false
 ) {
-    // Platform-aware NumberFormatter
     val formatter = remember { NumberFormatter() }
-
-    // Focus state
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
-    // Input tipine göre keyboard type belirleme
+    // TextAlign belirleme
+    val textAlign = when (textAlignment) {
+        TextAlignment.START -> TextAlign.Start
+        TextAlignment.CENTER -> TextAlign.Center
+        TextAlignment.END -> TextAlign.End
+    }
+
+    // TextStyle'a textAlign ekle
+    val alignedTextStyle = textStyle.copy(textAlign = textAlign)
+
     val keyboardType = remember(inputType) {
         when (inputType) {
             TextFieldInputType.TEXT -> KeyboardType.Text
@@ -101,7 +136,6 @@ fun RepzoneTextField(
         }
     }
 
-    // Visual transformation (currency formatting için)
     val visualTransformation = remember(inputType, formatter) {
         when (inputType) {
             TextFieldInputType.CURRENCY -> CurrencyVisualTransformation(
@@ -112,201 +146,269 @@ fun RepzoneTextField(
         }
     }
 
-    // Input filtreleme
     val filteredOnValueChange: (String) -> Unit = { newValue ->
         val filtered = when (inputType) {
             TextFieldInputType.NUMBER -> newValue.filter { it.isDigit() }
             TextFieldInputType.DECIMAL, TextFieldInputType.CURRENCY -> {
-                filterDecimalInput(
-                    input = newValue,
-                    decimalPlaces = decimalPlaces,
-                    decimalSeparator = formatter.decimalSeparator
-                )
+                filterDecimalInput(newValue, decimalPlaces, formatter.decimalSeparator)
             }
             TextFieldInputType.PHONE -> newValue.filter { it.isDigit() || it == '+' || it == ' ' || it == '-' }
             else -> newValue
         }
-
-        // Max length kontrolü
         val finalValue = if (maxLength != null && filtered.length > maxLength) {
             filtered.take(maxLength)
         } else {
             filtered
         }
-
         onValueChange(finalValue)
     }
 
-    // Suffix belirleme (currency için otomatik)
     val effectiveSuffix = when {
         suffix != null -> suffix
         inputType == TextFieldInputType.CURRENCY && showCurrencySymbol -> formatter.currencySymbol
         else -> null
     }
 
-    // Border rengi belirleme
     val currentBorderColor = when {
         !showBorder -> Color.Transparent
-        borderColor != Color.Transparent -> borderColor // Manuel renk verilmişse onu kullan
+        borderColor != Color.Transparent -> borderColor
         isFocused -> focusedBorderColor
         else -> unfocusedBorderColor
     }
 
     val shape = RoundedCornerShape(cornerRadius)
 
-    BasicTextField(
-        value = value,
-        onValueChange = filteredOnValueChange,
-        modifier = modifier
-            .height(height)
-            .background(backgroundColor, shape)
-            .then(
-                if (showBorder) {
-                    Modifier.border(borderWidth, currentBorderColor, shape)
-                } else {
-                    Modifier
-                }
+    // Border modifier
+    val borderModifier = when {
+        !showBorder -> Modifier
+        borderType == BorderType.BOTTOM_ONLY -> Modifier.drawBehind {
+            val strokeWidth = borderWidth.toPx()
+            drawLine(
+                color = currentBorderColor,
+                start = Offset(0f, size.height - strokeWidth / 2),
+                end = Offset(size.width, size.height - strokeWidth / 2),
+                strokeWidth = strokeWidth
             )
-            .padding(horizontal = 12.dp, vertical = 8.dp),
-        textStyle = textStyle,
-        singleLine = true,
-        enabled = enabled,
-        cursorBrush = SolidColor(cursorColor),
-        keyboardOptions = KeyboardOptions(
-            keyboardType = keyboardType,
-            imeAction = imeAction
-        ),
-        keyboardActions = KeyboardActions(
-            onSearch = { onSearch?.invoke() },
-            onDone = { onSearch?.invoke() }
-        ),
-        visualTransformation = visualTransformation,
-        interactionSource = interactionSource,
-        decorationBox = { innerTextField ->
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Leading Icon
-                if (leadingIcon != null) {
-                    Icon(
-                        imageVector = leadingIcon,
-                        contentDescription = "Icon",
-                        tint = iconTint,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                }
+        }
+        else -> Modifier.border(borderWidth, currentBorderColor, shape)
+    }
 
-                // Prefix
-                if (prefix != null) {
-                    Text(
-                        text = prefix,
-                        style = textStyle.copy(color = placeholderColor),
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                }
+    if (selectAllOnFocus) {
+        // TextFieldValue state'i
+        var textFieldValue by remember {
+            mutableStateOf(TextFieldValue(text = value, selection = TextRange(value.length)))
+        }
 
-                // TextField + Placeholder
-                Box(modifier = Modifier.weight(1f)) {
-                    if (value.isEmpty()) {
-                        Text(
-                            text = placeholder,
-                            style = textStyle.copy(color = placeholderColor),
-                        )
-                    }
-                    innerTextField()
-                }
+        // Önceki focus durumunu takip et
+        var wasFocused by remember { mutableStateOf(false) }
 
-                // Suffix
-                if (effectiveSuffix != null && value.isNotEmpty()) {
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = effectiveSuffix,
-                        style = textStyle.copy(color = placeholderColor),
-                    )
-                }
-
-                // Clear Icon
-                if (showClearIcon && value.isNotEmpty()) {
-                    IconButton(
-                        onClick = {
-                            onClear?.invoke() ?: onValueChange("")
-                        },
-                        modifier = Modifier.size(32.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Clear",
-                            tint = iconTint,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                }
+        // Dışarıdan value değişirse güncelle (ama selection'ı koru)
+        LaunchedEffect(value) {
+            if (textFieldValue.text != value) {
+                textFieldValue = textFieldValue.copy(text = value)
             }
         }
-    )
+
+        // Sadece focus KAZANILDIĞINDA tümünü seç (false -> true geçişi)
+        LaunchedEffect(isFocused) {
+            if (isFocused && !wasFocused && textFieldValue.text.isNotEmpty()) {
+                textFieldValue = textFieldValue.copy(
+                    selection = TextRange(0, textFieldValue.text.length)
+                )
+            }
+            wasFocused = isFocused
+        }
+
+        BasicTextField(
+            value = textFieldValue,
+            onValueChange = { newValue ->
+                textFieldValue = newValue  // Selection'ı da güncelle
+                filteredOnValueChange(newValue.text)
+            },
+            modifier = modifier
+                .height(height)
+                .background(backgroundColor, shape)
+                .then(borderModifier)
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            textStyle = alignedTextStyle,
+            singleLine = true,
+            enabled = enabled,
+            cursorBrush = SolidColor(cursorColor),
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
+            keyboardActions = KeyboardActions(
+                onSearch = { onSearch?.invoke() },
+                onDone = { onSearch?.invoke() }
+            ),
+            visualTransformation = visualTransformation,
+            interactionSource = interactionSource,
+            decorationBox = { innerTextField ->
+                DecorationContent(
+                    value = value,
+                    innerTextField = innerTextField,
+                    leadingIcon = leadingIcon,
+                    iconTint = iconTint,
+                    prefix = prefix,
+                    placeholderColor = placeholderColor,
+                    placeholder = placeholder,
+                    textAlignment = textAlignment,
+                    textStyle = alignedTextStyle,
+                    effectiveSuffix = effectiveSuffix,
+                    showClearIcon = showClearIcon,
+                    onClear = onClear,
+                    onValueChange = onValueChange
+                )
+            }
+        )
+    } else {
+        BasicTextField(
+            value = value,
+            onValueChange = filteredOnValueChange,
+            modifier = modifier
+                .height(height)
+                .background(backgroundColor, shape)
+                .then(borderModifier)
+                .padding(horizontal = 12.dp, vertical = 8.dp),
+            textStyle = alignedTextStyle,
+            singleLine = true,
+            enabled = enabled,
+            cursorBrush = SolidColor(cursorColor),
+            keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
+            keyboardActions = KeyboardActions(
+                onSearch = { onSearch?.invoke() },
+                onDone = { onSearch?.invoke() }
+            ),
+            visualTransformation = visualTransformation,
+            interactionSource = interactionSource,
+            decorationBox = { innerTextField ->
+                DecorationContent(
+                    value = value,
+                    innerTextField = innerTextField,
+                    leadingIcon = leadingIcon,
+                    iconTint = iconTint,
+                    prefix = prefix,
+                    placeholderColor = placeholderColor,
+                    placeholder = placeholder,
+                    textAlignment = textAlignment,
+                    textStyle = alignedTextStyle,
+                    effectiveSuffix = effectiveSuffix,
+                    showClearIcon = showClearIcon,
+                    onClear = onClear,
+                    onValueChange = onValueChange
+                )
+            }
+        )
+    }
 }
 
-/**
- * Decimal input filtreleme
- */
-private fun filterDecimalInput(
-    input: String,
-    decimalPlaces: Int,
-    decimalSeparator: Char
-): String {
-    val otherSeparator = if (decimalSeparator == ',') '.' else ','
+@Composable
+private fun DecorationContent(
+    value: String,
+    innerTextField: @Composable () -> Unit,
+    leadingIcon: ImageVector?,
+    iconTint: Color,
+    prefix: String?,
+    placeholderColor: Color,
+    placeholder: String,
+    textAlignment: TextAlignment,
+    textStyle: TextStyle,
+    effectiveSuffix: String?,
+    showClearIcon: Boolean,
+    onClear: (() -> Unit)?,
+    onValueChange: (String) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (leadingIcon != null) {
+            Icon(
+                imageVector = leadingIcon,
+                contentDescription = "Icon",
+                tint = iconTint,
+                modifier = Modifier.size(18.dp)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+        }
 
-    // Diğer separator'ı locale'e uygun olana çevir
-    var normalized = input.replace(otherSeparator, decimalSeparator)
+        if (prefix != null) {
+            Text(text = prefix, style = textStyle.copy(color = placeholderColor))
+            Spacer(modifier = Modifier.width(4.dp))
+        }
 
-    // Sadece rakam ve decimal separator'a izin ver
-    normalized = normalized.filter { it.isDigit() || it == decimalSeparator }
+        Box(
+            modifier = Modifier.weight(1f),
+            contentAlignment = when (textAlignment) {
+                TextAlignment.CENTER -> Alignment.Center
+                TextAlignment.END -> Alignment.CenterEnd
+                TextAlignment.START -> Alignment.CenterStart
+            }
+        ) {
+            if (value.isEmpty()) {
+                Text(
+                    text = placeholder,
+                    style = textStyle.copy(color = placeholderColor),
+                    modifier = Modifier.fillMaxWidth()
+                )
+            }
+            Box(modifier = Modifier.fillMaxWidth()) {
+                innerTextField()
+            }
+        }
 
-    // Birden fazla decimal separator varsa sadece ilkini tut
-    val parts = normalized.split(decimalSeparator)
-    return when {
-        parts.size <= 1 -> normalized
-        else -> {
-            val integerPart = parts[0]
-            val decimalPart = parts[1].take(decimalPlaces)
-            "$integerPart$decimalSeparator$decimalPart"
+        if (effectiveSuffix != null && value.isNotEmpty()) {
+            Spacer(modifier = Modifier.width(4.dp))
+            Text(text = effectiveSuffix, style = textStyle.copy(color = placeholderColor))
+        }
+
+        if (showClearIcon && value.isNotEmpty()) {
+            IconButton(
+                onClick = { onClear?.invoke() ?: onValueChange("") },
+                modifier = Modifier.size(24.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Close,
+                    contentDescription = "Clear",
+                    tint = iconTint,
+                    modifier = Modifier.size(16.dp)
+                )
+            }
         }
     }
 }
 
-/**
- * Currency için visual transformation
- * 1234567,89 -> 1.234.567,89 (TR format için)
- */
+private fun filterDecimalInput(input: String, decimalPlaces: Int, decimalSeparator: Char): String {
+    val filtered = input.filter { it.isDigit() || it == decimalSeparator || it == '.' || it == ',' }
+    val normalized = filtered.replace('.', decimalSeparator).replace(',', decimalSeparator)
+    val parts = normalized.split(decimalSeparator)
+    return when {
+        parts.size == 1 -> parts[0]
+        parts.size >= 2 -> {
+            val integerPart = parts[0]
+            val decimalPart = parts[1].take(decimalPlaces)
+            if (decimalPart.isEmpty()) "$integerPart$decimalSeparator"
+            else "$integerPart$decimalSeparator$decimalPart"
+        }
+        else -> normalized
+    }
+}
+
 private class CurrencyVisualTransformation(
     private val decimalSeparator: Char,
     private val groupingSeparator: Char
 ) : VisualTransformation {
-
     override fun filter(text: AnnotatedString): TransformedText {
         val originalText = text.text
+        if (originalText.isEmpty()) return TransformedText(text, OffsetMapping.Identity)
 
-        if (originalText.isEmpty()) {
-            return TransformedText(text, OffsetMapping.Identity)
-        }
-
-        // Parse the number
         val parts = originalText.split(decimalSeparator)
         val integerPart = parts.getOrNull(0) ?: ""
         val decimalPart = parts.getOrNull(1)
-
-        // Format integer part with grouping
         val formattedInteger = formatWithGrouping(integerPart)
 
-        // Build final string
-        val formattedText = if (decimalPart != null) {
-            "$formattedInteger$decimalSeparator$decimalPart"
-        } else if (originalText.endsWith(decimalSeparator)) {
-            "$formattedInteger$decimalSeparator"
-        } else {
-            formattedInteger
+        val formattedText = when {
+            decimalPart != null -> "$formattedInteger$decimalSeparator$decimalPart"
+            originalText.endsWith(decimalSeparator) -> "$formattedInteger$decimalSeparator"
+            else -> formattedInteger
         }
 
         return TransformedText(
@@ -317,55 +419,38 @@ private class CurrencyVisualTransformation(
 
     private fun formatWithGrouping(integerPart: String): String {
         if (integerPart.isEmpty()) return ""
-
         val reversed = integerPart.reversed()
         val grouped = reversed.chunked(3).joinToString(groupingSeparator.toString())
         return grouped.reversed()
     }
 }
 
-/**
- * Currency offset mapping
- */
 private class CurrencyOffsetMapping(
     private val originalText: String,
     private val formattedText: String,
     private val groupingSeparator: Char
 ) : OffsetMapping {
-
     override fun originalToTransformed(offset: Int): Int {
-        if (offset <= 0) return 0
-        if (originalText.isEmpty()) return 0
-
+        if (offset <= 0 || originalText.isEmpty()) return 0
         var transformedOffset = 0
         var originalCount = 0
-
         for (char in formattedText) {
             if (originalCount >= offset) break
             transformedOffset++
-            if (char != groupingSeparator) {
-                originalCount++
-            }
+            if (char != groupingSeparator) originalCount++
         }
-
         return transformedOffset
     }
 
     override fun transformedToOriginal(offset: Int): Int {
-        if (offset <= 0) return 0
-        if (formattedText.isEmpty()) return 0
-
+        if (offset <= 0 || formattedText.isEmpty()) return 0
         var originalOffset = 0
         var transformedCount = 0
-
         for (char in formattedText) {
             if (transformedCount >= offset) break
             transformedCount++
-            if (char != groupingSeparator) {
-                originalOffset++
-            }
+            if (char != groupingSeparator) originalOffset++
         }
-
         return originalOffset.coerceAtMost(originalText.length)
     }
 }
@@ -374,9 +459,6 @@ private class CurrencyOffsetMapping(
 // Convenience Composables
 // ============================================
 
-/**
- * Currency input için hazır component
- */
 @Composable
 fun CurrencyTextField(
     value: String,
@@ -389,10 +471,13 @@ fun CurrencyTextField(
     cornerRadius: Dp = 8.dp,
     height: Dp = 35.dp,
     showBorder: Boolean = true,
+    borderType: BorderType = BorderType.FULL,
     borderWidth: Dp = 1.5.dp,
     focusedBorderColor: Color = MaterialTheme.colorScheme.primary,
     unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f),
-    showClearIcon: Boolean = true
+    showClearIcon: Boolean = true,
+    textAlignment: TextAlignment = TextAlignment.START,
+    selectAllOnFocus: Boolean = false
 ) {
     RepzoneTextField(
         value = value,
@@ -408,15 +493,15 @@ fun CurrencyTextField(
         cornerRadius = cornerRadius,
         height = height,
         showBorder = showBorder,
+        borderType = borderType,
         focusedBorderColor = focusedBorderColor,
         unfocusedBorderColor = unfocusedBorderColor,
         borderWidth = borderWidth,
+        textAlignment = textAlignment,
+        selectAllOnFocus = selectAllOnFocus
     )
 }
 
-/**
- * Number input için hazır component
- */
 @Composable
 fun NumberTextField(
     value: String,
@@ -430,10 +515,13 @@ fun NumberTextField(
     cornerRadius: Dp = 8.dp,
     height: Dp = 35.dp,
     showBorder: Boolean = true,
+    borderType: BorderType = BorderType.FULL,
     focusedBorderColor: Color = MaterialTheme.colorScheme.primary,
     unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f),
     borderWidth: Dp = 1.5.dp,
-    showClearIcon: Boolean = true
+    showClearIcon: Boolean = true,
+    textAlignment: TextAlignment = TextAlignment.START,
+    selectAllOnFocus: Boolean = false
 ) {
     RepzoneTextField(
         value = value,
@@ -450,15 +538,15 @@ fun NumberTextField(
         cornerRadius = cornerRadius,
         height = height,
         showBorder = showBorder,
+        borderType = borderType,
         focusedBorderColor = focusedBorderColor,
         unfocusedBorderColor = unfocusedBorderColor,
-        borderWidth = borderWidth
+        borderWidth = borderWidth,
+        textAlignment = textAlignment,
+        selectAllOnFocus = selectAllOnFocus
     )
 }
 
-/**
- * Decimal input için hazır component
- */
 @Composable
 fun DecimalTextField(
     value: String,
@@ -472,10 +560,13 @@ fun DecimalTextField(
     cornerRadius: Dp = 8.dp,
     height: Dp = 35.dp,
     showBorder: Boolean = true,
+    borderType: BorderType = BorderType.FULL,
     focusedBorderColor: Color = MaterialTheme.colorScheme.primary,
     unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f),
     borderWidth: Dp = 1.5.dp,
-    showClearIcon: Boolean = true
+    showClearIcon: Boolean = true,
+    textAlignment: TextAlignment = TextAlignment.START,
+    selectAllOnFocus: Boolean = false
 ) {
     RepzoneTextField(
         value = value,
@@ -492,15 +583,15 @@ fun DecimalTextField(
         cornerRadius = cornerRadius,
         height = height,
         showBorder = showBorder,
+        borderType = borderType,
         focusedBorderColor = focusedBorderColor,
         unfocusedBorderColor = unfocusedBorderColor,
         borderWidth = borderWidth,
+        textAlignment = textAlignment,
+        selectAllOnFocus = selectAllOnFocus
     )
 }
 
-/**
- * Search input için hazır component
- */
 @Composable
 fun SearchTextField(
     value: String,
@@ -514,10 +605,13 @@ fun SearchTextField(
     cornerRadius: Dp = 22.dp,
     height: Dp = 35.dp,
     showBorder: Boolean = false,
+    borderType: BorderType = BorderType.FULL,
     focusedBorderColor: Color = MaterialTheme.colorScheme.primary,
     unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f),
     borderWidth: Dp = 1.5.dp,
-    showClearIcon: Boolean = true
+    showClearIcon: Boolean = true,
+    textAlignment: TextAlignment = TextAlignment.START,
+    selectAllOnFocus: Boolean = false
 ) {
     RepzoneTextField(
         value = value,
@@ -534,8 +628,11 @@ fun SearchTextField(
         cornerRadius = cornerRadius,
         height = height,
         showBorder = showBorder,
+        borderType = borderType,
         focusedBorderColor = focusedBorderColor,
         unfocusedBorderColor = unfocusedBorderColor,
-        borderWidth = borderWidth
+        borderWidth = borderWidth,
+        textAlignment = textAlignment,
+        selectAllOnFocus = selectAllOnFocus
     )
 }

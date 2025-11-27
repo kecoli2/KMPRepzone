@@ -179,7 +179,7 @@ class SyncTestViewModel(private val syncManager: ISyncManager,
                 updateState { currentState ->
                     currentState.copy(
                         uiFrame = currentState.uiFrame.copy(isLoading = false),
-                        successMessage = "✅ ${userRole.getDisplayName()} rolü için sync başlatıldı!"
+                        successMessage = "${userRole.getDisplayName()} rolü için sync başlatıldı!"
                     )
                 }
 
@@ -209,7 +209,7 @@ class SyncTestViewModel(private val syncManager: ISyncManager,
                 updateState { currentState ->
                     currentState.copy(
                         uiFrame = currentState.uiFrame.copy(isLoading = false),
-                        successMessage = "✅ ${jobType.getDisplayName()} sync başlatıldı!"
+                        successMessage = "${jobType.getDisplayName()} sync başlatıldı!"
                     )
                 }
 
@@ -217,7 +217,7 @@ class SyncTestViewModel(private val syncManager: ISyncManager,
                 updateState { currentState ->
                     currentState.copy(
                         uiFrame = currentState.uiFrame.copy(isLoading = false),
-                        errorMessage = "❌ ${jobType.getDisplayName()} sync başlatılamadı: ${e.message}" // ← Değişti
+                        errorMessage = "${jobType.getDisplayName()} sync başlatılamadı: ${e.message}" // ← Değişti
                     )
                 }
             }
@@ -239,7 +239,7 @@ class SyncTestViewModel(private val syncManager: ISyncManager,
                 updateState { currentState ->
                     currentState.copy(
                         uiFrame = currentState.uiFrame.copy(isLoading = false),
-                        successMessage = "✅ ${jobs.size} sync işlemi başlatıldı!"
+                        successMessage = "${jobs.size} sync işlemi başlatıldı!"
                     )
                 }
 
@@ -258,9 +258,9 @@ class SyncTestViewModel(private val syncManager: ISyncManager,
         scope.launch {
             try {
                 syncManager.pauseAll()
-                updateState { it.copy(successMessage = "⏸️ Tüm sync işlemleri duraklatıldı") }
+                updateState { it.copy(successMessage = "Tüm sync işlemleri duraklatıldı") }
             } catch (e: Exception) {
-                updateState { it.copy(errorMessage = "❌ Duraklatma başarısız: ${e.message}") }
+                updateState { it.copy(errorMessage = "Duraklatma başarısız: ${e.message}") }
             }
         }
     }

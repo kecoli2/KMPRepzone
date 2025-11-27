@@ -161,11 +161,11 @@ class StringResourceGenerator(
                 writer.write("}\n")
             }
 
-            logger.warn("✅ Generated StringResource.kt successfully")
+            logger.warn("Generated StringResource.kt successfully")
         } catch (e: FileAlreadyExistsException) {
-            logger.warn("⚠️ StringResource.kt already exists, skipping generation")
+            logger.warn("StringResource.kt already exists, skipping generation")
         } catch (e: Exception) {
-            logger.error("❌ Failed to generate StringResource.kt: ${e.message}")
+            logger.error("Failed to generate StringResource.kt: ${e.message}")
             e.printStackTrace()
         }
     }
@@ -213,11 +213,11 @@ class StringResourceGenerator(
                 writer.write("}\n")
             }
 
-            logger.warn("✅ Generated StringResourceMapping.kt successfully")
+            logger.warn("Generated StringResourceMapping.kt successfully")
         } catch (e: FileAlreadyExistsException) {
-            logger.warn("⚠️ StringResourceMapping.kt already exists, skipping generation")
+            logger.warn("StringResourceMapping.kt already exists, skipping generation")
         } catch (e: Exception) {
-            logger.error("❌ Failed to generate StringResourceMapping.kt: ${e.message}")
+            logger.error("Failed to generate StringResourceMapping.kt: ${e.message}")
             e.printStackTrace()
         }
     }

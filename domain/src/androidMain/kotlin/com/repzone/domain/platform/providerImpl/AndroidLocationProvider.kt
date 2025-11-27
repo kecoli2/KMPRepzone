@@ -91,7 +91,7 @@ class AndroidLocationProvider(private val context: Context,
 
                                     val location = result.lastLocation
                                     if (location != null) {
-                                        Logger.d("AndroidLocationProvider: ✅ Force GPS received - accuracy: ${location.accuracy}m")
+                                        Logger.d("AndroidLocationProvider: Force GPS received - accuracy: ${location.accuracy}m")
                                         continuation.resume(Result.Success(location.toGpsLocation()))
                                     } else {
                                         continuation.resume(Result.Error(businessRuleException(ErrorCode.UNKNOWN_ERROR, cause =  IllegalStateException("Location is null"))))

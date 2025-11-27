@@ -20,7 +20,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.repzone.core.ui.component.textfield.BorderType
 import com.repzone.core.ui.component.textfield.NumberTextField
+import com.repzone.core.ui.component.textfield.TextAlignment
 import com.repzone.core.util.extensions.toMoney
 import com.repzone.domain.document.model.Product
 import com.repzone.domain.document.model.ProductUnit
@@ -354,10 +356,13 @@ private fun QuantityControls(
             modifier = Modifier.width(60.dp),
             placeholder = "0",
             height = 36.dp,
-            cornerRadius = 8.dp,
+            cornerRadius = 0.dp,
             borderWidth = 0.5.dp,
-            backgroundColor = backgroundColor,
+            backgroundColor = Color.Transparent,
             showBorder = true,
+            borderType = BorderType.BOTTOM_ONLY,
+            textAlignment = TextAlignment.CENTER,
+            selectAllOnFocus = true,
             focusedBorderColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = if (isError) MaterialTheme.colorScheme.error.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
             showClearIcon = false
