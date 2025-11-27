@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,6 +40,7 @@ fun ProductRow(
     onQuantityChanged: (String) -> Unit,
     onDiscountClick: () -> Unit,
     modifier: Modifier = Modifier,
+    indicatorColor: Color = Color.Red,
     themeManager: ThemeManager
 ) {
     if (hasDiscountPermission) {
@@ -68,7 +70,8 @@ fun ProductRow(
                 state = state,
                 onUnitCycle = onUnitCycle,
                 onQuantityChanged = onQuantityChanged,
-                themeManager = themeManager
+                themeManager = themeManager,
+                indicatorColor = indicatorColor
             )
         }
     } else {
@@ -77,7 +80,8 @@ fun ProductRow(
             state = state,
             onUnitCycle = onUnitCycle,
             onQuantityChanged = onQuantityChanged,
-            themeManager = themeManager
+            themeManager = themeManager,
+            indicatorColor = indicatorColor
         )
     }
 }
@@ -119,8 +123,10 @@ private fun ProductRowContent(
     state: ProductRowState,
     onUnitCycle: () -> Unit,
     onQuantityChanged: (String) -> Unit,
+    indicatorColor: Color,
+    themeManager: ThemeManager,
     modifier: Modifier = Modifier,
-    themeManager: ThemeManager
+
 ) {
     Surface(
         modifier = modifier.fillMaxWidth(),
@@ -129,10 +135,22 @@ private fun ProductRowContent(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 4.dp),,
+                .padding(horizontal = 4.dp, vertical = 4.dp),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
+            // Color Indicator Bar
+            Box(
+                modifier = Modifier
+                    .width(2.dp)
+                    .height(52.dp)
+                    .background(
+                        color = indicatorColor,
+                        shape = RoundedCornerShape(1.dp)
+                    )
+            )
+
+            //Spacer(modifier = Modifier.width(1.dp))
             // Product Image
             ProductImage(imageUrl = "https://www.sourcewatch.org/images/thumb/6/65/Nestle-logo.jpg/300px-Nestle-logo.jpg", productName = product.name)
 
