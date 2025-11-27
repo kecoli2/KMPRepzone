@@ -34,7 +34,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import app.cash.paging.LoadStateError
 import app.cash.paging.LoadStateLoading
@@ -220,11 +222,15 @@ private fun ProductList(
     backgroundColor: Color
 ) {
     val listState = rememberLazyListState()
+    val focusManager = LocalFocusManager.current
 
     LazyColumn(
         state = listState,
         modifier = Modifier.fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 8.dp),
+        contentPadding = PaddingValues(
+            top = 8.dp,
+            bottom = 88.dp
+        ),
         verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
         when (products.loadState.refresh) {
@@ -264,7 +270,8 @@ private fun ProductList(
                 rowState = rowState,
                 hasDiscountPermission = hasDiscountPermission,
                 viewModel = viewModel,
-                backgroundColor = backgroundColor
+                backgroundColor = backgroundColor,
+                focusManager = focusManager
             )
         }
 
@@ -309,13 +316,16 @@ private fun ProductRowOptimized(
     rowState: ProductRowState?,
     hasDiscountPermission: Boolean,
     viewModel: ProductListViewModel,
-    backgroundColor: Color
+    backgroundColor: Color,
+    focusManager: FocusManager
 ) {
     val displayState = rowState ?: viewModel.getDisplayState(product)
 
     val callbacks = remember(product.id) {
         ProductRowCallbacks(
-            onUnitCycle = { viewModel.onUnitCycleClicked(product) },
+            onUnitCycle = {
+                focusManager.clearFocus()
+                viewModel.onUnitCycleClicked(product) },
             onQuantityChanged = { text -> viewModel.onQuantityChanged(product, text) },
             onDiscountClick = { viewModel.onDiscountButtonClicked(product) }
         )
