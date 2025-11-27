@@ -23,9 +23,9 @@ import androidx.compose.ui.unit.dp
  * Card varyantları
  */
 enum class CardVariant {
-    FILLED,         // Dolgulu arka plan
-    OUTLINED,       // Sadece border
-    ELEVATED        // Gölgeli
+    FILLED,
+    OUTLINED,
+    ELEVATED
 }
 
 /**
