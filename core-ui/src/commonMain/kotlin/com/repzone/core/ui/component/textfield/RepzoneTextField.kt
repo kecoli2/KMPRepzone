@@ -222,8 +222,31 @@ fun RepzoneTextField(
         BasicTextField(
             value = textFieldValue,
             onValueChange = { newValue ->
-                textFieldValue = newValue  // Selection'ı da güncelle
-                filteredOnValueChange(newValue.text)
+                // Önce filtrele
+                val filteredText = when (inputType) {
+                    TextFieldInputType.NUMBER -> newValue.text.filter { it.isDigit() }
+                    TextFieldInputType.DECIMAL, TextFieldInputType.CURRENCY -> {
+                        filterDecimalInput(newValue.text, decimalPlaces, formatter.decimalSeparator)
+                    }
+                    TextFieldInputType.PHONE -> newValue.text.filter { it.isDigit() || it == '+' || it == ' ' || it == '-' }
+                    else -> newValue.text
+                }
+
+                // maxLength uygula
+                val finalText = if (maxLength != null && filteredText.length > maxLength) {
+                    filteredText.take(maxLength)
+                } else {
+                    filteredText
+                }
+
+                // Selection'ı ayarla
+                val newSelection = TextRange(
+                    minOf(newValue.selection.start, finalText.length),
+                    minOf(newValue.selection.end, finalText.length)
+                )
+
+                textFieldValue = TextFieldValue(text = finalText, selection = newSelection)
+                onValueChange(finalText)
             },
             modifier = modifier
                 .height(height)

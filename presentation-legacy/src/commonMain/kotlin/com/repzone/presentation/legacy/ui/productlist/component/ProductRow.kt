@@ -360,6 +360,7 @@ private fun QuantityControls(
             borderWidth = 0.5.dp,
             backgroundColor = Color.Transparent,
             showBorder = true,
+            maxLength = 4,
             borderType = BorderType.BOTTOM_ONLY,
             textAlignment = TextAlignment.CENTER,
             selectAllOnFocus = true,
@@ -428,8 +429,7 @@ private fun ValidationStatusRow(
                     style = MaterialTheme.typography.bodySmall,
                     fontSize = 10.sp,
                     color = MaterialTheme.colorScheme.tertiary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    maxLines = 2,
                 )
             }
         }
@@ -449,8 +449,7 @@ private fun ValidationStatusRow(
                     style = MaterialTheme.typography.bodySmall,
                     fontSize = 10.sp,
                     color = MaterialTheme.colorScheme.error,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+                    maxLines = 2,
                 )
             }
         }

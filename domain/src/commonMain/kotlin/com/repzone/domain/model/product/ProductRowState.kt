@@ -54,7 +54,8 @@ data class ProductRowState(
      * Bu ürün için herhangi bir giriş var mı?
      */
     val hasAnyEntry: Boolean
-        get() = unitEntries.isNotEmpty() || isValidQuantity
+        get() = unitEntries.isNotEmpty() ||
+                (isValidQuantity && validationStatus !is ValidationStatus.Error)
 
     /**
      * Tüm girişlerin özeti (badge için)

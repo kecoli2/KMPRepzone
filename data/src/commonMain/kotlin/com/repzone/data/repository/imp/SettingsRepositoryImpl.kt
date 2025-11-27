@@ -31,7 +31,9 @@ class SettingsRepositoryImpl(private val iDatabaseManager: IDatabaseManager): IS
         return if(stockSettings != null){
                 stockSettings!!
             }else {
-            stockSettings = StockSettings()
+            stockSettings = StockSettings(
+                orderStockBehavior = com.repzone.domain.document.model.StockBehavior.BLOCK
+            )
             stockSettings!!
         }
     }

@@ -38,7 +38,7 @@ class ProductListValidator(private val settingsRepository: ISettingsRepository) 
         val reservedInCurrentUnit = if (reservedBaseQuantity > BigDecimal.ZERO) {
             reservedBaseQuantity.divide(
                 unit.conversionFactor,
-                DecimalMode(decimalPrecision = 10, roundingMode = RoundingMode.ROUND_HALF_CEILING)
+                DecimalMode(decimalPrecision = 2, roundingMode = RoundingMode.ROUND_HALF_CEILING)
             )
         } else {
             BigDecimal.ZERO
@@ -98,7 +98,7 @@ class ProductListValidator(private val settingsRepository: ISettingsRepository) 
 
         return baseStock.divide(
             unit.conversionFactor,
-            DecimalMode(decimalPrecision = 10, roundingMode = RoundingMode.ROUND_HALF_CEILING)
+            DecimalMode(decimalPrecision = 2, roundingMode = RoundingMode.ROUND_HALF_CEILING)
         )
     }
 

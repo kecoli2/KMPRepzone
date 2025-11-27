@@ -233,9 +233,9 @@ class ProductListViewModel(
 
             val currentUnit = state.currentUnit ?: return@launch
 
-            // Mevcut birimde miktar varsa unitEntries'e kaydet
+            // Mevcut birimde miktar varsa VE validation error değilse unitEntries'e kaydet
             var updatedEntries = state.unitEntries
-            if (state.isValidQuantity) {
+            if (state.isValidQuantity && state.validationStatus !is ValidationStatus.Error) {
                 val quantity = state.quantityText.toBigDecimal()
                 val existingEntry = updatedEntries[currentUnit.id]
 
@@ -268,7 +268,7 @@ class ProductListViewModel(
                 updatedEntries = updatedEntries - newUnit.id
             }
 
-            // reservedBaseQuantity hesapla (yeni birim entry'si artık hariç)
+            // reservedBaseQuantity hesapla
             val reservedBaseQuantity = calculateReservedBaseQuantity(state.copy(unitEntries = updatedEntries))
 
             val validationStatus = if (newQuantityText.isNotEmpty()) {
@@ -285,6 +285,7 @@ class ProductListViewModel(
                 hasDiscount = existingNewEntry?.hasDiscount ?: false,
                 discountSlots = existingNewEntry?.discountSlots ?: emptyList()
             )
+
             _rowStates.update { it + (product.id to newState) }
         }
     }
