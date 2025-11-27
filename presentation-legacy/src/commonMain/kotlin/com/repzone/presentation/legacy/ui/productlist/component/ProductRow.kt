@@ -2,6 +2,7 @@ package com.repzone.presentation.legacy.ui.productlist.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
@@ -60,7 +61,7 @@ fun ProductRow(
             },
             enableDismissFromStartToEnd = false,
             enableDismissFromEndToStart = true,
-            modifier = modifier
+            modifier = Modifier.fillMaxWidth().padding(end = 4.dp)
         ) {
             ProductRowContent(
                 product = product,
@@ -76,7 +77,6 @@ fun ProductRow(
             state = state,
             onUnitCycle = onUnitCycle,
             onQuantityChanged = onQuantityChanged,
-            modifier = modifier,
             themeManager = themeManager
         )
     }
@@ -129,7 +129,7 @@ private fun ProductRowContent(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 4.dp),
+                .padding(horizontal = 8.dp, vertical = 4.dp),,
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.spacedBy(12.dp)
         ) {
@@ -213,7 +213,7 @@ private fun ProductRowContent(
                     )
                 }
 
-                if ( 1 == 1|| state.isInDocument) {
+                if (state.isInDocument) {
                     Badge(
                         containerColor = MaterialTheme.colorScheme.primary,
                         contentColor = MaterialTheme.colorScheme.onPrimary
@@ -227,25 +227,25 @@ private fun ProductRowContent(
                 }
 
                 // Validation / Document Status
-               /* ValidationStatusRow(
+                ValidationStatusRow(
                     validationStatus = state.validationStatus,
                     isInDocument = state.isInDocument,
                     documentQuantity = state.documentQuantity.toPlainString(),
                     documentUnitName = state.documentUnitName
-                )*/
+                )
 
-                ValidationStatusRow(
+                /*ValidationStatusRow(
                     validationStatus = ValidationStatus.Empty,
                     isInDocument = true,
                     documentQuantity = "15",
                     documentUnitName = "Koli"
-                )
+                )*/
             }
 
             // Sağ taraf: Birim + Miktar
-            Column(
-                horizontalAlignment = Alignment.End,
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 // Unit Button
                 state.currentUnit?.let { unit ->
@@ -304,16 +304,17 @@ private fun ProductImage(
             model = imageUrl,
             contentDescription = productName,
             modifier = Modifier
-                .size(52.dp)
-                .clip(RoundedCornerShape(8.dp)),
+                .size(48.dp)
+                .clip(CircleShape),
             contentScale = ContentScale.Crop,
+            alignment = Alignment.Center,
             error = painterResource(Res.drawable.image_not_found)
         )
     } else {
         Box(
             modifier = Modifier
-                .size(52.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .size(48.dp)
+                .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center
         ) {
