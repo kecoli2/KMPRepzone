@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.SkipNext
@@ -171,7 +172,8 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
                     products = products,
                     rowStates = rowStates,
                     hasDiscountPermission = true,
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    themeManager = themeManager
                 )
             }
         }
@@ -227,7 +229,8 @@ private fun ProductList(
     products: LazyPagingItems<Product>,
     rowStates: Map<String, ProductRowState>,
     hasDiscountPermission: Boolean,
-    viewModel: ProductListViewModel
+    viewModel: ProductListViewModel,
+    themeManager: ThemeManager
 ) {
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -260,7 +263,6 @@ private fun ProductList(
             else -> Unit
         }
 
-        // Product items
         items(
             count = products.itemCount,
             key = { index -> products[index]?.id ?: index }
@@ -282,9 +284,11 @@ private fun ProductList(
                         onUnitCycle = { viewModel.onUnitCycleClicked(product) },
                         onQuantityChanged = { text -> viewModel.onQuantityChanged(product, text) },
                         onDiscountClick = { viewModel.onDiscountButtonClicked(product) },
-                        onAddClick = { viewModel.onAddToDocument(product) },
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        /*onAddClick = { viewModel.onAddToDocument(product) },*/
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        themeManager = themeManager
                     )
+                    HorizontalDivider()
                 }
             }
         }

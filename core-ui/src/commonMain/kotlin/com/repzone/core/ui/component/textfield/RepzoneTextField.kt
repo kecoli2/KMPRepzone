@@ -391,7 +391,8 @@ fun CurrencyTextField(
     showBorder: Boolean = true,
     borderWidth: Dp = 1.5.dp,
     focusedBorderColor: Color = MaterialTheme.colorScheme.primary,
-    unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f)
+    unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f),
+    showClearIcon: Boolean = true
 ) {
     RepzoneTextField(
         value = value,
@@ -402,14 +403,14 @@ fun CurrencyTextField(
         inputType = TextFieldInputType.CURRENCY,
         decimalPlaces = decimalPlaces,
         leadingIcon = null,
-        showClearIcon = true,
+        showClearIcon = showClearIcon,
         backgroundColor = backgroundColor,
         cornerRadius = cornerRadius,
         height = height,
         showBorder = showBorder,
         focusedBorderColor = focusedBorderColor,
         unfocusedBorderColor = unfocusedBorderColor,
-        borderWidth = borderWidth
+        borderWidth = borderWidth,
     )
 }
 
@@ -432,6 +433,7 @@ fun NumberTextField(
     focusedBorderColor: Color = MaterialTheme.colorScheme.primary,
     unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f),
     borderWidth: Dp = 1.5.dp,
+    showClearIcon: Boolean = true
 ) {
     RepzoneTextField(
         value = value,
@@ -443,7 +445,7 @@ fun NumberTextField(
         maxLength = maxLength,
         suffix = suffix,
         leadingIcon = null,
-        showClearIcon = true,
+        showClearIcon = showClearIcon,
         backgroundColor = backgroundColor,
         cornerRadius = cornerRadius,
         height = height,
@@ -473,6 +475,7 @@ fun DecimalTextField(
     focusedBorderColor: Color = MaterialTheme.colorScheme.primary,
     unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f),
     borderWidth: Dp = 1.5.dp,
+    showClearIcon: Boolean = true
 ) {
     RepzoneTextField(
         value = value,
@@ -484,14 +487,14 @@ fun DecimalTextField(
         decimalPlaces = decimalPlaces,
         suffix = suffix,
         leadingIcon = null,
-        showClearIcon = true,
+        showClearIcon = showClearIcon,
         backgroundColor = backgroundColor,
         cornerRadius = cornerRadius,
         height = height,
         showBorder = showBorder,
         focusedBorderColor = focusedBorderColor,
         unfocusedBorderColor = unfocusedBorderColor,
-        borderWidth = borderWidth
+        borderWidth = borderWidth,
     )
 }
 
@@ -513,7 +516,8 @@ fun SearchTextField(
     showBorder: Boolean = false,
     focusedBorderColor: Color = MaterialTheme.colorScheme.primary,
     unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f),
-    borderWidth: Dp = 1.5.dp
+    borderWidth: Dp = 1.5.dp,
+    showClearIcon: Boolean = true
 ) {
     RepzoneTextField(
         value = value,
@@ -525,7 +529,7 @@ fun SearchTextField(
         enabled = enabled,
         inputType = TextFieldInputType.TEXT,
         leadingIcon = Icons.Default.Search,
-        showClearIcon = true,
+        showClearIcon = showClearIcon,
         backgroundColor = backgroundColor,
         cornerRadius = cornerRadius,
         height = height,

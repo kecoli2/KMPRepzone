@@ -4,12 +4,18 @@ package com.repzone.preview
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.TaskRepeatInterval
+import com.repzone.core.enums.ThemeType
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
+import com.repzone.domain.document.model.Product
+import com.repzone.domain.document.model.ProductUnit
+import com.repzone.domain.model.product.ProductRowState
 import com.repzone.domain.util.models.VisitActionItem
 import com.repzone.presentation.legacy.ui.productlist.ProductListScreenLegacy
+import com.repzone.presentation.legacy.ui.productlist.component.ProductRow
 import com.repzone.presentation.legacy.ui.visit.VisitActionList
 import kotlin.time.ExperimentalTime
 
@@ -127,5 +133,97 @@ fun ProductListScreen_Sample(themeManager: ThemeManager){
             }
         )
     }
+}
+@Composable
+fun Productrow_Preview(themeManager: ThemeManager){
+    val product = generateDummyProducts()[0]
+    val productState = ProductRowState(
+        productId = product.id,
+        availableUnits = product.units,
+        hasDiscount = true,
+        quantityText = "1.00",
+    )
+    AppTheme(themeManager) {
+        ProductRow(
+            product = product,
+            state = productState,
+            hasDiscountPermission = true,
+            onUnitCycle = {
+
+            },
+            onQuantityChanged = {
+
+            },
+            onDiscountClick = {
+
+            },
+            modifier = Modifier,
+            themeManager = themeManager
+        )
+    }
+}
+
+private fun generateDummyProducts(): List<Product> {
+    val brands = listOf("Apple", "Samsung DENEME MARKALARI BURADA nasıl ama", "Sony", "LG", "Xiaomi", "Huawei", "Asus", "Dell", "HP", "Lenovo")
+    val tagOptions = listOf("Elektronik", "Yeni", "İndirimli", "Popüler", "Öne Çıkan", "Sınırlı Stok", "Kampanya")
+
+    return (1..50).map { index ->
+        val productId = "PRD-${index.toString().padStart(4, '0')}"
+        val brand = brands[index % brands.size]
+        val selectedTags = tagOptions.shuffled().take((0..3).random())
+
+        Product(
+            id = productId,
+            name = "${brand} Ürün $index",
+            code = "CODE-$index",
+            groupId = "GRP-${(index % 5) + 1}",
+            tags = selectedTags,
+            stockQuantity = BigDecimal.fromInt((10..500).random()),
+            stockUnitId = "UNIT-ADET",
+            units = generateProductUnits(productId, index),
+            vatRate = BigDecimal.fromInt(20),
+            brand = brand
+        )
+    }
+}
+
+private fun generateProductUnits(productId: String, index: Int): List<ProductUnit> {
+    val basePrice = BigDecimal.fromInt((50..1000).random())
+
+    return listOf(
+        ProductUnit(
+            id = "${productId}-UNIT-1",
+            productId = productId,
+            unitId = "UNIT-ADET",
+            unitName = "Adet",
+            conversionFactor = BigDecimal.fromInt(1),
+            isBaseUnit = true,
+            price = basePrice,
+            barcode = "869${index.toString().padStart(10, '0')}",
+            priceIncludesVat = false
+        ),
+        ProductUnit(
+            id = "${productId}-UNIT-2",
+            productId = productId,
+            unitId = "UNIT-KUTU",
+            unitName = "Kutu",
+            conversionFactor = BigDecimal.fromInt(12),
+            isBaseUnit = false,
+            price = basePrice * BigDecimal.fromInt(12) * BigDecimal.parseString("0.95"), // %5 kutu indirimi
+            barcode = "869${index.toString().padStart(10, '0')}1",
+            priceIncludesVat = false
+        ),
+        ProductUnit(
+            id = "${productId}-UNIT-3",
+            productId = productId,
+            unitId = "UNIT-KOLI",
+            unitName = "Koli",
+            conversionFactor = BigDecimal.fromInt(48),
+            isBaseUnit = false,
+            price = basePrice * BigDecimal.fromInt(48) * BigDecimal.parseString("0.90"), // %10 koli indirimi
+            barcode = "869${index.toString().padStart(10, '0')}2",
+            priceIncludesVat = false
+        )
+    )
 }
 //endregion -------------------- PRODUCTLIST SAMPLE PREVIEW --------------------
