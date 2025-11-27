@@ -45,6 +45,7 @@ import app.cash.paging.LoadStateLoading
 import app.cash.paging.LoadStateNotLoading
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.model.StringResource
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.component.floatactionbutton.SmartFabScaffold
@@ -54,6 +55,7 @@ import com.repzone.core.ui.component.topappbar.TopBarAction
 import com.repzone.core.ui.component.topappbar.TopBarLeftIcon
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.util.extensions.fromResource
+import com.repzone.domain.document.model.DiscountSlotConfig
 import com.repzone.domain.document.model.Product
 import com.repzone.domain.model.product.ProductRowState
 import com.repzone.presentation.legacy.model.enum.ProductSortOption
@@ -203,14 +205,72 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
             unit = dialogEvent.currentUnit,
             quantity = dialogEvent.quantity,
             existingDiscounts = dialogEvent.existingDiscounts,
-            slotConfigs = listOf(),
+            slotConfigs = listOf(
+                DiscountSlotConfig(
+                    slotNumber = 1,
+                    name = "İndirim Iskontosu",
+                    allowManualEntry = true,
+                    allowAutomatic = true,
+                    maxPercentage = BigDecimal.fromInt(100)
+                ),
+                DiscountSlotConfig(
+                    slotNumber = 2,
+                    name = "İndirim Iskontosu 2",
+                    allowManualEntry = true,
+                    allowAutomatic = true,
+                    maxPercentage = BigDecimal.fromInt(40)
+                ),
+                DiscountSlotConfig(
+                    slotNumber = 3,
+                    name = "İndirim Iskontosu 3 Deneme",
+                    allowManualEntry = false,
+                    allowAutomatic = true,
+                    maxPercentage = BigDecimal.fromInt(100)
+                ),
+                DiscountSlotConfig(
+                    slotNumber = 4,
+                    name = "İndirim Iskontosu 4",
+                    allowManualEntry = true,
+                    allowAutomatic = true,
+                    maxPercentage = BigDecimal.fromInt(14)
+                ),
+                DiscountSlotConfig(
+                    slotNumber = 5,
+                    name = "İndirim Iskontosu Tutar",
+                    allowManualEntry = true,
+                    allowAutomatic = true,
+                    maxPercentage = null
+                ),
+                DiscountSlotConfig(
+                    slotNumber = 6,
+                    name = "İndirim Iskontosu",
+                    allowManualEntry = true,
+                    allowAutomatic = true,
+                    maxPercentage = BigDecimal.fromInt(100)
+                ),
+                DiscountSlotConfig(
+                    slotNumber = 7,
+                    name = "İndirim Iskontosu",
+                    allowManualEntry = true,
+                    allowAutomatic = true,
+                    maxPercentage = BigDecimal.fromInt(100)
+                ),
+                DiscountSlotConfig(
+                    slotNumber = 8,
+                    name = "İndirim Iskontosu",
+                    allowManualEntry = true,
+                    allowAutomatic = true,
+                    maxPercentage = BigDecimal.fromInt(100)
+                )
+            ),
             onApply = { discounts ->
                 viewModel.onDiscountsApplied(dialogEvent.productId, discounts)
                 showDiscountDialog = null
             },
             onDismiss = {
                 showDiscountDialog = null
-            }
+            },
+            themeManager = themeManager
         )
     }
 }

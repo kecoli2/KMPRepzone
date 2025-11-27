@@ -10,11 +10,15 @@ import com.repzone.core.enums.TaskRepeatInterval
 import com.repzone.core.enums.ThemeType
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
+import com.repzone.domain.document.model.DiscountSlotConfig
+import com.repzone.domain.document.model.DiscountSlotEntry
+import com.repzone.domain.document.model.DiscountType
 import com.repzone.domain.document.model.Product
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.model.product.ProductRowState
 import com.repzone.domain.util.models.VisitActionItem
 import com.repzone.presentation.legacy.ui.productlist.ProductListScreenLegacy
+import com.repzone.presentation.legacy.ui.productlist.component.DiscountDialogLegacy
 import com.repzone.presentation.legacy.ui.productlist.component.ProductRow
 import com.repzone.presentation.legacy.ui.visit.VisitActionList
 import kotlin.time.ExperimentalTime
@@ -227,3 +231,134 @@ private fun generateProductUnits(productId: String, index: Int): List<ProductUni
     )
 }
 //endregion -------------------- PRODUCTLIST SAMPLE PREVIEW --------------------
+
+//region -------------------- SERBEST ISKONTO SAMPLE PREVIEW --------------------
+@Composable
+fun DiscountScreen_Sample(themeManager: ThemeManager){
+    val product = generateDummyProducts()[0]
+    val productState = ProductRowState(
+        productId = product.id,
+        availableUnits = product.units,
+        hasDiscount = true,
+        quantityText = "1.00",
+    )
+    AppTheme(themeManager) {
+        DiscountDialogLegacy(
+            product = product,
+            unit = product.units.first(),
+            quantity = BigDecimal.fromInt(100),
+            existingDiscounts = listOf(
+                DiscountSlotEntry(
+                    slotNumber = 1,
+                    value = "15",
+                    type = DiscountType.PERCENTAGE,
+                    isEnabled = true,
+                    validationError = null
+                ),
+                DiscountSlotEntry(
+                    slotNumber = 5,
+                    value = "245.65",
+                    type = DiscountType.PERCENTAGE,
+                    isEnabled = true,
+                    validationError = null
+                )
+            ),
+            slotConfigs = listOf(
+                DiscountSlotConfig(
+                    slotNumber = 1,
+                    name = "İndirim Iskontosu",
+                    allowManualEntry = true,
+                    allowAutomatic = true,
+                    maxPercentage = BigDecimal.fromInt(100)
+                ),
+                DiscountSlotConfig(
+                    slotNumber = 2,
+                    name = "İndirim Iskontosu 2",
+                    allowManualEntry = true,
+                    allowAutomatic = true,
+                    maxPercentage = BigDecimal.fromInt(40)
+                ),
+                DiscountSlotConfig(
+                    slotNumber = 3,
+                    name = "İndirim Iskontosu 3 Deneme",
+                    allowManualEntry = false,
+                    allowAutomatic = true,
+                    maxPercentage = BigDecimal.fromInt(100)
+                ),
+                DiscountSlotConfig(
+                    slotNumber = 4,
+                    name = "İndirim Iskontosu 4",
+                    allowManualEntry = true,
+                    allowAutomatic = true,
+                    maxPercentage = BigDecimal.fromInt(14)
+                ),
+                DiscountSlotConfig(
+                    slotNumber = 5,
+                    name = "İndirim Iskontosu Tutar",
+                    allowManualEntry = true,
+                    allowAutomatic = true,
+                    maxPercentage = null
+                ),
+                DiscountSlotConfig(
+                    slotNumber = 6,
+                    name = "İndirim Iskontosu",
+                    allowManualEntry = true,
+                    allowAutomatic = true,
+                    maxPercentage = BigDecimal.fromInt(100)
+                ),
+                DiscountSlotConfig(
+                    slotNumber = 7,
+                    name = "İndirim Iskontosu",
+                    allowManualEntry = true,
+                    allowAutomatic = true,
+                    maxPercentage = BigDecimal.fromInt(100)
+                ),
+                DiscountSlotConfig(
+                    slotNumber = 8,
+                    name = "İndirim Iskontosu",
+                    allowManualEntry = true,
+                    allowAutomatic = true,
+                    maxPercentage = BigDecimal.fromInt(100)
+                )
+            ),
+            onApply = {
+
+            },
+            onDismiss = {
+
+            },
+            themeManager = themeManager
+        )
+    }
+}
+
+//endregion -------------------- SERBEST ISKONTO SAMPLE PREVIEW --------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

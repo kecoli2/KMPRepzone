@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -80,6 +81,16 @@ fun RepzoneTopAppBar(
                 }
                 TopBarLeftIcon.None -> {
                     Spacer(modifier = Modifier.width(48.dp))
+                }
+
+                is TopBarLeftIcon.Close -> {
+                    IconButton(onClick = leftIconType.onClick) {
+                        Icon(
+                            Icons.Default.Close,
+                            contentDescription = "Close",
+                            tint = leftIconType.tintColor ?: Color.White
+                        )
+                    }
                 }
             }
 
@@ -162,6 +173,7 @@ fun RepzoneTopAppBar(
 sealed class TopBarLeftIcon {
     data class Menu(val onClick: () -> Unit, val tintColor: Color? = null) : TopBarLeftIcon()
     data class Back(val onClick: () -> Unit, val tintColor: Color? = null) : TopBarLeftIcon()
+    data class Close(val onClick: () -> Unit, val tintColor: Color? = null) : TopBarLeftIcon()
     data object None : TopBarLeftIcon()
 }
 

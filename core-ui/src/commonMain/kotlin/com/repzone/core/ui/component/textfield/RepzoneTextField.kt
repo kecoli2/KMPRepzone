@@ -359,12 +359,7 @@ private fun DecorationContent(
         }
 
         Box(
-            modifier = Modifier.weight(1f),
-            contentAlignment = when (textAlignment) {
-                TextAlignment.CENTER -> Alignment.Center
-                TextAlignment.END -> Alignment.CenterEnd
-                TextAlignment.START -> Alignment.CenterStart
-            }
+            modifier = Modifier.weight(1f)
         ) {
             if (value.isEmpty()) {
                 Text(
@@ -373,7 +368,11 @@ private fun DecorationContent(
                     modifier = Modifier.fillMaxWidth()
                 )
             }
-            Box(modifier = Modifier.fillMaxWidth()) {
+            // propagateMinConstraints = true ile innerTextField genişliği zorlanır
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                propagateMinConstraints = true
+            ) {
                 innerTextField()
             }
         }
