@@ -968,4 +968,13 @@
     <string name="error_invalid_promotion_slot_maximum_percentage">You can enter a maximum of %1$d%%...</string>
     <string name="error_line_not_found">Line not found...</string>
 
+    <string name="discount_custom">Custom discount</string>
+    <string name="total_amount">Grand Total</string>
+    <string name="sub_total">Subtotal</string>
+    <string name="discount_summary">Discount Summary</string>
+
+    <string name="unit_price">Unit Price</string>
+    <string name="quantity">Quantity</string>
+    <string name="total_pure">Total</string>
+    <string name="discount_items">Discount Items</string>
 </resources>

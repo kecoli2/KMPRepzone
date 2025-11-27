@@ -7,10 +7,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Save
-import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.outlined.Inventory2
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -27,6 +24,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.DecimalMode
+import com.repzone.core.model.StringResource
 import com.repzone.core.ui.component.textfield.BorderType
 import com.repzone.core.ui.component.textfield.DecimalTextField
 import com.repzone.core.ui.component.textfield.TextAlignment
@@ -35,6 +33,7 @@ import com.repzone.core.ui.component.topappbar.TopBarAction
 import com.repzone.core.ui.component.topappbar.TopBarLeftIcon
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.util.extensions.NumberFormatInfo
+import com.repzone.core.util.extensions.fromResource
 import com.repzone.core.util.extensions.toBigDecimalOrNull
 import com.repzone.core.util.extensions.toMoney
 import com.repzone.domain.document.model.DiscountSlotConfig
@@ -69,7 +68,8 @@ fun DiscountDialogLegacy(
                 existingDiscounts.find { it.slotNumber == config.slotNumber }
                     ?: DiscountSlotEntry(
                         slotNumber = config.slotNumber,
-                        isEnabled = config.allowManualEntry
+                        isEnabled = config.allowManualEntry,
+                        maximumValue = config.maxPercentage
                     )
             }
         )
@@ -126,7 +126,7 @@ fun DiscountDialogLegacy(
                     // Discount Slots
                     item {
                         Text(
-                            text = "İskonto Kalemleri",
+                            text = StringResource.DISCOUNT_ITEMS.fromResource(),
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(top = 8.dp)
@@ -194,7 +194,7 @@ private fun DiscountTopBar(
         modifier = Modifier.padding(0.dp),
         themeManager = themeManager,
         leftIconType = TopBarLeftIcon.Close(onClick = onClose),
-        title = "Serbest Ürün Iskonto",
+        title = StringResource.DISCOUNT_CUSTOM.fromResource(),
         subtitle = productName,
         rightIcons = listOf(
             TopBarAction(Icons.Default.Save, "Kaydey", Color.White, {
@@ -202,41 +202,6 @@ private fun DiscountTopBar(
             }),
         )
     )
-
-
-    /*TopAppBar(
-        title = {
-            Column {
-                Text(
-                    text = "İskonto",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = productName,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-        },
-        navigationIcon = {
-            IconButton(onClick = onClose) {
-                Icon(Icons.Default.Close, contentDescription = "Kapat")
-            }
-        },
-        actions = {
-            TextButton(onClick = onApply) {
-                Text(
-                    text = "Uygula",
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
-                )
-            }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        )
-    )*/
 }
 
 @Composable
@@ -303,18 +268,18 @@ private fun ProductInfoCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 InfoItem(
-                    label = "Miktar",
+                    label = StringResource.QUANTITY.fromResource(),
                     value = "${quantity.toPlainString()} ${unit.unitName}",
                     modifier = Modifier.weight(1f)
                 )
                 InfoItem(
-                    label = "Birim Fiyat",
+                    label = StringResource.UNIT_PRICE.fromResource(),
                     value = unit.price.doubleValue(false).toMoney(),
                     modifier = Modifier.weight(1f),
                     alignment = TextAlign.Center
                 )
                 InfoItem(
-                    label = "Toplam",
+                    label = StringResource.TOTAL_PURE.fromResource(),
                     value = basePrice.toMoney(),
                     modifier = Modifier.weight(1f),
                     alignment = TextAlign.End,
@@ -424,6 +389,7 @@ private fun DiscountSlotCard(
                     borderType = BorderType.FULL,
                     textAlignment = TextAlignment.END,
                     selectAllOnFocus = true,
+                    maxValue = slot.maximumValue,
                     showClearIcon = false,
                     suffix= when(slot.type){
                         DiscountType.PERCENTAGE -> "%"

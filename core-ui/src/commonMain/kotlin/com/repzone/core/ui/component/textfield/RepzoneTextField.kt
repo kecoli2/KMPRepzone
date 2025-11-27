@@ -41,11 +41,9 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.platform.NumberFormatter
 
-/**
- * Input tipi için enum
- */
 enum class TextFieldInputType {
     TEXT,
     NUMBER,
@@ -55,21 +53,14 @@ enum class TextFieldInputType {
     EMAIL
 }
 
-/**
- * Border tipi için enum
- */
 enum class BorderType {
-    FULL,           // Tüm kenarlar (varsayılan)
-    BOTTOM_ONLY     // Sadece alt çizgi
+    FULL,
+    BOTTOM_ONLY
 }
-
-/**
- * Text hizalama için enum (placeholder ve yazılan text için)
- */
 enum class TextAlignment {
-    START,          // Sola hizalı (varsayılan)
-    CENTER,         // Ortala
-    END             // Sağa hizalı
+    START,
+    CENTER,
+    END
 }
 
 /**
@@ -110,7 +101,9 @@ fun RepzoneTextField(
     // Text hizalama (placeholder ve yazılan text için)
     textAlignment: TextAlignment = TextAlignment.START,
     // Focus'ta seçim
-    selectAllOnFocus: Boolean = false
+    selectAllOnFocus: Boolean = false,
+    // Maksimum değer (NUMBER, DECIMAL, CURRENCY için)
+    maxValue: BigDecimal? = null
 ) {
     val formatter = remember { NumberFormatter() }
     val interactionSource = remember { MutableInteractionSource() }
@@ -155,11 +148,22 @@ fun RepzoneTextField(
             TextFieldInputType.PHONE -> newValue.filter { it.isDigit() || it == '+' || it == ' ' || it == '-' }
             else -> newValue
         }
-        val finalValue = if (maxLength != null && filtered.length > maxLength) {
+
+        // maxLength uygula
+        val afterMaxLength = if (maxLength != null && filtered.length > maxLength) {
             filtered.take(maxLength)
         } else {
             filtered
         }
+
+        // maxValue uygula (NUMBER, DECIMAL, CURRENCY için)
+        val finalValue = if (maxValue != null && afterMaxLength.isNotEmpty() &&
+            inputType in listOf(TextFieldInputType.NUMBER, TextFieldInputType.DECIMAL, TextFieldInputType.CURRENCY)) {
+            applyMaxValue(afterMaxLength, maxValue, formatter.decimalSeparator)
+        } else {
+            afterMaxLength
+        }
+
         onValueChange(finalValue)
     }
 
@@ -233,10 +237,18 @@ fun RepzoneTextField(
                 }
 
                 // maxLength uygula
-                val finalText = if (maxLength != null && filteredText.length > maxLength) {
+                val afterMaxLength = if (maxLength != null && filteredText.length > maxLength) {
                     filteredText.take(maxLength)
                 } else {
                     filteredText
+                }
+
+                // maxValue uygula (NUMBER, DECIMAL, CURRENCY için)
+                val finalText = if (maxValue != null && afterMaxLength.isNotEmpty() &&
+                    inputType in listOf(TextFieldInputType.NUMBER, TextFieldInputType.DECIMAL, TextFieldInputType.CURRENCY)) {
+                    applyMaxValue(afterMaxLength, maxValue, formatter.decimalSeparator)
+                } else {
+                    afterMaxLength
                 }
 
                 // Selection'ı ayarla
@@ -414,6 +426,40 @@ private fun filterDecimalInput(input: String, decimalPlaces: Int, decimalSeparat
     }
 }
 
+/**
+ * MaxValue kontrolü - girilen değer maxValue'dan büyükse maxValue döner
+ */
+private fun applyMaxValue(input: String, maxValue: BigDecimal, decimalSeparator: Char): String {
+    if (input.isEmpty() || input == decimalSeparator.toString()) return input
+
+    try {
+        // Decimal separator'ı nokta ile değiştir (BigDecimal parse için)
+        val normalizedInput = input.replace(decimalSeparator, '.')
+
+        // Sondaki nokta varsa kaldır (geçici olarak)
+        val parseableInput = normalizedInput.trimEnd('.')
+
+        if (parseableInput.isEmpty()) return input
+
+        val inputValue = BigDecimal.parseString(parseableInput)
+
+        return if (inputValue > maxValue) {
+            // MaxValue'yu input formatına çevir
+            val maxValueStr = maxValue.toPlainString()
+            if (decimalSeparator != '.') {
+                maxValueStr.replace('.', decimalSeparator)
+            } else {
+                maxValueStr
+            }
+        } else {
+            input
+        }
+    } catch (e: Exception) {
+        // Parse hatası olursa input'u olduğu gibi döndür
+        return input
+    }
+}
+
 private class CurrencyVisualTransformation(
     private val decimalSeparator: Char,
     private val groupingSeparator: Char
@@ -499,7 +545,8 @@ fun CurrencyTextField(
     unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f),
     showClearIcon: Boolean = true,
     textAlignment: TextAlignment = TextAlignment.START,
-    selectAllOnFocus: Boolean = false
+    selectAllOnFocus: Boolean = false,
+    maxValue: BigDecimal? = null
 ) {
     RepzoneTextField(
         value = value,
@@ -520,7 +567,8 @@ fun CurrencyTextField(
         unfocusedBorderColor = unfocusedBorderColor,
         borderWidth = borderWidth,
         textAlignment = textAlignment,
-        selectAllOnFocus = selectAllOnFocus
+        selectAllOnFocus = selectAllOnFocus,
+        maxValue = maxValue
     )
 }
 
@@ -543,7 +591,8 @@ fun NumberTextField(
     borderWidth: Dp = 1.5.dp,
     showClearIcon: Boolean = true,
     textAlignment: TextAlignment = TextAlignment.START,
-    selectAllOnFocus: Boolean = false
+    selectAllOnFocus: Boolean = false,
+    maxValue: BigDecimal? = null
 ) {
     RepzoneTextField(
         value = value,
@@ -565,7 +614,8 @@ fun NumberTextField(
         unfocusedBorderColor = unfocusedBorderColor,
         borderWidth = borderWidth,
         textAlignment = textAlignment,
-        selectAllOnFocus = selectAllOnFocus
+        selectAllOnFocus = selectAllOnFocus,
+        maxValue = maxValue
     )
 }
 
@@ -588,7 +638,8 @@ fun DecimalTextField(
     borderWidth: Dp = 1.5.dp,
     showClearIcon: Boolean = true,
     textAlignment: TextAlignment = TextAlignment.START,
-    selectAllOnFocus: Boolean = false
+    selectAllOnFocus: Boolean = false,
+    maxValue: BigDecimal? = null
 ) {
     RepzoneTextField(
         value = value,
@@ -610,7 +661,8 @@ fun DecimalTextField(
         unfocusedBorderColor = unfocusedBorderColor,
         borderWidth = borderWidth,
         textAlignment = textAlignment,
-        selectAllOnFocus = selectAllOnFocus
+        selectAllOnFocus = selectAllOnFocus,
+        maxValue = maxValue
     )
 }
 

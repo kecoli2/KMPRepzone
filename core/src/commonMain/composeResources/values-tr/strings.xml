@@ -973,5 +973,14 @@
     <string name="error_invalid_promotion_slot_maximum_percentage">Maksimum %1$d girebilirsiniz... </string>
     <string name="error_line_not_found">Satır bulunamadı...</string>
 
+    <string name="discount_custom">Serbest İskonto</string>
+    <string name="total_amount">Genel Toplam</string>
+    <string name="sub_total">Ara Toplam</string>
+    <string name="discount_summary">İskonto Özeti</string>
+
+    <string name="unit_price">Birim Fiyatı</string>
+    <string name="quantity">Miktar</string>
+    <string name="total_pure">Toplam</string>
+    <string name="discount_items">İskonto Kalemleri</string>
 
 </resources>

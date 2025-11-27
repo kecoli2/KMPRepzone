@@ -42,6 +42,7 @@ kotlin {
                 implementation(compose.ui)
                 implementation(compose.components.resources)
                 implementation(compose.materialIconsExtended)
+                implementation(libs.bignum)
 
                 //PROJECT
                 implementation(projects.core)
