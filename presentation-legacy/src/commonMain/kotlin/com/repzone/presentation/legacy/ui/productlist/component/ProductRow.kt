@@ -123,7 +123,7 @@ private fun ProductRowContent(
     state: ProductRowState,
     onUnitCycle: () -> Unit,
     onQuantityChanged: (String) -> Unit,
-    indicatorColor: Color,
+    indicatorColor: Color? = null,
     themeManager: ThemeManager,
     modifier: Modifier = Modifier,
 
@@ -145,7 +145,7 @@ private fun ProductRowContent(
                     .width(2.dp)
                     .height(52.dp)
                     .background(
-                        color = indicatorColor,
+                        color = indicatorColor ?: MaterialTheme.colorScheme.surface,
                         shape = RoundedCornerShape(1.dp)
                     )
             )
