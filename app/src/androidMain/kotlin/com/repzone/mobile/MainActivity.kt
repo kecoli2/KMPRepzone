@@ -105,8 +105,8 @@ private fun AppContent() {
 }
 
 @Composable
-//@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, widthDp = 800, heightDp = 400)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, widthDp = 800, heightDp = 400)
+//@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun AppAndroidPreview() {
     startKoin {
         androidContext(RepzoneApplication())

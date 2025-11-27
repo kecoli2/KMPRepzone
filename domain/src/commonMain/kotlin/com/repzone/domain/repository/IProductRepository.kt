@@ -20,4 +20,6 @@ interface IProductRepository {
      * Get distinct filter values from all products
      */
     suspend fun getAvailableFilters(): ProductFilters
+
+    suspend fun getProductById(productId: String): Product?
 }

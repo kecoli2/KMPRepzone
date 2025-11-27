@@ -59,7 +59,6 @@ import com.repzone.presentation.legacy.ui.productlist.component.ProductListFilte
 import com.repzone.presentation.legacy.ui.productlist.component.ProductRow
 import com.repzone.presentation.legacy.viewmodel.productlist.ProductListViewModel
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.distinctUntilChanged
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -74,6 +73,7 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
     val products = viewModel.products.collectAsLazyPagingItems()
     val rowStates by viewModel.rowStates.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val entryCount = viewModel.entryCount.collectAsState()
 
     var showFilterSheet by remember { mutableStateOf(false) }
     var selectedSort by remember { mutableStateOf(ProductSortOption.NAME_ASC) }
@@ -117,7 +117,11 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
     SmartFabScaffold(
         modifier = Modifier,
         snackbarHost = { SnackbarHost(snackbarHostState) },
-        fabAction = FabAction.Single(icon = Icons.Default.SkipNext, "."),
+        fabAction = FabAction.Single(
+            icon = Icons.Default.SkipNext,
+            ".",
+            badgeCount = entryCount.value
+        ),
     ) { padding ->
         Column(
             modifier = Modifier
@@ -216,25 +220,6 @@ private fun ProductList(
     backgroundColor: Color
 ) {
     val listState = rememberLazyListState()
-    LaunchedEffect(listState) {
-        snapshotFlow {
-            listState.layoutInfo.visibleItemsInfo.mapNotNull { itemInfo ->
-                // Sadece product item'larını al (loading, error vs değil)
-                val index = itemInfo.index
-                if (index >= 0 && index < products.itemCount) {
-                    products.peek(index)
-                } else null
-            }
-        }
-            .distinctUntilChanged()
-            .collect { visibleProducts ->
-                visibleProducts.forEach { product ->
-                    if (!rowStates.containsKey(product.id)) {
-                        viewModel.initializeRowState(product)
-                    }
-                }
-            }
-    }
 
     LazyColumn(
         state = listState,
@@ -273,11 +258,6 @@ private fun ProductList(
         ) { index ->
             val product = products[index] ?: return@items
             val rowState = rowStates[product.id]
-
-            if (rowState == null) {
-                Box(modifier = Modifier.fillMaxWidth())
-                return@items
-            }
 
             ProductRowOptimized(
                 product = product,
@@ -326,11 +306,13 @@ private fun ProductList(
 @Composable
 private fun ProductRowOptimized(
     product: Product,
-    rowState: ProductRowState,
+    rowState: ProductRowState?,
     hasDiscountPermission: Boolean,
     viewModel: ProductListViewModel,
     backgroundColor: Color
 ) {
+    val displayState = rowState ?: viewModel.getDisplayState(product)
+
     val callbacks = remember(product.id) {
         ProductRowCallbacks(
             onUnitCycle = { viewModel.onUnitCycleClicked(product) },
@@ -341,7 +323,7 @@ private fun ProductRowOptimized(
 
     ProductRow(
         product = product,
-        state = rowState,
+        state = displayState,
         hasDiscountPermission = hasDiscountPermission,
         onUnitCycle = callbacks.onUnitCycle,
         onQuantityChanged = callbacks.onQuantityChanged,

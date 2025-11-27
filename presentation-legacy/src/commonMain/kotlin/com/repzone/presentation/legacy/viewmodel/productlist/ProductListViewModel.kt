@@ -9,11 +9,11 @@ import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.data.repository.product.ProductPagingSource
 import com.repzone.domain.model.product.ProductRowState
+import com.repzone.domain.model.product.UnitEntry
 import com.repzone.domain.document.base.AddLineResult
 import com.repzone.domain.document.base.IDocumentManager
 import com.repzone.domain.document.base.IDocumentSession
 import com.repzone.domain.document.model.DiscountSlotEntry
-import com.repzone.domain.document.model.DiscountType
 import com.repzone.domain.document.model.Product
 import com.repzone.domain.document.model.ProductListValidator
 import com.repzone.domain.document.model.ProductUnit
@@ -28,50 +28,38 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-/**
- * Ürün Listesi ekranı için ViewModel
- * Hibrit yaklaşım kullanır:
- * - Temel UI durumu ProductListUiState içinde tutulur (BaseViewModel'den genişletilir)
- * - PagingData ayrı bir Flow olarak tutulur (UiState içine konamaz)
- * - RowStates performans için ayrı bir StateFlow olarak tutulur
- */
-
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
-class ProductListViewModel(private val productRepository: IProductRepository,
-                           private val documentSession: IDocumentSession,
-                           private val validator: ProductListValidator
+class ProductListViewModel(
+    private val productRepository: IProductRepository,
+    private val documentSession: IDocumentSession,
+    private val validator: ProductListValidator
 ): BaseViewModel<ProductListUiState, ProductListViewModel.Event>(ProductListUiState()) {
-    //region Field
-    private lateinit var documentManager: IDocumentManager
 
-    // Filter state with debounce
+    //region Field
+    private var documentManager: IDocumentManager
     private val _filterState = MutableStateFlow(ProductFilterState())
 
-    // Row states (separate from UiState for performance)
     private val _rowStates = MutableStateFlow<Map<String, ProductRowState>>(emptyMap())
     val rowStates: StateFlow<Map<String, ProductRowState>> = _rowStates.asStateFlow()
 
-    // Navigation events
     private val _navigationEvents = MutableSharedFlow<NavigationEvent>()
     val navigationEvents: SharedFlow<NavigationEvent> = _navigationEvents.asSharedFlow()
     //endregion
 
     //region Properties
-    /**
-     * Ürünler için Paging akışı (Cash App Paging ile KMP uyumlu)
-     * Filtre değişiminde 500ms debounce ile otomatik yenilenir
-     */
-
     val products: Flow<PagingData<Product>> = _filterState
-        .debounce(500) // Debounce search input
+        .debounce(500)
         .flatMapLatest { filter ->
             Pager(
                 config = PagingConfig(
@@ -84,6 +72,13 @@ class ProductListViewModel(private val productRepository: IProductRepository,
             }.flow
         }
         .cachedIn(scope)
+
+    /**
+     * Giriş yapılmış ürün sayısı (FAB badge için)
+     */
+    val entryCount: StateFlow<Int> = _rowStates
+        .map { states -> states.values.count { it.hasAnyEntry } }
+        .stateIn(scope, SharingStarted.WhileSubscribed(5000), 0)
     //endregion
 
     //region Constructor
@@ -94,12 +89,8 @@ class ProductListViewModel(private val productRepository: IProductRepository,
     //endregion
 
     //region Public Method
-    /**
-     * Belge oturumunu başlat
-     * Bu ekran ilk açıldığında çağrılmalıdır
-     */
+
     fun startDocument() {
-        // Load existing lines from document into row states
         scope.launch {
             documentManager.lines.collect { lines ->
                 lines.forEach { line ->
@@ -117,10 +108,11 @@ class ProductListViewModel(private val productRepository: IProductRepository,
     }
 
     //region ========== FILTER ACTIONS ==========
+
     fun onSearchQueryChanged(query: String) {
         val newFilterState = state.value.filterState.copy(searchQuery = query)
         updateState { it.copy(filterState = newFilterState) }
-        _filterState.value = newFilterState // Update debounced flow
+        _filterState.value = newFilterState
     }
 
     fun onBrandsChanged(brands: Set<String>) {
@@ -158,53 +150,26 @@ class ProductListViewModel(private val productRepository: IProductRepository,
         updateState { it.copy(filterState = emptyFilter) }
         _filterState.value = emptyFilter
     }
-    //endregion ========== FILTER ACTIONS ==========
+
+    //endregion
 
     //region ========== PRODUCT ROW ACTIONS ==========
 
     /**
-     * Bir ürün için satır durumunu başlat
-     * Ürün ilk kez listede göründüğünde çağrılır
+     * Display state (miktar girilmemiş ürünler için default state döner)
      */
-    fun initializeRowState(product: Product) {
-        if (_rowStates.value.containsKey(product.id)) return
-
-        _rowStates.update { states ->
-            states + (product.id to ProductRowState(
-                productId = product.id,
-                availableUnits = product.units,
-                currentUnitIndex = product.units.indexOfFirst { it.isBaseUnit }
-                    .takeIf { it >= 0 } ?: 0
-            ))
-        }
+    fun getDisplayState(product: Product): ProductRowState {
+        return _rowStates.value[product.id] ?: ProductRowState(
+            productId = product.id,
+            availableUnits = product.units,
+            currentUnitIndex = product.units.indexOfFirst { it.isBaseUnit }
+                .takeIf { it >= 0 } ?: 0
+        )
     }
 
     /**
-     * Bir sonraki birime geç (Adet → Koli → Palet → Adet)
-     */
-    fun onUnitCycleClicked(product: Product) {
-        scope.launch {
-            val state = _rowStates.value[product.id] ?: return@launch
-            val newIndex = (state.currentUnitIndex + 1) % product.units.size
-            val newUnit = product.units[newIndex]
-
-            val validationStatus = if (state.quantityText.isNotEmpty()) {
-                validator.validateQuantity(state.quantityText, newUnit, product)
-            } else {
-                ValidationStatus.Empty
-            }
-
-            updateRowState(product.id) {
-                it.copy(
-                    currentUnitIndex = newIndex,
-                    validationStatus = validationStatus
-                )
-            }
-        }
-    }
-
-    /**
-     * Miktar metni değişimini yönetir
+     * Miktar değiştiğinde çağrılır
+     * İlk giriş yapıldığında rowState oluşturulur
      */
     fun onQuantityChanged(product: Product, text: String) {
         if (text.isNotEmpty() && !text.matches(Regex("^\\d*\\.?\\d*$"))) {
@@ -212,17 +177,115 @@ class ProductListViewModel(private val productRepository: IProductRepository,
         }
 
         scope.launch {
-            val state = _rowStates.value[product.id] ?: return@launch
+            val existingState = _rowStates.value[product.id]
+
+            // State yoksa ve text boşsa bir şey yapma
+            if (existingState == null && text.isEmpty()) {
+                return@launch
+            }
+
+            // State yoksa oluştur
+            val state = existingState ?: ProductRowState(
+                productId = product.id,
+                availableUnits = product.units,
+                currentUnitIndex = product.units.indexOfFirst { it.isBaseUnit }
+                    .takeIf { it >= 0 } ?: 0
+            )
+
             val unit = state.currentUnit ?: return@launch
 
-            val validationStatus = validator.validateQuantity(text, unit, product)
-
-            updateRowState(product.id) {
-                it.copy(
-                    quantityText = text,
-                    validationStatus = validationStatus
-                )
+            val validationStatus = if (text.isNotEmpty()) {
+                val reservedBaseQuantity = calculateReservedBaseQuantity(state)
+                validator.validateQuantity(text, unit, product, reservedBaseQuantity)
+            } else {
+                ValidationStatus.Empty
             }
+
+            val newState = state.copy(
+                quantityText = text,
+                validationStatus = validationStatus
+            )
+
+            // Text boş ve entry yoksa ve belgede değilse state'i sil
+            if (text.isEmpty() && newState.unitEntries.isEmpty() && !newState.isInDocument) {
+                _rowStates.update { it - product.id }
+            } else {
+                _rowStates.update { it + (product.id to newState) }
+            }
+        }
+    }
+
+    /**
+     * Birim değiştiğinde çağrılır
+     * Mevcut miktar varsa kaydedilir, yeni birime geçilir
+     */
+    fun onUnitCycleClicked(product: Product) {
+        scope.launch {
+            val existingState = _rowStates.value[product.id]
+
+            // State yoksa oluştur
+            val state = existingState ?: ProductRowState(
+                productId = product.id,
+                availableUnits = product.units,
+                currentUnitIndex = product.units.indexOfFirst { it.isBaseUnit }
+                    .takeIf { it >= 0 } ?: 0
+            )
+
+            val currentUnit = state.currentUnit ?: return@launch
+
+            // Mevcut birimde miktar varsa unitEntries'e kaydet
+            var updatedEntries = state.unitEntries
+            if (state.isValidQuantity) {
+                val quantity = state.quantityText.toBigDecimal()
+                val existingEntry = updatedEntries[currentUnit.id]
+
+                // Aynı birimde önceki giriş varsa topla
+                val newQuantity = if (existingEntry != null) {
+                    existingEntry.quantity + quantity
+                } else {
+                    quantity
+                }
+
+                updatedEntries = updatedEntries + (currentUnit.id to UnitEntry(
+                    unitId = currentUnit.id,
+                    unitName = currentUnit.unitName,
+                    quantity = newQuantity,
+                    hasDiscount = state.hasDiscount,
+                    discountSlots = state.discountSlots
+                ))
+            }
+
+            // Yeni birime geç
+            val newIndex = (state.currentUnitIndex + 1) % product.units.size
+            val newUnit = product.units[newIndex]
+
+            // Yeni birimde önceden giriş var mı?
+            val existingNewEntry = updatedEntries[newUnit.id]
+            val newQuantityText = existingNewEntry?.quantity?.toPlainString() ?: ""
+
+            // Yeni birimde entry varsa entries'den çıkar (düzenleme moduna alıyoruz)
+            if (existingNewEntry != null) {
+                updatedEntries = updatedEntries - newUnit.id
+            }
+
+            // reservedBaseQuantity hesapla (yeni birim entry'si artık hariç)
+            val reservedBaseQuantity = calculateReservedBaseQuantity(state.copy(unitEntries = updatedEntries))
+
+            val validationStatus = if (newQuantityText.isNotEmpty()) {
+                validator.validateQuantity(newQuantityText, newUnit, product, reservedBaseQuantity)
+            } else {
+                ValidationStatus.Empty
+            }
+
+            val newState = state.copy(
+                currentUnitIndex = newIndex,
+                quantityText = newQuantityText,
+                validationStatus = validationStatus,
+                unitEntries = updatedEntries,
+                hasDiscount = existingNewEntry?.hasDiscount ?: false,
+                discountSlots = existingNewEntry?.discountSlots ?: emptyList()
+            )
+            _rowStates.update { it + (product.id to newState) }
         }
     }
 
@@ -234,7 +297,7 @@ class ProductListViewModel(private val productRepository: IProductRepository,
         val unit = state.currentUnit ?: return
 
         if (!state.isValidQuantity) {
-            sendEvent(Event.ShowError("Önce miktar girmelisiniz"))
+            sendEvent(ShowError("Önce miktar girmelisiniz"))
             return
         }
 
@@ -264,107 +327,102 @@ class ProductListViewModel(private val productRepository: IProductRepository,
     }
 
     /**
-     * Ürünü belgeye ekle
+     * FAB'a basıldığında - tüm girişleri belgeye ekler
      */
-    fun onAddToDocument(product: Product) {
-        val state = _rowStates.value[product.id] ?: return
-
-        // Validation
-        if (!state.canAddToDocument) {
-            sendEvent(Event.ShowError("Geçerli bir miktar girin"))
-            return
-        }
-
-        val unit = state.currentUnit!!
-        val quantity = state.quantityText.toBigDecimal()
-
+    fun onNextClicked() {
         scope.launch {
-            try {
-                // Add line to document
-                val result = documentManager.addLine(
-                    product = product,
-                    unit = unit,
-                    quantity = quantity
-                )
+            val statesWithEntries = _rowStates.value.filter { (_, state) -> state.hasAnyEntry }
 
-                when (result) {
-                    is AddLineResult.Success -> {
-                        val lineId = result.line.id
+            if (statesWithEntries.isEmpty()) {
+                sendEvent(ShowError("Eklenecek ürün yok"))
+                return@launch
+            }
 
-                        // Apply discounts if any
-                        state.discountSlots
-                            .filter { it.value.isNotEmpty() }
-                            .forEach { slot ->
-                                val discountValue = slot.value.toBigDecimal()
-                                documentManager.applyManualDiscount(
-                                    lineId = lineId,
-                                    slotNumber = slot.slotNumber,
-                                    type = when (slot.type) {
-                                        DiscountType.PERCENTAGE ->
-                                            DiscountType.PERCENTAGE
-                                        DiscountType.FIXED_AMOUNT ->
-                                            DiscountType.FIXED_AMOUNT
-                                    },
-                                    value = discountValue
-                                )
+            var successCount = 0
+            var errorMessage: String? = null
+
+            for ((productId, state) in statesWithEntries) {
+                val product = productRepository.getProductById(productId) ?: continue
+
+                try {
+                    // 1. Kaydedilmiş entry'leri ekle
+                    for ((unitId, entry) in state.unitEntries) {
+                        val unit = state.availableUnits.find { it.id == unitId } ?: continue
+
+                        val result = documentManager.addLine(
+                            product = product,
+                            unit = unit,
+                            quantity = entry.quantity
+                        )
+
+                        when (result) {
+                            is AddLineResult.Success -> {
+                                applyDiscountsToLine(result.line.id, entry.discountSlots)
+                                successCount++
                             }
-
-                        // Update state - keep quantity and discounts for next addition
-                        updateRowState(product.id) {
-                            it.copy(
-                                isInDocument = true,
-                                documentQuantity = it.documentQuantity + quantity,
-                                documentUnitId = unit.id,
-                                documentUnitName = unit.unitName
-                            )
+                            is AddLineResult.Blocked -> {
+                                errorMessage = result.error.message
+                            }
+                            is AddLineResult.NeedsConfirmation -> { /* TODO */ }
+                            AddLineResult.NotFound -> {}
                         }
-
-                        sendEvent(ShowSuccess("Ürün sepete eklendi"))
                     }
 
-                    is AddLineResult.NeedsConfirmation -> {
-                        //TODO BURAYA BAKACAGIZ
-                        //sendEvent(Event.ShowError(result.message))
+                    // 2. Mevcut girişi ekle
+                    if (state.isValidQuantity) {
+                        val unit = state.currentUnit ?: continue
+                        val quantity = state.quantityText.toBigDecimal()
+
+                        val result = documentManager.addLine(
+                            product = product,
+                            unit = unit,
+                            quantity = quantity
+                        )
+
+                        when (result) {
+                            is AddLineResult.Success -> {
+                                applyDiscountsToLine(result.line.id, state.discountSlots)
+                                successCount++
+                            }
+                            is AddLineResult.Blocked -> {
+                                errorMessage = result.error.message
+                            }
+                            is AddLineResult.NeedsConfirmation -> { /* TODO */ }
+                            AddLineResult.NotFound -> {}
+                        }
                     }
 
-                    is AddLineResult.Blocked -> {
-                        sendEvent(ShowError(result.error.message))
+                    // 3. State'i temizle
+                    updateRowState(productId) {
+                        it.copy(
+                            quantityText = "",
+                            validationStatus = ValidationStatus.Empty,
+                            unitEntries = emptyMap(),
+                            hasDiscount = false,
+                            discountSlots = emptyList(),
+                            isInDocument = true
+                        )
                     }
 
-                    AddLineResult.NotFound -> {
-                        sendEvent(ShowSuccess("Ürün bulunamadı"))
-                    }
+                } catch (e: Exception) {
+                    errorMessage = e.message
                 }
-            } catch (e: Exception) {
-                sendEvent(Event.ShowError("Hata: ${e.message}"))
+            }
+
+            // Sonuç bildirimi
+            if (errorMessage != null) {
+                sendEvent(ShowError(errorMessage))
+            } else if (successCount > 0) {
+                sendEvent(ShowSuccess("$successCount satır eklendi"))
+                _navigationEvents.emit(NavigationEvent.NavigateToCart)
             }
         }
     }
 
-    /**
-     * Sepete/sonraki ekrana ilerle
-     */
-    fun onNextClicked() {
-        scope.launch {
-            _navigationEvents.emit(NavigationEvent.NavigateToCart)
-        }
-    }
-
-    /**
-     * Bir ürün için row state'i getir
-     */
-    fun getRowState(productId: String): ProductRowState? {
-        return _rowStates.value[productId]
-    }
-
-    //endregion ========== PRODUCT ROW ACTIONS ==========
-
     //endregion
 
     //region Private Method
-    /**
-     * Belirli ürün satırı durumunu güncelle
-     */
+
     private fun updateRowState(productId: String, update: (ProductRowState) -> ProductRowState) {
         _rowStates.update { states ->
             val currentState = states[productId] ?: return@update states
@@ -372,30 +430,47 @@ class ProductListViewModel(private val productRepository: IProductRepository,
         }
     }
 
-    /**
-     * Mevcut filtre seçeneklerini yükle (benzersiz değerler)
-     */
+    private suspend fun applyDiscountsToLine(lineId: String, discountSlots: List<DiscountSlotEntry>) {
+        discountSlots
+            .filter { it.value.isNotEmpty() }
+            .forEach { slot ->
+                documentManager.applyManualDiscount(
+                    lineId = lineId,
+                    slotNumber = slot.slotNumber,
+                    type = slot.type,
+                    value = slot.value.toBigDecimal()
+                )
+            }
+    }
+
     private fun loadAvailableFilters() {
         scope.launch {
             try {
                 val filters = productRepository.getAvailableFilters()
                 updateState { it.copy(availableFilters = filters) }
             } catch (e: Exception) {
-                sendEvent(Event.ShowError("Filtreler yüklenemedi: ${e.message}"))
+                sendEvent(ShowError("Filtreler yüklenemedi: ${e.message}"))
             }
         }
     }
+
+    private fun calculateReservedBaseQuantity(state: ProductRowState): BigDecimal {
+        return state.unitEntries.values.fold(BigDecimal.ZERO) { acc, entry ->
+            val entryUnit = state.availableUnits.find { it.id == entry.unitId }
+            val conversionFactor = entryUnit?.conversionFactor ?: BigDecimal.ONE
+            acc + (entry.quantity * conversionFactor)
+        }
+    }
+
     //endregion
 
     //region Events
+
     sealed class Event {
         data class ShowError(val message: String) : Event()
         data class ShowSuccess(val message: String) : Event()
     }
 
-    /**
-     * Navigasyon Olayları (ekran geçişleri)
-     */
     sealed class NavigationEvent {
         data class OpenDiscountDialog(
             val productId: String,
@@ -407,5 +482,6 @@ class ProductListViewModel(private val productRepository: IProductRepository,
 
         object NavigateToCart : NavigationEvent()
     }
-    //endregion Events
+
+    //endregion
 }

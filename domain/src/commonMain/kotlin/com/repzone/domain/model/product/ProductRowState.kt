@@ -27,11 +27,14 @@ data class ProductRowState(
     // Doğrulama
     val validationStatus: ValidationStatus = ValidationStatus.Empty,
 
+    // Kaydedilmiş birim girişleri (birim değiştiğinde otomatik kaydedilir)
+    val unitEntries: Map<String, UnitEntry> = emptyMap(),
+
     // Doküman takibi
     val isInDocument: Boolean = false,
-    val documentQuantity: BigDecimal = BigDecimal.Companion.ZERO,
-    val documentUnitId: String? = null,      // unitId
-    val documentUnitName: String? = null     // unitName
+    val documentQuantity: BigDecimal = BigDecimal.ZERO,
+    val documentUnitId: String? = null,
+    val documentUnitName: String? = null
 ) {
     /**
      * Seçili mevcut birimi getirir
@@ -43,14 +46,53 @@ data class ProductRowState(
      * Girilen miktarın geçerli olup olmadığını kontrol eder
      */
     val isValidQuantity: Boolean
-        get() = quantityText.toBigDecimalOrNull() != null &&
-                quantityText.toBigDecimalOrNull()!! > BigDecimal.Companion.ZERO
+        get() = quantityText.isNotEmpty() &&
+                quantityText.toBigDecimalOrNull() != null &&
+                quantityText.toBigDecimalOrNull()!! > BigDecimal.ZERO
+
+    /**
+     * Bu ürün için herhangi bir giriş var mı?
+     */
+    val hasAnyEntry: Boolean
+        get() = unitEntries.isNotEmpty() || isValidQuantity
+
+    /**
+     * Tüm girişlerin özeti (badge için)
+     * Örn: "1 Adet, 5 Koli"
+     */
+    val entrySummary: String
+        get() {
+            val entries = mutableListOf<String>()
+
+            unitEntries.values.forEach { entry ->
+                entries.add("${entry.quantity.toPlainString()} ${entry.unitName}")
+            }
+
+            if (isValidQuantity) {
+                currentUnit?.let { unit ->
+                    entries.add("$quantityText ${unit.unitName}")
+                }
+            }
+
+            return entries.joinToString(", ")
+        }
 
     /**
      * Satırın dokümana eklenip eklenemeyeceğini kontrol eder
      */
     val canAddToDocument: Boolean
-        get() = isValidQuantity &&
+        get() = hasAnyEntry &&
                 validationStatus !is ValidationStatus.Error &&
                 currentUnit != null
 }
+
+/**
+ * Kaydedilmiş birim girişi
+ */
+data class UnitEntry(
+    val unitId: String,
+    val unitName: String,
+    val quantity: BigDecimal,
+    val hasDiscount: Boolean = false,
+    val discountSlots: List<DiscountSlotEntry> = emptyList()
+)

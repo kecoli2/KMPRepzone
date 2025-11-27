@@ -13,7 +13,7 @@ class ProductListValidator(private val settingsRepository: ISettingsRepository) 
     /**
      * Bir ürün birimi için miktar doğrulama işlemi
      */
-    suspend fun validateQuantity(quantityText: String, unit: ProductUnit, product: Product): ValidationStatus {
+    suspend fun validateQuantity(quantityText: String, unit: ProductUnit, product: Product, reservedBaseQuantity: BigDecimal = BigDecimal.ZERO): ValidationStatus {
         // Boş giriş
         if (quantityText.isEmpty()) {
             return ValidationStatus.Empty
@@ -34,24 +34,46 @@ class ProductListValidator(private val settingsRepository: ISettingsRepository) 
         // Mevcut stok miktarını hesapla (seçili birimde)
         val availableStock = calculateAvailableStock(product, unit)
 
+        // Reserved miktarı seçili birime çevir
+        val reservedInCurrentUnit = if (reservedBaseQuantity > BigDecimal.ZERO) {
+            reservedBaseQuantity.divide(
+                unit.conversionFactor,
+                DecimalMode(decimalPrecision = 10, roundingMode = RoundingMode.ROUND_HALF_CEILING)
+            )
+        } else {
+            BigDecimal.ZERO
+        }
+
+        // Gerçek kullanılabilir stok = mevcut stok - önceden girilen
+        val effectiveAvailableStock = (availableStock - reservedInCurrentUnit).let {
+            if (it < BigDecimal.ZERO) BigDecimal.ZERO else it
+        }
+
+        // Toplam istenen miktar (mesaj için)
+        val totalRequested = reservedInCurrentUnit + quantity
+
         // Doğrulama moduna göre stok kontrolü
         return when (stockValidation.orderStockBehavior) {
             StockBehavior.IGNORE -> {
-                // Her zaman izin ver, doğrulama yapılmaz
                 ValidationStatus.Valid
             }
 
             StockBehavior.WARN -> {
-                if (quantity > availableStock) {
-                    ValidationStatus.Warning(message = "Yetersiz stok. Mevcut: ${availableStock.toPlainString()} ${unit.unitName}", availableStock = availableStock)
+                if (quantity > effectiveAvailableStock) {
+                    ValidationStatus.Warning(
+                        message = "Yetersiz stok. Mevcut: ${availableStock.toPlainString()} ${unit.unitName}, Toplam istenen: ${totalRequested.toPlainString()} ${unit.unitName}",
+                        availableStock = effectiveAvailableStock
+                    )
                 } else {
                     ValidationStatus.Valid
                 }
             }
 
             StockBehavior.BLOCK -> {
-                if (quantity > availableStock) {
-                    ValidationStatus.Error("Yetersiz stok. Mevcut: ${availableStock.toPlainString()} ${unit.unitName}")
+                if (quantity > effectiveAvailableStock) {
+                    ValidationStatus.Error(
+                        "Yetersiz stok. Mevcut: ${availableStock.toPlainString()} ${unit.unitName}, Toplam istenen: ${totalRequested.toPlainString()} ${unit.unitName}"
+                    )
                 } else {
                     ValidationStatus.Valid
                 }
@@ -63,7 +85,6 @@ class ProductListValidator(private val settingsRepository: ISettingsRepository) 
      * Belirtilen birimdeki mevcut stok miktarını hesaplar
      */
     private fun calculateAvailableStock(product: Product, unit: ProductUnit): BigDecimal {
-        // Temel stok her zaman temel birimde tutulur (genelde "Adet")
         val baseStock = product.stockQuantity
 
         // Temel birimi bul
@@ -71,14 +92,10 @@ class ProductListValidator(private val settingsRepository: ISettingsRepository) 
             ?: product.units.firstOrNull()
             ?: return BigDecimal.ZERO
 
-        // Seçili birim temel birimse, stok olduğu gibi döndürülür
         if (unit.id == baseUnit.id) {
             return baseStock
         }
 
-        // Stoku seçili birime dönüştür
-        // Örnek: 100 Adet stok, istenen birim Koli (1 Koli = 12 Adet)
-        // Sonuç: 100 / 12 = 8.33 Koli
         return baseStock.divide(
             unit.conversionFactor,
             DecimalMode(decimalPrecision = 10, roundingMode = RoundingMode.ROUND_HALF_CEILING)
@@ -105,10 +122,10 @@ class ProductListValidator(private val settingsRepository: ISettingsRepository) 
         // Tipe göre doğrulama
         return when (type) {
             DiscountType.PERCENTAGE -> {
-                if (discountValue < BigDecimal.ZERO || discountValue > 100) {
+                if (discountValue < BigDecimal.ZERO || discountValue > BigDecimal.fromInt(100)) {
                     "Yüzde değeri 0-100 arasında olmalı"
                 } else {
-                    null  // Geçerli
+                    null
                 }
             }
 
@@ -116,7 +133,7 @@ class ProductListValidator(private val settingsRepository: ISettingsRepository) 
                 if (discountValue < BigDecimal.ZERO) {
                     "Tutar negatif olamaz"
                 } else {
-                    null  // Geçerli
+                    null
                 }
             }
         }

@@ -151,7 +151,7 @@ private fun ProductRowContent(
             Box(
                 modifier = Modifier
                     .width(2.dp)
-                    .height(52.dp)
+                    .height(80.dp)
                     .background(
                         color = indicatorColor,
                         shape = RoundedCornerShape(1.dp)
@@ -163,7 +163,7 @@ private fun ProductRowContent(
                 imageUrl = null,
                 productName = product.name
             )
-
+            Spacer(modifier = Modifier.width(4.dp))
             // Product Info
             Column(
                 modifier = Modifier.weight(1f),
@@ -207,7 +207,6 @@ private fun ProductRowContent(
                         maxLines = 1
                     )
                 }
-
                 // Price
                 Text(
                     text = priceText,
@@ -240,6 +239,34 @@ private fun ProductRowContent(
                     documentQuantity = state.documentQuantity.toPlainString(),
                     documentUnitName = state.documentUnitName
                 )
+
+                if (state.hasAnyEntry) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.padding(top = 4.dp)
+                    ) {
+                        // Kaydedilmiş entry'ler (unitEntries)
+                        state.unitEntries.values.forEach { entry ->
+                            EntryChip(
+                                text = "${entry.quantity.toPlainString()} ${entry.unitName}",
+                                containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                            )
+                        }
+
+                        // Mevcut giriş (henüz kaydedilmemiş)
+                        if (state.isValidQuantity) {
+                            state.currentUnit?.let { unit ->
+                                EntryChip(
+                                    text = "${state.quantityText} ${unit.unitName}",
+                                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                                )
+                            }
+                        }
+                    }
+                }
             }
 
             // Quantity Controls
@@ -251,6 +278,7 @@ private fun ProductRowContent(
                 onQuantityChanged = onQuantityChanged,
                 backgroundColor = backgroundColor
             )
+            Spacer(modifier = Modifier.width(4.dp))
         }
     }
 }
@@ -304,12 +332,12 @@ private fun QuantityControls(
             TextButton(
                 onClick = onUnitCycle,
                 contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
-                modifier = Modifier.height(28.dp)
+                modifier = Modifier.height(28.dp),
             ) {
                 Text(
                     text = unit.unitName,
                     style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
                 )
                 Spacer(modifier = Modifier.width(2.dp))
                 Icon(
@@ -347,7 +375,7 @@ private fun ProductImage(
             model = imageUrl,
             contentDescription = productName,
             modifier = Modifier
-                .size(48.dp)
+                .size(52.dp)
                 .clip(CircleShape),
             contentScale = ContentScale.Crop,
             alignment = Alignment.Center,
@@ -356,7 +384,7 @@ private fun ProductImage(
     } else {
         Box(
             modifier = Modifier
-                .size(48.dp)
+                .size(52.dp)
                 .clip(CircleShape)
                 .background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center
@@ -443,5 +471,27 @@ private fun ValidationStatusRow(
                 }
             }
         }
+    }
+}
+
+@Composable
+private fun EntryChip(
+    text: String,
+    containerColor: Color,
+    contentColor: Color,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        modifier = modifier,
+        shape = RoundedCornerShape(12.dp),
+        color = containerColor
+    ) {
+        Text(
+            text = text,
+            modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+            style = MaterialTheme.typography.labelSmall,
+            color = contentColor,
+            fontWeight = FontWeight.Medium
+        )
     }
 }

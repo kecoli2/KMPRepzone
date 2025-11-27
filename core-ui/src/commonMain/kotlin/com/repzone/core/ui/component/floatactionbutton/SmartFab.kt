@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -53,6 +55,7 @@ fun SmartFabScaffold(
     content: @Composable (PaddingValues) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
+
     Box(modifier = modifier.fillMaxSize()) {
         Scaffold(
             modifier = Modifier.fillMaxSize(),
@@ -60,22 +63,24 @@ fun SmartFabScaffold(
             bottomBar = bottomBar,
             snackbarHost = snackbarHost,
             floatingActionButton = {
-                if(fabAction != null){
-                    FloatingActionButton(
-                        onClick = {
-                            when (fabAction) {
-                                is FabAction.Single -> onFabClick()
-                                is FabAction.Multiple -> expanded = !expanded
+                if (fabAction != null) {
+                    when (fabAction) {
+                        is FabAction.Single -> {
+                            SingleFab(
+                                fabAction = fabAction,
+                                onClick = onFabClick
+                            )
+                        }
+                        is FabAction.Multiple -> {
+                            FloatingActionButton(
+                                onClick = { expanded = !expanded }
+                            ) {
+                                Icon(
+                                    imageVector = if (expanded) Icons.Default.Close else fabAction.icon,
+                                    contentDescription = fabAction.contentDescription
+                                )
                             }
                         }
-                    ) {
-                        Icon(
-                            imageVector = when (fabAction) {
-                                is FabAction.Multiple -> if (expanded) Icons.Default.Close else fabAction.icon
-                                is FabAction.Single -> fabAction.icon
-                            },
-                            contentDescription = fabAction.contentDescription
-                        )
                     }
                 }
             },
@@ -93,6 +98,48 @@ fun SmartFabScaffold(
                     onMenuItemClick(item)
                     expanded = false
                 }
+            )
+        }
+    }
+}
+
+/**
+ * Single FAB with optional badge support
+ */
+@Composable
+private fun SingleFab(
+    fabAction: FabAction.Single,
+    onClick: () -> Unit
+) {
+    val badgeCount = fabAction.badgeCount
+
+    if (badgeCount != null && badgeCount > 0) {
+        // FAB with Badge
+        BadgedBox(
+            badge = {
+                Badge(
+                    containerColor = fabAction.badgeColor ?: MaterialTheme.colorScheme.error,
+                    contentColor = fabAction.badgeContentColor ?: MaterialTheme.colorScheme.onError
+                ) {
+                    Text(
+                        text = if (badgeCount > 99) "99+" else badgeCount.toString()
+                    )
+                }
+            }
+        ) {
+            FloatingActionButton(onClick = onClick) {
+                Icon(
+                    imageVector = fabAction.icon,
+                    contentDescription = fabAction.contentDescription
+                )
+            }
+        }
+    } else {
+        // FAB without Badge
+        FloatingActionButton(onClick = onClick) {
+            Icon(
+                imageVector = fabAction.icon,
+                contentDescription = fabAction.contentDescription
             )
         }
     }

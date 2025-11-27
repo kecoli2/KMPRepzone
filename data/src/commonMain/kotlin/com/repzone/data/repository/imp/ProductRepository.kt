@@ -10,11 +10,16 @@ import com.repzone.domain.repository.IProductRepository
 
 class ProductRepository(private val iDatabaseManager: IDatabaseManager): IProductRepository {
     //region Field
-    private val dummyProducts: List<Product> by lazy { generateDummyProducts() }
+    private var dummyProducts: List<Product>
     //endregion
 
     //region Properties
+
     //endregion
+
+    init {
+        dummyProducts = generateDummyProducts()
+    }
 
     //region Public Method
     override suspend fun getProducts(
@@ -32,6 +37,10 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager): IProduc
 
     override suspend fun getAvailableFilters(): ProductFilters {
         return ProductFilters()
+    }
+
+    override suspend fun getProductById(productId: String): Product? {
+        return dummyProducts.find { it.id == productId }
     }
     //endregion
 
