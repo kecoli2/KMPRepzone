@@ -93,7 +93,7 @@ class DocumentManager(override val documentType: DocumentType,
         activeDistribution = null
     }
 
-    override suspend fun getCustomer(): SyncCustomerModel {
+    override fun getCustomer(): SyncCustomerModel {
         return currentCustomer!!
     }
 
@@ -106,6 +106,10 @@ class DocumentManager(override val documentType: DocumentType,
         }catch (ex: Exception){
             return Result.Error(DomainException.UnknownException(cause = ex))
         }
+    }
+
+    override fun getDocumentMapModel(): SyncDocumentMapModel {
+        return documentMapModel!!
     }
     //endregion ============ Document Operations ============
 

@@ -107,6 +107,10 @@ class ProductListViewModel(
         }
     }
 
+    fun getDocumentSubTitle(): String {
+        return documentManager.getDocumentMapModel().description + "- ${documentManager.getCustomer().name}"
+    }
+
     //region ========== FILTER ACTIONS ==========
 
     fun onSearchQueryChanged(query: String) {

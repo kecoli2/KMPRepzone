@@ -80,12 +80,14 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
     val rowStates by viewModel.rowStates.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val entryCount = viewModel.entryCount.collectAsState()
+    var documentSubTitleName = remember { "" }
 
     var showFilterSheet by remember { mutableStateOf(false) }
     var selectedSort by remember { mutableStateOf(ProductSortOption.NAME_ASC) }
 
     LaunchedEffect(Unit) {
         viewModel.startDocument()
+        documentSubTitleName = viewModel.getDocumentSubTitle()
     }
 
     LaunchedEffect(Unit) {
@@ -143,7 +145,7 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
                     TopBarAction(Icons.Default.Map, "Map", Color.White, {}),
                 ),
                 title = StringResource.PRODUCTS.fromResource(),
-                subtitle = "Satış Siparişi - Salih Müşterisi"
+                subtitle = documentSubTitleName
             )
 
             if (uiState.uiFrame.isLoading) {

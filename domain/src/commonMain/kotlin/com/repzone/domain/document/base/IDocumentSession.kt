@@ -2,7 +2,6 @@ package com.repzone.domain.document.base
 
 import com.repzone.domain.common.Result
 import com.repzone.domain.document.model.DocumentType
-import com.repzone.domain.model.CustomerItemModel
 
 interface IDocumentSession {
     /**

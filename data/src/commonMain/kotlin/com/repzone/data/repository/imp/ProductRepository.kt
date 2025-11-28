@@ -22,16 +22,7 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager): IProduc
     }
 
     //region Public Method
-    override suspend fun getProducts(
-        page: Int,
-        pageSize: Int,
-        searchQuery: String,
-        brands: Set<String>,
-        categories: Set<String>,
-        colors: Set<String>,
-        tags: Set<String>,
-        priceRange: PriceRange?,
-    ): List<Product> {
+    override suspend fun getProducts(page: Int, pageSize: Int, searchQuery: String, brands: Set<String>, categories: Set<String>, colors: Set<String>, tags: Set<String>, priceRange: PriceRange?): List<Product> {
         return dummyProducts
     }
 
