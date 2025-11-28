@@ -1,6 +1,7 @@
 package com.repzone.domain.document.service
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.platform.randomUUID
 import com.repzone.core.util.extensions.now
 import com.repzone.core.util.extensions.toInstant
@@ -32,7 +33,13 @@ import com.repzone.domain.document.model.DocumentType
 import com.repzone.domain.document.model.GiftSelection
 import com.repzone.domain.document.model.PromotionContext
 import com.repzone.domain.document.model.StockStatus
-import com.repzone.domain.model.CustomerItemModel
+import com.repzone.domain.model.DistributionControllerModel
+import com.repzone.domain.model.SyncCustomerModel
+import com.repzone.domain.model.SyncDocumentMapModel
+import com.repzone.domain.repository.ICustomerRepository
+import com.repzone.domain.repository.IDistributionRepository
+import com.repzone.domain.repository.IDocumentMapRepository
+import com.repzone.domain.repository.IProductRepository
 import kotlin.time.ExperimentalTime
 
 
@@ -43,18 +50,23 @@ import kotlin.time.ExperimentalTime
 class DocumentManager(override val documentType: DocumentType,
                       private val promotionEngine: IPromotionEngine,
                       private val stockValidator: StockValidator,
-                      private val lineCalculator: LineDiscountCalculator, customer: CustomerItemModel,
-    private val documentName : String) : IDocumentManager {
+                      private val lineCalculator: LineDiscountCalculator,
+                      private val iCustomerRepository: ICustomerRepository,
+                      private val iDocumentMapRepository: IDocumentMapRepository,
+                      private val iDistributionRepository: IDistributionRepository,
+                      private val iUserSession: IUserSession,
+                      private val iProductRepository: IProductRepository
+) : IDocumentManager {
     //region Fields
+    private var currentCustomer: SyncCustomerModel? = null
+    private var documentMapModel: SyncDocumentMapModel? = null
+    private var activeDistribution: DistributionControllerModel? = null
     private val _lines = MutableStateFlow<List<IDocumentLine>>(emptyList())
     override val lines: StateFlow<List<IDocumentLine>> = _lines.asStateFlow()
-
     private val _pendingConflicts = MutableStateFlow<List<LineConflict>>(emptyList())
     override val pendingConflicts: StateFlow<List<LineConflict>> = _pendingConflicts.asStateFlow()
-
     private val _pendingGiftSelections = MutableStateFlow<List<PendingGiftSelection>>(emptyList())
     override val pendingGiftSelections: StateFlow<List<PendingGiftSelection>> = _pendingGiftSelections.asStateFlow()
-    private var currentCustomer: CustomerItemModel? = customer
     //endregion Fields
 
     //region Public Method
@@ -77,18 +89,25 @@ class DocumentManager(override val documentType: DocumentType,
         _pendingConflicts.value = emptyList()
         _pendingGiftSelections.value = emptyList()
         currentCustomer = null
+        documentMapModel = null
+        activeDistribution = null
     }
 
-    override suspend fun getCustomer(): CustomerItemModel {
+    override suspend fun getCustomer(): SyncCustomerModel {
         return currentCustomer!!
     }
 
-    override suspend fun setMasterValues(): Result<Unit> {
-
-        return Result.Success(Unit)
+    override suspend fun setMasterValues(customerId: Long, documentId: Long): Result<IDocumentManager> {
+        try {
+            currentCustomer = iCustomerRepository.getById(customerId)
+            documentMapModel = iDocumentMapRepository.get(documentId.toInt(), currentCustomer!!.organizationId?.toInt() ?: 0)
+            activeDistribution = iDistributionRepository.getActiveDistributionListId(currentCustomer, iUserSession.decideWhichOrgIdToBeUsed(currentCustomer!!.organizationId?.toInt() ?: 0))!!
+            return Result.Success(this)
+        }catch (ex: Exception){
+            return Result.Error(DomainException.UnknownException(cause = ex))
+        }
     }
     //endregion ============ Document Operations ============
-
 
     //region ============ Line Operations ============
 
@@ -280,7 +299,7 @@ class DocumentManager(override val documentType: DocumentType,
             currentLine = null,
             allLines = _lines.value,
             documentTotal = _lines.value.fold(BigDecimal.ZERO) { acc, line -> acc + line.lineTotal },
-            customer = currentCustomer,
+            customer = currentCustomer!!,
             documentType = documentType,
             customerPurchaseHistory = null
         )

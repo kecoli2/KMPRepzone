@@ -37,7 +37,9 @@ class PrepareDocumentActionRule(
                 DocumentActionType.WAYBILL -> DocumentType.WAYBILL
                 else -> DocumentType.ORDER
 
-            }, customerItem = customerItem, documentName = visitActionItem.name ?: "")
+            },
+                customerId = customerItem.customerId,
+                documentId = visitActionItem.documentMapId!!)
 
             context.putData("prepare_document", true)
 

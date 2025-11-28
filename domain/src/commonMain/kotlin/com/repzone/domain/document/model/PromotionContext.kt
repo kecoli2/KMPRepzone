@@ -3,6 +3,7 @@ package com.repzone.domain.document.model
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.domain.document.base.IDocumentLine
 import com.repzone.domain.model.CustomerItemModel
+import com.repzone.domain.model.SyncCustomerModel
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -20,7 +21,7 @@ data class PromotionContext(
     val documentTotal: BigDecimal,
 
     /** Müşteri bilgisi */
-    val customer: CustomerItemModel?,
+    val customer: SyncCustomerModel,
 
     /** Belge tipi */
     val documentType: DocumentType,

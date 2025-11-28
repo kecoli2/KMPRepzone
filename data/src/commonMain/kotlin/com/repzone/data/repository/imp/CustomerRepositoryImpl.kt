@@ -13,10 +13,10 @@ class CustomerRepositoryImpl(private val mapper: CustomerEntityDbMapper,
                              private val iDatabaseManager: IDatabaseManager): ICustomerRepository {
     //region Public Method
 
-    override suspend fun getById(id: Long): SyncCustomerModel? {
+    override suspend fun getById(id: Long): SyncCustomerModel {
         return iDatabaseManager.getSqlDriver().select<SyncCustomerEntity>{where {
             criteria("Id", id)
-        }}.firstOrNull()?.let {  mapper.toDomain(it)}
+        }}.first().let {  mapper.toDomain(it)}
     }
     //endregion
 

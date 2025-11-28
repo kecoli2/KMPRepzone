@@ -1,5 +1,6 @@
 package com.repzone.domain.document.base
 
+import com.repzone.domain.common.Result
 import com.repzone.domain.document.model.DocumentType
 import com.repzone.domain.model.CustomerItemModel
 
@@ -9,9 +10,12 @@ interface IDocumentSession {
      * Eğer aktif session varsa, mevcut olanı döner
      *
      * @param type Belge tipi (ORDER, INVOICE, WAYBILL)
+     * @param customerId Müşteri ID'si
+     * @param documentId Belge ID'si
+     * @param organizationId Organizasyon ID'si
      * @return Oluşturulan veya mevcut DocumentManager instance'ı
      */
-    fun start(type: DocumentType, customerItem: CustomerItemModel, documentName: String): IDocumentManager
+    suspend fun start(type: DocumentType, customerId: Long, documentId: Long): Result<IDocumentManager>
 
     /**
      * Mevcut aktif session'ı döner

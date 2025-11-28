@@ -8,7 +8,7 @@ import com.repzone.domain.document.model.PromotionContext
  */
 data class CustomerGroupCondition(val groupIds: List<String>, val matchType: MatchType = MatchType.ANY) : Condition {
     override fun evaluate(context: PromotionContext): Boolean {
-        val customerGroup = context.customer?.customerGroupName ?: return false
+        val customerGroup = context.customer.groupName ?: return false
         return when (matchType) {
             MatchType.ANY -> customerGroup in groupIds
             MatchType.ALL -> groupIds.all { it == customerGroup }
@@ -34,13 +34,13 @@ data class CustomerGroupCondition(val groupIds: List<String>, val matchType: Mat
 /**
  * Müşteri tag koşulu
  */
-data class CustomerTagCondition(val tags: List<String>, val matchType: MatchType = MatchType.ANY) : Condition {
+/*data class CustomerTagCondition(val tags: List<String>, val matchType: MatchType = MatchType.ANY) : Condition {
     override fun evaluate(context: PromotionContext): Boolean {
-        val customerTags = context.customer?.tagRaw ?: return false
+        val customerTags = context.customer.tags ?: return false
         return when (matchType) {
             MatchType.ANY -> customerTags.any { it in tags }
             MatchType.ALL -> tags.all { it in customerTags }
             MatchType.NONE -> customerTags.none { it in tags }
         }
     }
-}
+}*/

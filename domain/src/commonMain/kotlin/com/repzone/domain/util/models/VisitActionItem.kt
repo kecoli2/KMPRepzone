@@ -31,6 +31,7 @@ data class VisitActionItem(
     val transactionGroupType: TransactionDocumentGroup? = null,
     val isFulfillment: Boolean = false,
     val smallIcon: String? = null,
+    val documentMapId: Long? = null
 ){
     val shouldBeSeen get() = interval != TaskRepeatInterval.ATVISITSTART
 }

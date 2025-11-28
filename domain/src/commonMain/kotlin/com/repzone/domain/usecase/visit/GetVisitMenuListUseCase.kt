@@ -165,7 +165,8 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
                         name = it.name,
                         description = it.description,
                         documentType = DocumentActionType.ORDER,
-                        isFulfillment = it.isFulfillment
+                        isFulfillment = it.isFulfillment,
+                        documentMapId = it.id
                     )
                 )
             }
@@ -178,7 +179,8 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
                         name = it.name,
                         description = it.description,
                         documentType = DocumentActionType.INVOICE,
-                        isFulfillment = it.isFulfillment
+                        isFulfillment = it.isFulfillment,
+                        documentMapId = it.id
                     )
                 )
             }
@@ -191,7 +193,8 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
                         name = it.name,
                         description = it.description,
                         documentType = DocumentActionType.WAYBILL,
-                        isFulfillment = it.isFulfillment
+                        isFulfillment = it.isFulfillment,
+                        documentMapId = it.id
                     )
                 )
             }
@@ -204,7 +207,8 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
                         name = it.name,
                         description = it.description,
                         documentType = DocumentActionType.COLLECTION,
-                        isFulfillment = it.isFulfillment
+                        isFulfillment = it.isFulfillment,
+                        documentMapId = it.id
                     )
                 )
             }
