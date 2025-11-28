@@ -55,6 +55,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
         val list = iDatabaseManager.getSqlDriver().select<SyncDocumentMapEntity> {
             innerJoin<SyncDocumentOrganizationEntity>("Id","DocumentTypeId"){
                 alias("DOM")
+                mapColumn("MinMaxControl")
             }
 
             where {

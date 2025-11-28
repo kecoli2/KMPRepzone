@@ -12,33 +12,11 @@ import com.repzone.domain.repository.ICustomerRepository
 class CustomerRepositoryImpl(private val mapper: CustomerEntityDbMapper,
                              private val iDatabaseManager: IDatabaseManager): ICustomerRepository {
     //region Public Method
-    override suspend fun deleteById(id: Long) {
-        iDatabaseManager.getSqlDriver().delete<SyncCustomerEntity> {
-            where { criteria("Id", equal = id) }
-        }
-    }
-
-    override suspend fun getAll(): List<SyncCustomerModel> {
-        return  iDatabaseManager.getSqlDriver().select<SyncCustomerEntity>{}.toList().map {  mapper.toDomain(it)}
-    }
 
     override suspend fun getById(id: Long): SyncCustomerModel? {
         return iDatabaseManager.getSqlDriver().select<SyncCustomerEntity>{where {
             criteria("Id", id)
         }}.firstOrNull()?.let {  mapper.toDomain(it)}
-    }
-
-    override suspend fun upsert(entity: SyncCustomerModel) {
-        iDatabaseManager.getSqlDriver().insertOrReplace(entity)
-    }
-
-    override suspend fun pending(): List<SyncCustomerModel> {
-        return  iDatabaseManager.getSqlDriver().select<SyncCustomerEntity>{}.toList().map {  mapper.toDomain(it)}
-    }
-
-    suspend fun getCustomerBy(appointmentId: Long): SyncCustomerModel? {
-
-        return null
     }
     //endregion
 

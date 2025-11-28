@@ -58,17 +58,37 @@ class SelectBuilder<T>(public val metadata: EntityMetadata, private val driver: 
      */
     private fun buildSQL(params: MutableList<Any?>): String {
 
+        // Tüm JOIN'lerden column mapping'leri topla
+        val allColumnMappings = mutableMapOf<String, String>()
+        joins.forEach { join ->
+            allColumnMappings.putAll(join.columnMappings)
+        }
+
         // SELECT kısmı - JOIN varsa joined kolonları da ekle
         val selectColumns = mutableListOf<String>()
 
-        // Ana tablo kolonları
-        selectColumns.addAll(metadata.columns.map { "${metadata.tableName}.${it.name}" })
+        // Ana tablo kolonları (mapping varsa JOIN'den al)
+        metadata.columns.forEach { column ->
+            val columnName = column.name
+            if (allColumnMappings.containsKey(columnName)) {
+                // Bu kolon JOIN'den gelecek
+                selectColumns.add("${allColumnMappings[columnName]} AS $columnName")
+            } else {
+                // Entity kolonunu kullan
+                selectColumns.add("${metadata.tableName}.$columnName")
+            }
+        }
 
-        // JOIN'lerden kolonlar
+        // JOIN'lerden ekstra kolonlar (columns() ile belirtilmiş, mapping'de olmayanlar)
         joins.forEach { join ->
             if (join.selectedColumns.isNotEmpty()) {
-                val alias = join.effectiveTableAlias  // alias varsa onu kullan
-                selectColumns.addAll(join.selectedColumns.map { "$alias.$it" })
+                val alias = join.effectiveTableAlias
+                join.selectedColumns.forEach { col ->
+                    // Eğer bu kolon mapping'de yoksa ekle
+                    if (!allColumnMappings.containsKey(col)) {
+                        selectColumns.add("$alias.$col")
+                    }
+                }
             }
         }
 
@@ -235,6 +255,101 @@ class SelectBuilder<T>(public val metadata: EntityMetadata, private val driver: 
 
     fun first(): T {
         return firstOrNull() ?: throw NoSuchElementException("No entity found")
+    }
+
+    /**
+     * Kayıt var mı kontrol et (kolonları çekmeden)
+     *
+     * Örnek:
+     * ```
+     * val hasActiveUsers = driver.select<UserEntity> {
+     *     where { criteria("status", equal = "ACTIVE") }
+     * }.any()
+     * ```
+     *
+     * SQL: SELECT 1 FROM UserEntity WHERE status = 'ACTIVE' LIMIT 1
+     */
+    fun any(): Boolean {
+        val params = mutableListOf<Any?>()
+        val sql = buildExistsSQL(params)
+
+        if (BuildConfig.IS_DEBUG) {
+            val startTime = now()
+            SqlQueryLogger.logRawQuery(sql, params)
+
+            val result = executeExistsQuery(sql, params)
+
+            val elapsed = (now() - startTime).toInstant().epochSeconds
+            SqlQueryLogger.logQueryTime("EXISTS", elapsed)
+            Logger.d("SQL_RESULT", "Exists: $result")
+
+            return result
+        }
+
+        return executeExistsQuery(sql, params)
+    }
+
+    /**
+     * any() ile aynı - alias
+     */
+    fun exists(): Boolean = any()
+
+    /**
+     * Kayıt yok mu kontrol et
+     *
+     * Örnek:
+     * ```
+     * val noBlockedUsers = driver.select<UserEntity> {
+     *     where { criteria("blocked", equal = true) }
+     * }.none()
+     * ```
+     */
+    fun none(): Boolean = !any()
+
+    /**
+     * Build lightweight EXISTS query (SELECT 1 ... LIMIT 1)
+     */
+    private fun buildExistsSQL(params: MutableList<Any?>): String {
+        // SELECT 1 - kolonları çekme
+        var sql = "SELECT 1 FROM ${metadata.tableName}"
+
+        // JOIN'leri ekle
+        joins.forEach { join ->
+            sql += " ${join.toSQL(params)}"
+        }
+
+        // WHERE clause
+        if (whereCondition != NoCondition) {
+            sql += " WHERE ${whereCondition.toSQL(params)}"
+        }
+
+        // LIMIT 1 - sadece bir kayıt yeterli
+        sql += " LIMIT 1"
+
+        return sql
+    }
+
+    /**
+     * Execute EXISTS query
+     */
+    private fun executeExistsQuery(sql: String, params: List<Any?>): Boolean {
+        var exists = false
+
+        driver.executeQuery(
+            identifier = null,
+            sql = sql,
+            mapper = { cursor ->
+                exists = cursor.next().value
+                app.cash.sqldelight.db.QueryResult.Value(exists)
+            },
+            parameters = params.size
+        ) {
+            params.forEachIndexed { index, value ->
+                bindValue(this, index, value)
+            }
+        }
+
+        return exists
     }
 
     // INNER JOIN
