@@ -1,0 +1,5 @@
+CREATE TABLE SyncMobileWarehouseTotalEntity (
+    ProductId INTEGER NOT NULL,
+    Stock REAL NOT NULL,
+    OrderStock REAL NOT NULL
+);

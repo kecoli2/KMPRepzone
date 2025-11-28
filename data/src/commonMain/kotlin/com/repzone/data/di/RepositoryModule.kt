@@ -1,6 +1,7 @@
 package com.repzone.data.di
 
 import com.repzone.data.mapper.*
+import com.repzone.data.mapper.product.ProductInformationModelDbMapper
 import com.repzone.data.repository.imp.VisitRepositoryImpl
 import com.repzone.data.repository.imp.EventReasonRepositoryImpl
 import com.repzone.data.repository.imp.CustomerListRepositoryImpl
@@ -11,6 +12,7 @@ import com.repzone.data.repository.imp.DocumentMapRepositoryImpl
 import com.repzone.data.repository.imp.DynamicFormRepositoryImpl
 import com.repzone.data.repository.imp.DynamicPageReportImpl
 import com.repzone.data.repository.imp.MobileModuleParameterRepositoryImpl
+import com.repzone.data.repository.imp.PriceRepositoryImpl
 import com.repzone.data.repository.imp.ProductRepository
 import com.repzone.data.repository.imp.RepresentativeRepositoryImpl
 import com.repzone.data.repository.imp.RouteAppointmentRepositoryImpl
@@ -43,7 +45,7 @@ val RepositoryModule = module {
     factoryOf(::SettingsRepositoryImpl) { bind<ISettingsRepository>() }
     factoryOf(::ProductRepository) { bind<IProductRepository>() }
     factoryOf(::DistributionRepositoryImpl) { bind<IDistributionRepository>() }
-
+    factoryOf(::PriceRepositoryImpl) { bind<IPriceRepository>() }
     //endregion REPOSITORY
 
     //region DBMAPPERS
@@ -55,6 +57,7 @@ val RepositoryModule = module {
 
     //region Product
     single { ProductEntityDbMapper() }
+    single { ProductInformationModelDbMapper() }
     //endregion
 
     //region SyncModule

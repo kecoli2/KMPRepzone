@@ -1,4 +1,4 @@
-CREATE VIEW ProductFlatViewEntity AS
+CREATE VIEW IF NOT EXISTS ProductFlatViewEntity AS
 SELECT
     0 AS ProductId,
     '' AS Sku,

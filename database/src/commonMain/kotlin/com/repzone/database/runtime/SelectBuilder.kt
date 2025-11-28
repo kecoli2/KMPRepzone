@@ -8,7 +8,7 @@ import com.repzone.core.util.extensions.toInstant
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class SelectBuilder<T>(public val metadata: EntityMetadata, private val driver: SqlDriver) {
+class SelectBuilder<T>(val metadata: EntityMetadata, private val driver: SqlDriver, private val baseSql: String? = null) {
     var whereCondition: Condition = NoCondition
         internal set
 
@@ -25,6 +25,7 @@ class SelectBuilder<T>(public val metadata: EntityMetadata, private val driver: 
         internal set
 
     val joins = mutableListOf<JoinConfig>()
+
 
     fun where(block: CriteriaBuilder.() -> Unit) {
         val builder = CriteriaBuilder()
@@ -57,99 +58,13 @@ class SelectBuilder<T>(public val metadata: EntityMetadata, private val driver: 
      * Build SQL query string (for logging)
      */
     private fun buildSQL(params: MutableList<Any?>): String {
-
-        // Tüm JOIN'lerden column mapping'leri topla
-        val allColumnMappings = mutableMapOf<String, String>()
-        joins.forEach { join ->
-            allColumnMappings.putAll(join.columnMappings)
+        // Raw SQL varsa onu base olarak kullan
+        if (baseSql != null) {
+            return buildFromRawSQL(params)
         }
 
-        // SELECT kısmı - JOIN varsa joined kolonları da ekle
-        val selectColumns = mutableListOf<String>()
-
-        // Ana tablo kolonları (mapping varsa JOIN'den al)
-        metadata.columns.forEach { column ->
-            val columnName = column.name
-            if (allColumnMappings.containsKey(columnName)) {
-                // Bu kolon JOIN'den gelecek
-                selectColumns.add("${allColumnMappings[columnName]} AS $columnName")
-            } else {
-                // Entity kolonunu kullan
-                selectColumns.add("${metadata.tableName}.$columnName")
-            }
-        }
-
-        // JOIN'lerden ekstra kolonlar (columns() ile belirtilmiş, mapping'de olmayanlar)
-        joins.forEach { join ->
-            if (join.selectedColumns.isNotEmpty()) {
-                val alias = join.effectiveTableAlias
-                join.selectedColumns.forEach { col ->
-                    // Eğer bu kolon mapping'de yoksa ekle
-                    if (!allColumnMappings.containsKey(col)) {
-                        selectColumns.add("$alias.$col")
-                    }
-                }
-            }
-        }
-
-        val selectClause = selectColumns.joinToString(", ")
-
-        // FROM kısmı
-        var sql = "SELECT $selectClause FROM ${metadata.tableName}"
-
-        // JOIN'leri ekle
-        joins.forEach { join ->
-            sql += " ${join.toSQL(params)}"
-        }
-
-        // Build WHERE clause
-        val whereClause = if (whereCondition != NoCondition) {
-            " WHERE ${whereCondition.toSQL(params)}"
-        } else {
-            ""
-        }
-
-        // Build GROUP BY clause
-        val groupByClause = groupByBuilder?.let { builder ->
-            if (builder.groupByFields.isNotEmpty()) {
-                " GROUP BY ${builder.groupByFields.joinToString(", ")}"
-            } else {
-                ""
-            }
-        } ?: ""
-
-        // Build HAVING clause
-        val havingClause = groupByBuilder?.let { builder ->
-            if (builder.havingCondition != NoCondition) {
-                " HAVING ${builder.havingCondition.toSQL(params)}"
-            } else {
-                ""
-            }
-        } ?: ""
-
-        // Build ORDER BY clause
-        val orderByClause = if (orderSpecs.isNotEmpty()) {
-            " ORDER BY " + orderSpecs.joinToString(", ") { spec ->
-                "${spec.field} ${spec.direction.name}"
-            }
-        } else {
-            ""
-        }
-
-        // Build LIMIT clause
-        val limitClause = limitValue?.let { " LIMIT $it" } ?: ""
-
-        // Build OFFSET clause
-        val offsetClause = offsetValue?.let { " OFFSET $it" } ?: ""
-
-        // Final SQL
-        return sql +
-                whereClause +
-                groupByClause +
-                havingClause +
-                orderByClause +
-                limitClause +
-                offsetClause
+        // Normal SELECT build (mevcut kod)
+        return buildNormalSQL(params)
     }
 
     fun toList(): List<T> {
@@ -310,21 +225,135 @@ class SelectBuilder<T>(public val metadata: EntityMetadata, private val driver: 
      * Build lightweight EXISTS query (SELECT 1 ... LIMIT 1)
      */
     private fun buildExistsSQL(params: MutableList<Any?>): String {
-        // SELECT 1 - kolonları çekme
+        if (baseSql != null) {
+            var sql = "SELECT 1 FROM ($baseSql) AS _subquery"
+
+            if (whereCondition != NoCondition) {
+                sql += " WHERE ${whereCondition.toSQL(params)}"
+            }
+
+            sql += " LIMIT 1"
+            return sql
+        }
+
+        // Normal build
         var sql = "SELECT 1 FROM ${metadata.tableName}"
 
-        // JOIN'leri ekle
         joins.forEach { join ->
             sql += " ${join.toSQL(params)}"
         }
 
-        // WHERE clause
         if (whereCondition != NoCondition) {
             sql += " WHERE ${whereCondition.toSQL(params)}"
         }
 
-        // LIMIT 1 - sadece bir kayıt yeterli
         sql += " LIMIT 1"
+        return sql
+    }
+
+    /**
+     * Raw SQL üzerine WHERE/ORDER/GROUP/LIMIT ekle
+     */
+    private fun buildFromRawSQL(params: MutableList<Any?>): String {
+        val sql = StringBuilder(baseSql!!)
+
+        // WHERE
+        if (whereCondition != NoCondition) {
+            sql.append(" WHERE ")
+            sql.append(whereCondition.toSQL(params))
+        }
+
+        // GROUP BY
+        groupByBuilder?.let { builder ->
+            if (builder.groupByFields.isNotEmpty()) {
+                sql.append(" GROUP BY ")
+                sql.append(builder.groupByFields.joinToString(", "))
+            }
+
+            // HAVING
+            if (builder.havingCondition != NoCondition) {
+                sql.append(" HAVING ")
+                sql.append(builder.havingCondition.toSQL(params))
+            }
+        }
+
+        // ORDER BY
+        if (orderSpecs.isNotEmpty()) {
+            sql.append(" ORDER BY ")
+            sql.append(orderSpecs.joinToString(", ") { "${it.field} ${it.direction.name}" })
+        }
+
+        // LIMIT
+        limitValue?.let {
+            sql.append(" LIMIT ")
+            sql.append(it)
+        }
+
+        // OFFSET
+        offsetValue?.let {
+            sql.append(" OFFSET ")
+            sql.append(it)
+        }
+
+        return sql.toString()
+    }
+
+    private fun buildNormalSQL(params: MutableList<Any?>): String {
+        val allColumnMappings = mutableMapOf<String, String>()
+        joins.forEach { join ->
+            allColumnMappings.putAll(join.columnMappings)
+        }
+
+        // SELECT kısmı
+        val selectColumns = mutableListOf<String>()
+
+        metadata.columns.forEach { column ->
+            val columnName = column.name
+            if (allColumnMappings.containsKey(columnName)) {
+                selectColumns.add("${allColumnMappings[columnName]} AS $columnName")
+            } else {
+                selectColumns.add("${metadata.tableName}.$columnName")
+            }
+        }
+
+        joins.forEach { join ->
+            if (join.selectedColumns.isNotEmpty()) {
+                val alias = join.effectiveTableAlias
+                join.selectedColumns.forEach { col ->
+                    if (!allColumnMappings.containsKey(col)) {
+                        selectColumns.add("$alias.$col")
+                    }
+                }
+            }
+        }
+
+        val selectClause = selectColumns.joinToString(", ")
+
+        var sql = "SELECT $selectClause FROM ${metadata.tableName}"
+
+        joins.forEach { join ->
+            sql += " ${join.toSQL(params)}"
+        }
+
+        if (whereCondition != NoCondition) {
+            sql += " WHERE ${whereCondition.toSQL(params)}"
+        }
+
+        groupByBuilder?.let { builder ->
+            if (builder.groupByFields.isNotEmpty()) {
+                sql += " GROUP BY ${builder.groupByFields.joinToString(", ")}"
+            }
+            if (builder.havingCondition != NoCondition) {
+                sql += " HAVING ${builder.havingCondition.toSQL(params)}"
+            }
+        }
+
+        if (orderSpecs.isNotEmpty()) {
+            sql += " ORDER BY " + orderSpecs.joinToString(", ") { "${it.field} ${it.direction.name}" }
+        }
+
+        limitValue?.let { sql += " LIMIT $it" }
+        offsetValue?.let { sql += " OFFSET $it" }
 
         return sql
     }

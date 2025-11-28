@@ -17,6 +17,11 @@ inline fun <reified T : Any> SqlDriver.select(block: SelectBuilder<T>.() -> Unit
     return SelectBuilder<T>(metadata, this).apply(block)
 }
 
+inline fun <reified T : Any> SqlDriver.query(baseSql: String, block: SelectBuilder<T>.() -> Unit = {}): SelectBuilder<T> {
+    val metadata = EntityMetadataRegistry.get<T>()
+    return SelectBuilder<T>(metadata, this, baseSql).apply(block)
+}
+
 fun SqlDriver.insert(entity: Any): Long {
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()

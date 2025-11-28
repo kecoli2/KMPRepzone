@@ -12,7 +12,8 @@ import com.repzone.domain.repository.IProductRepository
  */
 class ProductPagingSource(
     private val productRepository: IProductRepository,
-    private val filterState: ProductFilterState
+    private val filterState: ProductFilterState,
+    private val productFastSql: String
 ) : PagingSource<Int, ProductInformationModel>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ProductInformationModel> {
@@ -29,7 +30,8 @@ class ProductPagingSource(
                 categories = filterState.categories,
                 colors = filterState.colors,
                 tags = filterState.tags,
-                priceRange = filterState.priceRange
+                priceRange = filterState.priceRange,
+                quertBuilderSql = productFastSql
             )
 
             LoadResult.Page(

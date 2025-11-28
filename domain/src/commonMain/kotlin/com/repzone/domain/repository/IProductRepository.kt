@@ -1,12 +1,16 @@
 package com.repzone.domain.repository
 
+import com.repzone.core.enums.SalesOperationType
 import com.repzone.domain.document.model.ProductInformationModel
+import com.repzone.domain.model.DistributionControllerModel
+import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.product.PriceRange
 import com.repzone.domain.model.product.ProductFilters
+import com.repzone.domain.util.ProductQueryParams
 
 interface IProductRepository {
 
-    suspend fun getProducts(page: Int,
+    suspend fun getProducts(quertBuilderSql: String,page: Int,
         pageSize: Int,
         searchQuery: String = "",
         brands: Set<String> = emptySet(),
@@ -22,4 +26,11 @@ interface IProductRepository {
     suspend fun getAvailableFilters(): ProductFilters
 
     suspend fun getProductById(productId: Int): ProductInformationModel?
+    suspend fun getProductQueryParams(salesOperationType: SalesOperationType,
+                                      currentCustomer: SyncCustomerModel,
+                                      customerOrgId: Int,
+                                      distController: DistributionControllerModel,
+                                      mfrId: Int = 0,
+                                      notAllowedMfrs: List<Int>? = null,
+                                      selectedPrefOrgId: Int = 0): ProductQueryParams
 }

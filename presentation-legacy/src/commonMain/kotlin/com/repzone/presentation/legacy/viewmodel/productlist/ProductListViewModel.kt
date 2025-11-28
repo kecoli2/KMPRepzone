@@ -21,6 +21,7 @@ import com.repzone.domain.document.model.ValidationStatus
 import com.repzone.domain.model.product.PriceRange
 import com.repzone.domain.model.product.ProductFilterState
 import com.repzone.domain.repository.IProductRepository
+import com.repzone.domain.util.ProductQueryBuilder
 import com.repzone.presentation.legacy.viewmodel.productlist.ProductListViewModel.Event.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -49,7 +50,6 @@ class ProductListViewModel(
     //region Field
     private var documentManager: IDocumentManager
     private val _filterState = MutableStateFlow(ProductFilterState())
-
     private val _rowStates = MutableStateFlow<Map<Int, ProductRowState>>(emptyMap())
     val rowStates: StateFlow<Map<Int, ProductRowState>> = _rowStates.asStateFlow()
 
@@ -68,7 +68,7 @@ class ProductListViewModel(
                     enablePlaceholders = false
                 )
             ) {
-                ProductPagingSource(productRepository, filter)
+                ProductPagingSource(productRepository, filter, documentManager.getProductQueryString())
             }.flow
         }
         .cachedIn(scope)

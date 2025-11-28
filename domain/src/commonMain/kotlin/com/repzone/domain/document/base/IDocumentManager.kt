@@ -17,6 +17,7 @@ import com.repzone.domain.document.model.StockStatus
 import com.repzone.domain.document.model.StockValidationResult
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.SyncDocumentMapModel
+import com.repzone.domain.util.ProductQueryBuilder
 
 /**
  * Belge yöneticisi contract'ı
@@ -118,7 +119,7 @@ interface IDocumentManager {
     suspend fun setMasterValues(customerId: Long, documentId: Long): Result<IDocumentManager>
 
     fun getDocumentMapModel(): SyncDocumentMapModel
-
+    fun  getProductQueryString(): String
     //endregion ============ Document Operations ============
 }
 

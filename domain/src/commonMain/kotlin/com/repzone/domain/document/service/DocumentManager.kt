@@ -1,6 +1,7 @@
 package com.repzone.domain.document.service
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import com.repzone.core.enums.SalesOperationType
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.platform.randomUUID
 import com.repzone.core.util.extensions.now
@@ -39,6 +40,7 @@ import com.repzone.domain.repository.ICustomerRepository
 import com.repzone.domain.repository.IDistributionRepository
 import com.repzone.domain.repository.IDocumentMapRepository
 import com.repzone.domain.repository.IProductRepository
+import com.repzone.domain.util.ProductQueryBuilder
 import kotlin.time.ExperimentalTime
 
 
@@ -60,6 +62,7 @@ class DocumentManager(override val documentType: DocumentType,
     private var currentCustomer: SyncCustomerModel? = null
     private var documentMapModel: SyncDocumentMapModel? = null
     private var activeDistribution: DistributionControllerModel? = null
+    private var productQuery: String? = null
     private val _lines = MutableStateFlow<List<IDocumentLine>>(emptyList())
     override val lines: StateFlow<List<IDocumentLine>> = _lines.asStateFlow()
     private val _pendingConflicts = MutableStateFlow<List<LineConflict>>(emptyList())
@@ -101,6 +104,7 @@ class DocumentManager(override val documentType: DocumentType,
             currentCustomer = iCustomerRepository.getById(customerId)
             documentMapModel = iDocumentMapRepository.get(documentId.toInt(), currentCustomer!!.organizationId?.toInt() ?: 0)
             activeDistribution = iDistributionRepository.getActiveDistributionListId(currentCustomer, iUserSession.decideWhichOrgIdToBeUsed(currentCustomer!!.organizationId?.toInt() ?: 0))!!
+            prepareProductQueryBuilder()
             return Result.Success(this)
         }catch (ex: Exception){
             return Result.Error(DomainException.UnknownException(cause = ex))
@@ -109,6 +113,10 @@ class DocumentManager(override val documentType: DocumentType,
 
     override fun getDocumentMapModel(): SyncDocumentMapModel {
         return documentMapModel!!
+    }
+
+    override fun getProductQueryString(): String {
+        return productQuery!!
     }
     //endregion ============ Document Operations ============
 
@@ -319,6 +327,56 @@ class DocumentManager(override val documentType: DocumentType,
         }.filter { it.conflicts.isNotEmpty() }
     }
 
+    private suspend fun prepareProductQueryBuilder(){
+        if(productQuery == null){
+            val productQueryParams = iProductRepository.getProductQueryParams(
+                salesOperationType = SalesOperationType.SALES,
+                currentCustomer = currentCustomer!!,
+                customerOrgId = currentCustomer!!.organizationId!!.toInt(),
+                distController = activeDistribution!!,
+                mfrId = 0,
+                notAllowedMfrs = null,
+                selectedPrefOrgId = 0
+            )
+            productQuery = ProductQueryBuilder().buildAllProductsQuery(productQueryParams)
+        }
+    }
+
     //endregion ============ Private Helpers ============
     //endregion Private Method
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

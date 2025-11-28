@@ -53,7 +53,7 @@ class ProductQueryBuilder {
             """.trimIndent())
 
             // FROM
-            append("\nFROM MobileSyncProductModel P")
+            append("\nFROM SyncProductEntity P")
 
             // Dynamic JOINs
             appendJoins(params)
@@ -94,7 +94,7 @@ class ProductQueryBuilder {
             // Return operations
             if (p.repReturnDistId > 0) {
                 append("""
-                    INNER JOIN MobileSyncProductDistributionLineModel PDLR 
+                    INNER JOIN SyncProductDistributionLineEntity PDLR 
                         ON P.Id = PDLR.ProductId 
                         AND PDLR.DistributionId = ${p.repReturnDistId} 
                         AND PDLR.State = 1
@@ -102,7 +102,7 @@ class ProductQueryBuilder {
             }
             if (p.custReturnDistId > 0) {
                 append("""
-                    INNER JOIN MobileSyncProductDistributionLineModel PDL_R 
+                    INNER JOIN SyncProductDistributionLineEntity PDL_R 
                         ON P.Id = PDL_R.ProductId 
                         AND PDL_R.DistributionId = ${p.custReturnDistId} 
                         AND PDL_R.State = 1
@@ -113,7 +113,7 @@ class ProductQueryBuilder {
             if (p.repDistId > 0) {
                 append("""
                     
-                    INNER JOIN MobileSyncProductDistributionLineModel PDL 
+                    INNER JOIN SyncProductDistributionLineEntity PDL 
                         ON P.Id = PDL.ProductId 
                         AND PDL.DistributionId = ${p.repDistId} 
                         AND PDL.State = 1
@@ -122,7 +122,7 @@ class ProductQueryBuilder {
             if (p.custDistId > 0) {
                 append("""
                     
-                    INNER JOIN MobileSyncProductDistributionLineModel PDL_ 
+                    INNER JOIN SyncProductDistributionLineEntity PDL_ 
                         ON P.Id = PDL_.ProductId 
                         AND PDL_.DistributionId = ${p.custDistId} 
                         AND PDL_.State = 1
@@ -134,7 +134,7 @@ class ProductQueryBuilder {
         if (p.custGrpMustStockListId > 0) {
             append("""
                 
-                LEFT JOIN MobileSyncProductDistributionLineModel PDL__ 
+                LEFT JOIN SyncProductDistributionLineEntity PDL__ 
                     ON P.Id = PDL__.ProductId 
                     AND PDL__.DistributionId = ${p.custGrpMustStockListId} 
                     AND PDL__.State = 1
@@ -144,7 +144,7 @@ class ProductQueryBuilder {
         // Product Parameter (required)
         append("""
             
-            INNER JOIN MobileProductParameterv4 PM 
+            INNER JOIN ProductParameterv4Entity PM 
                 ON PM.ProductId = P.Id 
                 AND ((P.OrganizationId = ${p.organizationId} 
                       AND P.OrganizationId = PM.OrganizationId 
@@ -155,30 +155,30 @@ class ProductQueryBuilder {
         """.trimIndent())
 
         // Product Unit (required)
-        append("\nINNER JOIN MobileSyncProductUnitModel PU ON P.Id = PU.ProductId")
+        append("\nINNER JOIN SyncProductUnitEntity PU ON P.Id = PU.ProductId")
 
         // Price list joins
         appendPriceListJoins(p)
 
         // Unit (required)
-        append("\nINNER JOIN MobileSyncUnitModel U ON PU.UnitId = U.Id")
+        append("\nINNER JOIN SyncUnitEntity U ON PU.UnitId = U.Id")
 
         // Product Unit Parameters
         append("""
             
-            LEFT JOIN MobileSyncProductUnitParameter PUP_customer 
+            LEFT JOIN SyncProductUnitParameterEntity PUP_customer 
                 ON PUP_customer.ProductId = P.Id 
                 AND PUP_customer.ProductUnitId = PU.Id 
                 AND PUP_customer.State = 1 
                 AND PUP_customer.EntityType = 0 
                 AND PUP_customer.EntityId = ${p.customerId}
-            LEFT JOIN MobileSyncProductUnitParameter PUP_customer_group 
+            LEFT JOIN SyncProductUnitParameterEntity PUP_customer_group 
                 ON PUP_customer_group.ProductId = P.Id 
                 AND PUP_customer_group.ProductUnitId = PU.Id 
                 AND PUP_customer_group.State = 1 
                 AND PUP_customer_group.EntityType = 1 
                 AND PUP_customer_group.EntityId = ${p.customerGroupId}
-            LEFT JOIN MobileSyncProductUnitParameter PUP_represent 
+            LEFT JOIN SyncProductUnitParameterEntity PUP_represent 
                 ON PUP_represent.ProductId = P.Id 
                 AND PUP_represent.ProductUnitId = PU.Id 
                 AND PUP_represent.State = 1 
@@ -190,17 +190,17 @@ class ProductQueryBuilder {
         val stockOrgId = if (p.prefOrgId > 0) p.prefOrgId else p.organizationId
         append("""
             
-            LEFT JOIN MobileSyncStockModel St 
+            LEFT JOIN SyncStockEntity St 
                 ON St.ProductId = P.Id AND St.OrganizationId = $stockOrgId
-            LEFT JOIN MobileSyncTransitStockModel TSt 
+            LEFT JOIN SyncTransitStockEntity TSt 
                 ON TSt.ProductId = P.Id AND TSt.OrganizationId = ${p.organizationId}
-            LEFT JOIN MobileSyncReservedStockModel RSt 
+            LEFT JOIN SyncReservedStockEntity RSt 
                 ON RSt.ProductId = P.Id AND RSt.OrganizationId = ${p.organizationId}
-            LEFT JOIN SyncMobileWarehouseTotalModel Wrh 
+            LEFT JOIN SyncMobileWarehouseTotalEntity Wrh 
                 ON Wrh.ProductId = P.Id
-            LEFT JOIN MobilePendingReportModel PRM 
+            LEFT JOIN PendingReportEntity PRM 
                 ON PRM.ProductId = P.Id
-            LEFT JOIN MobileSyncManufacturerParameterModel MPM 
+            LEFT JOIN SyncManufacturerParameterEntity MPM 
                 ON MPM.ManufacturerId = P.ManufacturerId 
                 AND MPM.State = 1 
                 AND MPM.OrganizationId = ${p.organizationId}
@@ -211,7 +211,7 @@ class ProductQueryBuilder {
         if (p.ruledPriceListIds.isNotEmpty()) {
             append("""
                 
-                LEFT JOIN MobileSyncProductPriceLines PPL_ruled 
+                LEFT JOIN SyncProductPriceLinesEntity PPL_ruled 
                     ON P.Id = PPL_ruled.ProductId 
                     AND PPL_ruled.PriceListId IN (${p.ruledPriceListIds.joinToString(",")}) 
                     AND PU.Id = PPL_ruled.ProductUnitId 
@@ -223,7 +223,7 @@ class ProductQueryBuilder {
         if (p.custPriceListId > 0) {
             append("""
                 
-                LEFT JOIN MobileSyncProductPriceLines PPL 
+                LEFT JOIN SyncProductPriceLinesEntity PPL 
                     ON P.Id = PPL.ProductId 
                     AND PPL.PriceListId = ${p.custPriceListId} 
                     AND PU.Id = PPL.ProductUnitId 
@@ -235,7 +235,7 @@ class ProductQueryBuilder {
         if (p.custGrpPriceListId > 0) {
             append("""
                 
-                LEFT JOIN MobileSyncProductPriceLines PPL_ 
+                LEFT JOIN SyncProductPriceLinesEntity PPL_ 
                     ON P.Id = PPL_.ProductId 
                     AND PPL_.PriceListId = ${p.custGrpPriceListId} 
                     AND PU.Id = PPL_.ProductUnitId 
@@ -247,7 +247,7 @@ class ProductQueryBuilder {
         if (p.custReturnPriceListId > 0) {
             append("""
                 
-                LEFT JOIN MobileSyncProductPriceLines PPLR 
+                LEFT JOIN SyncProductPriceLinesEntity PPLR 
                     ON P.Id = PPLR.ProductId 
                     AND PPLR.PriceListId = ${p.custReturnPriceListId} 
                     AND PU.Id = PPLR.ProductUnitId 
@@ -258,7 +258,7 @@ class ProductQueryBuilder {
         if (p.custGrpReturnPriceListId > 0) {
             append("""
                 
-                LEFT JOIN MobileSyncProductPriceLines PPL_R 
+                LEFT JOIN SyncProductPriceLinesEntity PPL_R 
                     ON P.Id = PPL_R.ProductId 
                     AND PPL_R.PriceListId = ${p.custGrpReturnPriceListId} 
                     AND PU.Id = PPL_R.ProductUnitId 
@@ -270,7 +270,7 @@ class ProductQueryBuilder {
         if (p.custDmgPriceListId > 0) {
             append("""
                 
-                LEFT JOIN MobileSyncProductPriceLines PPLD 
+                LEFT JOIN SyncProductPriceLinesEntity PPLD 
                     ON P.Id = PPLD.ProductId 
                     AND PPLD.PriceListId = ${p.custDmgPriceListId} 
                     AND PU.Id = PPLD.ProductUnitId 
@@ -281,7 +281,7 @@ class ProductQueryBuilder {
         if (p.custGrpDmgPriceListId > 0) {
             append("""
                 
-                LEFT JOIN MobileSyncProductPriceLines PPL_D 
+                LEFT JOIN SyncProductPriceLinesEntity PPL_D 
                     ON P.Id = PPL_D.ProductId 
                     AND PPL_D.PriceListId = ${p.custGrpDmgPriceListId} 
                     AND PU.Id = PPL_D.ProductUnitId 
