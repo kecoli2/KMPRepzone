@@ -1,7 +1,6 @@
 package com.repzone.data.di
 
 import com.repzone.data.mapper.*
-import com.repzone.data.mapper.product.ProductInformationModelDbMapper
 import com.repzone.data.repository.imp.VisitRepositoryImpl
 import com.repzone.data.repository.imp.EventReasonRepositoryImpl
 import com.repzone.data.repository.imp.CustomerListRepositoryImpl
@@ -57,7 +56,7 @@ val RepositoryModule = module {
 
     //region Product
     single { ProductEntityDbMapper() }
-    single { ProductInformationModelDbMapper() }
+    single { ProductFlatViewEntityDbMapper() }
     //endregion
 
     //region SyncModule

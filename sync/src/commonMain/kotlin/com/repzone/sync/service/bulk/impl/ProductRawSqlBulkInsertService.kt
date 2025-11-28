@@ -52,7 +52,7 @@ class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMap
 
             TableOperation(
                 tableName = ProductParameterEntityMetadata.tableName,
-                clearSql = null,
+                clearSql = "DELETE FROM ProductParameterEntity",
                 columns = ProductParameterEntityMetadata.columns.map { it.name },
                 values = parameterEntities.map { it.toSqlValuesString() },
                 recordCount = parameterEntities.size,

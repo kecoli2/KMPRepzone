@@ -33,5 +33,4 @@ SELECT
     0.0 AS ReservedStock,
     0 AS ShowTransitStock,
     0 AS ShowAvailableStock,
-    CAST(NULL AS INTEGER) AS ManufacturerId
-WHERE 0 = 1;
+    CAST(NULL AS INTEGER) AS ManufacturerId;

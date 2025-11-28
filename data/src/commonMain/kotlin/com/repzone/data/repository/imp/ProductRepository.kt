@@ -4,12 +4,11 @@ import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.enums.SalesOperationType
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.util.extensions.now
-import com.repzone.data.mapper.product.ProductInformationModelDbMapper
+import com.repzone.data.mapper.ProductFlatViewEntityDbMapper
 import com.repzone.database.ProductFlatViewEntity
 import com.repzone.database.SyncProductPricesEntity
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.database.runtime.query
-import com.repzone.database.runtime.rawQueryToEntity
 import com.repzone.database.runtime.select
 import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.document.model.ProductUnit
@@ -25,7 +24,8 @@ import com.repzone.domain.util.ProductQueryParams
 class ProductRepository(private val iDatabaseManager: IDatabaseManager,
                         private val iPriceRepository: IPriceRepository,
                         private val iModuleParameterRepositoryImpl: IMobileModuleParameterRepository,
-                        private val iUserSession: IUserSession, private  val mapper: ProductInformationModelDbMapper): IProductRepository {
+                        private val iUserSession: IUserSession, private  val mapper: ProductFlatViewEntityDbMapper
+): IProductRepository {
     //region Field
     private var dummyProducts: List<ProductInformationModel>
     //endregion

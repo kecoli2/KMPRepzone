@@ -1,16 +1,11 @@
-package com.repzone.data.mapper.product
+package com.repzone.data.mapper
 
 import com.repzone.data.util.Mapper
 import com.repzone.database.ProductFlatViewEntity
 import com.repzone.domain.document.model.ProductInformationModel
 
-class ProductInformationModelDbMapper: Mapper<ProductFlatViewEntity, ProductInformationModel> {
-    //region Field
-    //endregion
 
-    //region Properties
-    //endregion
-
+class ProductFlatViewEntityDbMapper : Mapper<ProductFlatViewEntity, ProductInformationModel> {
     //region Public Method
     override fun toDomain(from: ProductFlatViewEntity): ProductInformationModel {
         TODO("Not yet implemented")
@@ -20,6 +15,4 @@ class ProductInformationModelDbMapper: Mapper<ProductFlatViewEntity, ProductInfo
         TODO("Not yet implemented")
     }
     //endregion
-
-
 }

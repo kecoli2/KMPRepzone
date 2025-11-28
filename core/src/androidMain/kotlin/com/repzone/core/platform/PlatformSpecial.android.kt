@@ -26,6 +26,7 @@ actual fun randomUUID(): String {
     return UUID.randomUUID().toString()
 }
 
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class NumberFormatter {
     private val locale: Locale = Locale.getDefault()
     private val symbols = DecimalFormatSymbols(locale)
