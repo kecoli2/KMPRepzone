@@ -24,7 +24,7 @@ import com.repzone.core.ui.component.textfield.BorderType
 import com.repzone.core.ui.component.textfield.NumberTextField
 import com.repzone.core.ui.component.textfield.TextAlignment
 import com.repzone.core.util.extensions.toMoney
-import com.repzone.domain.document.model.Product
+import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.document.model.ValidationStatus
 import com.repzone.domain.model.product.ProductRowState
@@ -35,7 +35,7 @@ import repzonemobile.core.generated.resources.image_not_found
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductRow(
-    product: Product,
+    product: ProductInformationModel,
     state: ProductRowState,
     hasDiscountPermission: Boolean,
     onUnitCycle: () -> Unit,
@@ -125,7 +125,7 @@ private fun SwipeBackground(
 
 @Composable
 private fun ProductRowContent(
-    product: Product,
+    product: ProductInformationModel,
     state: ProductRowState,
     onUnitCycle: () -> Unit,
     onQuantityChanged: (String) -> Unit,
@@ -134,7 +134,7 @@ private fun ProductRowContent(
     modifier: Modifier = Modifier
 ) {
     val priceText = state.currentUnit?.price?.doubleValue(false)?.toMoney() ?: "-"
-    val stockQty = product.stockQuantity.doubleValue(false)
+    val stockQty = product.stock.doubleValue(false)
     val stockText = "${stockQty.toInt()} ${product.baseUnit.unitName}"
     val hasStock = stockQty > 0
 
@@ -173,14 +173,14 @@ private fun ProductRowContent(
             ) {
                 // Name Row
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (product.code.isNotEmpty()) {
+                    if (product.sku.isNotEmpty()) {
                         Text(
                             "•",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                         Text(
-                            text = product.code,
+                            text = product.sku,
                             maxLines = 1,
                             style = MaterialTheme.typography.bodySmall,
                             overflow = TextOverflow.Ellipsis,
@@ -199,9 +199,9 @@ private fun ProductRowContent(
                 }
 
                 // Brand
-                if (product.brand.isNotEmpty()) {
+                if (product.brandName?.isNotEmpty() == true) {
                     Text(
-                        text = product.brand,
+                        text = product.brandName!!,
                         style = MaterialTheme.typography.bodySmall,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.primary,

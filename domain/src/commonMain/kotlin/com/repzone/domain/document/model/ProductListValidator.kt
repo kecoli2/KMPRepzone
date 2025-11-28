@@ -13,7 +13,7 @@ class ProductListValidator(private val settingsRepository: ISettingsRepository) 
     /**
      * Bir ürün birimi için miktar doğrulama işlemi
      */
-    suspend fun validateQuantity(quantityText: String, unit: ProductUnit, product: Product, reservedBaseQuantity: BigDecimal = BigDecimal.ZERO): ValidationStatus {
+    suspend fun validateQuantity(quantityText: String, unit: ProductUnit, product: ProductInformationModel, reservedBaseQuantity: BigDecimal = BigDecimal.ZERO): ValidationStatus {
         // Boş giriş
         if (quantityText.isEmpty()) {
             return ValidationStatus.Empty
@@ -37,7 +37,7 @@ class ProductListValidator(private val settingsRepository: ISettingsRepository) 
         // Reserved miktarı seçili birime çevir
         val reservedInCurrentUnit = if (reservedBaseQuantity > BigDecimal.ZERO) {
             reservedBaseQuantity.divide(
-                unit.conversionFactor,
+                unit.multiplier,
                 DecimalMode(decimalPrecision = 2, roundingMode = RoundingMode.ROUND_HALF_CEILING)
             )
         } else {
@@ -84,20 +84,20 @@ class ProductListValidator(private val settingsRepository: ISettingsRepository) 
     /**
      * Belirtilen birimdeki mevcut stok miktarını hesaplar
      */
-    private fun calculateAvailableStock(product: Product, unit: ProductUnit): BigDecimal {
-        val baseStock = product.stockQuantity
+    private fun calculateAvailableStock(product: ProductInformationModel, unit: ProductUnit): BigDecimal {
+        val baseStock = product.stock
 
         // Temel birimi bul
         val baseUnit = product.units.find { it.isBaseUnit }
             ?: product.units.firstOrNull()
             ?: return BigDecimal.ZERO
 
-        if (unit.id == baseUnit.id) {
+        if (unit.unitId == baseUnit.unitId) {
             return baseStock
         }
 
         return baseStock.divide(
-            unit.conversionFactor,
+            unit.multiplier,
             DecimalMode(decimalPrecision = 2, roundingMode = RoundingMode.ROUND_HALF_CEILING)
         )
     }

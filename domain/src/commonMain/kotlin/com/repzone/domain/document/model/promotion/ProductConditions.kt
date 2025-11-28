@@ -12,7 +12,7 @@ import kotlin.time.ExperimentalTime
 /**
  * Satır ürün koşulu (mevcut satır için)
  */
-data class ProductCondition(val productIds: List<String>, val minQuantity: BigDecimal = BigDecimal.ONE) : Condition {
+data class ProductCondition(val productIds: List<Int>, val minQuantity: BigDecimal = BigDecimal.ONE) : Condition {
     override fun evaluate(context: PromotionContext): Boolean {
         val line = context.currentLine ?: return false
         return line.productId in productIds && line.quantity >= minQuantity
@@ -34,7 +34,7 @@ data class ProductGroupCondition(val groupIds: List<String>, val matchType: Matc
 /**
  * Belgede ürün var mı koşulu
  */
-data class HasProductCondition(val productIds: List<String>, val minQuantity: BigDecimal = BigDecimal.ONE, val matchType: MatchType = MatchType.ANY) : Condition {
+data class HasProductCondition(val productIds: List<Int>, val minQuantity: BigDecimal = BigDecimal.ONE, val matchType: MatchType = MatchType.ANY) : Condition {
     override fun evaluate(context: PromotionContext): Boolean {
         val matchingLines = context.allLines.filter { it.productId in productIds }
         

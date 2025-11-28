@@ -5,9 +5,9 @@ import com.repzone.domain.document.model.DiscountSlot
 
 interface IDocumentLine {
     val id: String
-    val productId: String
+    val productId: Int
     val productName: String
-    val unitId: String
+    val unitId: Int
     val unitName: String
     val conversionFactor: BigDecimal
     val quantity: BigDecimal

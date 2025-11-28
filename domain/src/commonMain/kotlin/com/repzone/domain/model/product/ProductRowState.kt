@@ -11,7 +11,7 @@ import com.repzone.domain.document.model.ValidationStatus
  * Bu yapı, filtreleme/arama işlemlerinde durumu korumak için PagingData'dan ayrı tutulur.
  */
 data class ProductRowState(
-    val productId: String,
+    val productId: Int,
 
     // Birim döngüsü
     val currentUnitIndex: Int = 0,
@@ -28,12 +28,12 @@ data class ProductRowState(
     val validationStatus: ValidationStatus = ValidationStatus.Empty,
 
     // Kaydedilmiş birim girişleri (birim değiştiğinde otomatik kaydedilir)
-    val unitEntries: Map<String, UnitEntry> = emptyMap(),
+    val unitEntries: Map<Int, UnitEntry> = emptyMap(),
 
     // Doküman takibi
     val isInDocument: Boolean = false,
     val documentQuantity: BigDecimal = BigDecimal.ZERO,
-    val documentUnitId: String? = null,
+    val documentUnitId: Int? = null,
     val documentUnitName: String? = null
 ) {
     /**
@@ -91,7 +91,7 @@ data class ProductRowState(
  * Kaydedilmiş birim girişi
  */
 data class UnitEntry(
-    val unitId: String,
+    val unitId: Int,
     val unitName: String,
     val quantity: BigDecimal,
     val hasDiscount: Boolean = false,

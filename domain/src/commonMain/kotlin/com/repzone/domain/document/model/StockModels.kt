@@ -80,7 +80,7 @@ data class LineStockUsage(
  * Bekleyen satır (stok onayı için)
  */
 data class PendingLine(
-    val product: Product,
+    val product: ProductInformationModel,
     val unit: ProductUnit,
     val quantity: BigDecimal
 )

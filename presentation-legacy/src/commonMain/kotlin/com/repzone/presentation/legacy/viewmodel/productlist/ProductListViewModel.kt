@@ -14,7 +14,7 @@ import com.repzone.domain.document.base.AddLineResult
 import com.repzone.domain.document.base.IDocumentManager
 import com.repzone.domain.document.base.IDocumentSession
 import com.repzone.domain.document.model.DiscountSlotEntry
-import com.repzone.domain.document.model.Product
+import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.document.model.ProductListValidator
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.document.model.ValidationStatus
@@ -50,15 +50,15 @@ class ProductListViewModel(
     private var documentManager: IDocumentManager
     private val _filterState = MutableStateFlow(ProductFilterState())
 
-    private val _rowStates = MutableStateFlow<Map<String, ProductRowState>>(emptyMap())
-    val rowStates: StateFlow<Map<String, ProductRowState>> = _rowStates.asStateFlow()
+    private val _rowStates = MutableStateFlow<Map<Int, ProductRowState>>(emptyMap())
+    val rowStates: StateFlow<Map<Int, ProductRowState>> = _rowStates.asStateFlow()
 
     private val _navigationEvents = MutableSharedFlow<NavigationEvent>()
     val navigationEvents: SharedFlow<NavigationEvent> = _navigationEvents.asSharedFlow()
     //endregion
 
     //region Properties
-    val products: Flow<PagingData<Product>> = _filterState
+    val products: Flow<PagingData<ProductInformationModel>> = _filterState
         .debounce(500)
         .flatMapLatest { filter ->
             Pager(
@@ -162,7 +162,7 @@ class ProductListViewModel(
     /**
      * Display state (miktar girilmemiş ürünler için default state döner)
      */
-    fun getDisplayState(product: Product): ProductRowState {
+    fun getDisplayState(product: ProductInformationModel): ProductRowState {
         return _rowStates.value[product.id] ?: ProductRowState(
             productId = product.id,
             availableUnits = product.units,
@@ -175,7 +175,7 @@ class ProductListViewModel(
      * Miktar değiştiğinde çağrılır
      * İlk giriş yapıldığında rowState oluşturulur
      */
-    fun onQuantityChanged(product: Product, text: String) {
+    fun onQuantityChanged(product: ProductInformationModel, text: String) {
         if (text.isNotEmpty() && !text.matches(Regex("^\\d*\\.?\\d*$"))) {
             return
         }
@@ -223,7 +223,7 @@ class ProductListViewModel(
      * Birim değiştiğinde çağrılır
      * Mevcut miktar varsa kaydedilir, yeni birime geçilir
      */
-    fun onUnitCycleClicked(product: Product) {
+    fun onUnitCycleClicked(product: ProductInformationModel) {
         scope.launch {
             val existingState = _rowStates.value[product.id]
 
@@ -241,7 +241,7 @@ class ProductListViewModel(
             var updatedEntries = state.unitEntries
             if (state.isValidQuantity && state.validationStatus !is ValidationStatus.Error) {
                 val quantity = state.quantityText.toBigDecimal()
-                val existingEntry = updatedEntries[currentUnit.id]
+                val existingEntry = updatedEntries[currentUnit.unitId]
 
                 // Aynı birimde önceki giriş varsa topla
                 val newQuantity = if (existingEntry != null) {
@@ -250,8 +250,8 @@ class ProductListViewModel(
                     quantity
                 }
 
-                updatedEntries = updatedEntries + (currentUnit.id to UnitEntry(
-                    unitId = currentUnit.id,
+                updatedEntries = updatedEntries + (currentUnit.unitId to UnitEntry(
+                    unitId = currentUnit.unitId,
                     unitName = currentUnit.unitName,
                     quantity = newQuantity,
                     hasDiscount = state.hasDiscount,
@@ -264,12 +264,12 @@ class ProductListViewModel(
             val newUnit = product.units[newIndex]
 
             // Yeni birimde önceden giriş var mı?
-            val existingNewEntry = updatedEntries[newUnit.id]
+            val existingNewEntry = updatedEntries[newUnit.unitId]
             val newQuantityText = existingNewEntry?.quantity?.toPlainString() ?: ""
 
             // Yeni birimde entry varsa entries'den çıkar (düzenleme moduna alıyoruz)
             if (existingNewEntry != null) {
-                updatedEntries = updatedEntries - newUnit.id
+                updatedEntries = updatedEntries - newUnit.unitId
             }
 
             // reservedBaseQuantity hesapla
@@ -297,7 +297,7 @@ class ProductListViewModel(
     /**
      * İndirim diyalogunu aç
      */
-    fun onDiscountButtonClicked(product: Product) {
+    fun onDiscountButtonClicked(product: ProductInformationModel) {
         val state = _rowStates.value[product.id] ?: return
         val unit = state.currentUnit ?: return
 
@@ -322,7 +322,7 @@ class ProductListViewModel(
     /**
      * Diyalogdan gelen indirimleri uygula
      */
-    fun onDiscountsApplied(productId: String, discounts: List<DiscountSlotEntry>) {
+    fun onDiscountsApplied(productId: Int, discounts: List<DiscountSlotEntry>) {
         updateRowState(productId) { state ->
             state.copy(
                 hasDiscount = discounts.any { it.value.isNotEmpty() },
@@ -352,7 +352,7 @@ class ProductListViewModel(
                 try {
                     // 1. Kaydedilmiş entry'leri ekle
                     for ((unitId, entry) in state.unitEntries) {
-                        val unit = state.availableUnits.find { it.id == unitId } ?: continue
+                        val unit = state.availableUnits.find { it.unitId == unitId } ?: continue
 
                         val result = documentManager.addLine(
                             product = product,
@@ -428,7 +428,7 @@ class ProductListViewModel(
 
     //region Private Method
 
-    private fun updateRowState(productId: String, update: (ProductRowState) -> ProductRowState) {
+    private fun updateRowState(productId: Int, update: (ProductRowState) -> ProductRowState) {
         _rowStates.update { states ->
             val currentState = states[productId] ?: return@update states
             states + (productId to update(currentState))
@@ -461,8 +461,8 @@ class ProductListViewModel(
 
     private fun calculateReservedBaseQuantity(state: ProductRowState): BigDecimal {
         return state.unitEntries.values.fold(BigDecimal.ZERO) { acc, entry ->
-            val entryUnit = state.availableUnits.find { it.id == entry.unitId }
-            val conversionFactor = entryUnit?.conversionFactor ?: BigDecimal.ONE
+            val entryUnit = state.availableUnits.find { it.unitId == entry.unitId }
+            val conversionFactor = entryUnit?.multiplier ?: BigDecimal.ONE
             acc + (entry.quantity * conversionFactor)
         }
     }
@@ -478,8 +478,8 @@ class ProductListViewModel(
 
     sealed class NavigationEvent {
         data class OpenDiscountDialog(
-            val productId: String,
-            val product: Product,
+            val productId: Int,
+            val product: ProductInformationModel,
             val currentUnit: ProductUnit,
             val quantity: BigDecimal,
             val existingDiscounts: List<DiscountSlotEntry>

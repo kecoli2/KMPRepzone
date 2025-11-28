@@ -39,7 +39,7 @@ import com.repzone.core.util.extensions.toMoney
 import com.repzone.domain.document.model.DiscountSlotConfig
 import com.repzone.domain.document.model.DiscountSlotEntry
 import com.repzone.domain.document.model.DiscountType
-import com.repzone.domain.document.model.Product
+import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.document.model.ProductUnit
 
 /**
@@ -48,7 +48,7 @@ import com.repzone.domain.document.model.ProductUnit
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiscountDialogLegacy(
-    product: Product,
+    product: ProductInformationModel,
     unit: ProductUnit,
     quantity: BigDecimal,
     existingDiscounts: List<DiscountSlotEntry>,
@@ -206,7 +206,7 @@ private fun DiscountTopBar(
 
 @Composable
 private fun ProductInfoCard(
-    product: Product,
+    product: ProductInformationModel,
     unit: ProductUnit,
     quantity: BigDecimal,
     basePrice: Double
@@ -250,9 +250,9 @@ private fun ProductInfoCard(
                         fontWeight = FontWeight.Bold,
                         maxLines = 1
                     )
-                    if (product.code.isNotEmpty()) {
+                    if (product.sku.isNotEmpty()) {
                         Text(
-                            text = product.code,
+                            text = product.sku,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )

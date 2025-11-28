@@ -12,11 +12,10 @@ import com.repzone.domain.document.base.AddLineResult
 import com.repzone.domain.document.base.IDocumentLine
 import com.repzone.domain.document.base.IDocumentManager
 import com.repzone.domain.document.base.UpdateLineResult
-import com.repzone.domain.document.model.Customer
 import com.repzone.domain.document.model.LineConflict
 import com.repzone.domain.document.model.PendingGiftSelection
 import com.repzone.domain.document.model.PendingLine
-import com.repzone.domain.document.model.Product
+import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.document.model.StockValidationResult
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -115,7 +114,7 @@ class DocumentManager(override val documentType: DocumentType,
 
     //region ============ Line Operations ============
 
-    override suspend fun addLine(product: Product, unit: ProductUnit, quantity: BigDecimal): AddLineResult {
+    override suspend fun addLine(product: ProductInformationModel, unit: ProductUnit, quantity: BigDecimal): AddLineResult {
 
         // Stok kontrolü
         val validation = stockValidator.validate(
@@ -129,7 +128,7 @@ class DocumentManager(override val documentType: DocumentType,
 
         return when (validation) {
             is StockValidationResult.Valid -> {
-                val line = createLine(product, unit, quantity, product.vatRate)
+                val line = createLine(product, unit, quantity, product.vat)
                 _lines.value = _lines.value + line
                 recalculatePromotions()
                 AddLineResult.Success(line)
@@ -270,12 +269,12 @@ class DocumentManager(override val documentType: DocumentType,
     //endregion ============ Promotion Operations ============
 
     //region ============ Stock Operations ============
-    override fun getStockStatus(product: Product): StockStatus {
+    override fun getStockStatus(product: ProductInformationModel): StockStatus {
         // TODO: Implement
         return StockStatus(
-            totalStock = product.stockQuantity,
+            totalStock = product.stock,
             usedStock = BigDecimal.ZERO,
-            remainingStock = product.stockQuantity,
+            remainingStock = product.stock,
             stockUnit = product.baseUnit.unitName,
             lineBreakdown = emptyList()
         )
@@ -285,14 +284,14 @@ class DocumentManager(override val documentType: DocumentType,
 
     //region Private Method
     //region ============ Private Helpers ============
-    private fun createLine(product: Product, unit: ProductUnit, quantity: BigDecimal, vatTate: BigDecimal): DocumentLine {
+    private fun createLine(product: ProductInformationModel, unit: ProductUnit, quantity: BigDecimal, vatTate: BigDecimal): DocumentLine {
         return DocumentLine(
             id = randomUUID(),
             productId = product.id,
             productName = product.name,
-            unitId = unit.id,
+            unitId = unit.unitId,
             unitName = unit.unitName,
-            conversionFactor = unit.conversionFactor,
+            conversionFactor = unit.multiplier,
             quantity = quantity,
             unitPrice = unit.price,
             vatRate = vatTate

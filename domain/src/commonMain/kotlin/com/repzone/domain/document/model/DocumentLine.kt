@@ -10,9 +10,9 @@ import com.repzone.domain.document.base.IDocumentLine
  */
 data class DocumentLine(
     override val id: String,
-    override val productId: String,
+    override val productId: Int,
     override val productName: String,
-    override val unitId: String,
+    override val unitId: Int,
     override val unitName: String,
     override val conversionFactor: BigDecimal,
     override val quantity: BigDecimal,

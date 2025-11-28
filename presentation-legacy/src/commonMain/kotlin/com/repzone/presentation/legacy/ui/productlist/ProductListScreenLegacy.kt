@@ -32,7 +32,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusManager
@@ -56,7 +55,7 @@ import com.repzone.core.ui.component.topappbar.TopBarLeftIcon
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.util.extensions.fromResource
 import com.repzone.domain.document.model.DiscountSlotConfig
-import com.repzone.domain.document.model.Product
+import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.model.product.ProductRowState
 import com.repzone.presentation.legacy.model.enum.ProductSortOption
 import com.repzone.presentation.legacy.ui.productlist.component.DiscountDialogLegacy
@@ -279,8 +278,8 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
 
 @Composable
 private fun ProductList(
-    products: LazyPagingItems<Product>,
-    rowStates: Map<String, ProductRowState>,
+    products: LazyPagingItems<ProductInformationModel>,
+    rowStates: Map<Int, ProductRowState>,
     hasDiscountPermission: Boolean,
     viewModel: ProductListViewModel,
     backgroundColor: Color
@@ -385,7 +384,7 @@ private fun ProductList(
 }
 @Composable
 private fun ProductRowOptimized(
-    product: Product,
+    product: ProductInformationModel,
     rowState: ProductRowState?,
     hasDiscountPermission: Boolean,
     viewModel: ProductListViewModel,

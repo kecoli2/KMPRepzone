@@ -11,12 +11,10 @@ import com.repzone.domain.document.model.LineConflict
 import com.repzone.domain.document.model.PendingGiftSelection
 import com.repzone.domain.document.model.PendingLine
 import com.repzone.domain.document.model.PendingUpdate
-import com.repzone.domain.document.model.Product
+import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.document.model.ProductUnit
-import com.repzone.domain.document.model.StockSettings
 import com.repzone.domain.document.model.StockStatus
 import com.repzone.domain.document.model.StockValidationResult
-import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.SyncDocumentMapModel
 
@@ -45,7 +43,7 @@ interface IDocumentManager {
     /**
      * Yeni satır ekler
      */
-    suspend fun addLine(product: Product, unit: ProductUnit, quantity: BigDecimal): AddLineResult
+    suspend fun addLine(product: ProductInformationModel, unit: ProductUnit, quantity: BigDecimal): AddLineResult
 
     /**
      * Mevcut satırı günceller (miktar veya birim değişikliği)
@@ -101,7 +99,7 @@ interface IDocumentManager {
     /**
      * Ürün için stok durumunu getirir
      */
-    fun getStockStatus(product: Product): StockStatus
+    fun getStockStatus(product: ProductInformationModel): StockStatus
 
     //endregion ============ Stock Operations ============
 

@@ -2,7 +2,7 @@ package com.repzone.data.repository.product
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.repzone.domain.document.model.Product
+import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.model.product.ProductFilterState
 import com.repzone.domain.repository.IProductRepository
 
@@ -13,9 +13,9 @@ import com.repzone.domain.repository.IProductRepository
 class ProductPagingSource(
     private val productRepository: IProductRepository,
     private val filterState: ProductFilterState
-) : PagingSource<Int, Product>() {
+) : PagingSource<Int, ProductInformationModel>() {
 
-    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Product> {
+    override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ProductInformationModel> {
         return try {
             val page = params.key ?: 0
             val pageSize = params.loadSize
@@ -42,7 +42,7 @@ class ProductPagingSource(
         }
     }
 
-    override fun getRefreshKey(state: PagingState<Int, Product>): Int? {
+    override fun getRefreshKey(state: PagingState<Int, ProductInformationModel>): Int? {
         return state.anchorPosition?.let { anchorPosition ->
             state.closestPageToPosition(anchorPosition)?.prevKey?.plus(1)
                 ?: state.closestPageToPosition(anchorPosition)?.nextKey?.minus(1)

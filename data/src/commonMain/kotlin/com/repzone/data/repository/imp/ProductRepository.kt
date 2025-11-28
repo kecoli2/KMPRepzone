@@ -2,7 +2,7 @@ package com.repzone.data.repository.imp
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.database.interfaces.IDatabaseManager
-import com.repzone.domain.document.model.Product
+import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.model.product.PriceRange
 import com.repzone.domain.model.product.ProductFilters
@@ -10,7 +10,7 @@ import com.repzone.domain.repository.IProductRepository
 
 class ProductRepository(private val iDatabaseManager: IDatabaseManager): IProductRepository {
     //region Field
-    private var dummyProducts: List<Product>
+    private var dummyProducts: List<ProductInformationModel>
     //endregion
 
     //region Properties
@@ -22,7 +22,7 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager): IProduc
     }
 
     //region Public Method
-    override suspend fun getProducts(page: Int, pageSize: Int, searchQuery: String, brands: Set<String>, categories: Set<String>, colors: Set<String>, tags: Set<String>, priceRange: PriceRange?): List<Product> {
+    override suspend fun getProducts(page: Int, pageSize: Int, searchQuery: String, brands: Set<String>, categories: Set<String>, colors: Set<String>, tags: Set<String>, priceRange: PriceRange?): List<ProductInformationModel> {
         return dummyProducts
     }
 
@@ -30,72 +30,102 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager): IProduc
         return ProductFilters()
     }
 
-    override suspend fun getProductById(productId: String): Product? {
+    override suspend fun getProductById(productId: Int): ProductInformationModel? {
         return dummyProducts.find { it.id == productId }
     }
     //endregion
 
     //region Private Method
-    private fun generateDummyProducts(): List<Product> {
+    private fun generateDummyProducts(): List<ProductInformationModel> {
         val brands = listOf("Apple", "Samsung", "Sony", "LG", "Xiaomi", "Huawei", "Asus", "Dell", "HP", "Lenovo")
+        val groups = listOf("Telefon", "Tablet", "Laptop", "Aksesuar", "TV")
         val tagOptions = listOf("Elektronik", "Yeni", "İndirimli", "Popüler", "Öne Çıkan", "Sınırlı Stok", "Kampanya")
 
         return (1..50).map { index ->
-            val productId = "PRD-${index.toString().padStart(4, '0')}"
-            val brand = brands[index % brands.size]
+            val brandIndex = index % brands.size
+            val groupIndex = (index % 5)
+            val brand = brands[brandIndex]
             val selectedTags = tagOptions.shuffled().take((0..3).random())
 
-            Product(
-                id = productId,
+            ProductInformationModel(
+                id = index,
                 name = "${brand} Ürün $index",
-                code = "CODE-$index",
-                groupId = "GRP-${(index % 5) + 1}",
+                sku = "CODE-$index",
+                vat = BigDecimal.fromInt(20),
                 tags = selectedTags,
-                stockQuantity = BigDecimal.fromInt((10..500).random()),
-                stockUnitId = "UNIT-ADET",
-                units = generateProductUnits(productId, index),
-                vatRate = BigDecimal.fromInt(20),
-                brand = brand
+                brandId = brandIndex + 1,
+                brandName = brand,
+                groupId = groupIndex + 1,
+                groupName = groups[groupIndex],
+                stock = BigDecimal.fromInt((10..500).random()),
+                orderStock = BigDecimal.fromInt((0..50).random()),
+                vanStock = BigDecimal.fromInt((0..30).random()),
+                transitStock = BigDecimal.fromInt((0..20).random()),
+                photoPath = "https://picsum.photos/200/200?random=$index",
+                defaultUnitMultiplier = BigDecimal.fromInt(1),
+                defaultUnitName = "Adet",
+                defaultUnitWeight = BigDecimal.parseString("0.5"),
+                units = generateProductUnits(index),
+                color = listOf("#FF5733", "#33FF57", "#3357FF", "#F3FF33", "#FF33F3").random(),
+                brandPhotoPath = "https://picsum.photos/100/100?brand=$brandIndex",
+                groupPhotoPath = "https://picsum.photos/100/100?group=$groupIndex",
+                displayOrder = index,
+                description = "${brand} marka kaliteli ürün. Ürün kodu: CODE-$index",
+                pendingStock = BigDecimal.fromInt((0..10).random()),
+                reservedStock = BigDecimal.fromInt((0..15).random()),
+                showAvailableStock = index % 2 == 0,
+                showTransitStock = index % 3 == 0,
+                manufacturerId = if (index % 4 == 0) index + 100 else null
             )
         }
     }
 
-    private fun generateProductUnits(productId: String, index: Int): List<ProductUnit> {
+    private fun generateProductUnits(productIndex: Int): List<ProductUnit> {
         val basePrice = BigDecimal.fromInt((50..1000).random())
+        val vat = BigDecimal.fromInt(20)
 
         return listOf(
             ProductUnit(
-                id = "${productId}-UNIT-1",
-                productId = productId,
-                unitId = "UNIT-ADET",
+                unitId = 1,
                 unitName = "Adet",
-                conversionFactor = BigDecimal.fromInt(1),
-                isBaseUnit = true,
                 price = basePrice,
-                barcode = "869${index.toString().padStart(10, '0')}",
-                priceIncludesVat = false
+                priceIncludesVat = false,
+                vat = vat,
+                multiplier = BigDecimal.fromInt(1),
+                weight = 0.5,
+                minimumOrderQuantity = 1,
+                maxOrderQuantity = 100,
+                orderQuantityFactor = 1,
+                isBaseUnit = true,
+                barcode = "869${productIndex.toString().padStart(10, '0')}"
             ),
             ProductUnit(
-                id = "${productId}-UNIT-2",
-                productId = productId,
-                unitId = "UNIT-KUTU",
+                unitId = 2,
                 unitName = "Kutu",
-                conversionFactor = BigDecimal.fromInt(12),
+                price = basePrice * BigDecimal.fromInt(12) * BigDecimal.parseString("0.95"),
+                priceIncludesVat = false,
+                vat = vat,
+                multiplier = BigDecimal.fromInt(12),
+                weight = 6.0,
+                minimumOrderQuantity = 1,
+                maxOrderQuantity = 50,
+                orderQuantityFactor = 1,
                 isBaseUnit = false,
-                price = basePrice * BigDecimal.fromInt(12) * BigDecimal.parseString("0.95"), // %5 kutu indirimi
-                barcode = "869${index.toString().padStart(10, '0')}1",
-                priceIncludesVat = false
+                barcode = "869${productIndex.toString().padStart(10, '0')}1"
             ),
             ProductUnit(
-                id = "${productId}-UNIT-3",
-                productId = productId,
-                unitId = "UNIT-KOLI",
+                unitId = 3,
                 unitName = "Koli",
-                conversionFactor = BigDecimal.fromInt(48),
+                price = basePrice * BigDecimal.fromInt(48) * BigDecimal.parseString("0.90"),
+                priceIncludesVat = false,
+                vat = vat,
+                multiplier = BigDecimal.fromInt(48),
+                weight = 24.0,
+                minimumOrderQuantity = 1,
+                maxOrderQuantity = 20,
+                orderQuantityFactor = 1,
                 isBaseUnit = false,
-                price = basePrice * BigDecimal.fromInt(48) * BigDecimal.parseString("0.90"), // %10 koli indirimi
-                barcode = "869${index.toString().padStart(10, '0')}2",
-                priceIncludesVat = false
+                barcode = "869${productIndex.toString().padStart(10, '0')}2"
             )
         )
     }

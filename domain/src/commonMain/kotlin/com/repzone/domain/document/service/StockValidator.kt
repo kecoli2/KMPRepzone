@@ -3,7 +3,7 @@ package com.repzone.domain.document.service
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.domain.document.base.IDocumentLine
 import com.repzone.domain.document.model.DocumentType
-import com.repzone.domain.document.model.Product
+import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.document.model.StockBehavior
 import com.repzone.domain.document.model.StockSettings
@@ -22,13 +22,13 @@ class StockValidator(private val stockCalculator: StockCalculator,
     /**
      * Stok validasyonu yapar
      */
-    fun validate(product: Product, newQuantity: BigDecimal, newUnit: ProductUnit, existingLines: List<IDocumentLine>, currentLineId: String?, documentType: DocumentType): StockValidationResult {
+    fun validate(product: ProductInformationModel, newQuantity: BigDecimal, newUnit: ProductUnit, existingLines: List<IDocumentLine>, currentLineId: String?, documentType: DocumentType): StockValidationResult {
 
         // Mevcut satırı hariç tut (edit durumu için)
         val otherLines = existingLines.filter { it.id != currentLineId }
 
         // Yeni eklenen miktarın base unit karşılığı
-        val newBaseQuantity = newQuantity * newUnit.conversionFactor
+        val newBaseQuantity = newQuantity * newUnit.multiplier
 
         // Diğer satırlardaki kullanılan stok
         val usedStock = stockCalculator.calculateUsedStock(product.id, otherLines)
@@ -37,7 +37,7 @@ class StockValidator(private val stockCalculator: StockCalculator,
         val totalDemand = usedStock + newBaseQuantity
 
         // Stok yeterli mi?
-        val stockAvailable = product.stockQuantity
+        val stockAvailable = product.stock
         val isOverStock = totalDemand > stockAvailable
 
         if (!isOverStock) {
@@ -52,7 +52,7 @@ class StockValidator(private val stockCalculator: StockCalculator,
         }
 
         val overAmount = totalDemand - stockAvailable
-        val maxAllowedInUnit = (stockAvailable - usedStock) / newUnit.conversionFactor
+        val maxAllowedInUnit = (stockAvailable - usedStock) / newUnit.multiplier
 
         return when (behavior) {
             StockBehavior.BLOCK -> StockValidationResult.Blocked(
