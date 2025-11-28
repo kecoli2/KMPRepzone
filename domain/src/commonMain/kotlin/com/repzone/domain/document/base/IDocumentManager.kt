@@ -16,6 +16,7 @@ import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.document.model.StockSettings
 import com.repzone.domain.document.model.StockStatus
 import com.repzone.domain.document.model.StockValidationResult
+import com.repzone.domain.model.CustomerItemModel
 
 /**
  * Belge yöneticisi contract'ı
@@ -112,8 +113,14 @@ interface IDocumentManager {
      * Manager'ı temizler
      */
     fun clear()
+
+    suspend fun getCustomer(): CustomerItemModel
+    suspend fun setMasterValues(): Result<Unit>
+
     //endregion ============ Document Operations ============
 }
+
+//region ============ Sealed Classes ============
 
 /**
  * Satır ekleme sonucu
@@ -134,3 +141,4 @@ sealed interface UpdateLineResult {
     data class Blocked(val error: StockValidationResult.Blocked) : UpdateLineResult
     object NotFound : UpdateLineResult
 }
+//endregion ============ Sealed Classes ============

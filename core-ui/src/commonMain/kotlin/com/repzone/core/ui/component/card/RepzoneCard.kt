@@ -448,7 +448,7 @@ fun ExpandableCard(
                 } else {
                     Icons.Default.KeyboardArrowDown
                 },
-                contentDescription = if (expanded) "Kapat" else "Aç",
+                contentDescription = if (expanded) "Kapat" else "Ac",
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }

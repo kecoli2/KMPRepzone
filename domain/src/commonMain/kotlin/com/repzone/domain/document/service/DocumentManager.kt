@@ -58,6 +58,38 @@ class DocumentManager(override val documentType: DocumentType,
     //endregion Fields
 
     //region Public Method
+
+    //region ============ Document Operations ============
+    override fun toDocument(): Document {
+        return Document(
+            id = randomUUID(),
+            type = documentType,
+            number = null,
+            customer = currentCustomer!!,
+            lines = _lines.value,
+            createdAt = now().toInstant(),
+            updatedAt = now().toInstant()
+        )
+    }
+
+    override fun clear() {
+        _lines.value = emptyList()
+        _pendingConflicts.value = emptyList()
+        _pendingGiftSelections.value = emptyList()
+        currentCustomer = null
+    }
+
+    override suspend fun getCustomer(): CustomerItemModel {
+        return currentCustomer!!
+    }
+
+    override suspend fun setMasterValues(): Result<Unit> {
+
+        return Result.Success(Unit)
+    }
+    //endregion ============ Document Operations ============
+
+
     //region ============ Line Operations ============
 
     override suspend fun addLine(product: Product, unit: ProductUnit, quantity: BigDecimal): AddLineResult {
@@ -226,27 +258,6 @@ class DocumentManager(override val documentType: DocumentType,
         )
     }
     //endregion ============ Stock Operations ============
-
-    //region ============ Document Operations ============
-    override fun toDocument(): Document {
-        return Document(
-            id = randomUUID(),
-            type = documentType,
-            number = null,
-            customer = currentCustomer!!,
-            lines = _lines.value,
-            createdAt = now().toInstant(),
-            updatedAt = now().toInstant()
-        )
-    }
-
-    override fun clear() {
-        _lines.value = emptyList()
-        _pendingConflicts.value = emptyList()
-        _pendingGiftSelections.value = emptyList()
-        currentCustomer = null
-    }
-    //endregion ============ Document Operations ============
     //endregion Public Method
 
     //region Private Method
