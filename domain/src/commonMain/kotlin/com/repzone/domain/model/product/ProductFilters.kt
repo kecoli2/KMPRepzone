@@ -7,7 +7,7 @@ import com.ionspin.kotlin.bignum.decimal.BigDecimal
  */
 data class ProductFilters(
     val brands: List<String> = emptyList(),
-    val categories: List<String> = emptyList(),
+    val group: List<String> = emptyList(),
     val colors: List<String> = emptyList(),
     val tags: List<String> = emptyList(),
     val priceMin: BigDecimal? = null,

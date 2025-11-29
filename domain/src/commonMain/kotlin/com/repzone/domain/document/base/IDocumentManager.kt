@@ -17,7 +17,9 @@ import com.repzone.domain.document.model.StockStatus
 import com.repzone.domain.document.model.StockValidationResult
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.SyncDocumentMapModel
+import com.repzone.domain.model.product.ProductFilters
 import com.repzone.domain.util.ProductQueryBuilder
+import com.repzone.domain.util.ProductQueryParams
 
 /**
  * Belge yöneticisi contract'ı
@@ -122,6 +124,7 @@ interface IDocumentManager {
     fun  getProductQueryString(): String
 
     fun getProductUnitMap(): MutableMap<Int, List<ProductUnit>>
+    suspend fun getAvailableFilters(): ProductFilters
 
     //endregion ============ Document Operations ============
 }

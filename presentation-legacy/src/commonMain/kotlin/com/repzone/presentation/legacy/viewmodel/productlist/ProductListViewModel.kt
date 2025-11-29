@@ -82,8 +82,8 @@ class ProductListViewModel(
 
     //region Constructor
     init {
-        loadAvailableFilters()
         documentManager = documentSession.current()
+        loadAvailableFilters()
     }
     //endregion
 
@@ -114,6 +114,8 @@ class ProductListViewModel(
         documentSession.clear()
         documentManager.clear()
     }
+
+    //endregion Public Method
 
     //region ========== FILTER ACTIONS ==========
 
@@ -455,7 +457,7 @@ class ProductListViewModel(
     private fun loadAvailableFilters() {
         scope.launch {
             try {
-                val filters = productRepository.getAvailableFilters()
+                val filters = documentManager.getAvailableFilters()
                 updateState { it.copy(availableFilters = filters) }
             } catch (e: Exception) {
                 sendEvent(ShowError("Filtreler yüklenemedi: ${e.message}"))

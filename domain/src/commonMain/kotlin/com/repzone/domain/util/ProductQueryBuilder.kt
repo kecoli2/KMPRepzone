@@ -1,19 +1,88 @@
 package com.repzone.domain.util
 
+/**
+ * ProductFlatViewEntity kolonları
+ */
+enum class ProductColumn(val columnName: String) {
+    ProductId("ProductId"),
+    Sku("Sku"),
+    ProductName("ProductName"),
+    UnitId("UnitId"),
+    UnitName("UnitName"),
+    Multiplier("Multiplier"),
+    Price("Price"),
+    Weight("Weight"),
+    Vat("Vat"),
+    Tags("Tags"),
+    BrandId("BrandId"),
+    BrandName("BrandName"),
+    GroupId("GroupId"),
+    GroupName("GroupName"),
+    Stock("Stock"),
+    OrderStock("OrderStock"),
+    Barcode("Barcode"),
+    DisplayOrder("DisplayOrder"),
+    PhotoPath("PhotoPath"),
+    UnitDisplayOrder("UnitDisplayOrder"),
+    Color("Color"),
+    VanStock("VanStock"),
+    BrandPhotoPath("BrandPhotoPath"),
+    GroupPhotoPath("GroupPhotoPath"),
+    MinimumOrderQuantity("MinimumOrderQuantity"),
+    MaxOrderQuantity("MaxOrderQuantity"),
+    OrderQuantityFactor("OrderQuantityFactor"),
+    Description("Description"),
+    TransitStock("TransitStock"),
+    PendingStock("PendingStock"),
+    ReservedStock("ReservedStock"),
+    ShowTransitStock("ShowTransitStock"),
+    ShowAvailableStock("ShowAvailableStock"),
+    ManufacturerId("ManufacturerId")
+}
+
 // ProductQueryBuilder.kt
 class ProductQueryBuilder {
     //region Public Method
-    fun buildAllProductsQuery(params: ProductQueryParams): String {
-        val displayOrder = buildDisplayOrderColumn(params)
-        val color = buildColorColumn(params)
-        val price = buildPriceColumn(params)
-        val vat = buildVatColumn(params)
-        val minOrderQuantity = buildMinOrderQuantityColumn()
-        val maxOrderQuantity = buildMaxOrderQuantityColumn()
-        val isCloseCondition = buildCloseCondition(params.salesOperationType)
+
+    /**
+     * Dinamik kolon seçimi ile query oluşturur
+     *
+     * Örnek kullanım:
+     * ```
+     * // Tek kolon
+     * buildSelectQuery(params, ProductColumn.BrandName)
+     *
+     * // Birden fazla kolon
+     * buildSelectQuery(params, ProductColumn.BrandName, ProductColumn.ProductName, ProductColumn.Price)
+     *
+     * // Liste ile
+     * buildSelectQuery(params, listOf(ProductColumn.BrandName, ProductColumn.ProductName))
+     * ```
+     */
+    fun buildSelectQuery(params: ProductQueryParams, vararg columns: ProductColumn): String {
+        return buildSelectQuery(params, columns.toList())
+    }
+
+    fun buildSelectQuery(params: ProductQueryParams, columns: List<ProductColumn>): String {
+        require(columns.isNotEmpty()) { "En az bir kolon seçilmelidir" }
 
         return buildString {
-            // Outer SELECT with explicit fields
+            // Outer SELECT - sadece seçilen kolonlar
+            append("SELECT ")
+            append(columns.joinToString(",\n       ") { "ProductFlatViewEntity.${it.columnName}" })
+            append(" FROM (\n")
+
+            // Inner SELECT - base query
+            append(buildInnerSelect(params))
+
+            // Close with alias
+            append(") AS ProductFlatViewEntity")
+        }
+    }
+
+    fun buildAllProductsQuery(params: ProductQueryParams): String {
+        return buildString {
+            // Outer SELECT with all fields
             append("""SELECT ProductFlatViewEntity.ProductId,
        ProductFlatViewEntity.Sku,
        ProductFlatViewEntity.ProductName,
@@ -49,8 +118,52 @@ class ProductQueryBuilder {
        ProductFlatViewEntity.ShowAvailableStock,
        ProductFlatViewEntity.ManufacturerId FROM (
 """)
+            // Inner SELECT
+            append(buildInnerSelect(params))
 
-            // Inner SELECT - orijinal sıra
+            // Close with alias
+            append(") AS ProductFlatViewEntity")
+        }
+    }
+
+    /**
+     * Sadece ürün birim bilgilerini döndüren query
+     * Barcode, Multiplier, Price, UnitId, UnitName, Weight, MinimumOrderQuantity, MaxOrderQuantity, OrderQuantityFactor, Vat
+     */
+    fun buildProductUnitsQuery(params: ProductQueryParams): String {
+        return buildSelectQuery(
+            params,
+            ProductColumn.Barcode,
+            ProductColumn.Multiplier,
+            ProductColumn.Price,
+            ProductColumn.UnitId,
+            ProductColumn.UnitName,
+            ProductColumn.Weight,
+            ProductColumn.MinimumOrderQuantity,
+            ProductColumn.MaxOrderQuantity,
+            ProductColumn.OrderQuantityFactor,
+            ProductColumn.Vat,
+            ProductColumn.UnitDisplayOrder,
+            ProductColumn.ProductId
+        )
+    }
+    //endregion Public Method
+
+    //region Private Method
+
+    /**
+     * Inner SELECT - Base query (tüm kolonlar dahil)
+     */
+    private fun buildInnerSelect(params: ProductQueryParams): String {
+        val displayOrder = buildDisplayOrderColumn(params)
+        val color = buildColorColumn(params)
+        val price = buildPriceColumn(params)
+        val vat = buildVatColumn(params)
+        val minOrderQuantity = buildMinOrderQuantityColumn()
+        val maxOrderQuantity = buildMaxOrderQuantityColumn()
+        val isCloseCondition = buildCloseCondition(params.salesOperationType)
+
+        return buildString {
             append("""SELECT P.Id AS ProductId,
        PU.Barcode,
        P.Tags,
@@ -111,108 +224,11 @@ class ProductQueryBuilder {
                 append(" AND\n       P.ManufacturerId NOT IN (${params.notAllowedMfrs.joinToString(",")})")
             }
 
-            // ORDER BY (inner query) and close with alias
-            append("\n ORDER BY DisplayOrder) AS ProductFlatViewEntity")
+            // ORDER BY
+            append("\n ORDER BY DisplayOrder")
         }
     }
 
-    /**
-     * Sadece ürün birim bilgilerini döndüren query
-     * Barcode, Multiplier, Price, UnitId, UnitName, Weight, MinimumOrderQuantity, MaxOrderQuantity, OrderQuantityFactor, Vat
-     */
-    fun buildProductUnitsQuery(params: ProductQueryParams): String {
-        val price = buildPriceColumn(params)
-        val vat = buildVatColumn(params)
-        val minOrderQuantity = buildMinOrderQuantityColumn()
-        val maxOrderQuantity = buildMaxOrderQuantityColumn()
-        val isCloseCondition = buildCloseCondition(params.salesOperationType)
-
-        return buildString {
-            // Outer SELECT - sadece unit bilgileri
-            append("""SELECT 
-        ProductFlatViewEntity.Barcode, 
-        ProductFlatViewEntity.Multiplier, 
-        ProductFlatViewEntity.Price,
-        ProductFlatViewEntity.UnitId,
-        ProductFlatViewEntity.UnitName,
-        ProductFlatViewEntity.Weight,
-        ProductFlatViewEntity.MinimumOrderQuantity,
-        ProductFlatViewEntity.MaxOrderQuantity,
-        ProductFlatViewEntity.OrderQuantityFactor,
-        ProductFlatViewEntity.Vat,
-        ProductFlatViewEntity.UnitDisplayOrder,
-        ProductFlatViewEntity.ProductId
-        FROM (
-        """)
-
-            // Inner SELECT - tüm field'lar
-            append("""SELECT P.Id AS ProductId,
-       PU.Barcode,
-       P.Tags,
-       P.BrandId,
-       P.BrandName,
-       P.GroupId,
-       P.GroupName,
-       P.SKU AS Sku,
-       P.Name AS ProductName,
-       P.PhotoPath,
-       $vat,
-       PU.UnitId,
-       U.Name AS UnitName,
-       PU.Multiplier,
-       PU.Weight,
-       COALESCE(St.Stock, 0.0) AS Stock,
-       COALESCE(St.OrderStock, 0.0) AS OrderStock,
-       COALESCE(TSt.Stock, 0.0) AS TransitStock,
-       COALESCE(RSt.Stock, 0.0) AS ReservedStock,
-       COALESCE(Wrh.Stock, 0.0) AS VanStock,
-       COALESCE(PRM.PendingAmount, 0.0) AS PendingStock,
-       P.BrandPhotoPath,
-       P.GroupPhotoPath,
-       PU.OrderQuantityFactor,
-       P.Description,
-       P.ManufacturerId,
-       COALESCE(Pm.[Order], P.DisplayOrder) AS DisplayOrder,
-       COALESCE(Pm.Color, P.Color) AS Color,
-       PU.DisplayOrder AS UnitDisplayOrder,
-       ${if (params.showTransitStock) 1 else 0} AS ShowTransitStock,
-       ${if (params.showAvailableStock) 1 else 0} AS ShowAvailableStock,
-       $price,
-       $minOrderQuantity,
-       $maxOrderQuantity
-  FROM SyncProductEntity P""")
-
-            // Dynamic JOINs
-            appendJoins(params)
-
-            // WHERE
-            append("""
- WHERE P.IsVisible = 1 AND
-       P.State = 1 AND
-       U.State = 1 AND
-       PU.State = 1 AND       
-       ( (MPM.AllowedUnitIds IS NULL AND
-          U.IsVisible = 1) OR
-         (MPM.AllowedUnitIds = '' AND
-          U.IsVisible = 1) OR
-         MPM.AllowedUnitIds LIKE '%,' || PU.UnitId || ',%')
-       $isCloseCondition""")
-
-            // Manufacturer filters
-            if (params.mfrId > 0) {
-                append(" AND\n       P.ManufacturerId = ${params.mfrId}")
-            }
-            if (params.notAllowedMfrs.isNotEmpty()) {
-                append(" AND\n       P.ManufacturerId NOT IN (${params.notAllowedMfrs.joinToString(",")})")
-            }
-
-            // ORDER BY (inner query) and close with alias
-            append("\n ORDER BY DisplayOrder) AS ProductFlatViewEntity")
-        }
-    }
-    //endregion Public Method
-
-    //region Private MethodX                          D
     private fun StringBuilder.appendJoins(params: ProductQueryParams) {
         val p = params
 

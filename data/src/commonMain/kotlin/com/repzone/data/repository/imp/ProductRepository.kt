@@ -20,6 +20,8 @@ import com.repzone.domain.model.product.ProductFilters
 import com.repzone.domain.repository.IMobileModuleParameterRepository
 import com.repzone.domain.repository.IPriceRepository
 import com.repzone.domain.repository.IProductRepository
+import com.repzone.domain.util.ProductColumn
+import com.repzone.domain.util.ProductQueryBuilder
 import com.repzone.domain.util.ProductQueryParams
 
 class ProductRepository(private val iDatabaseManager: IDatabaseManager,
@@ -97,8 +99,69 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager,
         }
     }
 
-    override suspend fun getAvailableFilters(): ProductFilters {
-        return ProductFilters()
+    override suspend fun getAvailableFilters(params: ProductQueryParams): ProductFilters {
+        val brandSQl = ProductQueryBuilder().buildSelectQuery(params, ProductColumn.BrandName)
+
+        val brands = iDatabaseManager.getSqlDriver().query<ProductFlatViewEntity>(brandSQl) {
+            where {
+                criteria("BrandName", isNull = false)
+                criteria("BrandName", notEqual = "")
+            }
+            groupBy {
+                groupBy("BrandName")
+            }
+        }.toListWithMapper { cursor ->
+            cursor.getString(0) ?: ""
+        }
+
+        val groupNameSql = ProductQueryBuilder().buildSelectQuery(params, ProductColumn.GroupName)
+
+        val groups = iDatabaseManager.getSqlDriver().query<ProductFlatViewEntity>(groupNameSql) {
+            where {
+                criteria("GroupName", isNull = false)
+                criteria("GroupName", notEqual = "")
+            }
+            groupBy {
+                groupBy("GroupName")
+            }
+        }.toListWithMapper { cursor ->
+            cursor.getString(0)  ?: ""
+        }
+
+        val colorSql = ProductQueryBuilder().buildSelectQuery(params, ProductColumn.Color)
+
+        val colors = iDatabaseManager.getSqlDriver().query<ProductFlatViewEntity>(colorSql) {
+            where {
+                criteria("Color", isNull = false)
+                criteria("Color", notEqual = "")
+            }
+            groupBy {
+                groupBy("Color")
+            }
+        }.toListWithMapper { cursor ->
+            cursor.getString(0) ?: ""
+        }
+
+        val tagSql = ProductQueryBuilder().buildSelectQuery(params, ProductColumn.Tags)
+
+        val tags = iDatabaseManager.getSqlDriver().query<ProductFlatViewEntity>(tagSql) {
+            where {
+                criteria("Tags", isNull = false)
+                criteria("Tags", notEqual = "")
+            }
+            groupBy {
+                groupBy("GroupName")
+            }
+        }.toListWithMapper { cursor ->
+            cursor.getString(0)?.split(",") ?: emptyList()
+        }.flatten().distinct()
+
+        return ProductFilters(
+            brands = brands,
+            group = groups,
+            colors = colors,
+            tags = tags
+        )
     }
 
     override suspend fun getProductById(productId: Int): ProductInformationModel? {

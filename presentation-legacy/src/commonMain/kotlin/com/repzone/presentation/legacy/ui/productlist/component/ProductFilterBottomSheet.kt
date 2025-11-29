@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.repzone.core.model.StringResource
 import com.repzone.core.ui.component.FilterSection
 import com.repzone.core.ui.component.textfield.CurrencyTextField
 import com.repzone.core.util.extensions.fromResource
@@ -74,7 +75,7 @@ fun ProductFilterBottomSheet(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "Ürün Filtreleri",
+                        text = StringResource.FILTER_PRODUCTS.fromResource(),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold
                     )
@@ -101,7 +102,7 @@ fun ProductFilterBottomSheet(
                     // Marka Section
                     if (availableFilters.brands.isNotEmpty()) {
                         FilterSection(
-                            title = "Marka",
+                            title = StringResource.FILTERORDERTYPEBRAND.fromResource(),
                             content = {
                                 MultiSelectChipGroup(
                                     options = availableFilters.brands.toList(),
@@ -119,12 +120,12 @@ fun ProductFilterBottomSheet(
                     }
 
                     // Kategori Section
-                    if (availableFilters.categories.isNotEmpty()) {
+                    if (availableFilters.group.isNotEmpty()) {
                         FilterSection(
-                            title = "Kategori",
+                            title = StringResource.FILTER_CATEGORY.fromResource(),
                             content = {
                                 MultiSelectChipGroup(
-                                    options = availableFilters.categories.toList(),
+                                    options = availableFilters.group.toList(),
                                     selectedOptions = tempCategories,
                                     onToggle = { category ->
                                         tempCategories = if (category in tempCategories) {
@@ -141,7 +142,7 @@ fun ProductFilterBottomSheet(
                     // Renk Section
                     if (availableFilters.colors.isNotEmpty()) {
                         FilterSection(
-                            title = "Renk",
+                            title = StringResource.FILTER_COLOR.fromResource(),
                             content = {
                                 MultiSelectChipGroup(
                                     options = availableFilters.colors.toList(),
@@ -161,7 +162,7 @@ fun ProductFilterBottomSheet(
                     // Etiket Section
                     if (availableFilters.tags.isNotEmpty()) {
                         FilterSection(
-                            title = "Etiket",
+                            title = StringResource.TAGS.fromResource(),
                             content = {
                                 MultiSelectChipGroup(
                                     options = availableFilters.tags.toList(),
@@ -180,7 +181,7 @@ fun ProductFilterBottomSheet(
 
                     // Fiyat Aralığı Section
                     FilterSection(
-                        title = "Fiyat Aralığı",
+                        title = StringResource.FILTERPRICERANGETEXT.fromResource(),
                         content = {
                             PriceRangeInput(
                                 minPrice = tempMinPrice,
@@ -193,7 +194,7 @@ fun ProductFilterBottomSheet(
 
                     // Sıralama Section
                     FilterSection(
-                        title = "Sıralama",
+                        title = StringResource.SHORT.fromResource(),
                         content = {
                             ProductSortChips(
                                 selectedSort = tempSort,

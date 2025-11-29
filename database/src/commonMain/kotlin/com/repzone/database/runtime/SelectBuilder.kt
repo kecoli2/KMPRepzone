@@ -174,9 +174,84 @@ class SelectBuilder<T>(val metadata: EntityMetadata, private val driver: SqlDriv
         val sql = buildSQL(params)
         return SqlQueryLogger.substituteSqlParams(sql, params)
     }
+
+    fun <R> toListWithMapper(mapper: (Cursor) -> R): List<R> {
+        val params = mutableListOf<Any?>()
+        val sql = buildSQL(params)
+
+        // Logging
+        if (BuildConfig.IS_DEBUG) {
+            val startTime = now()
+
+            SqlQueryLogger.logRawQuery(sql, params)
+
+            val results = executeQueryWithMapper(sql, params, mapper)
+
+            val elapsed = (now() - startTime).toInstant().epochSeconds
+            SqlQueryLogger.logQueryTime("SELECT WITH MAPPER", elapsed)
+            Logger.d("SQL_RESULT", "Returned ${results.size} rows")
+
+            return results
+        }
+
+        return executeQueryWithMapper(sql, params, mapper)
+    }
+
+    fun <R> firstOrNullWithMapper(mapper: (Cursor) -> R): R? {
+        val originalLimit = limitValue
+        limit(1)
+
+        val params = mutableListOf<Any?>()
+        val sql = buildSQL(params)
+
+        // Logging
+        if (BuildConfig.IS_DEBUG) {
+            val startTime = now()
+
+            SqlQueryLogger.logRawQuery(sql, params)
+
+            val result = executeQueryWithMapper(sql, params, mapper).firstOrNull()
+
+            val elapsed = (now() - startTime).toInstant().epochSeconds
+            SqlQueryLogger.logQueryTime("SELECT WITH MAPPER (firstOrNull)", elapsed)
+            Logger.d("SQL_RESULT", "Returned ${if (result != null) "1 row" else "no rows"}")
+
+            limitValue = originalLimit
+            return result
+        }
+
+        val result = executeQueryWithMapper(sql, params, mapper).firstOrNull()
+        limitValue = originalLimit
+        return result
+    }
     //endregion ---------------- PUBLIC METHOD ----------------
 
     //region ---------------- PRIVATE METHOD ----------------
+
+    private fun <R> executeQueryWithMapper(sql: String, params: List<Any?>, mapper: (Cursor) -> R): List<R> {
+        val results = mutableListOf<R>()
+
+        driver.executeQuery(
+            identifier = null,
+            sql = sql,
+            mapper = { cursor ->
+                while (cursor.next().value) {
+                    val entity = mapper(SqlDelightCursor(cursor))
+                    results.add(entity)
+                }
+                app.cash.sqldelight.db.QueryResult.Value(results)
+            },
+            parameters = params.size
+        ) {
+            if (params.isNotEmpty()) {
+                params.forEachIndexed { index, value ->
+                    bindValue(this, index, value)
+                }
+            }
+        }
+
+        return results
+    }
 
     private fun executeQuery(sql: String, params: List<Any?>): List<T> {
         val results = mutableListOf<T>()

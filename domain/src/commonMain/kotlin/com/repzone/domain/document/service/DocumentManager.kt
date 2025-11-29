@@ -36,6 +36,7 @@ import com.repzone.domain.document.model.StockStatus
 import com.repzone.domain.model.DistributionControllerModel
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.SyncDocumentMapModel
+import com.repzone.domain.model.product.ProductFilters
 import com.repzone.domain.repository.ICustomerRepository
 import com.repzone.domain.repository.IDistributionRepository
 import com.repzone.domain.repository.IDocumentMapRepository
@@ -127,6 +128,13 @@ class DocumentManager(override val documentType: DocumentType,
     override fun getProductUnitMap(): MutableMap<Int, List<ProductUnit>> {
         val map = productUnitMap ?: error("Product unit map is null")
         return map
+    }
+
+    override suspend fun getAvailableFilters(): ProductFilters {
+        productQueryParams?.let {
+            return iProductRepository.getAvailableFilters(it)
+        }
+        return ProductFilters()
     }
     //endregion ============ Document Operations ============
 

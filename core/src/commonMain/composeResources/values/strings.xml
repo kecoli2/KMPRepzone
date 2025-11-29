@@ -282,7 +282,7 @@
     <string name="filterorderby3">Sort by #3:</string>
     <string name="filterfirmstockfiltertext">Show products with stock:</string>
     <string name="filtervanstockfiltertext">Show products with van stock:</string>
-    <string name="filterpricerangetext">Price Range:</string>
+    <string name="filterpricerangetext">Price Range</string>
     <string name="filterclearbuttontext">Clear Filter</string>
     <string name="filterapplybuttontext">Apply Filter</string>
     <string name="buttondelete">Delete</string>
@@ -980,6 +980,8 @@
 
     <string name="job_product_unit">Product Units</string>
     <string name="job_product_stock">Product Stocks</string>
-
+    <string name="filter_category">Category</string>
+    <string name="filter_color">Color</string>
+    <string name="filter_products">Product Filters</string>
 
 </resources>

@@ -282,7 +282,7 @@
     <string name="filterorderby3">Sıralama #3:</string>
     <string name="filterfirmstockfiltertext">Merkez stoklu ürünleri göster:</string>
     <string name="filtervanstockfiltertext">Araç stoklu ürünleri göster:</string>
-    <string name="filterpricerangetext">Fiyat aralığı:</string>
+    <string name="filterpricerangetext">Fiyat aralığı</string>
     <string name="filterclearbuttontext">Temizle</string>
     <string name="filterapplybuttontext">Uygula</string>
     <string name="buttondelete">Sil</string>
@@ -985,5 +985,7 @@
 
     <string name="job_product_unit">Ürün Birimleri</string>
     <string name="job_product_stock">Ürün Stokları</string>
-
+    <string name="filter_category">Kategori</string>
+    <string name="filter_color">Renk</string>
+    <string name="filter_products">Ürün Filtreleri</string>
 </resources>

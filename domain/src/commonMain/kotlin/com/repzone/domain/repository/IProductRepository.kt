@@ -7,6 +7,7 @@ import com.repzone.domain.model.DistributionControllerModel
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.product.PriceRange
 import com.repzone.domain.model.product.ProductFilters
+import com.repzone.domain.util.ProductQueryBuilder
 import com.repzone.domain.util.ProductQueryParams
 
 interface IProductRepository {
@@ -26,7 +27,7 @@ interface IProductRepository {
     /**
      * Get distinct filter values from all products
      */
-    suspend fun getAvailableFilters(): ProductFilters
+    suspend fun getAvailableFilters(params: ProductQueryParams): ProductFilters
 
     suspend fun getProductById(productId: Int): ProductInformationModel?
     suspend fun getProductQueryParams(salesOperationType: SalesOperationType,
