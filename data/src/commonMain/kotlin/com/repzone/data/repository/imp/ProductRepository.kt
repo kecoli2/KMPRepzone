@@ -164,8 +164,18 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager,
         )
     }
 
-    override suspend fun getProductById(productId: Int): ProductInformationModel? {
-        return dummyProducts.find { it.id == productId }
+    override suspend fun getProductById(quertBuilderSql: String, productId: Int, unitList: List<ProductUnit>): ProductInformationModel {
+        return iDatabaseManager.getSqlDriver().query<ProductFlatViewEntity>(quertBuilderSql) {
+            where {
+                criteria("ProductId", productId)
+            }
+
+            groupBy {
+                groupBy("ProductId")
+            }
+        }.first().let {
+            mapper.toDomain(it, unitList)
+        }
     }
 
     override suspend fun getProductQueryParams(salesOperationType: SalesOperationType,

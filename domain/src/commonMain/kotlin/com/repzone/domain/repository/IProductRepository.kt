@@ -29,7 +29,7 @@ interface IProductRepository {
      */
     suspend fun getAvailableFilters(params: ProductQueryParams): ProductFilters
 
-    suspend fun getProductById(productId: Int): ProductInformationModel?
+    suspend fun getProductById(quertBuilderSql: String, productId: Int, unitList: List<ProductUnit>): ProductInformationModel
     suspend fun getProductQueryParams(salesOperationType: SalesOperationType,
                                       currentCustomer: SyncCustomerModel,
                                       customerOrgId: Int,

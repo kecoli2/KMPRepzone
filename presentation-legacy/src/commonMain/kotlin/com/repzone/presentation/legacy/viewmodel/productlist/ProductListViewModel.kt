@@ -179,7 +179,6 @@ class ProductListViewModel(
 
     /**
      * Miktar değiştiğinde çağrılır
-     * İlk giriş yapıldığında rowState oluşturulur
      */
     fun onQuantityChanged(product: ProductInformationModel, text: String) {
         if (text.isNotEmpty() && !text.matches(Regex("^\\d*\\.?\\d*$"))) {
@@ -353,7 +352,7 @@ class ProductListViewModel(
             var errorMessage: String? = null
 
             for ((productId, state) in statesWithEntries) {
-                val product = productRepository.getProductById(productId) ?: continue
+                val product = productRepository.getProductById(documentManager.getProductQueryString(), productId, state.availableUnits)
 
                 try {
                     // 1. Kaydedilmiş entry'leri ekle
