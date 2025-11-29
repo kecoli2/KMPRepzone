@@ -61,7 +61,7 @@ class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, ProductDto> {
             GroupId = domain.groupId?.toLong(),
             GroupName = domain.groupName,
             GroupPhotoPath = domain.groupPhotoPath,
-            IsVisible = false.toLong(),
+            IsVisible = true.toLong(),
             ManufacturerId = null,
             MaximumOrderQuantity = domain.maximumOrderQuantity?.toLong(),
             MinimumOrderQuantity = domain.minimumOrderQuantity?.toLong(),
@@ -76,7 +76,7 @@ class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, ProductDto> {
             Sku = domain.sku,
             State = domain.state.toLong(),
             Tags = domain.tags,
-            TenantId = null,
+            TenantId = 0,
             Vat = domain.vat
         )
     }
@@ -87,7 +87,7 @@ class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, ProductDto> {
                 Id = domain.id.toLong(),
                 Barcode = domain.barcode,
                 DisplayOrder = domain.displayOrder.toLong(),
-                IsVisible = false.toLong(),
+                IsVisible = true.toLong(),
                 MaxOrderQuantity = domain.maxOrderQuantity.toLong(),
                 MinimumOrderQuantity = domain.minimumOrderQuantity.toLong(),
                 ModificationDateUtc = null,
@@ -104,7 +104,7 @@ class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, ProductDto> {
                 SalesReturnPrice = domain.salesReturnPrice,
                 Selected = domain.selected.let{ if (it) 1L else 0L },
                 State = domain.state.toLong(),
-                TenantId = null,
+                TenantId = 0,
                 UnitId = domain.unitId.toLong(),
                 Weight = domain.weight
             )
@@ -118,8 +118,8 @@ class ProductEntityDtoDbMapper: Mapper<SyncProductEntity, ProductDto> {
                 ProductId = productId,
                 Order = domain.order?.toLong(),
                 Color = domain.color,
-                IsVisible = false.toLong(),
-                OrganizationId = null
+                IsVisible = true.toLong(),
+                OrganizationId = domain.id.toLong()
             )
         }
     }

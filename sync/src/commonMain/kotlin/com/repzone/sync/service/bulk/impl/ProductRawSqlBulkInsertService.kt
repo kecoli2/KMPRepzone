@@ -9,6 +9,7 @@ import com.repzone.database.metadata.ProductParameterEntityMetadata
 import com.repzone.database.metadata.SyncProductEntityMetadata
 import com.repzone.database.metadata.SyncProductUnitEntityMetadata
 import com.repzone.database.runtime.CriteriaBuilder
+import com.repzone.database.runtime.delete
 import com.repzone.database.runtime.select
 import com.repzone.database.runtime.toSqlCriteriaWithParams
 import com.repzone.database.toSqlValuesString
@@ -22,6 +23,7 @@ import repzonemobile.core.generated.resources.job_complate_template_desc
 import repzonemobile.core.generated.resources.job_product_parameters
 
 
+@Suppress("UNCHECKED_CAST")
 class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMapper,
                                      coordinator: TransactionCoordinator, private val iDatabaseManager: IDatabaseManager): CompositeRawSqlBulkInsertService<List<ProductDto>>(coordinator) {
 
@@ -36,25 +38,13 @@ class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMap
             dbMapper.toParametersEnties(dto.id.toLong(), dto.parameters)
         }
 
-        @Suppress("UNCHECKED_CAST")
-        val query = iDatabaseManager.getSqlDriver().select<ProductParameterEntity> {
-            where {
-                criteria("Id", In = parameterEntities.map { it.Id } as List<Any>?)
-                criteria("ProductId", In = parameterEntities.map { it.ProductId } as List<Any>?)
-            }
-        }
-
-        val queryStr = query.toSqlStringWithParams()
-
         val cr = CriteriaBuilder.build {
-            criteria("ssss", In = listOf(1, 2, 3))
+            criteria("Id", In = parameterEntities.map { it.Id } as List<Any>?)
+            criteria("ProductId", In = parameterEntities.map { it.ProductId } as List<Any>?)
 
         }
 
-        val sdsds = cr.toSqlCriteriaWithParams()
-
-
-
+        val queryStr = "DELETE FROM ProductParameterEntity WHERE " + cr.toSqlCriteriaWithParams()
 
         val operations = listOf(
             TableOperation(

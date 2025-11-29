@@ -31,10 +31,7 @@ object EntityMapperGenerator {
         }
     }
 
-    private fun generateMapperForEntity(
-        schema: TableSchema,
-        logger: KSPLogger
-    ) {
+    private fun generateMapperForEntity(schema: TableSchema, logger: KSPLogger) {
         val entityName = if (schema.tableName.endsWith("Entity")) {
             schema.tableName
         } else {
@@ -97,15 +94,7 @@ object EntityMapperGenerator {
         }
     }
 
-    private fun generateMapperCode(
-        mapperName: String,
-        entityName: String,
-        modelName: String,
-        entityFields: List<EntityField>,
-        mapperPackage: String,
-        entityPackage: String,
-        modelPackage: String
-    ): String = buildString {
+    private fun generateMapperCode(mapperName: String, entityName: String, modelName: String, entityFields: List<EntityField>, mapperPackage: String, entityPackage: String, modelPackage: String): String = buildString {
         appendLine("package $mapperPackage")
         appendLine()
         appendLine("import com.repzone.data.util.Mapper")

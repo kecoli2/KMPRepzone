@@ -13,74 +13,106 @@ class ProductQueryBuilder {
         val isCloseCondition = buildCloseCondition(params.salesOperationType)
 
         return buildString {
-            // SELECT
-            append("""
-                SELECT 
-                    P.Id AS ProductId,
-                    PU.Barcode,
-                    P.Tags,
-                    P.BrandId,
-                    P.BrandName,
-                    P.GroupId,
-                    P.GroupName,
-                    P.SKU AS Sku,
-                    P.Name AS ProductName,
-                    P.PhotoPath,
-                    $vat,
-                    PU.UnitId,
-                    U.Name AS UnitName,
-                    PU.Multiplier,
-                    PU.Weight,
-                    COALESCE(St.Stock, 0.0) AS Stock,
-                    COALESCE(St.OrderStock, 0.0) AS OrderStock,
-                    COALESCE(TSt.Stock, 0.0) AS TransitStock,
-                    COALESCE(RSt.Stock, 0.0) AS ReservedStock,
-                    COALESCE(Wrh.Stock, 0.0) AS VanStock,
-                    COALESCE(PRM.PendingAmount, 0.0) AS PendingStock,
-                    P.BrandPhotoPath,
-                    P.GroupPhotoPath,
-                    PU.OrderQuantityFactor,
-                    P.Description,
-                    P.ManufacturerId,
-                    $displayOrder,
-                    $color,
-                    PU.DisplayOrder AS UnitDisplayOrder,
-                    ${if (params.showTransitStock) 1 else 0} AS ShowTransitStock,
-                    ${if (params.showAvailableStock) 1 else 0} AS ShowAvailableStock,
-                    $price,
-                    $minOrderQuantity,
-                    $maxOrderQuantity
-            """.trimIndent())
+            // Outer SELECT with explicit fields
+            append("""SELECT ProductFlatViewEntity.ProductId,
+       ProductFlatViewEntity.Sku,
+       ProductFlatViewEntity.ProductName,
+       ProductFlatViewEntity.UnitId,
+       ProductFlatViewEntity.UnitName,
+       ProductFlatViewEntity.Multiplier,
+       ProductFlatViewEntity.Price,
+       ProductFlatViewEntity.Weight,
+       ProductFlatViewEntity.Vat,
+       ProductFlatViewEntity.Tags,
+       ProductFlatViewEntity.BrandId,
+       ProductFlatViewEntity.BrandName,
+       ProductFlatViewEntity.GroupId,
+       ProductFlatViewEntity.GroupName,
+       ProductFlatViewEntity.Stock,
+       ProductFlatViewEntity.OrderStock,
+       ProductFlatViewEntity.Barcode,
+       ProductFlatViewEntity.DisplayOrder,
+       ProductFlatViewEntity.PhotoPath,
+       ProductFlatViewEntity.UnitDisplayOrder,
+       ProductFlatViewEntity.Color,
+       ProductFlatViewEntity.VanStock,
+       ProductFlatViewEntity.BrandPhotoPath,
+       ProductFlatViewEntity.GroupPhotoPath,
+       ProductFlatViewEntity.MinimumOrderQuantity,
+       ProductFlatViewEntity.MaxOrderQuantity,
+       ProductFlatViewEntity.OrderQuantityFactor,
+       ProductFlatViewEntity.Description,
+       ProductFlatViewEntity.TransitStock,
+       ProductFlatViewEntity.PendingStock,
+       ProductFlatViewEntity.ReservedStock,
+       ProductFlatViewEntity.ShowTransitStock,
+       ProductFlatViewEntity.ShowAvailableStock,
+       ProductFlatViewEntity.ManufacturerId FROM (
+""")
 
-            // FROM
-            append("\nFROM SyncProductEntity P")
+            // Inner SELECT - orijinal sıra
+            append("""SELECT P.Id AS ProductId,
+       PU.Barcode,
+       P.Tags,
+       P.BrandId,
+       P.BrandName,
+       P.GroupId,
+       P.GroupName,
+       P.SKU AS Sku,
+       P.Name AS ProductName,
+       P.PhotoPath,
+       $vat,
+       PU.UnitId,
+       U.Name AS UnitName,
+       PU.Multiplier,
+       PU.Weight,
+       COALESCE(St.Stock, 0.0) AS Stock,
+       COALESCE(St.OrderStock, 0.0) AS OrderStock,
+       COALESCE(TSt.Stock, 0.0) AS TransitStock,
+       COALESCE(RSt.Stock, 0.0) AS ReservedStock,
+       COALESCE(Wrh.Stock, 0.0) AS VanStock,
+       COALESCE(PRM.PendingAmount, 0.0) AS PendingStock,
+       P.BrandPhotoPath,
+       P.GroupPhotoPath,
+       PU.OrderQuantityFactor,
+       P.Description,
+       P.ManufacturerId,
+       $displayOrder,
+       $color,
+       PU.DisplayOrder AS UnitDisplayOrder,
+       ${if (params.showTransitStock) 1 else 0} AS ShowTransitStock,
+       ${if (params.showAvailableStock) 1 else 0} AS ShowAvailableStock,
+       $price,
+       $minOrderQuantity,
+       $maxOrderQuantity
+  FROM SyncProductEntity P""")
 
             // Dynamic JOINs
             appendJoins(params)
 
             // WHERE
             append("""
-                
-                WHERE P.IsVisible = 1 
-                AND P.State = 1 
-                AND U.State = 1 
-                AND PU.State = 1 
-                AND PM.State = 1
-                AND ((MPM.AllowedUnitIds IS NULL AND U.IsVisible = 1) 
-                     OR (MPM.AllowedUnitIds = '' AND U.IsVisible = 1) 
-                     OR MPM.AllowedUnitIds LIKE '%,' || PU.UnitId || ',%')
-                $isCloseCondition
-            """.trimIndent())
+ WHERE P.IsVisible = 1 AND
+       P.State = 1 AND
+       U.State = 1 AND
+       PU.State = 1 AND       
+       ( (MPM.AllowedUnitIds IS NULL AND
+          U.IsVisible = 1) OR
+         (MPM.AllowedUnitIds = '' AND
+          U.IsVisible = 1) OR
+         MPM.AllowedUnitIds LIKE '%,' || PU.UnitId || ',%')
+       $isCloseCondition""")
 
             // Manufacturer filters
             if (params.mfrId > 0) {
-                append("\nAND P.ManufacturerId = ${params.mfrId}")
+                append(" AND\n       P.ManufacturerId = ${params.mfrId}")
             }
             if (params.notAllowedMfrs.isNotEmpty()) {
-                append("\nAND P.ManufacturerId NOT IN (${params.notAllowedMfrs.joinToString(",")})")
+                append(" AND\n       P.ManufacturerId NOT IN (${params.notAllowedMfrs.joinToString(",")})")
             }
 
-            append("\nORDER BY DisplayOrder")
+            // ORDER BY (inner query) and close with alias
+            append("\n ORDER BY DisplayOrder) AS ProductFlatViewEntity")
         }
     }
     //endregion Public Method
@@ -144,7 +176,7 @@ class ProductQueryBuilder {
         // Product Parameter (required)
         append("""
             
-            INNER JOIN ProductParameterv4Entity PM 
+            INNER JOIN ProductParameterEntity PM 
                 ON PM.ProductId = P.Id 
                 AND ((P.OrganizationId = ${p.organizationId} 
                       AND P.OrganizationId = PM.OrganizationId 
