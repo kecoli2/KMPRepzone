@@ -46,29 +46,20 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
         formDefinationsApi: ISyncApiService<List<FormBaseDto>>,
         formDefinationBulkInsert: IBulkInsertService<List<FormBaseDto>>,
         formMandatoryDataApi: ISyncApiService<List<SyncMandatoryFormDto>>,
-        formMandatoryDataBulkInsert: IBulkInsertService<List<SyncMandatoryFormDto>>
+        formMandatoryDataBulkInsert: IBulkInsertService<List<SyncMandatoryFormDto>>,
+        productUnitApi: ISyncApiService<List<SyncUnitDto>>,
+        productUnitBulkInsert: IBulkInsertService<List<SyncUnitDto>>
     ): Map<SyncJobType, ISyncJob> {
         return mapOf(
-            SyncJobType.PRODUCTS to ProductSyncJob(
-                productApi,
-                productBulkInsert,
-                syncModuleRepository
-            ),
+            SyncJobType.PRODUCTS to ProductSyncJob(productApi, productBulkInsert, syncModuleRepository),
             SyncJobType.PRODUCTS_GROUP to ProductGroupSyncJob(productGroupApi, productGroupBulkInsert, syncModuleRepository),
+            SyncJobType.PRODUCT_UNIT to ProductUnitJob(productUnitApi, productUnitBulkInsert, syncModuleRepository),
             SyncJobType.ROUTE to RouteDataSyncJob(routeApi, routeBulkInsert, syncModuleRepository),
             SyncJobType.CUSTOMERS to CustomerSyncJob(customerApi, customerBulkInsert, syncModuleRepository),
-            SyncJobType.CUSTOMERS_GROUP to CustomerGroupSyncJob(
-                customerGroupApi,
-                customerGroupBulkInsert,
-                syncModuleRepository
-            ),
+            SyncJobType.CUSTOMERS_GROUP to CustomerGroupSyncJob(customerGroupApi, customerGroupBulkInsert, syncModuleRepository),
             SyncJobType.CUSTOMERS_EMAIL to CustomerEmailSyncJob(customerEmailApi, customerEmailBulkInsert, syncModuleRepository),
             SyncJobType.CUSTOMERS_PRICE_PARAMETERS to CustomerPriceParametersSyncJob(customerPriceParametersApi, customerPriceParametersBulkInsert, syncModuleRepository),
-            SyncJobType.CUSTOMERS_GROUP_PRICE to CustomerGroupPriceParametersSyncJob(
-                customerGroupPriceParametersApi,
-                customerGroupPriceParametersBulkInsert,
-                syncModuleRepository
-            ),
+            SyncJobType.CUSTOMERS_GROUP_PRICE to CustomerGroupPriceParametersSyncJob(customerGroupPriceParametersApi, customerGroupPriceParametersBulkInsert, syncModuleRepository),
             SyncJobType.COMMON_MODULES to PakageCustomFieldSyncJob(apiModulesApi, modulesRawBulkInsert, syncModuleRepository, modulesUserSession),
             SyncJobType.COMMON_MODULES_REASONS to EventReasonsSyncJob(eventReasonsApi, eventReasonsRawBulkInsert, syncModuleRepository),
             SyncJobType.COMMON_DOCUMENT_MAPS to DocumentMapsSyncJob(documentMapApi, documentMapBulkInsert, syncModuleRepository),

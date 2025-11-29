@@ -2,7 +2,7 @@ package com.repzone.sync.transaction
 
 data class TableOperation(
     val tableName: String,
-    val clearSql: String? = null,
+    val clearSql: List<String>? = emptyList(),
     val columns: List<String>,
     val values: List<String>,
     val recordCount: Int,

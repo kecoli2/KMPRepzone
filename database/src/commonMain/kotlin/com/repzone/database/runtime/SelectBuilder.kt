@@ -7,8 +7,11 @@ import com.repzone.core.util.extensions.now
 import com.repzone.core.util.extensions.toInstant
 import kotlin.time.ExperimentalTime
 
+@Suppress("UNCHECKED_CAST")
 @OptIn(ExperimentalTime::class)
 class SelectBuilder<T>(val metadata: EntityMetadata, private val driver: SqlDriver, private val baseSql: String? = null) {
+
+    //region ---------------- FIELDS ----------------
     var whereCondition: Condition = NoCondition
         internal set
 
@@ -25,48 +28,31 @@ class SelectBuilder<T>(val metadata: EntityMetadata, private val driver: SqlDriv
         internal set
 
     val joins = mutableListOf<JoinConfig>()
+    //endregion ---------------- FIELDS ----------------
 
-
+    //region ---------------- PUBLIC METHOD ----------------
     fun where(block: CriteriaBuilder.() -> Unit) {
         val builder = CriteriaBuilder()
         builder.block()
         whereCondition = builder.build()
     }
-
     fun orderBy(block: OrderByBuilder.() -> Unit) {
         val builder = OrderByBuilder()
         builder.block()
         orderSpecs = builder.orderSpecs
     }
-
     fun limit(count: Int) {
         require(count > 0) { "Limit must be positive" }
         limitValue = count
     }
-
     fun offset(count: Int) {
         offsetValue = count
     }
-
     fun groupBy(block: GroupByBuilder.() -> Unit) {
         val builder = GroupByBuilder()
         builder.block()
         groupByBuilder = builder
     }
-
-    /**
-     * Build SQL query string (for logging)
-     */
-    private fun buildSQL(params: MutableList<Any?>): String {
-        // Raw SQL varsa onu base olarak kullan
-        if (baseSql != null) {
-            return buildFromRawSQL(params)
-        }
-
-        // Normal SELECT build (mevcut kod)
-        return buildNormalSQL(params)
-    }
-
     fun toList(): List<T> {
         val params = mutableListOf<Any?>()
         val sql = buildSQL(params)
@@ -88,32 +74,6 @@ class SelectBuilder<T>(val metadata: EntityMetadata, private val driver: SqlDriv
 
         return executeQuery(sql, params)
     }
-    private fun executeQuery(sql: String, params: List<Any?>): List<T> {
-        val results = mutableListOf<T>()
-
-        driver.executeQuery(
-            identifier = null,
-            sql = sql,
-            mapper = { cursor ->
-                // Cursor'u iterate et - HER SATIR için döngü
-                while (cursor.next().value) {
-                    val entity = metadata.createInstance(SqlDelightCursor(cursor)) as T
-                    results.add(entity)
-                }
-                app.cash.sqldelight.db.QueryResult.Value(results)  // Unit değil, Value döndür
-            },
-            parameters = params.size
-        ) {
-            if (params.isNotEmpty()) {
-                params.forEachIndexed { index, value ->
-                    bindValue(this, index, value)
-                }
-            }
-        }
-
-        return results
-    }
-
     fun firstOrNull(): T? {
         val originalLimit = limitValue
         limit(1)
@@ -146,32 +106,9 @@ class SelectBuilder<T>(val metadata: EntityMetadata, private val driver: SqlDriv
 
         return result
     }
-    private fun executeSingleQuery(sql: String, params: List<Any?>): T? {
-        var result: T? = null
-
-        driver.executeQuery(
-            identifier = null,
-            sql = sql,
-            mapper = { cursor ->
-                if (cursor.next().value) {  // İlk satıra git
-                    result = metadata.createInstance(SqlDelightCursor(cursor)) as T
-                }
-                app.cash.sqldelight.db.QueryResult.Value(result)
-            },
-            parameters = params.size
-        ) {
-            params.forEachIndexed { index, value ->
-                bindValue(this, index, value)
-            }
-        }
-
-        return result
-    }
-
     fun first(): T {
         return firstOrNull() ?: throw NoSuchElementException("No entity found")
     }
-
     /**
      * Kayıt var mı kontrol et (kolonları çekmeden)
      *
@@ -203,12 +140,10 @@ class SelectBuilder<T>(val metadata: EntityMetadata, private val driver: SqlDriv
 
         return executeExistsQuery(sql, params)
     }
-
     /**
      * any() ile aynı - alias
      */
     fun exists(): Boolean = any()
-
     /**
      * Kayıt yok mu kontrol et
      *
@@ -220,6 +155,88 @@ class SelectBuilder<T>(val metadata: EntityMetadata, private val driver: SqlDriv
      * ```
      */
     fun none(): Boolean = !any()
+
+    /**
+     * SQL query string'ini parametrelerle birlikte döndürür (execute etmeden)
+     * Parametreler yerine gerçek değerler yazılır
+     *
+     * Örnek:
+     * ```
+     * val sql = driver.select<Product> {
+     *     where { equal("isActive", true) }
+     *     limit(10)
+     * }.toSqlStringWithParams()
+     * // Çıktı: "SELECT ... FROM Product WHERE isActive = 1 LIMIT 10"
+     * ```
+     */
+    fun toSqlStringWithParams(): String {
+        val params = mutableListOf<Any?>()
+        val sql = buildSQL(params)
+        return SqlQueryLogger.substituteSqlParams(sql, params)
+    }
+    //endregion ---------------- PUBLIC METHOD ----------------
+
+    //region ---------------- PRIVATE METHOD ----------------
+
+    private fun executeQuery(sql: String, params: List<Any?>): List<T> {
+        val results = mutableListOf<T>()
+
+        driver.executeQuery(
+            identifier = null,
+            sql = sql,
+            mapper = { cursor ->
+                // Cursor'u iterate et - HER SATIR için döngü
+                while (cursor.next().value) {
+                    val entity = metadata.createInstance(SqlDelightCursor(cursor)) as T
+                    results.add(entity)
+                }
+                app.cash.sqldelight.db.QueryResult.Value(results)  // Unit değil, Value döndür
+            },
+            parameters = params.size
+        ) {
+            if (params.isNotEmpty()) {
+                params.forEachIndexed { index, value ->
+                    bindValue(this, index, value)
+                }
+            }
+        }
+
+        return results
+    }
+
+    /**
+     * Build SQL query string (for logging)
+     */
+    private fun buildSQL(params: MutableList<Any?>): String {
+        // Raw SQL varsa onu base olarak kullan
+        if (baseSql != null) {
+            return buildFromRawSQL(params)
+        }
+
+        // Normal SELECT build (mevcut kod)
+        return buildNormalSQL(params)
+    }
+    private fun executeSingleQuery(sql: String, params: List<Any?>): T? {
+        var result: T? = null
+
+        driver.executeQuery(
+            identifier = null,
+            sql = sql,
+            mapper = { cursor ->
+                if (cursor.next().value) {  // İlk satıra git
+                    result = metadata.createInstance(SqlDelightCursor(cursor)) as T
+                }
+                app.cash.sqldelight.db.QueryResult.Value(result)
+            },
+            parameters = params.size
+        ) {
+            params.forEachIndexed { index, value ->
+                bindValue(this, index, value)
+            }
+        }
+
+        return result
+    }
 
     /**
      * Build lightweight EXISTS query (SELECT 1 ... LIMIT 1)
@@ -297,7 +314,6 @@ class SelectBuilder<T>(val metadata: EntityMetadata, private val driver: SqlDriv
 
         return sql.toString()
     }
-
     private fun buildNormalSQL(params: MutableList<Any?>): String {
         val allColumnMappings = mutableMapOf<String, String>()
         joins.forEach { join ->
@@ -381,7 +397,10 @@ class SelectBuilder<T>(val metadata: EntityMetadata, private val driver: SqlDriv
         return exists
     }
 
-    // INNER JOIN
+    //ENDregion ---------------- PRIVATE METHOD ----------------
+
+
+    //region ---------------- INNER JOIN ----------------
     inline fun <reified J : Any> innerJoin(
         leftColumn: String,
         rightColumn: String,
@@ -451,12 +470,11 @@ class SelectBuilder<T>(val metadata: EntityMetadata, private val driver: SqlDriv
         return this
     }
 
+    //endregion ---------------- INNER JOIN ----------------
 }
 
 // SQLDelight Cursor wrapper
-class SqlDelightCursor(
-    private val cursor: app.cash.sqldelight.db.SqlCursor
-) : Cursor {
+class SqlDelightCursor(private val cursor: app.cash.sqldelight.db.SqlCursor) : Cursor {
     override fun getString(index: Int): String? = cursor.getString(index)
     override fun getLong(index: Int): Long? = cursor.getLong(index)
     override fun getDouble(index: Int): Double? = cursor.getDouble(index)

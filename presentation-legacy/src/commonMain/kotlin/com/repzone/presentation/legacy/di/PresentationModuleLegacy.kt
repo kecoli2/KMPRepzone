@@ -14,7 +14,6 @@ import com.repzone.presentation.legacy.viewmodel.visit.VisitViewModel
 import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListViewModel
 import com.repzone.presentation.legacy.viewmodel.gpstest.GpsTrackingViewModel
 import com.repzone.presentation.legacy.viewmodel.productlist.ProductListViewModel
-import com.repzone.presentation.legacy.viewmodel.sync.SyncTestViewModel
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -30,7 +29,6 @@ val PresentationModuleLegacy = module {
 
     //region ViewModels
     factoryOf(::LoginScreenViewModel)
-    factoryOf(::SyncTestViewModel)
     factoryOf(::SplashScreenViewModel)
     factoryOf(::SyncViewModel)
     factoryOf(::CustomerListViewModel)

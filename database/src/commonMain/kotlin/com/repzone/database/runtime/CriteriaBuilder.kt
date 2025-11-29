@@ -95,4 +95,44 @@ class CriteriaBuilder {
             else -> AndCondition(conditions)
         }
     }
+
+    companion object {
+        /**
+         * Standalone criteria builder fonksiyonu
+         * SelectBuilder dışında bağımsız criteria oluşturmak için
+         *
+         * Örnek:
+         * ```
+         * val cr = CriteriaBuilder.build {
+         *     criteria("State", equal = 1)
+         *     criteria("IsActive", equal = true)
+         * }
+         * val sql = cr.toSqlCriteria()  // "State = ? AND IsActive = ?"
+         * ```
+         */
+        fun build(block: CriteriaBuilder.() -> Unit): Condition {
+            val builder = CriteriaBuilder()
+            builder.block()
+            return builder.build()
+        }
+    }
+}
+
+/**
+ * Condition'ı SQL string'e çevirir (? placeholder'larla)
+ */
+fun Condition.toSqlCriteria(): String {
+    if (this == NoCondition) return ""
+    val params = mutableListOf<Any?>()
+    return this.toSQL(params)
+}
+
+/**
+ * Condition'ı SQL string'e çevirir (parametreler substituted)
+ */
+fun Condition.toSqlCriteriaWithParams(): String {
+    if (this == NoCondition) return ""
+    val params = mutableListOf<Any?>()
+    val sql = this.toSQL(params)
+    return SqlQueryLogger.substituteSqlParams(sql, params)
 }

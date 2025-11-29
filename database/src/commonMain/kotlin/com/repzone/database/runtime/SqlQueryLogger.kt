@@ -7,8 +7,14 @@ import com.repzone.core.platform.Logger
  */
 object SqlQueryLogger {
 
+    //region ------------- Field -------------
     private const val TAG = "SQL_QUERY"
+    //endregion ------------- Field -------------
 
+    //region ------------- Constructor -------------
+    //endregion ------------- Constructor -------------
+
+    //region ------------- Public Method -------------
     /**
      * Raw query logging - Parametreleri doğrudan SQL içine yerleştirir
      */
@@ -117,6 +123,20 @@ object SqlQueryLogger {
         log("═".repeat(43))
     }
 
+    /**
+     * SQL string içindeki ? placeholderlarını gerçek değerlerle değiştirir
+     * SelectBuilder.toSqlStringWithParams() tarafından kullanılır
+     */
+    fun substituteSqlParams(sql: String, parameters: List<Any?>): String {
+        var result = sql
+        parameters.forEach { param ->
+            result = result.replaceFirst("?", formatValue(param))
+        }
+        return result
+    }
+    //endregion ------------- Public Method -------------
+
+    //region ------------- Private Method -------------
     private fun log(message: String) {
         Logger.d(TAG, message)
     }
@@ -126,4 +146,5 @@ object SqlQueryLogger {
         is String -> "'$value'"
         else -> value.toString()
     }
+    //endregion ------------- Private Method -------------
 }

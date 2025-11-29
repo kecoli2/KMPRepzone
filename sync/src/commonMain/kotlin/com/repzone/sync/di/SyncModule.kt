@@ -13,6 +13,7 @@ import com.repzone.network.dto.ProductDto
 import com.repzone.network.dto.ProductGroupDto
 import com.repzone.network.dto.RouteDto
 import com.repzone.network.dto.SyncMandatoryFormDto
+import com.repzone.network.dto.SyncUnitDto
 import com.repzone.network.dto.form.FormBaseDto
 import com.repzone.sync.factory.newversion.SyncJobFactory
 import com.repzone.sync.interfaces.IBulkInsertService
@@ -26,28 +27,22 @@ import com.repzone.sync.service.bulk.impl.CustomerEmailRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerGroupPriceParameterslRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.*
 import com.repzone.sync.transaction.TransactionCoordinator
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
 val SyncModule = module {
-    single<ISyncFactory> { SyncJobFactory(get()) }
-
-    single { TransactionCoordinator(get()) }
 
     //region GENERAL
+    single<ISyncFactory> { SyncJobFactory(get()) }
+    single { TransactionCoordinator(get()) }
     single<ISyncManager>{ SyncManagerImpl(get(), iUserSession = get()) }
     //endregion GENERAL
 
-
-    //region ROUTEDATA
-    single<IBulkInsertService<List<RouteDto>>>(named("routeDataBulkInsert")) {
-        RouteDataRawSqlBulkInsertService(get(), get())
-    }
-    single<ISyncApiService<List<RouteDto>>>(named("routeDataSyncApi")){ SyncApiRouteDataImpl(get()) }
-    //endregion ROUTEDATA
-
+    //region ------------------- PRODUCT --------------------
     //region PRODUCT
-    single<IBulkInsertService<List<ProductDto>>>(named("productBulkInsert")) { ProductRawSqlBulkInsertService(get(), get()) }
+    single<IBulkInsertService<List<ProductDto>>>(named("productBulkInsert")) { ProductRawSqlBulkInsertService(get(), get(), get()) }
     single<ISyncApiService<List<ProductDto>>>(named("productSyncApi")){ SyncApiProductImpl(get()) }
     //endregion PRODUCT
 
@@ -56,6 +51,13 @@ val SyncModule = module {
     single<IBulkInsertService<List<ProductGroupDto>>>(named("productGroupBulkInsert")) { ProductGroupRawSqlBulkInsertService(get(), get()) }
     //endregion PRODUCT GROUP
 
+    //region PRODUCT UNIT
+    single<IBulkInsertService<List<SyncUnitDto>>>(named("productUniBulkInsert")) { ProductUnitRawSqlBulkInsert(get(), get()) }
+    single<ISyncApiService<List<SyncUnitDto>>>(named("productUnitSyncApi")){ SyncApiProductUnitImpl(get()) }
+    //endregion PRODUCT UNIT
+    //endregion ------------------- PRODUCT --------------------
+
+    //region ------------------- CUSTOMER -------------------
     //region CUSTOMER
     single<ISyncApiService<List<CustomerDto>>>(named("customerGroupSyncApi")){ SyncApiCustomerImpl( get()) }
     single<IBulkInsertService<List<CustomerDto>>>(named("customerBulkInsert")) { CustomerRawSqlBulkInsertService(get(), get()) }
@@ -87,7 +89,9 @@ val SyncModule = module {
         get(),
         get()) }
     //endregion CUSTOMER GROUP PRICE PARAMETERS
+    //endregion ------------------- CUSTOMER -------------------
 
+    //region ------------------- COMMON ---------------------
     //region COMMON MODULES
     single<ISyncApiService<List<PackageCustomFieldDto>>>(named("syncModulesImpl")){ SyncApiModulesImpl(get()) }
     single<IBulkInsertService<List<PackageCustomFieldDto>>>(named("syncModulesBulkInsert")){ ModulesRawSqlBulkInsertService(
@@ -124,7 +128,9 @@ val SyncModule = module {
         get(),
         get()) }
     //endregion COMMON DYNAMIC PAGES
+    //endregion ------------------- COMMON ---------------------
 
+    //region ------------------- FORM -----------------------
     //region FORM
     single<ISyncApiService<List<FormBaseDto>>>(named("syncApiFormDataFetchImpl")) { SyncApiFormDataFetchImpl(get()) }
     single<IBulkInsertService<List<FormBaseDto>>>(named("syncFormDataFetchSqlBulkInsertService")) { FormDataFetchSqlBulkInsertService(
@@ -135,6 +141,16 @@ val SyncModule = module {
     single<IBulkInsertService<List<SyncMandatoryFormDto>>>(named("formMandatoryDataRawSqlBulkInsertService")) { FormMandatoryDataRawSqlBulkInsertService(
         get(), get()) }
     //endregion FORM
+    //endregion ------------------- FORM ---------------------
+
+    //region ------------------- OTHER ----------------------
+    //region ROUTEDATA
+    single<IBulkInsertService<List<RouteDto>>>(named("routeDataBulkInsert")) {
+        RouteDataRawSqlBulkInsertService(get(), get())
+    }
+    single<ISyncApiService<List<RouteDto>>>(named("routeDataSyncApi")){ SyncApiRouteDataImpl(get()) }
+    //endregion ROUTEDATA
+    //endregion ------------------- OTHER -------------------
 
     single {
         get<ISyncFactory>().createJobs(
@@ -168,7 +184,9 @@ val SyncModule = module {
             formDefinationsApi = get(named("syncApiFormDataFetchImpl")),
             formDefinationBulkInsert = get(named("syncFormDataFetchSqlBulkInsertService")),
             formMandatoryDataApi = get(named("syncApiFormMandatoryDataFetchImpl")),
-            formMandatoryDataBulkInsert = get(named("formMandatoryDataRawSqlBulkInsertService"))
+            formMandatoryDataBulkInsert = get(named("formMandatoryDataRawSqlBulkInsertService")),
+            productUnitApi = get(named("productUnitSyncApi")),
+            productUnitBulkInsert = get(named("productUniBulkInsert")),
         )
     }
 }

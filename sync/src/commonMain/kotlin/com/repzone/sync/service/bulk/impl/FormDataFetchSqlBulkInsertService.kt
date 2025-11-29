@@ -44,7 +44,7 @@ class FormDataFetchSqlBulkInsertService(coordinator: TransactionCoordinator
         val operation = listOf(
             TableOperation(
                 tableName = SyncFormBaseEntityMetadata.tableName,
-                clearSql = "DELETE FROM ${SyncFormBaseEntityMetadata.tableName}",
+                clearSql = listOf("DELETE FROM ${SyncFormBaseEntityMetadata.tableName}") ,
                 columns = SyncFormBaseEntityMetadata.columns.map { it.name },
                 values = mobileSync.map { it.toSqlValuesString() },
                 recordCount = mobileSync.size,

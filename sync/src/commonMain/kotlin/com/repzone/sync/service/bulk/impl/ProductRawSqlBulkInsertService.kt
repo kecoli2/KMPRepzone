@@ -2,9 +2,15 @@ package com.repzone.sync.service.bulk.impl
 
 import com.repzone.core.model.ResourceUI
 import com.repzone.data.mapper.ProductEntityDtoDbMapper
+import com.repzone.database.ProductParameterEntity
+import com.repzone.database.SyncProductEntity
+import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.database.metadata.ProductParameterEntityMetadata
 import com.repzone.database.metadata.SyncProductEntityMetadata
 import com.repzone.database.metadata.SyncProductUnitEntityMetadata
+import com.repzone.database.runtime.CriteriaBuilder
+import com.repzone.database.runtime.select
+import com.repzone.database.runtime.toSqlCriteriaWithParams
 import com.repzone.database.toSqlValuesString
 import com.repzone.network.dto.ProductDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
@@ -15,8 +21,9 @@ import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_template_desc
 import repzonemobile.core.generated.resources.job_product_parameters
 
+
 class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMapper,
-                                     coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<ProductDto>>(coordinator) {
+                                     coordinator: TransactionCoordinator, private val iDatabaseManager: IDatabaseManager): CompositeRawSqlBulkInsertService<List<ProductDto>>(coordinator) {
 
     //region Public Method
     override suspend fun buildCompositeOperation(items: List<ProductDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
@@ -28,6 +35,26 @@ class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMap
         val parameterEntities = items.flatMap { dto ->
             dbMapper.toParametersEnties(dto.id.toLong(), dto.parameters)
         }
+
+        @Suppress("UNCHECKED_CAST")
+        val query = iDatabaseManager.getSqlDriver().select<ProductParameterEntity> {
+            where {
+                criteria("Id", In = parameterEntities.map { it.Id } as List<Any>?)
+                criteria("ProductId", In = parameterEntities.map { it.ProductId } as List<Any>?)
+            }
+        }
+
+        val queryStr = query.toSqlStringWithParams()
+
+        val cr = CriteriaBuilder.build {
+            criteria("ssss", In = listOf(1, 2, 3))
+
+        }
+
+        val sdsds = cr.toSqlCriteriaWithParams()
+
+
+
 
         val operations = listOf(
             TableOperation(
@@ -52,7 +79,7 @@ class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMap
 
             TableOperation(
                 tableName = ProductParameterEntityMetadata.tableName,
-                clearSql = "DELETE FROM ProductParameterEntity",
+                clearSql = listOf(queryStr),
                 columns = ProductParameterEntityMetadata.columns.map { it.name },
                 values = parameterEntities.map { it.toSqlValuesString() },
                 recordCount = parameterEntities.size,

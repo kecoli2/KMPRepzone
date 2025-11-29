@@ -977,4 +977,7 @@
     <string name="quantity">Quantity</string>
     <string name="total_pure">Total</string>
     <string name="discount_items">Discount Items</string>
+
+    <string name="job_product_unit">Product Units</string>
+
 </resources>

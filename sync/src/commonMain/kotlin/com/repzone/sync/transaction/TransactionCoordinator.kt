@@ -231,8 +231,10 @@ class TransactionCoordinator(
                     if (tableOp.recordCount <= 0) {
                         return@forEach
                     }
-                    if(tableOp.includeClears && tableOp.clearSql != null && tableOp.clearSql != ""){
-                        executeRawSql(tableOp.clearSql)
+                    if(tableOp.includeClears && tableOp.clearSql != null && tableOp.clearSql.isNotEmpty()){
+                        tableOp.clearSql.forEach { clearSql ->
+                            executeRawSql(clearSql)
+                        }
                     }
 
                     val sql = if(tableOp.useUpsert){
