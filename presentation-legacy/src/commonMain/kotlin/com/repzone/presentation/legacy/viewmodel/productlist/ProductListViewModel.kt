@@ -67,7 +67,7 @@ class ProductListViewModel(
                     enablePlaceholders = false
                 )
             ) {
-                ProductPagingSource(productRepository, filter, documentManager.getProductQueryString())
+                ProductPagingSource(productRepository, filter, documentManager.getProductQueryString(), documentManager.getProductUnitMap())
             }.flow
         }
         .cachedIn(scope)
@@ -108,6 +108,11 @@ class ProductListViewModel(
 
     fun getDocumentSubTitle(): String {
         return documentManager.getDocumentMapModel().description + "- ${documentManager.getCustomer().name}"
+    }
+
+    override fun onDispose() {
+        documentSession.clear()
+        documentManager.clear()
     }
 
     //region ========== FILTER ACTIONS ==========

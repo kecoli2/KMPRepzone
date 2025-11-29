@@ -3,6 +3,7 @@ package com.repzone.data.repository.product
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
 import com.repzone.domain.document.model.ProductInformationModel
+import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.model.product.ProductFilterState
 import com.repzone.domain.repository.IProductRepository
 
@@ -13,7 +14,8 @@ import com.repzone.domain.repository.IProductRepository
 class ProductPagingSource(
     private val productRepository: IProductRepository,
     private val filterState: ProductFilterState,
-    private val productFastSql: String
+    private val productFastSql: String,
+    private val productUnit: MutableMap<Int, List<ProductUnit>>
 ) : PagingSource<Int, ProductInformationModel>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, ProductInformationModel> {
@@ -31,7 +33,8 @@ class ProductPagingSource(
                 colors = filterState.colors,
                 tags = filterState.tags,
                 priceRange = filterState.priceRange,
-                quertBuilderSql = productFastSql
+                quertBuilderSql = productFastSql,
+                productMap = productUnit
             )
 
             LoadResult.Page(

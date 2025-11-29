@@ -347,6 +347,74 @@ inline fun <reified T : Any> SqlDriver.rawQueryFirstOrNull(sql: String, vararg p
     return rawQueryToEntity<T>(sql, *params).firstOrNull()
 }
 
+// Raw SQL query - Custom mapper (EntityMetadataRegistry'de olmayan entity'ler için)
+inline fun <T> SqlDriver.rawQueryWithMapper(
+    sql: String,
+    vararg params: Any?,
+    crossinline mapper: (Cursor) -> T
+): List<T> {
+    // Logging
+    if (BuildConfig.IS_DEBUG) {
+        val startTime = now()
+        SqlQueryLogger.logRawQuery(sql.escapeKeywordsInQuery(), params.toList())
+
+        val results = mutableListOf<T>()
+
+        executeQuery(
+            identifier = null,
+            sql = sql.escapeKeywordsInQuery(),
+            mapper = { cursor ->
+                while (cursor.next().value) {
+                    val entity = mapper(SqlDelightCursor(cursor))
+                    results.add(entity)
+                }
+                QueryResult.Value(results)
+            },
+            parameters = params.size
+        ) {
+            params.forEachIndexed { index, value ->
+                bindValue(this, index, value)
+            }
+        }
+
+        val elapsed = (now() - startTime).toInstant().epochSeconds
+        SqlQueryLogger.logQueryTime("RAW QUERY WITH MAPPER", elapsed)
+        Logger.d("SQL_RESULT", "Returned ${results.size} entities")
+
+        return results
+    }
+
+    val results = mutableListOf<T>()
+
+    executeQuery(
+        identifier = null,
+        sql = sql.escapeKeywordsInQuery(),
+        mapper = { cursor ->
+            while (cursor.next().value) {
+                val entity = mapper(SqlDelightCursor(cursor))
+                results.add(entity)
+            }
+            QueryResult.Value(results)
+        },
+        parameters = params.size
+    ) {
+        params.forEachIndexed { index, value ->
+            bindValue(this, index, value)
+        }
+    }
+
+    return results
+}
+
+// Raw SQL query - Custom mapper - First or null
+inline fun <T> SqlDriver.rawQueryFirstOrNullWithMapper(
+    sql: String,
+    vararg params: Any?,
+    crossinline mapper: (Cursor) -> T
+): T? {
+    return rawQueryWithMapper(sql, *params, mapper = mapper).firstOrNull()
+}
+
 // Raw SQL transaction
 fun SqlDriver.rawTransaction(block: RawSqlScope.() -> Unit) {
     if (BuildConfig.IS_DEBUG) {

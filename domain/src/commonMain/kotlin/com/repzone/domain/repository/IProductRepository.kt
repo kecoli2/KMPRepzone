@@ -2,6 +2,7 @@ package com.repzone.domain.repository
 
 import com.repzone.core.enums.SalesOperationType
 import com.repzone.domain.document.model.ProductInformationModel
+import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.model.DistributionControllerModel
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.product.PriceRange
@@ -10,14 +11,16 @@ import com.repzone.domain.util.ProductQueryParams
 
 interface IProductRepository {
 
-    suspend fun getProducts(quertBuilderSql: String,page: Int,
+    suspend fun getProducts(
+        quertBuilderSql: String,page: Int,
         pageSize: Int,
         searchQuery: String = "",
         brands: Set<String> = emptySet(),
         categories: Set<String> = emptySet(),
         colors: Set<String> = emptySet(),
         tags: Set<String> = emptySet(),
-        priceRange: PriceRange? = null
+        priceRange: PriceRange? = null,
+        productMap: MutableMap<Int, List<ProductUnit>> = mutableMapOf()
     ): List<ProductInformationModel>
 
     /**
@@ -33,4 +36,5 @@ interface IProductRepository {
                                       mfrId: Int = 0,
                                       notAllowedMfrs: List<Int>? = null,
                                       selectedPrefOrgId: Int = 0): ProductQueryParams
+    suspend fun getProductUnitFlatQuery(sql: String): MutableMap<Int, List<ProductUnit>>
 }

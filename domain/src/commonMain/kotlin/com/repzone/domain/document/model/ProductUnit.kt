@@ -10,9 +10,11 @@ data class ProductUnit(
     val vat: BigDecimal,
     val multiplier: BigDecimal,
     val weight: Double? = null,
-    val minimumOrderQuantity: Int,
-    val maxOrderQuantity: Int,
+    val minimumOrderQuantity: Int?,
+    val maxOrderQuantity: Int?,
     val orderQuantityFactor: Int,
     val isBaseUnit: Boolean,
+    val unitDisplayOrder: Int,
     val barcode: String?,
+    val productId: Long
 )

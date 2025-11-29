@@ -20,6 +20,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.repzone.core.constant.CdnConfig
 import com.repzone.core.ui.component.textfield.BorderType
 import com.repzone.core.ui.component.textfield.NumberTextField
 import com.repzone.core.ui.component.textfield.TextAlignment
@@ -162,7 +163,7 @@ private fun ProductRowContent(
 
             // Product Image
             ProductImage(
-                imageUrl = null,
+                imageUrl = product.photoPath,
                 productName = product.name
             )
             Spacer(modifier = Modifier.width(4.dp))
@@ -378,7 +379,7 @@ private fun ProductImage(
 ) {
     if (imageUrl != null) {
         AsyncImage(
-            model = imageUrl,
+            model = "${CdnConfig.CDN_IMAGE_CONFIG}xs/${imageUrl}",
             contentDescription = productName,
             modifier = Modifier
                 .size(52.dp)

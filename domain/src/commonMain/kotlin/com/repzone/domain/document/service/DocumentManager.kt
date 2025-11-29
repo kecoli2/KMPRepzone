@@ -41,6 +41,7 @@ import com.repzone.domain.repository.IDistributionRepository
 import com.repzone.domain.repository.IDocumentMapRepository
 import com.repzone.domain.repository.IProductRepository
 import com.repzone.domain.util.ProductQueryBuilder
+import com.repzone.domain.util.ProductQueryParams
 import kotlin.time.ExperimentalTime
 
 
@@ -62,7 +63,7 @@ class DocumentManager(override val documentType: DocumentType,
     private var currentCustomer: SyncCustomerModel? = null
     private var documentMapModel: SyncDocumentMapModel? = null
     private var activeDistribution: DistributionControllerModel? = null
-    private var productQuery: String? = null
+    private var productQueryParams: ProductQueryParams? = null
     private var productUnitMap: MutableMap<Int, List<ProductUnit>>? = null
     private val _lines = MutableStateFlow<List<IDocumentLine>>(emptyList())
     override val lines: StateFlow<List<IDocumentLine>> = _lines.asStateFlow()
@@ -108,6 +109,7 @@ class DocumentManager(override val documentType: DocumentType,
             documentMapModel = iDocumentMapRepository.get(documentId.toInt(), currentCustomer!!.organizationId?.toInt() ?: 0)
             activeDistribution = iDistributionRepository.getActiveDistributionListId(currentCustomer, iUserSession.decideWhichOrgIdToBeUsed(currentCustomer!!.organizationId?.toInt() ?: 0))!!
             prepareProductQueryBuilder()
+            prepareProductUnit()
             return Result.Success(this)
         }catch (ex: Exception){
             return Result.Error(DomainException.UnknownException(cause = ex))
@@ -119,7 +121,12 @@ class DocumentManager(override val documentType: DocumentType,
     }
 
     override fun getProductQueryString(): String {
-        return productQuery!!
+        return ProductQueryBuilder().buildAllProductsQuery(productQueryParams!!)
+    }
+
+    override fun getProductUnitMap(): MutableMap<Int, List<ProductUnit>> {
+        val map = productUnitMap ?: error("Product unit map is null")
+        return map
     }
     //endregion ============ Document Operations ============
 
@@ -330,8 +337,8 @@ class DocumentManager(override val documentType: DocumentType,
         }.filter { it.conflicts.isNotEmpty() }
     }
     private suspend fun prepareProductQueryBuilder(){
-        if(productQuery == null){
-            val productQueryParams = iProductRepository.getProductQueryParams(
+        if(productQueryParams == null){
+            productQueryParams = iProductRepository.getProductQueryParams(
                 salesOperationType = SalesOperationType.SALES,
                 currentCustomer = currentCustomer!!,
                 customerOrgId = currentCustomer!!.organizationId!!.toInt(),
@@ -340,12 +347,19 @@ class DocumentManager(override val documentType: DocumentType,
                 notAllowedMfrs = null,
                 selectedPrefOrgId = 0
             )
-            productQuery = ProductQueryBuilder().buildAllProductsQuery(productQueryParams)
         }
+    }
 
-        /*if(productUnitMap == null){
-
-        }*/
+    private suspend fun prepareProductUnit(){
+        if(productQueryParams == null){
+            prepareProductQueryBuilder()
+        }
+        if(productUnitMap == null){
+            productQueryParams?.let {
+                val sqlString = ProductQueryBuilder().buildProductUnitsQuery(it)
+                productUnitMap = iProductRepository.getProductUnitFlatQuery(sqlString)
+            }
+        }
     }
 
     //endregion ============ Private Helpers ============

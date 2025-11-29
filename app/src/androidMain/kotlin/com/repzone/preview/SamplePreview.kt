@@ -227,7 +227,9 @@ private fun generateProductUnits(productIndex: Int): List<ProductUnit> {
             maxOrderQuantity = 100,
             orderQuantityFactor = 1,
             isBaseUnit = true,
-            barcode = "869${productIndex.toString().padStart(10, '0')}"
+            barcode = "869${productIndex.toString().padStart(10, '0')}",
+            productId = productIndex.toLong(),
+            unitDisplayOrder = 1
         ),
         ProductUnit(
             unitId = 2,
@@ -241,7 +243,10 @@ private fun generateProductUnits(productIndex: Int): List<ProductUnit> {
             maxOrderQuantity = 50,
             orderQuantityFactor = 1,
             isBaseUnit = false,
-            barcode = "869${productIndex.toString().padStart(10, '0')}1"
+            barcode = "869${productIndex.toString().padStart(10, '0')}1",
+            productId = productIndex.toLong(),
+            unitDisplayOrder = 1
+
         ),
         ProductUnit(
             unitId = 3,
@@ -255,7 +260,9 @@ private fun generateProductUnits(productIndex: Int): List<ProductUnit> {
             maxOrderQuantity = 20,
             orderQuantityFactor = 1,
             isBaseUnit = false,
-            barcode = "869${productIndex.toString().padStart(10, '0')}2"
+            barcode = "869${productIndex.toString().padStart(10, '0')}2",
+            productId = productIndex.toLong(),
+            unitDisplayOrder = 1
         )
     )
 }

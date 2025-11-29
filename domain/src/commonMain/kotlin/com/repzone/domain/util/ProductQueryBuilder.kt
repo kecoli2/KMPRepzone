@@ -139,7 +139,9 @@ class ProductQueryBuilder {
         ProductFlatViewEntity.MinimumOrderQuantity,
         ProductFlatViewEntity.MaxOrderQuantity,
         ProductFlatViewEntity.OrderQuantityFactor,
-        ProductFlatViewEntity.Vat 
+        ProductFlatViewEntity.Vat,
+        ProductFlatViewEntity.UnitDisplayOrder,
+        ProductFlatViewEntity.ProductId
         FROM (
         """)
 

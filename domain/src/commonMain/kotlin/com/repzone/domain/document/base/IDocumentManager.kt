@@ -120,6 +120,9 @@ interface IDocumentManager {
 
     fun getDocumentMapModel(): SyncDocumentMapModel
     fun  getProductQueryString(): String
+
+    fun getProductUnitMap(): MutableMap<Int, List<ProductUnit>>
+
     //endregion ============ Document Operations ============
 }
 

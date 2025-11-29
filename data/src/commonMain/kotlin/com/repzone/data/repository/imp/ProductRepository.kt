@@ -9,6 +9,7 @@ import com.repzone.database.ProductFlatViewEntity
 import com.repzone.database.SyncProductPricesEntity
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.database.runtime.query
+import com.repzone.database.runtime.rawQueryWithMapper
 import com.repzone.database.runtime.select
 import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.document.model.ProductUnit
@@ -44,7 +45,7 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager,
                                      searchQuery: String,
                                      brands: Set<String>, categories: Set<String>,
                                      colors: Set<String>, tags: Set<String>,
-                                     priceRange: PriceRange?): List<ProductInformationModel> {
+                                     priceRange: PriceRange?,productMap: MutableMap<Int, List<ProductUnit>>): List<ProductInformationModel> {
 
         val offset = page * pageSize
 
@@ -91,13 +92,9 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager,
             limit(pageSize)
             offset(offset)
         }.toList()
-
-        if(1==1){
-
+        return products.map {
+            mapper.toDomain(it, productMap[it.ProductId.toInt()] ?: emptyList())
         }
-
-        val mo = mapper.toDomain(products.first())
-        return listOf(mo)
     }
 
     override suspend fun getAvailableFilters(): ProductFilters {
@@ -222,6 +219,39 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager,
             ruledPriceListIds = validRuledPriceListIds
         )
     }
+
+    override suspend fun getProductUnitFlatQuery(sql: String): MutableMap<Int, List<ProductUnit>> {
+        val productListUnit = mutableListOf<ProductUnit>()
+        iDatabaseManager.getSqlDriver().rawQueryWithMapper(sql){ cursor ->
+           productListUnit.add(
+               ProductUnit(
+                   barcode = cursor.getString(0),
+                   multiplier = BigDecimal.fromDouble(cursor.getDouble(1) ?: 1.0),
+                   price = BigDecimal.fromDouble(cursor.getDouble(2) ?: 0.0),
+                   unitId = cursor.getLong(3)!!.toInt(),
+                   unitName = cursor.getString(4) ?: "",
+                   weight = cursor.getDouble(5),
+                   minimumOrderQuantity = cursor.getLong(6)?.toInt(),
+                   maxOrderQuantity = cursor.getLong(7)?.toInt(),
+                   orderQuantityFactor = cursor.getLong(8)?.toInt() ?: 0,
+                   vat = BigDecimal.fromDouble(cursor.getDouble(9) ?: 0.0),
+                   unitDisplayOrder = cursor.getLong(10)?.toInt() ?: 0,
+                   productId = cursor.getLong(11)!!,
+                   isBaseUnit = false
+               )
+           )
+        }
+
+        return productListUnit
+            .groupBy { it.productId.toInt() }
+            .mapValues { (_, units) ->
+                val minDisplayOrder = units.minOf { it.unitDisplayOrder }
+                units.map { unit ->
+                    unit.copy(isBaseUnit = unit.unitDisplayOrder == minDisplayOrder)
+                }
+            }
+            .toMutableMap()
+    }
     //endregion
 
     //region Private Method
@@ -286,7 +316,9 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager,
                 maxOrderQuantity = 100,
                 orderQuantityFactor = 1,
                 isBaseUnit = true,
-                barcode = "869${productIndex.toString().padStart(10, '0')}"
+                barcode = "869${productIndex.toString().padStart(10, '0')}",
+                productId = productIndex.toLong(),
+                unitDisplayOrder = 1
             ),
             ProductUnit(
                 unitId = 2,
@@ -300,7 +332,10 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager,
                 maxOrderQuantity = 50,
                 orderQuantityFactor = 1,
                 isBaseUnit = false,
-                barcode = "869${productIndex.toString().padStart(10, '0')}1"
+                barcode = "869${productIndex.toString().padStart(10, '0')}1",
+                productId = productIndex.toLong(),
+                unitDisplayOrder = 1
+
             ),
             ProductUnit(
                 unitId = 3,
@@ -314,11 +349,12 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager,
                 maxOrderQuantity = 20,
                 orderQuantityFactor = 1,
                 isBaseUnit = false,
-                barcode = "869${productIndex.toString().padStart(10, '0')}2"
+                barcode = "869${productIndex.toString().padStart(10, '0')}2",
+                productId = productIndex.toLong(),
+                unitDisplayOrder = 1
             )
         )
     }
-
     private suspend fun getPriceHeaderId(priceListId: Long, nowUtc: Long): Int {
         return iDatabaseManager.getSqlDriver().select<SyncProductPricesEntity> {
             where {
