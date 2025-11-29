@@ -16,7 +16,7 @@ interface IProductRepository {
         pageSize: Int,
         searchQuery: String = "",
         brands: Set<String> = emptySet(),
-        categories: Set<String> = emptySet(),
+        groupName: Set<String> = emptySet(),
         colors: Set<String> = emptySet(),
         tags: Set<String> = emptySet(),
         priceRange: PriceRange? = null,

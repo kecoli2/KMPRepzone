@@ -29,7 +29,7 @@ class ProductPagingSource(
                 pageSize = pageSize,
                 searchQuery = filterState.searchQuery,
                 brands = filterState.brands,
-                categories = filterState.categories,
+                groupName = filterState.categories,
                 colors = filterState.colors,
                 tags = filterState.tags,
                 priceRange = filterState.priceRange,

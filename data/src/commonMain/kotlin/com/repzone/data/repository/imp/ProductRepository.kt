@@ -43,7 +43,7 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager,
     override suspend fun getProducts(quertBuilderSql: String,
                                      page: Int, pageSize: Int,
                                      searchQuery: String,
-                                     brands: Set<String>, categories: Set<String>,
+                                     brands: Set<String>, groupName: Set<String>,
                                      colors: Set<String>, tags: Set<String>,
                                      priceRange: PriceRange?,productMap: MutableMap<Int, List<ProductUnit>>): List<ProductInformationModel> {
 
@@ -52,15 +52,15 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager,
         val products = iDatabaseManager.getSqlDriver().query<ProductFlatViewEntity>(quertBuilderSql) {
             where {
                 if (searchQuery.isNotBlank()) {
-                    criteria("Name", like = "%$searchQuery%")
+                    criteria("ProductName", like = "%$searchQuery%")
                 }
 
                 if (brands.isNotEmpty()) {
-                    criteria("Brand", In = brands.toList())
+                    criteria("BrandName", In = brands.toList())
                 }
 
-                if (categories.isNotEmpty()) {
-                    criteria("Category", In = categories.toList())
+                if (groupName.isNotEmpty()) {
+                    criteria("GroupName", In = groupName.toList())
                 }
 
                 if (colors.isNotEmpty()) {
@@ -70,7 +70,7 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager,
                 if (tags.isNotEmpty()) {
                     or {
                         for (tag in tags) {
-                            criteria("Tag", like = "%$tag%")
+                            criteria("Tags", like = "%$tag%")
                         }
                     }
                 }
