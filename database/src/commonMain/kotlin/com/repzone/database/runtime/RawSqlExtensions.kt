@@ -12,10 +12,7 @@ import com.repzone.database.runtime.SqlKeywordEscaper.escapeKeywordsInQuery
 import kotlin.time.ExperimentalTime
 
 // Raw SQL query - Generic result
-fun SqlDriver.rawQuery(
-    sql: String,
-    vararg params: Any?
-): List<Map<String, Any?>> {
+fun SqlDriver.rawQuery(sql: String, vararg params: Any?): List<Map<String, Any?>> {
     // Logging
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()
@@ -95,10 +92,7 @@ fun SqlDriver.rawQuery(
 }
 
 // Raw SQL query - Entity result
-inline fun <reified T : Any> SqlDriver.rawQueryToEntity(
-    sql: String,
-    vararg params: Any?
-): List<T> {
+inline fun <reified T : Any> SqlDriver.rawQueryToEntity(sql: String, vararg params: Any?): List<T> {
     val metadata = EntityMetadataRegistry.get<T>()
 
     // Logging
@@ -155,10 +149,7 @@ inline fun <reified T : Any> SqlDriver.rawQueryToEntity(
 }
 
 // Raw SQL execute (INSERT/UPDATE/DELETE)
-fun SqlDriver.rawExecute(
-    sql: String,
-    vararg params: Any?
-): Long {
+fun SqlDriver.rawExecute(sql: String, vararg params: Any?): Long {
     // Logging
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()
@@ -193,10 +184,7 @@ fun SqlDriver.rawExecute(
 }
 
 // Raw SQL with single result
-fun SqlDriver.rawQueryScalar(
-    sql: String,
-    vararg params: Any?
-): Any? {
+fun SqlDriver.rawQueryScalar(sql: String, vararg params: Any?): Any? {
     // Logging
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()
@@ -249,10 +237,7 @@ fun SqlDriver.rawQueryScalar(
 }
 
 // Raw SQL COUNT
-fun SqlDriver.rawCount(
-    sql: String,
-    vararg params: Any?
-): Long {
+fun SqlDriver.rawCount(sql: String, vararg params: Any?): Long {
     // Logging
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()
@@ -305,10 +290,7 @@ fun SqlDriver.rawCount(
 }
 
 // Raw SQL SUM/AVG/MAX/MIN
-fun SqlDriver.rawAggregate(
-    sql: String,
-    vararg params: Any?
-): Double {
+fun SqlDriver.rawAggregate(sql: String, vararg params: Any?): Double {
     // Logging
     if (BuildConfig.IS_DEBUG) {
         val startTime = now()
@@ -361,10 +343,7 @@ fun SqlDriver.rawAggregate(
 }
 
 // Raw SQL - First or null
-inline fun <reified T : Any> SqlDriver.rawQueryFirstOrNull(
-    sql: String,
-    vararg params: Any?
-): T? {
+inline fun <reified T : Any> SqlDriver.rawQueryFirstOrNull(sql: String, vararg params: Any?): T? {
     return rawQueryToEntity<T>(sql, *params).firstOrNull()
 }
 

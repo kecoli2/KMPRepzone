@@ -63,6 +63,7 @@ class DocumentManager(override val documentType: DocumentType,
     private var documentMapModel: SyncDocumentMapModel? = null
     private var activeDistribution: DistributionControllerModel? = null
     private var productQuery: String? = null
+    private var productUnitMap: MutableMap<Int, List<ProductUnit>>? = null
     private val _lines = MutableStateFlow<List<IDocumentLine>>(emptyList())
     override val lines: StateFlow<List<IDocumentLine>> = _lines.asStateFlow()
     private val _pendingConflicts = MutableStateFlow<List<LineConflict>>(emptyList())
@@ -93,6 +94,8 @@ class DocumentManager(override val documentType: DocumentType,
         currentCustomer = null
         documentMapModel = null
         activeDistribution = null
+        productUnitMap?.clear()
+        productUnitMap = null
     }
 
     override fun getCustomer(): SyncCustomerModel {
@@ -326,7 +329,6 @@ class DocumentManager(override val documentType: DocumentType,
             }
         }.filter { it.conflicts.isNotEmpty() }
     }
-
     private suspend fun prepareProductQueryBuilder(){
         if(productQuery == null){
             val productQueryParams = iProductRepository.getProductQueryParams(
@@ -340,6 +342,10 @@ class DocumentManager(override val documentType: DocumentType,
             )
             productQuery = ProductQueryBuilder().buildAllProductsQuery(productQueryParams)
         }
+
+        /*if(productUnitMap == null){
+
+        }*/
     }
 
     //endregion ============ Private Helpers ============

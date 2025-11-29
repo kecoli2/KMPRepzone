@@ -52,7 +52,6 @@ class ProductListViewModel(
     private val _filterState = MutableStateFlow(ProductFilterState())
     private val _rowStates = MutableStateFlow<Map<Int, ProductRowState>>(emptyMap())
     val rowStates: StateFlow<Map<Int, ProductRowState>> = _rowStates.asStateFlow()
-
     private val _navigationEvents = MutableSharedFlow<NavigationEvent>()
     val navigationEvents: SharedFlow<NavigationEvent> = _navigationEvents.asSharedFlow()
     //endregion
