@@ -13,6 +13,7 @@ import com.repzone.network.dto.ProductDto
 import com.repzone.network.dto.ProductGroupDto
 import com.repzone.network.dto.RouteDto
 import com.repzone.network.dto.SyncMandatoryFormDto
+import com.repzone.network.dto.SyncStockDto
 import com.repzone.network.dto.SyncUnitDto
 import com.repzone.network.dto.form.FormBaseDto
 import com.repzone.sync.factory.newversion.SyncJobFactory
@@ -27,8 +28,6 @@ import com.repzone.sync.service.bulk.impl.CustomerEmailRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerGroupPriceParameterslRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.*
 import com.repzone.sync.transaction.TransactionCoordinator
-import org.koin.core.module.dsl.bind
-import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -150,6 +149,11 @@ val SyncModule = module {
     }
     single<ISyncApiService<List<RouteDto>>>(named("routeDataSyncApi")){ SyncApiRouteDataImpl(get()) }
     //endregion ROUTEDATA
+
+    //region STOCK
+    single<IBulkInsertService<List<SyncStockDto>>>(named("stockBulkInsert")) { StockRawSqlBulkInsertService(get(), get()) }
+    single<ISyncApiService<List<SyncStockDto>>>(named("stockSyncApi")){ SyncApiStockImpl(get(), get()) }
+    //endregion STOCK
     //endregion ------------------- OTHER -------------------
 
     single {
@@ -187,6 +191,9 @@ val SyncModule = module {
             formMandatoryDataBulkInsert = get(named("formMandatoryDataRawSqlBulkInsertService")),
             productUnitApi = get(named("productUnitSyncApi")),
             productUnitBulkInsert = get(named("productUniBulkInsert")),
+            stockApi = get(named("stockSyncApi")),
+            stockBulkInsert = get(named("stockBulkInsert"))
+
         )
     }
 }

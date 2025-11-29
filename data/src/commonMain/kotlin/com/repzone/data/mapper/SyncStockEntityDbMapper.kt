@@ -3,7 +3,10 @@ package com.repzone.data.mapper
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncStockEntity
 import com.repzone.domain.model.SyncStockModel
+import com.repzone.network.dto.SyncStockDto
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class SyncStockEntityDbMapper : Mapper<SyncStockEntity, SyncStockModel> {
     //region Public Method
     override fun toDomain(from: SyncStockEntity): SyncStockModel {
@@ -31,6 +34,20 @@ class SyncStockEntityDbMapper : Mapper<SyncStockEntity, SyncStockModel> {
             State = domain.state,
             Stock = domain.stock,
             UnitId = domain.unitId
+        )
+    }
+
+    fun fromDto(dto: SyncStockDto): SyncStockEntity {
+        return SyncStockEntity(
+            Id = dto.id.toLong(),
+            ModificationDateUtc = dto.modificationDateUtc?.toEpochMilliseconds(),
+            OrderStock = dto.orderStock,
+            OrganizationId = dto.organizationId.toLong(),
+            ProductId = dto.productId.toLong(),
+            RecordDateUtc = dto.recordDateUtc?.toEpochMilliseconds(),
+            State = dto.state.toLong(),
+            Stock = dto.stock,
+            UnitId = dto.unitId.toLong()
         )
     }
     //endregion

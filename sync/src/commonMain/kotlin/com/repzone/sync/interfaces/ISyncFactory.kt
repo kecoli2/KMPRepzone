@@ -12,9 +12,9 @@ import com.repzone.network.dto.EventReasonDto
 import com.repzone.network.dto.PackageCustomFieldDto
 import com.repzone.network.dto.ProductDto
 import com.repzone.network.dto.ProductGroupDto
-import com.repzone.network.dto.ProductUnitDto
 import com.repzone.network.dto.RouteDto
 import com.repzone.network.dto.SyncMandatoryFormDto
+import com.repzone.network.dto.SyncStockDto
 import com.repzone.network.dto.SyncUnitDto
 import com.repzone.network.dto.form.FormBaseDto
 import com.repzone.sync.model.SyncJobType
@@ -53,6 +53,8 @@ interface ISyncFactory {
         formMandatoryDataApi: ISyncApiService<List<SyncMandatoryFormDto>>,
         formMandatoryDataBulkInsert: IBulkInsertService<List<SyncMandatoryFormDto>>,
         productUnitApi: ISyncApiService<List<SyncUnitDto>>,
-        productUnitBulkInsert: IBulkInsertService<List<SyncUnitDto>>
+        productUnitBulkInsert: IBulkInsertService<List<SyncUnitDto>>,
+        stockApi: ISyncApiService<List<SyncStockDto>>,
+        stockBulkInsert: IBulkInsertService<List<SyncStockDto>>
     ):Map<SyncJobType, ISyncJob>
 }

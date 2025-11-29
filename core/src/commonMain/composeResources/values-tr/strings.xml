@@ -984,5 +984,6 @@
     <string name="discount_items">İskonto Kalemleri</string>
 
     <string name="job_product_unit">Ürün Birimleri</string>
+    <string name="job_product_stock">Ürün Stokları</string>
 
 </resources>

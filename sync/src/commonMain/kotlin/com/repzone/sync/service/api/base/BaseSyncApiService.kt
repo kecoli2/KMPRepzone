@@ -75,4 +75,8 @@ abstract class BaseSyncApiService<TDto : Any>(val client: HttpClient) : ISyncApi
     }
     protected open fun onPageFetched(data: TDto, requestModel: FilterModelRequest?) {
     }
+
+    protected open fun onRequestFinished(requestModel: FilterModelRequest?){
+
+    }
 }

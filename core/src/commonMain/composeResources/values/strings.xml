@@ -979,5 +979,7 @@
     <string name="discount_items">Discount Items</string>
 
     <string name="job_product_unit">Product Units</string>
+    <string name="job_product_stock">Product Stocks</string>
+
 
 </resources>

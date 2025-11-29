@@ -36,6 +36,10 @@ object  ICustomerApiControllerConstant {
     const val CUSTOMER_GROUP_PRICES_PARAMETERS_ENDPOINT = "/api/v1/Customer/GroupPriceListParameters"
 }
 
+object  IStockApiControllerConstant {
+    const val STOCK_MAIN_LIST_ENDPOINT = "/api/v1/Stock/List"
+}
+
 object ICommonApiControllerConstant {
     const val COMMON_APP_MODULES_ENDPOINT = "/api/App/Modules"
     const val COMMON_APP_MODULES_REASONS_ENDPOINT = "/api/v1/Misc/EventReasons"
