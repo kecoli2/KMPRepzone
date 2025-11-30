@@ -15,6 +15,7 @@ import com.repzone.core.ui.ui.settings.SettingsScreen
 import com.repzone.core.ui.util.enum.NavigationItemType
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
 import com.repzone.presentation.legacy.ui.customerlist.CustomerListScreenLegacy
+import com.repzone.presentation.legacy.ui.document.documentsettings.DocumentSettingsScreenLegacy
 import com.repzone.presentation.legacy.ui.gpstest.GpsTrackingScreen
 import com.repzone.presentation.legacy.ui.document.productlist.ProductListScreenLegacy
 import com.repzone.presentation.legacy.ui.splash.SplashScreenLegacy
@@ -152,6 +153,27 @@ fun LegacyNavHost(
                     ProductListScreenLegacy(
                         onDissmiss = {
                             navController.navigateUp()
+                        },
+
+                        onNavigateDocumentSettings = {
+                            navController.navigate(LegacyScreen.DocumentSettings)
+                        }
+                    )
+                }
+
+                composable<LegacyScreen.DocumentSettings> { backStackEntry ->
+                    RegisterBackStackEntry(backStackEntry.id, "DocumentSettingsViewModel")
+
+                    DocumentSettingsScreenLegacy(
+                        onBasketNavigate = {
+                        },
+
+                        onNavigateBack = {
+                            navController.navigateUp()
+                        }
+                        ,
+                        onElectronicSignatureNavigate = {
+
                         }
                     )
                 }

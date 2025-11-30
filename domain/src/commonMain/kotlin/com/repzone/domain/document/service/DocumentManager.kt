@@ -161,7 +161,7 @@ class DocumentManager(override val documentType: DocumentType,
         return ProductFilters()
     }
 
-    override suspend fun getAvailablePaymentPlan(): List<PaymentPlanModel> {
+    override suspend fun getAvailablePaymentPlanList(): List<PaymentPlanModel> {
         return paymentPlanList
     }
 
@@ -169,7 +169,7 @@ class DocumentManager(override val documentType: DocumentType,
         this.paymentPlan = paymentPlan
     }
 
-    override fun setInvoiceDiscont1(order: Int, value: BigDecimal) : Result<Unit> {
+    override fun setInvoiceDiscont(order: Int, value: BigDecimal) : Result<Unit> {
         when(order){
             1 -> {
                 invoiceDiscont1 = value
@@ -188,7 +188,7 @@ class DocumentManager(override val documentType: DocumentType,
         return Result.Success(Unit)
     }
 
-    override fun getInvoiceDiscont1(order: Int): BigDecimal {
+    override fun getInvoiceDiscont(order: Int): BigDecimal {
         return when(order){
             1 -> {
                 invoiceDiscont1
@@ -211,6 +211,19 @@ class DocumentManager(override val documentType: DocumentType,
 
     override fun getDocumentNote(): String? {
         return documentNote
+    }
+
+    override fun changeDispatchDate(value: Instant) : Result<Unit> {
+        dispatchDate = value
+        return Result.Success(Unit)
+    }
+
+    override suspend fun getAvailablePaymentPlan(): PaymentPlanModel? {
+        return paymentPlan
+    }
+
+    override fun getDispatchDate(): Instant {
+        return dispatchDate!!
     }
 
     //endregion ============ Document Operations ============

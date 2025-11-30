@@ -97,7 +97,7 @@
     <string name="summaryline3_plural">%1$s sipariş alındı</string>
     <string name="summaryline4">Siparişler toplamı: %1$s</string>
     <string name="summarytitle">Özet</string>
-    <string name="discount">İndirim Tutarı:</string>
+    <string name="discount">İndirim Tutarı</string>
     <string name="discountdocument">Fatura altı indirim</string>
     <string name="ordertotal">Toplam: %1$s</string>
     <string name="order">Sipariş</string>
@@ -988,4 +988,31 @@
     <string name="filter_category">Kategori</string>
     <string name="filter_color">Renk</string>
     <string name="filter_products">Ürün Filtreleri</string>
+
+    <!-- Screen Title -->
+    <string name="document_settings">Belge Ayarları</string>
+    <string name="payment_and_delivery_info">Ödeme ve teslimat bilgileri</string>
+
+    <!-- Card 1: Payment Info -->
+    <string name="payment_info">Ödeme Bilgileri</string>
+    <string name="payment_plan">Ödeme Planı</string>
+    <string name="dispatch_date">Sevk Tarihi</string>
+    <string name="select">Seçiniz</string>
+    <string name="select_date">Tarih Seçiniz</string>
+    <string name="search_payment_plan">Ödeme planı ara...</string>
+
+    <string name="invoice_discounts">Fatura Altı İskontolar</string>
+
+    <string name="customer_financial_status">Müşteri Finansal Durumu</string>
+    <string name="customer_debt">Müşteri Borcu</string>
+    <string name="risky_balance">Riskli Bakiye</string>
+    <string name="credit_limit">Kredi Limiti</string>
+
+    <string name="electronic_signature">Elektronik İmza</string>
+    <string name="electronic_signature_hint">Sipariş için elektronik imza almak üzere dokunun</string>
+    <string name="electronic_signature_confirm">Elektronik imza alma ekranına yönlendirileceksiniz. Devam etmek istiyor musunuz?</string>
+
+    <string name="payment_plan_required">Devam etmek için lütfen ödeme planı seçiniz.</string>
+    <string name="continue_text">Devam Et</string>
+    <string name="default_text">Varsayılan</string>
 </resources>

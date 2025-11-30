@@ -40,6 +40,7 @@ import com.repzone.presentation.legacy.theme.LegacyThemeConfig
 import com.repzone.presentation.legacy.ui.visit.VisitActionList
 import com.repzone.preview.ActivityVisit_Sample
 import com.repzone.preview.DiscountScreen_Sample
+import com.repzone.preview.DocumentSettingsScreen_Sample
 import com.repzone.preview.ProductListScreen_Sample
 import com.repzone.preview.Productrow_Preview
 import com.repzone.sync.di.SyncModule
@@ -107,7 +108,7 @@ private fun AppContent() {
 
 @Composable
 //@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, widthDp = 800, heightDp = 400)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, heightDp = 1000)
 fun AppAndroidPreview() {
     startKoin {
         androidContext(RepzoneApplication())
@@ -128,7 +129,7 @@ fun AppAndroidPreview() {
     val themeManager: ThemeManager = koinInject()
     themeManager.initialize(LegacyThemeConfig())
 
-    DiscountScreen_Sample(themeManager)
+    DocumentSettingsScreen_Sample(themeManager)
     //ProductListScreen_Sample(themeManager)
 
 }

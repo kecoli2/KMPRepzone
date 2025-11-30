@@ -38,6 +38,8 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.checking_credentials
 import kotlin.collections.iterator
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
@@ -48,7 +50,7 @@ class ProductListViewModel(
 ): BaseViewModel<ProductListUiState, ProductListViewModel.Event>(ProductListUiState()) {
 
     //region Field
-    private var documentManager: IDocumentManager
+    private var documentManager: IDocumentManager = documentSession.current()
     private val _filterState = MutableStateFlow(ProductFilterState())
     private val _rowStates = MutableStateFlow<Map<Int, ProductRowState>>(emptyMap())
     val rowStates: StateFlow<Map<Int, ProductRowState>> = _rowStates.asStateFlow()
@@ -82,7 +84,6 @@ class ProductListViewModel(
 
     //region Constructor
     init {
-        documentManager = documentSession.current()
         loadAvailableFilters()
     }
     //endregion
@@ -341,91 +342,107 @@ class ProductListViewModel(
      */
     fun onNextClicked() {
         scope.launch {
-            val statesWithEntries = _rowStates.value.filter { (_, state) -> state.hasAnyEntry }
+            try {
+                updateState { currentState ->
+                    currentState.copy(
+                        onFabClickedProgress = true
+                    )
+                }
+                val statesWithEntries = _rowStates.value.filter { (_, state) -> state.hasAnyEntry }
 
-            if (statesWithEntries.isEmpty()) {
-                sendEvent(ShowError("Eklenecek ürün yok"))
-                return@launch
-            }
+                if (statesWithEntries.isEmpty()) {
+                    sendEvent(ShowError("Eklenecek ürün yok"))
+                    return@launch
+                }
 
-            var successCount = 0
-            var errorMessage: String? = null
+                var successCount = 0
+                var errorMessage: String? = null
 
-            for ((productId, state) in statesWithEntries) {
-                val product = productRepository.getProductById(documentManager.getProductQueryString(), productId, state.availableUnits)
+                for ((productId, state) in statesWithEntries) {
+                    val product = productRepository.getProductById(documentManager.getProductQueryString(), productId, state.availableUnits)
 
-                try {
-                    // 1. Kaydedilmiş entry'leri ekle
-                    for ((unitId, entry) in state.unitEntries) {
-                        val unit = state.availableUnits.find { it.unitId == unitId } ?: continue
+                    try {
+                        // 1. Kaydedilmiş entry'leri ekle
+                        for ((unitId, entry) in state.unitEntries) {
+                            val unit = state.availableUnits.find { it.unitId == unitId } ?: continue
 
-                        val result = documentManager.addLine(
-                            product = product,
-                            unit = unit,
-                            quantity = entry.quantity
-                        )
+                            val result = documentManager.addLine(
+                                product = product,
+                                unit = unit,
+                                quantity = entry.quantity
+                            )
 
-                        when (result) {
-                            is AddLineResult.Success -> {
-                                applyDiscountsToLine(result.line.id, entry.discountSlots)
-                                successCount++
+                            when (result) {
+                                is AddLineResult.Success -> {
+                                    applyDiscountsToLine(result.line.id, entry.discountSlots)
+                                    successCount++
+                                }
+                                is AddLineResult.Blocked -> {
+                                    errorMessage = result.error.message
+                                }
+                                is AddLineResult.NeedsConfirmation -> { /* TODO */ }
+                                AddLineResult.NotFound -> {}
                             }
-                            is AddLineResult.Blocked -> {
-                                errorMessage = result.error.message
-                            }
-                            is AddLineResult.NeedsConfirmation -> { /* TODO */ }
-                            AddLineResult.NotFound -> {}
                         }
-                    }
 
-                    // 2. Mevcut girişi ekle
-                    if (state.isValidQuantity) {
-                        val unit = state.currentUnit ?: continue
-                        val quantity = state.quantityText.toBigDecimal()
+                        // 2. Mevcut girişi ekle
+                        if (state.isValidQuantity) {
+                            val unit = state.currentUnit ?: continue
+                            val quantity = state.quantityText.toBigDecimal()
 
-                        val result = documentManager.addLine(
-                            product = product,
-                            unit = unit,
-                            quantity = quantity
-                        )
+                            val result = documentManager.addLine(
+                                product = product,
+                                unit = unit,
+                                quantity = quantity
+                            )
 
-                        when (result) {
-                            is AddLineResult.Success -> {
-                                applyDiscountsToLine(result.line.id, state.discountSlots)
-                                successCount++
+                            when (result) {
+                                is AddLineResult.Success -> {
+                                    applyDiscountsToLine(result.line.id, state.discountSlots)
+                                    successCount++
+                                }
+                                is AddLineResult.Blocked -> {
+                                    errorMessage = result.error.message
+                                }
+                                is AddLineResult.NeedsConfirmation -> { /* TODO */ }
+                                AddLineResult.NotFound -> {}
                             }
-                            is AddLineResult.Blocked -> {
-                                errorMessage = result.error.message
-                            }
-                            is AddLineResult.NeedsConfirmation -> { /* TODO */ }
-                            AddLineResult.NotFound -> {}
                         }
-                    }
 
-                    // 3. State'i temizle
-                    updateRowState(productId) {
-                        it.copy(
-                            quantityText = "",
-                            validationStatus = ValidationStatus.Empty,
-                            unitEntries = emptyMap(),
-                            hasDiscount = false,
-                            discountSlots = emptyList(),
-                            isInDocument = true
-                        )
-                    }
+                        // 3. State'i temizle
+                        updateRowState(productId) {
+                            it.copy(
+                                quantityText = "",
+                                validationStatus = ValidationStatus.Empty,
+                                unitEntries = emptyMap(),
+                                hasDiscount = false,
+                                discountSlots = emptyList(),
+                                isInDocument = true
+                            )
+                        }
 
-                } catch (e: Exception) {
-                    errorMessage = e.message
+                    } catch (e: Exception) {
+                        errorMessage = e.message
+                    }
+                }
+
+                // Sonuç bildirimi
+                if (errorMessage != null) {
+                    sendEvent(ShowError(errorMessage))
+                } else if (successCount > 0) {
+                    sendEvent(ShowSuccess("$successCount satır eklendi"))
+                    _navigationEvents.emit(NavigationEvent.NavigateToCart)
+                }
+            }catch (ex: Exception){
+                sendEvent(ShowError(ex.message.toString()))
+            }finally {
+                updateState { currentState ->
+                    currentState.copy(
+                        onFabClickedProgress = false
+                    )
                 }
             }
 
-            // Sonuç bildirimi
-            if (errorMessage != null) {
-                sendEvent(ShowError(errorMessage))
-            } else if (successCount > 0) {
-                sendEvent(ShowSuccess("$successCount satır eklendi"))
-                _navigationEvents.emit(NavigationEvent.NavigateToCart)
-            }
         }
     }
 

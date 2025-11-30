@@ -11,7 +11,8 @@ data class ProductListUiState(
 
     val filterState: ProductFilterState = ProductFilterState(),
     val availableFilters: ProductFilters? = null,
-    val discountDialogState: DiscountDialogState? = null
+    val discountDialogState: DiscountDialogState? = null,
+    val onFabClickedProgress: Boolean = false
 ): HasUiFrame {
 
     override fun copyWithUiFrame(newUiFrame: UiFrame): ProductListUiState {

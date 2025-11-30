@@ -23,6 +23,7 @@ import com.repzone.core.model.module.parameters.ReportsParameters
 import com.repzone.core.model.module.parameters.TaskManagmentParameters
 import com.repzone.core.model.module.parameters.VisitParameters
 import com.repzone.core.model.module.parameters.WorkingHoursParameters
+import com.repzone.data.mapper.SyncPackageCustomFieldProductEntityDbMapper
 import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncPackageCustomFieldProductEntity
 import com.repzone.database.interfaces.IDatabaseManager
@@ -35,9 +36,9 @@ import kotlinx.coroutines.runBlocking
 import kotlin.time.ExperimentalTime
 
 class MobileModuleParameterRepositoryImplPreview(
-        private val iDatabaseManager: IDatabaseManager,
-        private val mapperCustomFieldProduct: MapperDto<SyncPackageCustomFieldProductEntity, SyncPackageCustomFieldProductModel, PackageCustomFieldProductDto>,
-        private val iUserSession: IUserSession ): IMobileModuleParameterRepository {
+    private val iDatabaseManager: IDatabaseManager,
+    private val mapperCustomFieldProduct: SyncPackageCustomFieldProductEntityDbMapper,
+    private val iUserSession: IUserSession ): IMobileModuleParameterRepository {
 
     //region Fields
       private var parametersMap : MutableMap<ModuleProductIdsEnum, Any> = mutableMapOf()

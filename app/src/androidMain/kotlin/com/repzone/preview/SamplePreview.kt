@@ -16,6 +16,7 @@ import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.model.product.ProductRowState
 import com.repzone.domain.util.models.VisitActionItem
+import com.repzone.presentation.legacy.ui.document.documentsettings.DocumentSettingsScreenLegacy
 import com.repzone.presentation.legacy.ui.document.productlist.ProductListScreenLegacy
 import com.repzone.presentation.legacy.ui.document.productlist.component.DiscountDialogLegacy
 import com.repzone.presentation.legacy.ui.document.productlist.component.ProductRow
@@ -133,7 +134,11 @@ fun ProductListScreen_Sample(themeManager: ThemeManager){
         ProductListScreenLegacy(
             onDissmiss = {
 
+            },
+            onNavigateDocumentSettings = {
+
             }
+
         )
     }
 }
@@ -370,7 +375,24 @@ fun DiscountScreen_Sample(themeManager: ThemeManager){
 
 //endregion -------------------- SERBEST ISKONTO SAMPLE PREVIEW --------------------
 
+//region -------------------- DOCUMENT SETTING PREVIEW --------------------
+@Composable
+fun DocumentSettingsScreen_Sample(themeManager: ThemeManager){
+    AppTheme(themeManager) {
+        DocumentSettingsScreenLegacy(
+            onBasketNavigate = {
 
+            },
+            onNavigateBack = {
+
+            },
+            onElectronicSignatureNavigate = {
+
+            }
+        )
+    }
+}
+//ENDregion -------------------- DOCUMENT SETTING PREVIEW --------------------
 
 
 

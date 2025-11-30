@@ -121,6 +121,7 @@ fun RepzoneTopAppBar(
                         }
                         if (subtitle != null) {
                             Text(
+                                modifier = Modifier.padding(top = 4.dp),
                                 text = subtitle,
                                 color = Color.White.copy(alpha = 0.8f),
                                 fontSize = 12.sp,

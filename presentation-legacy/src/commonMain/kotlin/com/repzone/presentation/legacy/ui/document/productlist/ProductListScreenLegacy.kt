@@ -68,7 +68,7 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListViewModel> { viewModel ->
+fun ProductListScreenLegacy(onDissmiss: () -> Unit, onNavigateDocumentSettings: () -> Unit) = ViewModelHost<ProductListViewModel> { viewModel ->
     val themeManager: ThemeManager = koinInject()
     val backgroundColor = remember(themeManager) {
         themeManager.getCurrentColorScheme().colorPalet.neutral95
@@ -113,7 +113,9 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
                 is ProductListViewModel.NavigationEvent.OpenDiscountDialog -> {
                     showDiscountDialog = event
                 }
-                ProductListViewModel.NavigationEvent.NavigateToCart -> {}
+                ProductListViewModel.NavigationEvent.NavigateToCart -> {
+                    onNavigateDocumentSettings()
+                }
             }
         }
     }
@@ -126,6 +128,11 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
             ".",
             badgeCount = entryCount.value
         ),
+        onFabClick = {
+            if(!uiState.onFabClickedProgress){
+                viewModel.onNextClicked()
+            }
+        }
     ) { padding ->
         Column(
             modifier = Modifier
@@ -143,6 +150,10 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit) = ViewModelHost<ProductListV
                 title = StringResource.PRODUCTS.fromResource(),
                 subtitle = viewModel.getDocumentSubTitle()
             )
+
+            if(uiState.onFabClickedProgress){
+                CircularProgressIndicator()
+            }
 
             if (uiState.uiFrame.isLoading) {
                 Box(

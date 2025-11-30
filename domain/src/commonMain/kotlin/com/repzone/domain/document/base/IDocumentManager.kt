@@ -19,13 +19,14 @@ import com.repzone.domain.model.PaymentPlanModel
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.SyncDocumentMapModel
 import com.repzone.domain.model.product.ProductFilters
-import com.repzone.domain.util.ProductQueryBuilder
-import com.repzone.domain.util.ProductQueryParams
+import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 /**
  * Belge yöneticisi contract'ı
  * Satır ekleme, güncelleme, iskonto ve promosyon işlemleri
  */
+@OptIn(ExperimentalTime::class)
 interface IDocumentManager {
 
     //region ============ Fields ============
@@ -123,13 +124,16 @@ interface IDocumentManager {
     fun  getProductQueryString(): String
     fun getProductUnitMap(): MutableMap<Int, List<ProductUnit>>
     suspend fun getAvailableFilters(): ProductFilters
-    suspend fun getAvailablePaymentPlan(): List<PaymentPlanModel>
+    suspend fun getAvailablePaymentPlanList(): List<PaymentPlanModel>
     fun setPaymentPlan(paymentPlan: PaymentPlanModel)
-    fun setInvoiceDiscont1(order: Int, value: BigDecimal): Result<Unit>
-    fun getInvoiceDiscont1(order: Int): BigDecimal
-
+    fun setInvoiceDiscont(order: Int, value: BigDecimal): Result<Unit>
+    fun getInvoiceDiscont(order: Int): BigDecimal
     fun setDocumentNote(value: String?)
     fun getDocumentNote(): String?
+    fun changeDispatchDate(value: Instant): Result<Unit>
+    suspend fun getAvailablePaymentPlan(): PaymentPlanModel?
+    fun getDispatchDate(): Instant
+
     //endregion ============ Document Operations ============
 }
 
