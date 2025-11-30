@@ -10,6 +10,7 @@ import com.repzone.domain.model.CustomerItemModel
 import com.repzone.domain.repository.ICustomerRepository
 import com.repzone.domain.repository.IDistributionRepository
 import com.repzone.domain.repository.IDocumentMapRepository
+import com.repzone.domain.repository.IPaymentInformationRepository
 import com.repzone.domain.repository.IProductRepository
 import kotlin.time.ExperimentalTime
 
@@ -21,7 +22,7 @@ class DocumentSessionPreview(private val promotionEngine: IPromotionEngine,
                              private val documentMapRepository: IDocumentMapRepository,
                              private val distributionRepository: IDistributionRepository,
                              private val userSession: IUserSession,
-                             private val productRepository: IProductRepository) : IDocumentSession {
+                             private val productRepository: IProductRepository, private val iPaymentInformationRepository: IPaymentInformationRepository) : IDocumentSession {
 
     //region Field
     private var _documentManager: IDocumentManager? = null
@@ -39,7 +40,8 @@ class DocumentSessionPreview(private val promotionEngine: IPromotionEngine,
                 iDocumentMapRepository = documentMapRepository,
                 iDistributionRepository = distributionRepository,
                 iUserSession = userSession,
-                iProductRepository = productRepository
+                iProductRepository = productRepository,
+                iPaymentPlanRepository = iPaymentInformationRepository
             )
             return _documentManager!!.setMasterValues(customerId, documentId)
 
@@ -57,7 +59,8 @@ class DocumentSessionPreview(private val promotionEngine: IPromotionEngine,
             iDocumentMapRepository = documentMapRepository,
             iDistributionRepository = distributionRepository,
             iUserSession = userSession,
-            iProductRepository = productRepository
+            iProductRepository = productRepository,
+            iPaymentPlanRepository = iPaymentInformationRepository
         )
         return _documentManager!!
     }

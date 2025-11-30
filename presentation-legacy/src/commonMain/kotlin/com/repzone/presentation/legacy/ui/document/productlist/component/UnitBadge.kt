@@ -1,4 +1,4 @@
-package com.repzone.presentation.legacy.ui.productlist.component
+package com.repzone.presentation.legacy.ui.document.productlist.component
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme

@@ -1,5 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
-package com.repzone.presentation.legacy.ui.productlist.component
+
+package com.repzone.presentation.legacy.ui.document.productlist.component
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState

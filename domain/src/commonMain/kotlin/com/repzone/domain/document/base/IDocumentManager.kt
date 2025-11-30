@@ -15,6 +15,7 @@ import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.document.model.StockStatus
 import com.repzone.domain.document.model.StockValidationResult
+import com.repzone.domain.model.PaymentPlanModel
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.SyncDocumentMapModel
 import com.repzone.domain.model.product.ProductFilters
@@ -116,16 +117,19 @@ interface IDocumentManager {
      * Manager'ı temizler
      */
     fun clear()
-
     fun getCustomer(): SyncCustomerModel
     suspend fun setMasterValues(customerId: Long, documentId: Long): Result<IDocumentManager>
-
     fun getDocumentMapModel(): SyncDocumentMapModel
     fun  getProductQueryString(): String
-
     fun getProductUnitMap(): MutableMap<Int, List<ProductUnit>>
     suspend fun getAvailableFilters(): ProductFilters
+    suspend fun getAvailablePaymentPlan(): List<PaymentPlanModel>
+    fun setPaymentPlan(paymentPlan: PaymentPlanModel)
+    fun setInvoiceDiscont1(order: Int, value: BigDecimal): Result<Unit>
+    fun getInvoiceDiscont1(order: Int): BigDecimal
 
+    fun setDocumentNote(value: String?)
+    fun getDocumentNote(): String?
     //endregion ============ Document Operations ============
 }
 

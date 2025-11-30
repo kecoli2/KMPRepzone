@@ -9,6 +9,7 @@ import com.repzone.domain.document.model.DocumentType
 import com.repzone.domain.repository.ICustomerRepository
 import com.repzone.domain.repository.IDistributionRepository
 import com.repzone.domain.repository.IDocumentMapRepository
+import com.repzone.domain.repository.IPaymentInformationRepository
 import com.repzone.domain.repository.IProductRepository
 
 /**
@@ -22,7 +23,8 @@ class DocumentSession(
     private val documentMapRepository: IDocumentMapRepository,
     private val distributionRepository: IDistributionRepository,
     private val userSession: IUserSession,
-    private val productRepository: IProductRepository
+    private val productRepository: IProductRepository,
+    private val paymentPlanRepository: IPaymentInformationRepository
 ) : IDocumentSession {
 
     //region Field
@@ -41,10 +43,10 @@ class DocumentSession(
                 iDocumentMapRepository = documentMapRepository,
                 iDistributionRepository = distributionRepository,
                 iUserSession = userSession,
-                iProductRepository = productRepository
+                iProductRepository = productRepository,
+                iPaymentPlanRepository = paymentPlanRepository
             )
            return _documentManager!!.setMasterValues(customerId, documentId)
-
         }
         return Result.Success(_documentManager!!)
     }

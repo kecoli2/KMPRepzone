@@ -4,6 +4,7 @@ import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.enums.SalesOperationType
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.platform.randomUUID
+import com.repzone.core.util.extensions.addDays
 import com.repzone.core.util.extensions.now
 import com.repzone.core.util.extensions.toInstant
 import com.repzone.domain.common.DomainException
@@ -34,16 +35,19 @@ import com.repzone.domain.document.model.GiftSelection
 import com.repzone.domain.document.model.PromotionContext
 import com.repzone.domain.document.model.StockStatus
 import com.repzone.domain.model.DistributionControllerModel
+import com.repzone.domain.model.PaymentPlanModel
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.SyncDocumentMapModel
 import com.repzone.domain.model.product.ProductFilters
 import com.repzone.domain.repository.ICustomerRepository
 import com.repzone.domain.repository.IDistributionRepository
 import com.repzone.domain.repository.IDocumentMapRepository
+import com.repzone.domain.repository.IPaymentInformationRepository
 import com.repzone.domain.repository.IProductRepository
 import com.repzone.domain.util.ProductQueryBuilder
 import com.repzone.domain.util.ProductQueryParams
 import kotlin.time.ExperimentalTime
+import kotlin.time.Instant
 
 
 /**
@@ -58,7 +62,8 @@ class DocumentManager(override val documentType: DocumentType,
                       private val iDocumentMapRepository: IDocumentMapRepository,
                       private val iDistributionRepository: IDistributionRepository,
                       private val iUserSession: IUserSession,
-                      private val iProductRepository: IProductRepository
+                      private val iProductRepository: IProductRepository,
+                      private val iPaymentPlanRepository: IPaymentInformationRepository
 ) : IDocumentManager {
     //region Fields
     private var currentCustomer: SyncCustomerModel? = null
@@ -66,6 +71,16 @@ class DocumentManager(override val documentType: DocumentType,
     private var activeDistribution: DistributionControllerModel? = null
     private var productQueryParams: ProductQueryParams? = null
     private var productUnitMap: MutableMap<Int, List<ProductUnit>>? = null
+    private var paymentPlan: PaymentPlanModel? = null
+    private var paymentPlanList: List<PaymentPlanModel> = emptyList()
+    private var dispatchDate: Instant? = null
+
+    private var invoiceDiscont1: BigDecimal = BigDecimal.ZERO
+    private var invoiceDiscont2: BigDecimal = BigDecimal.ZERO
+    private var invoiceDiscont3: BigDecimal = BigDecimal.ZERO
+    private var documentNote: String? = null
+    private var documentPrintedNo: String? = null
+
     private val _lines = MutableStateFlow<List<IDocumentLine>>(emptyList())
     override val lines: StateFlow<List<IDocumentLine>> = _lines.asStateFlow()
     private val _pendingConflicts = MutableStateFlow<List<LineConflict>>(emptyList())
@@ -85,7 +100,14 @@ class DocumentManager(override val documentType: DocumentType,
             customer = currentCustomer!!,
             lines = _lines.value,
             createdAt = now().toInstant(),
-            updatedAt = now().toInstant()
+            updatedAt = now().toInstant(),
+            paymentPlan= paymentPlan!!,
+            documentNote = documentNote,
+            documentPrintedNo = documentPrintedNo,
+            invoiceDiscont1 = invoiceDiscont1,
+            invoiceDiscont2 = invoiceDiscont2,
+            invoiceDiscont3 = invoiceDiscont3,
+            dispatchDate = dispatchDate
         )
     }
 
@@ -109,8 +131,10 @@ class DocumentManager(override val documentType: DocumentType,
             currentCustomer = iCustomerRepository.getById(customerId)
             documentMapModel = iDocumentMapRepository.get(documentId.toInt(), currentCustomer!!.organizationId?.toInt() ?: 0)
             activeDistribution = iDistributionRepository.getActiveDistributionListId(currentCustomer, iUserSession.decideWhichOrgIdToBeUsed(currentCustomer!!.organizationId?.toInt() ?: 0))!!
+            dispatchDate = now().toInstant().addDays(2)
             prepareProductQueryBuilder()
             prepareProductUnit()
+            preparePayment()
             return Result.Success(this)
         }catch (ex: Exception){
             return Result.Error(DomainException.UnknownException(cause = ex))
@@ -136,6 +160,59 @@ class DocumentManager(override val documentType: DocumentType,
         }
         return ProductFilters()
     }
+
+    override suspend fun getAvailablePaymentPlan(): List<PaymentPlanModel> {
+        return paymentPlanList
+    }
+
+    override fun setPaymentPlan(paymentPlan: PaymentPlanModel) {
+        this.paymentPlan = paymentPlan
+    }
+
+    override fun setInvoiceDiscont1(order: Int, value: BigDecimal) : Result<Unit> {
+        when(order){
+            1 -> {
+                invoiceDiscont1 = value
+            }
+            2 -> {
+                invoiceDiscont2 = value
+            }
+            3 -> {
+                invoiceDiscont3 = value
+            }
+            else -> {
+                return Result.Error(DomainException.UnknownException(cause = Exception("Invalid Discount Order")))
+            }
+        }
+
+        return Result.Success(Unit)
+    }
+
+    override fun getInvoiceDiscont1(order: Int): BigDecimal {
+        return when(order){
+            1 -> {
+                invoiceDiscont1
+            }
+            2 -> {
+                invoiceDiscont2
+            }
+            3 -> {
+                invoiceDiscont3
+            }
+            else -> {
+                BigDecimal.ZERO
+            }
+        }
+    }
+
+    override fun setDocumentNote(value: String?) {
+        documentNote = value
+    }
+
+    override fun getDocumentNote(): String? {
+        return documentNote
+    }
+
     //endregion ============ Document Operations ============
 
     //region ============ Line Operations ============
@@ -357,7 +434,6 @@ class DocumentManager(override val documentType: DocumentType,
             )
         }
     }
-
     private suspend fun prepareProductUnit(){
         if(productQueryParams == null){
             prepareProductQueryBuilder()
@@ -366,6 +442,22 @@ class DocumentManager(override val documentType: DocumentType,
             productQueryParams?.let {
                 val sqlString = ProductQueryBuilder().buildProductUnitsQuery(it)
                 productUnitMap = iProductRepository.getProductUnitFlatQuery(sqlString)
+            }
+        }
+    }
+    private suspend fun preparePayment(){
+        paymentPlanList = iPaymentPlanRepository.getPaymentInformation(currentCustomer!!.organizationId!!)
+        val selectedPlan = paymentPlanList.firstOrNull()
+        if(selectedPlan != null){
+            paymentPlan = selectedPlan
+        }
+
+        currentCustomer?.let { customer ->
+            if((customer.paymentPlanId ?: 0) > 0){
+                val customerPlan = paymentPlanList.firstOrNull { it.id == customer.paymentPlanId?.toInt() }
+                if(customerPlan != null){
+                    paymentPlan = customerPlan
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.repzone.presentation.legacy.viewmodel.productlist
+package com.repzone.presentation.legacy.viewmodel.document.productlist
 
 import com.repzone.core.model.HasUiFrame
 import com.repzone.core.model.UiFrame

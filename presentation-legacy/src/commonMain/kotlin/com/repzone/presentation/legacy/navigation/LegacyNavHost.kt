@@ -11,13 +11,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.repzone.core.ui.component.selectiondialog.sample.ExampleUsageScreen
 import com.repzone.core.ui.ui.settings.SettingsScreen
 import com.repzone.core.ui.util.enum.NavigationItemType
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
 import com.repzone.presentation.legacy.ui.customerlist.CustomerListScreenLegacy
 import com.repzone.presentation.legacy.ui.gpstest.GpsTrackingScreen
-import com.repzone.presentation.legacy.ui.productlist.ProductListScreenLegacy
+import com.repzone.presentation.legacy.ui.document.productlist.ProductListScreenLegacy
 import com.repzone.presentation.legacy.ui.splash.SplashScreenLegacy
 import com.repzone.presentation.legacy.ui.sync.SyncScreenLegacy
 import com.repzone.presentation.legacy.ui.visit.VisitScreenLegacy

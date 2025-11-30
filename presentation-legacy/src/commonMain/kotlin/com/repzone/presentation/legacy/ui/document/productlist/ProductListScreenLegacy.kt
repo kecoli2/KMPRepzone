@@ -1,4 +1,4 @@
-package com.repzone.presentation.legacy.ui.productlist
+package com.repzone.presentation.legacy.ui.document.productlist
 
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -58,11 +58,11 @@ import com.repzone.domain.document.model.DiscountSlotConfig
 import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.model.product.ProductRowState
 import com.repzone.presentation.legacy.model.enum.ProductSortOption
-import com.repzone.presentation.legacy.ui.productlist.component.DiscountDialogLegacy
-import com.repzone.presentation.legacy.ui.productlist.component.ProductFilterBottomSheet
-import com.repzone.presentation.legacy.ui.productlist.component.ProductListFilterBar
-import com.repzone.presentation.legacy.ui.productlist.component.ProductRow
-import com.repzone.presentation.legacy.viewmodel.productlist.ProductListViewModel
+import com.repzone.presentation.legacy.ui.document.productlist.component.DiscountDialogLegacy
+import com.repzone.presentation.legacy.ui.document.productlist.component.ProductFilterBottomSheet
+import com.repzone.presentation.legacy.ui.document.productlist.component.ProductListFilterBar
+import com.repzone.presentation.legacy.ui.document.productlist.component.ProductRow
+import com.repzone.presentation.legacy.viewmodel.document.productlist.ProductListViewModel
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.compose.koinInject
 

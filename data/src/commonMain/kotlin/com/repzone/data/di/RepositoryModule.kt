@@ -11,6 +11,7 @@ import com.repzone.data.repository.imp.DocumentMapRepositoryImpl
 import com.repzone.data.repository.imp.DynamicFormRepositoryImpl
 import com.repzone.data.repository.imp.DynamicPageReportImpl
 import com.repzone.data.repository.imp.MobileModuleParameterRepositoryImpl
+import com.repzone.data.repository.imp.PaymentInformationRepositoryImpl
 import com.repzone.data.repository.imp.PriceRepositoryImpl
 import com.repzone.data.repository.imp.ProductRepository
 import com.repzone.data.repository.imp.RepresentativeRepositoryImpl
@@ -45,6 +46,7 @@ val RepositoryModule = module {
     factoryOf(::ProductRepository) { bind<IProductRepository>() }
     factoryOf(::DistributionRepositoryImpl) { bind<IDistributionRepository>() }
     factoryOf(::PriceRepositoryImpl) { bind<IPriceRepository>() }
+    factoryOf(::PaymentInformationRepositoryImpl) { bind<IPaymentInformationRepository>() }
     //endregion REPOSITORY
 
     //region DBMAPPERS

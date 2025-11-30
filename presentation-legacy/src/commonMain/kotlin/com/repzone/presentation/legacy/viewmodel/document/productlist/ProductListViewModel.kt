@@ -1,4 +1,4 @@
-package com.repzone.presentation.legacy.viewmodel.productlist
+package com.repzone.presentation.legacy.viewmodel.document.productlist
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -21,8 +21,7 @@ import com.repzone.domain.document.model.ValidationStatus
 import com.repzone.domain.model.product.PriceRange
 import com.repzone.domain.model.product.ProductFilterState
 import com.repzone.domain.repository.IProductRepository
-import com.repzone.domain.util.ProductQueryBuilder
-import com.repzone.presentation.legacy.viewmodel.productlist.ProductListViewModel.Event.*
+import com.repzone.presentation.legacy.viewmodel.document.productlist.ProductListViewModel.Event.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.Flow
@@ -39,6 +38,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.collections.iterator
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
 class ProductListViewModel(

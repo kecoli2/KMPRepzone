@@ -16,9 +16,9 @@ import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.model.product.ProductRowState
 import com.repzone.domain.util.models.VisitActionItem
-import com.repzone.presentation.legacy.ui.productlist.ProductListScreenLegacy
-import com.repzone.presentation.legacy.ui.productlist.component.DiscountDialogLegacy
-import com.repzone.presentation.legacy.ui.productlist.component.ProductRow
+import com.repzone.presentation.legacy.ui.document.productlist.ProductListScreenLegacy
+import com.repzone.presentation.legacy.ui.document.productlist.component.DiscountDialogLegacy
+import com.repzone.presentation.legacy.ui.document.productlist.component.ProductRow
 import com.repzone.presentation.legacy.ui.visit.VisitActionList
 import kotlin.time.ExperimentalTime
 
