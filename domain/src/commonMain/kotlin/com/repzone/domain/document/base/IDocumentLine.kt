@@ -50,4 +50,6 @@ interface IDocumentLine {
      * @return İskonto slot değeri
      */
     fun getSlot(slotNumber: Int): DiscountSlot
+
+    fun hasDiscount(): Boolean
 }

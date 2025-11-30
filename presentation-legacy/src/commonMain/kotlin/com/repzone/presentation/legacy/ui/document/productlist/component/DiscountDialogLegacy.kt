@@ -42,9 +42,6 @@ import com.repzone.domain.document.model.DiscountType
 import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.document.model.ProductUnit
 
-/**
- * Full-screen dialog for entering discounts
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiscountDialogLegacy(
@@ -192,8 +189,8 @@ private fun DiscountTopBar(
         title = StringResource.DISCOUNT_CUSTOM.fromResource(),
         subtitle = productName,
         rightIcons = listOf(
-            TopBarAction(Icons.Default.Save, "Kaydey", Color.White, {
-                onApply
+            TopBarAction(Icons.Default.Save, "Kaydey", Color.White, onClick = {
+                onApply()
             }),
         )
     )

@@ -15,6 +15,7 @@ import com.repzone.core.ui.ui.settings.SettingsScreen
 import com.repzone.core.ui.util.enum.NavigationItemType
 import com.repzone.presentation.legacy.ui.login.LoginScreenLegacy
 import com.repzone.presentation.legacy.ui.customerlist.CustomerListScreenLegacy
+import com.repzone.presentation.legacy.ui.document.basket.DocumentBasketScreenLegacy
 import com.repzone.presentation.legacy.ui.document.documentsettings.DocumentSettingsScreenLegacy
 import com.repzone.presentation.legacy.ui.gpstest.GpsTrackingScreen
 import com.repzone.presentation.legacy.ui.document.productlist.ProductListScreenLegacy
@@ -166,6 +167,7 @@ fun LegacyNavHost(
 
                     DocumentSettingsScreenLegacy(
                         onBasketNavigate = {
+                            navController.navigate(LegacyScreen.DocumentBasket)
                         },
 
                         onNavigateBack = {
@@ -174,6 +176,24 @@ fun LegacyNavHost(
                         ,
                         onElectronicSignatureNavigate = {
 
+                        }
+                    )
+                }
+
+                composable<LegacyScreen.DocumentBasket> { backStackEntry ->
+                    RegisterBackStackEntry(backStackEntry.id, "DocumentBasketViewModel")
+
+                    DocumentBasketScreenLegacy(
+                        onNavigateBack = {
+                            navController.navigateUp()
+                        },
+                        onNavigateToSuccess = {
+                            navController.navigate(LegacyScreen.VisitScreen) {
+                                popUpTo(LegacyScreen.VisitScreen) {
+                                    inclusive = false // VisitScreen'i koru
+                                }
+                                launchSingleTop = true
+                            }
                         }
                     )
                 }

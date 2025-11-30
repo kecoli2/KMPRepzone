@@ -16,6 +16,7 @@ import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.model.product.ProductRowState
 import com.repzone.domain.util.models.VisitActionItem
+import com.repzone.presentation.legacy.ui.document.basket.DocumentBasketScreenLegacy
 import com.repzone.presentation.legacy.ui.document.documentsettings.DocumentSettingsScreenLegacy
 import com.repzone.presentation.legacy.ui.document.productlist.ProductListScreenLegacy
 import com.repzone.presentation.legacy.ui.document.productlist.component.DiscountDialogLegacy
@@ -393,6 +394,22 @@ fun DocumentSettingsScreen_Sample(themeManager: ThemeManager){
     }
 }
 //ENDregion -------------------- DOCUMENT SETTING PREVIEW --------------------
+
+//region -------------------- BASKET PREVIEW --------------------
+@Composable
+fun DocumentBasketScreen_Sample(themeManager: ThemeManager){
+    AppTheme(themeManager) {
+        DocumentBasketScreenLegacy(
+            onNavigateBack = {
+
+            },
+            onNavigateToSuccess = {
+
+            }
+        )
+    }
+}
+//ENDregion -------------------- BASKET PREVIEW --------------------
 
 
 

@@ -129,7 +129,6 @@
     <string name="gross">Gross Amount:</string>
     <string name="netsale">Net Amount:</string>
     <string name="tax">Tax</string>
-    <string name="total">Total Amount:</string>
     <string name="draft">Draft</string>
     <string name="sent">Sent</string>
     <string name="promotion">Promotion</string>
@@ -985,31 +984,54 @@
     <string name="filter_color">Color</string>
     <string name="filter_products">Product Filters</string>
 
-    <!-- Screen Title -->
     <string name="document_settings">Document Settings</string>
     <string name="payment_and_delivery_info">Payment and delivery information</string>
-
-    <!-- Card 1: Payment Info -->
     <string name="payment_info">Payment Information</string>
     <string name="payment_plan">Payment Plan</string>
     <string name="dispatch_date">Dispatch Date</string>
     <string name="select">Select</string>
     <string name="select_date">Select Date</string>
     <string name="search_payment_plan">Search payment plan...</string>
-
     <string name="invoice_discounts">Invoice Discounts</string>
-
     <string name="customer_financial_status">Customer Financial Status</string>
     <string name="customer_debt">Customer Debt</string>
     <string name="risky_balance">Risky Balance</string>
     <string name="credit_limit">Credit Limit</string>
-
     <string name="electronic_signature">Electronic Signature</string>
     <string name="electronic_signature_hint">Tap to capture electronic signature for the order</string>
     <string name="electronic_signature_confirm">You will be redirected to the electronic signature screen. Do you want to continue?</string>
-
     <string name="payment_plan_required">Please select a payment plan to continue.</string>
     <string name="continue_text">Continue</string>
     <string name="default_text">Default</string>
-
+    <string name="basket">Basket</string>
+    <string name="product">product</string>
+    <string name="basket_products">Basket Products</string>
+    <string name="basket_empty">Your basket is empty.\nGo back to add products.</string>
+    <string name="unit">Unit</string>
+    <string name="select_unit">Select Unit</string>
+    <string name="multiplier">Multiplier</string>
+    <string name="line_total">Line Total</string>
+    <string name="edit_product">Edit Product</string>
+    <string name="edit_quantity">Edit Quantity</string>
+    <string name="edit_unit">Edit Unit</string>
+    <string name="delete_product">Delete Product</string>
+    <string name="delete_product_confirm">Are you sure you want to remove this product from the basket?</string>
+    <string name="delete_success">Product removed from basket</string>
+    <string name="gross_total">Gross Total</string>
+    <string name="discount_total">Discount Amount</string>
+    <string name="net_total">Net Total</string>
+    <string name="vat_total">VAT Amount</string>
+    <string name="grand_total">Grand Total</string>
+    <string name="basket_empty_error">Basket is empty, add products to save</string>
+    <string name="payment_required_error">Please select a payment plan</string>
+    <string name="document_saved">Document saved</string>
+    <string name="document_save_error">Could not save document</string>
+    <string name="line_updated">Line updated</string>
+    <string name="invalid_quantity">Invalid quantity</string>
+    <string name="quantity_must_be_positive">Quantity must be greater than zero</string>
+    <string name="discount_applied">Discount applied</string>
+    <string name="change_unit">Change unit</string>
+    <string name="total">Total</string>
+    <string name="save">Save</string>
+    <string name="delete">Delete</string>
 </resources>

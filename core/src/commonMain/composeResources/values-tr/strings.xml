@@ -129,7 +129,6 @@
     <string name="gross">Brüt Tutar:</string>
     <string name="netsale">Net Tutar:</string>
     <string name="tax">Vergi</string>
-    <string name="total">Toplam Tutar:</string>
     <string name="draft">Taslak</string>
     <string name="sent">Gönderildi</string>
     <string name="promotion">Promosyon</string>
@@ -1016,4 +1015,36 @@
     <string name="payment_plan_required">Devam etmek için lütfen ödeme planı seçiniz.</string>
     <string name="continue_text">Devam Et</string>
     <string name="default_text">Varsayılan</string>
+
+    <string name="basket">Sepet</string>
+    <string name="product">ürün</string>
+    <string name="basket_products">Sepet Ürünleri</string>
+    <string name="basket_empty">Sepetiniz boş.\nÜrün eklemek için geri dönün.</string>
+    <string name="unit">Birim</string>
+    <string name="select_unit">Birim Seçiniz</string>
+    <string name="multiplier">Çarpan</string>
+    <string name="line_total">Satır Toplamı</string>
+    <string name="edit_product">Ürün Düzenle</string>
+    <string name="edit_quantity">Miktarı Düzenle</string>
+    <string name="edit_unit">Birimi Düzenle</string>
+    <string name="delete_product">Ürün Sil</string>
+    <string name="delete_product_confirm">ürününü sepetten silmek istediğinize emin misiniz?</string>
+    <string name="delete_success">Ürün sepetten silindi</string>
+    <string name="gross_total">Brüt Tutar</string>
+    <string name="discount_total">İskonto Tutarı</string>
+    <string name="net_total">Net Tutar</string>
+    <string name="vat_total">KDV Tutarı</string>
+    <string name="grand_total">Toplam Tutar</string>
+    <string name="basket_empty_error">Sepet boş, kaydetmek için ürün ekleyin</string>
+    <string name="payment_required_error">Lütfen ödeme planı seçin</string>
+    <string name="document_saved">Belge kaydedildi</string>
+    <string name="document_save_error">Belge kaydedilemedi</string>
+    <string name="line_updated">Satır güncellendi</string>
+    <string name="invalid_quantity">Geçersiz miktar</string>
+    <string name="quantity_must_be_positive">Miktar sıfırdan büyük olmalıdır</string>
+    <string name="discount_applied">İskonto uygulandı</string>
+    <string name="change_unit">Birim değiştir</string>
+    <string name="total">Toplam</string>
+    <string name="save">Kaydet</string>
+    <string name="delete">Sil</string>
 </resources>

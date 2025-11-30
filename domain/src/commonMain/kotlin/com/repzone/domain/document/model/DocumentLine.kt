@@ -86,7 +86,11 @@ data class DocumentLine(
             else -> DiscountSlot.Empty
         }
     }
-    
+
+    override fun hasDiscount(): Boolean {
+        return discountSlots.any { it is DiscountSlot.Applied }
+    }
+
     /**
      * Net fiyat hesaplama
      * Her iskonto slot'u sırayla işlenir

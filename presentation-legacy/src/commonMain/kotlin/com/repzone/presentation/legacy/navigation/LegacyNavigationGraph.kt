@@ -43,6 +43,8 @@ sealed interface LegacyScreen {
     data object ProductList: LegacyScreen
     @Serializable
     data object DocumentSettings: LegacyScreen
+    @Serializable
+    data object DocumentBasket: LegacyScreen
     //endregion ============ DOCUMENT SCREENS ============
 
 }

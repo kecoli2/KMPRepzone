@@ -8,8 +8,6 @@ expect fun randomUUID(): String
 
 /**
  * Platform-specific number/currency formatter
- * Android: java.text.DecimalFormat kullanır
- * iOS: NSNumberFormatter kullanır
  */
 expect class NumberFormatter() {
     /** Ondalık ayırıcı (TR: ',' EN: '.') */

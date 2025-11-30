@@ -12,6 +12,7 @@ import com.repzone.domain.usecase.visit.GetVisitMenuListUseCase
 import com.repzone.presentation.legacy.navigation.NavigationSharedStateHolder
 import com.repzone.presentation.legacy.viewmodel.visit.VisitViewModel
 import com.repzone.presentation.legacy.viewmodel.customerlist.CustomerListViewModel
+import com.repzone.presentation.legacy.viewmodel.document.basket.DocumentBasketViewModel
 import com.repzone.presentation.legacy.viewmodel.document.documentsettings.DocumentSettingsViewModel
 import com.repzone.presentation.legacy.viewmodel.gpstest.GpsTrackingViewModel
 import com.repzone.presentation.legacy.viewmodel.document.productlist.ProductListViewModel
@@ -36,12 +37,13 @@ val PresentationModuleLegacy = module {
     factoryOf(::VisitViewModel)
     factoryOf(::GpsTrackingViewModel)
     factoryOf(::ProductListViewModel)
+    factoryOf(::DocumentBasketViewModel)
+    factoryOf(::DocumentSettingsViewModel)
     //endregion ViewModels
 
     //region Use Case
     factoryOf(::GetVisitMenuListUseCase)
     factoryOf(::GetRouteInformationUseCase)
-    factoryOf(::DocumentSettingsViewModel)
 
     //endsregion Use Case
 
