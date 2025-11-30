@@ -21,7 +21,8 @@ enum class SyncJobType {
     EXTRA_TABLE,
     STOCK,
     EXTRATABLE_REPLICATION_DOCUMENTORGANIZATIONS,
-    PRODUCT_UNIT
+    PRODUCT_UNIT,
+    PAYMENT_PLAN,
 }
 
 enum class SyncJobGroup{

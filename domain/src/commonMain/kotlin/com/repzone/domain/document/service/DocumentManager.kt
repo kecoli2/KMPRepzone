@@ -226,6 +226,10 @@ class DocumentManager(override val documentType: DocumentType,
         return dispatchDate!!
     }
 
+    override fun clearLines() {
+        _lines.value = emptyList()
+    }
+
     //endregion ============ Document Operations ============
 
     //region ============ Line Operations ============
@@ -410,7 +414,8 @@ class DocumentManager(override val documentType: DocumentType,
             conversionFactor = unit.multiplier,
             quantity = quantity,
             unitPrice = unit.price,
-            vatRate = vatTate
+            vatRate = vatTate,
+            productInfo = product.copy()
         )
     }
     private fun buildPromotionContext(): PromotionContext {

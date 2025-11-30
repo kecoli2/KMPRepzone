@@ -1,9 +1,13 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncPaymentPlanEntity
 import com.repzone.domain.model.SyncPaymentPlanModel
+import com.repzone.network.dto.SyncPaymentPlanDto
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class SyncPaymentPlanEntityDbMapper : Mapper<SyncPaymentPlanEntity, SyncPaymentPlanModel> {
     //region Public Method
     override fun toDomain(from: SyncPaymentPlanEntity): SyncPaymentPlanModel {
@@ -33,6 +37,21 @@ class SyncPaymentPlanEntityDbMapper : Mapper<SyncPaymentPlanEntity, SyncPaymentP
             RecordDateUtc = domain.recordDateUtc,
             State = domain.state,
             TenantId = domain.tenantId
+        )
+    }
+
+    fun fromDto(dto: SyncPaymentPlanDto): SyncPaymentPlanEntity {
+        return SyncPaymentPlanEntity(
+            Id = dto.id.toLong(),
+            Code = dto.code,
+            EdiCode = null,
+            Ids = dto.ids,
+            IsDefault = dto.isDefault.toLong(),
+            ModificationDateUtc = dto.modificationDateUtc?.toEpochMilliseconds(),
+            Name = dto.name,
+            RecordDateUtc = dto.recordDateUtc?.toEpochMilliseconds(),
+            State = dto.state.toLong(),
+            TenantId = dto.tenantId.toLong()
         )
     }
     //endregion

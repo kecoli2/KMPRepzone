@@ -2,6 +2,7 @@ package com.repzone.domain.document.model
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.domain.document.base.IDocumentLine
+import com.repzone.domain.model.ProductFlatModel
 
 
 /**
@@ -25,7 +26,8 @@ data class DocumentLine(
     override val discount6: DiscountSlot = DiscountSlot.Empty,
     override val discount7: DiscountSlot = DiscountSlot.Empty,
     override val discount8: DiscountSlot = DiscountSlot.Empty,
-    override val vatRate: BigDecimal
+    override val vatRate: BigDecimal,
+    val productInfo: ProductInformationModel
 ) : IDocumentLine {
 
     // Computed properties

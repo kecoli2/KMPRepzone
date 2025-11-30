@@ -50,7 +50,9 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
         productUnitApi: ISyncApiService<List<SyncUnitDto>>,
         productUnitBulkInsert: IBulkInsertService<List<SyncUnitDto>>,
         stockApi: ISyncApiService<List<SyncStockDto>>,
-        stockBulkInsert: IBulkInsertService<List<SyncStockDto>>
+        stockBulkInsert: IBulkInsertService<List<SyncStockDto>>,
+        paymentApi: ISyncApiService<List<SyncPaymentPlanDto>>,
+        paymentBulkInsert: IBulkInsertService<List<SyncPaymentPlanDto>>
     ): Map<SyncJobType, ISyncJob> {
         return mapOf(
             SyncJobType.PRODUCTS to ProductSyncJob(productApi, productBulkInsert, syncModuleRepository),
@@ -69,7 +71,8 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
             SyncJobType.EXTRATABLE_REPLICATION_DOCUMENTORGANIZATIONS to DocumentOrganizationsSyncJob(documentMapOrganizationsApi, documentMapOrganizationsBulkInsert, syncModuleRepository),
             SyncJobType.FORM to FormDataFetchSyncJob(formDefinationsApi, formDefinationBulkInsert, syncModuleRepository),
             SyncJobType.FORM_MANDATORY to FormMandatoryDataSyncJob(formMandatoryDataApi, formMandatoryDataBulkInsert, syncModuleRepository),
-            SyncJobType.STOCK to StockSyncJob(stockApi, stockBulkInsert, syncModuleRepository)
+            SyncJobType.STOCK to StockSyncJob(stockApi, stockBulkInsert, syncModuleRepository),
+            SyncJobType.PAYMENT_PLAN to PaymentSyncJob(paymentApi, paymentBulkInsert, syncModuleRepository)
         )
     }
     //endregion

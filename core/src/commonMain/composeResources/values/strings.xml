@@ -810,6 +810,7 @@
     <string name="server_error">Server error, please try again later</string>
     <string name="unknown_error">Unknown error: %1$s</string>
     <string name="job_email">Customer Emails</string>
+    <string name="job_payment_plan">Payment Plans</string>
     <string name="job_customer_price">Customer Group Prices</string>
     <string name="job_customer_group">Customer Groups</string>
     <string name="job_customer_price_parameter">Customer Prices and Parameters</string>

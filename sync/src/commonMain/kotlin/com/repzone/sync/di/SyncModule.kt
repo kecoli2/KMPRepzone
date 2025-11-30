@@ -13,6 +13,7 @@ import com.repzone.network.dto.ProductDto
 import com.repzone.network.dto.ProductGroupDto
 import com.repzone.network.dto.RouteDto
 import com.repzone.network.dto.SyncMandatoryFormDto
+import com.repzone.network.dto.SyncPaymentPlanDto
 import com.repzone.network.dto.SyncStockDto
 import com.repzone.network.dto.SyncUnitDto
 import com.repzone.network.dto.form.FormBaseDto
@@ -154,6 +155,11 @@ val SyncModule = module {
     single<IBulkInsertService<List<SyncStockDto>>>(named("stockBulkInsert")) { StockRawSqlBulkInsertService(get(), get()) }
     single<ISyncApiService<List<SyncStockDto>>>(named("stockSyncApi")){ SyncApiStockImpl(get(), get()) }
     //endregion STOCK
+
+    //region PAYMENT
+    single<IBulkInsertService<List<SyncPaymentPlanDto>>>(named("paymentBulkInsert")) { PaymentRawSqlBulkInsertService(get(), get()) }
+    single<ISyncApiService<List<SyncPaymentPlanDto>>>(named("paymentSyncApi")){ SyncApiPaymentImpl(get()) }
+    //region PAYMENT
     //endregion ------------------- OTHER -------------------
 
     single {
@@ -192,7 +198,10 @@ val SyncModule = module {
             productUnitApi = get(named("productUnitSyncApi")),
             productUnitBulkInsert = get(named("productUniBulkInsert")),
             stockApi = get(named("stockSyncApi")),
-            stockBulkInsert = get(named("stockBulkInsert"))
+            stockBulkInsert = get(named("stockBulkInsert")),
+            paymentApi = get(named("paymentSyncApi")),
+            paymentBulkInsert = get(named("paymentBulkInsert")),
+
 
         )
     }

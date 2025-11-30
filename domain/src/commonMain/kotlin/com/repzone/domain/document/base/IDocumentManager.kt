@@ -134,6 +134,8 @@ interface IDocumentManager {
     suspend fun getAvailablePaymentPlan(): PaymentPlanModel?
     fun getDispatchDate(): Instant
 
+    fun clearLines()
+
     //endregion ============ Document Operations ============
 }
 

@@ -95,7 +95,6 @@ fun DiscountDialogLegacy(
             color = MaterialTheme.colorScheme.background
         ) {
             Column(modifier = Modifier.fillMaxSize()) {
-                // Top Bar
                 DiscountTopBar(
                     productName = product.name,
                     onClose = onDismiss,
@@ -113,7 +112,6 @@ fun DiscountDialogLegacy(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(vertical = 16.dp)
                 ) {
-                    // Product Info Card
                     item {
                         ProductInfoCard(
                             product = product,
@@ -123,7 +121,6 @@ fun DiscountDialogLegacy(
                         )
                     }
 
-                    // Discount Slots
                     item {
                         Text(
                             text = StringResource.DISCOUNT_ITEMS.fromResource(),
@@ -173,8 +170,6 @@ fun DiscountDialogLegacy(
                             )
                         }
                     }
-
-                    // Bottom spacing
                     item { Spacer(modifier = Modifier.height(32.dp)) }
                 }
             }

@@ -7,6 +7,7 @@ import com.repzone.core.ui.base.setError
 import com.repzone.domain.common.onError
 import com.repzone.domain.common.onSuccess
 import com.repzone.domain.document.base.IDocumentSession
+import com.repzone.domain.model.PaymentPlanModel
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -38,22 +39,49 @@ class DocumentSettingsViewModel(iDocumentSession: IDocumentSession):
             )
         }
     }
-    suspend fun onEvent(event: Event){
+    fun onEvent(event: Event){
         when(event){
             is Event.SetDispatchDate -> {
                 iDocumentManager.changeDispatchDate(event.date).onError {
                 }.onSuccess {
-
+                    iDocumentManager.changeDispatchDate(event.date).onSuccess {
+                    updateState { currentState ->
+                        currentState.copy(
+                            dispatchDate = event.date
+                        )
+                    }
+                    }.onError {
+                        setError(it.message)
+                    }
                 }
             }
             is Event.SetDocumentNote -> {
                 iDocumentManager.setDocumentNote(event.note)
+                updateState { currentState ->
+                    currentState.copy(
+                        documentNote = event.note
+                    )
+                }
             }
             is Event.SetInvoiceDiscount -> {
                 iDocumentManager.setInvoiceDiscont(event.order, event.value).onError {
                     setError(it.message)
                 }.onSuccess {
-
+                    updateState { currentState ->
+                        currentState.copy(
+                            invoiceDiscont1 = when(event.order){
+                                1 -> event.value
+                                else -> currentState.invoiceDiscont1
+                            },
+                            invoiceDiscont2 = when(event.order){
+                                2 -> event.value
+                                else -> currentState.invoiceDiscont2
+                            },
+                            invoiceDiscont3 = when(event.order){
+                                3 -> event.value
+                                else -> currentState.invoiceDiscont3}
+                        )
+                    }
                 }
             }
             is Event.ShowError -> {
@@ -61,6 +89,17 @@ class DocumentSettingsViewModel(iDocumentSession: IDocumentSession):
             }
             is Event.ShowSuccess -> {
 
+            }
+            is Event.SetSelectedPayment -> {
+                iDocumentManager.setPaymentPlan(event.payment)
+                updateState { currentState ->
+                    currentState.copy(
+                        selectedPayment = event.payment
+                    )
+                }
+            }
+            is Event.NavigateToBack -> {
+                iDocumentManager.clearLines()
             }
             else -> {}
         }
@@ -78,6 +117,8 @@ class DocumentSettingsViewModel(iDocumentSession: IDocumentSession):
         @OptIn(ExperimentalTime::class)
         data class SetDispatchDate(val date: Instant) : Event()
         object NavigateToPreviewDocument : Event()
+        object NavigateToBack : Event()
+        data class SetSelectedPayment(val payment: PaymentPlanModel): Event()
     }
 //endregion Event
 }

@@ -32,10 +32,10 @@ import com.repzone.core.ui.component.textfield.TextAlignment
 import com.repzone.core.ui.component.topappbar.RepzoneTopAppBar
 import com.repzone.core.ui.component.topappbar.TopBarLeftIcon
 import com.repzone.core.ui.manager.theme.ThemeManager
+import com.repzone.core.ui.platform.HandleBackPress
 import com.repzone.core.util.extensions.fromResource
 import com.repzone.core.util.extensions.toBigDecimalOrNullLocalized
 import com.repzone.core.util.extensions.toDateString
-import com.repzone.core.util.extensions.toMoney
 import com.repzone.domain.model.PaymentPlanModel
 import com.repzone.presentation.legacy.viewmodel.document.documentsettings.DocumentSettingsUiState
 import com.repzone.presentation.legacy.viewmodel.document.documentsettings.DocumentSettingsViewModel
@@ -72,6 +72,11 @@ fun DocumentSettingsScreenLegacy(onBasketNavigate: () -> Unit, onNavigateBack: (
 
     LaunchedEffect(Unit) {
         viewModel.onStartDocument()
+    }
+
+    HandleBackPress {
+        viewModel.onEvent(DocumentSettingsViewModel.Event.NavigateToBack)
+        onNavigateBack()
     }
 
     DocumentSettingsContent(
@@ -127,7 +132,7 @@ fun DocumentSettingsScreenLegacy(onBasketNavigate: () -> Unit, onNavigateBack: (
                 searchQuery = paymentSearchQuery,
                 onSearchQueryChange = { paymentSearchQuery = it },
                 onPaymentSelected = { payment ->
-                    // TODO: Add payment selection event to ViewModel
+                    viewModel.onEvent(DocumentSettingsViewModel.Event.SetSelectedPayment(payment))
                     showPaymentPlanDialog = false
                     paymentSearchQuery = ""
                 },
@@ -136,6 +141,7 @@ fun DocumentSettingsScreenLegacy(onBasketNavigate: () -> Unit, onNavigateBack: (
                     paymentSearchQuery = ""
                 },
             )
+        }
 
             // Date Picker Dialog
             if (showDatePickerDialog) {
@@ -176,7 +182,6 @@ fun DocumentSettingsScreenLegacy(onBasketNavigate: () -> Unit, onNavigateBack: (
                 },
                 onNo = { showElectronicSignatureDialog = false }
             )
-        }
 }
 //endregion Public Method
 
@@ -206,58 +211,60 @@ private fun DocumentSettingsContent(
             contentDescription = Res.string.continue_text.fromResource()
         ),
         onFabClick = onFabClick,
-        topBar = {
+    ) { paddingValues ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues)) {
             RepzoneTopAppBar(
                 themeManager = themeManager,
                 leftIconType = TopBarLeftIcon.Back(onClick = onNavigateBack),
                 title = Res.string.document_settings.fromResource(),
                 subtitle = Res.string.payment_and_delivery_info.fromResource()
             )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            // ===== CARD 1: Ödeme Planı ve Sevk Tarihi =====
-            PaymentInfoCard(
-                selectedPayment = uiState.selectedPayment,
-                dispatchDate = uiState.dispatchDate,
-                onPaymentPlanClick = onPaymentPlanClick,
-                onDatePickerClick = onDatePickerClick
-            )
-
-            // ===== CARD 2: Fatura Altı İskontolar =====
-            InvoiceDiscountCard(
-                discount1 = discount1Text,
-                discount2 = discount2Text,
-                discount3 = discount3Text,
-                onDiscount1Change = onDiscount1Change,
-                onDiscount2Change = onDiscount2Change,
-                onDiscount3Change = onDiscount3Change
-            )
-
-            // ===== CARD 3: Müşteri Finansal Bilgileri =====
-            CustomerFinancialCard(
-                customerDebt = uiState.customerDebt,
-                riskyBalance = uiState.riskyBalance,
-                creditLimit = uiState.creditLimit,
-                formatter = formatter
-            )
-
-            // ===== CARD 4: Elektronik İmza (Parametrik) =====
-            if (uiState.showElectronicSignature) {
-                ElectronicSignatureCard(
-                    onClick = onElectronicSignatureClick
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // ===== CARD 1: Ödeme Planı ve Sevk Tarihi =====
+                PaymentInfoCard(
+                    selectedPayment = uiState.selectedPayment,
+                    dispatchDate = uiState.dispatchDate,
+                    onPaymentPlanClick = onPaymentPlanClick,
+                    onDatePickerClick = onDatePickerClick
                 )
-            }
 
-            // Bottom spacing for FAB
-            Spacer(modifier = Modifier.height(80.dp))
+                // ===== CARD 2: Fatura Altı İskontolar =====
+                InvoiceDiscountCard(
+                    discount1 = discount1Text,
+                    discount2 = discount2Text,
+                    discount3 = discount3Text,
+                    onDiscount1Change = onDiscount1Change,
+                    onDiscount2Change = onDiscount2Change,
+                    onDiscount3Change = onDiscount3Change
+                )
+
+                // ===== CARD 3: Müşteri Finansal Bilgileri =====
+                CustomerFinancialCard(
+                    customerDebt = uiState.customerDebt,
+                    riskyBalance = uiState.riskyBalance,
+                    creditLimit = uiState.creditLimit,
+                    formatter = formatter
+                )
+
+                // ===== CARD 4: Elektronik İmza (Parametrik) =====
+                if (uiState.showElectronicSignature) {
+                    ElectronicSignatureCard(
+                        onClick = onElectronicSignatureClick
+                    )
+                }
+
+                // Bottom spacing for FAB
+                Spacer(modifier = Modifier.height(80.dp))
+            }
         }
     }
 }
@@ -316,7 +323,8 @@ private fun InvoiceDiscountCard(
         DiscountRow(
             label = "${Res.string.discount.fromResource()} 1",
             value = discount1,
-            onValueChange = onDiscount1Change
+            onValueChange = onDiscount1Change,
+            maxValue = BigDecimal.fromInt(100)
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -325,7 +333,8 @@ private fun InvoiceDiscountCard(
         DiscountRow(
             label = "${Res.string.discount.fromResource()} 2",
             value = discount2,
-            onValueChange = onDiscount2Change
+            onValueChange = onDiscount2Change,
+            maxValue = BigDecimal.fromInt(100)
         )
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -334,7 +343,8 @@ private fun InvoiceDiscountCard(
         DiscountRow(
             label = "${Res.string.discount.fromResource()} 3",
             value = discount3,
-            onValueChange = onDiscount3Change
+            onValueChange = onDiscount3Change,
+            maxValue = BigDecimal.fromInt(100)
         )
     }
 }
@@ -456,7 +466,8 @@ private fun SelectableRow(
 private fun DiscountRow(
     label: String,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    maxValue: BigDecimal
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -480,9 +491,9 @@ private fun DiscountRow(
             showBorder = true,
             borderType = BorderType.FULL,
             cornerRadius = 8.dp,
-            height = 40.dp,
             textAlignment = TextAlignment.END,
-            selectAllOnFocus = true
+            selectAllOnFocus = true,
+            maxValue = maxValue
         )
     }
 }
@@ -525,7 +536,13 @@ private fun PaymentPlanSelectionDialog(
 ) {
     ModalBottomSheet(
         onDismissRequest = onDismiss,
-        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        dragHandle = null,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        tonalElevation = 0.dp,
+        scrimColor = Color.Black.copy(alpha = 0.5f)
     ) {
         GenericPopupList(
             items = paymentPlanList,
