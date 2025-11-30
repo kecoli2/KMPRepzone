@@ -110,9 +110,9 @@ class PipelineRepositoryImpl(private val eventBus: IEventBus,
                 id = "start_visit_stage",
                 name = "Ziyaret Başlat",
                 rules = listOf(
-                    StartVisitGpsDistanceDecisionRule(eventBus = eventBus,
+                  /*  StartVisitGpsDistanceDecisionRule(eventBus = eventBus,
                         iModuleParameterRepository = iModuleParameterRepository,
-                        iLocationService = iLocationService, customerItem = customerItemModel),
+                        iLocationService = iLocationService, customerItem = customerItemModel),*/
                     StartVisitActionRule(customerItemModel = customerItemModel, visitInfo = null, iVisitRepository = iVisitRepository)
                 ),
                 isConditional = true,
