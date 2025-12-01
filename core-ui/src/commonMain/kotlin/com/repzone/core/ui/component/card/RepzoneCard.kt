@@ -3,6 +3,7 @@ package com.repzone.core.ui.component.card
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -13,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
@@ -59,7 +61,7 @@ fun RepzoneCard(
     variant: CardVariant = CardVariant.FILLED,
     colorScheme: CardColorScheme = CardColorScheme.DEFAULT,
     cornerRadius: Dp = 16.dp,
-    elevation: Dp = 1.dp,
+    elevation: Dp = 2.dp,
     borderWidth: Dp = 1.dp,
     onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
@@ -68,13 +70,21 @@ fun RepzoneCard(
 ) {
     val shape = RoundedCornerShape(cornerRadius)
     val colors = getCardColors(colorScheme, variant)
+    val borderColor = getBorderColor(colorScheme)
+
+    val shadowModifier = modifier.shadow(
+        elevation = elevation,
+        shape = shape,
+        ambientColor = getShadowColor(),
+        spotColor = getShadowColor()
+    )
 
     when (variant) {
         CardVariant.FILLED -> {
             if (onClick != null) {
                 Card(
                     onClick = onClick,
-                    modifier = modifier,
+                    modifier = shadowModifier,
                     enabled = enabled,
                     shape = shape,
                     colors = colors,
@@ -87,7 +97,7 @@ fun RepzoneCard(
                 }
             } else {
                 Card(
-                    modifier = modifier,
+                    modifier = shadowModifier,
                     shape = shape,
                     colors = colors,
                     elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
@@ -101,11 +111,10 @@ fun RepzoneCard(
         }
 
         CardVariant.OUTLINED -> {
-            val borderColor = getBorderColor(colorScheme)
             if (onClick != null) {
                 OutlinedCard(
                     onClick = onClick,
-                    modifier = modifier,
+                    modifier = shadowModifier,
                     enabled = enabled,
                     shape = shape,
                     colors = colors,
@@ -118,7 +127,7 @@ fun RepzoneCard(
                 }
             } else {
                 OutlinedCard(
-                    modifier = modifier,
+                    modifier = shadowModifier,
                     shape = shape,
                     colors = colors,
                     border = BorderStroke(borderWidth, borderColor)
@@ -135,7 +144,7 @@ fun RepzoneCard(
             if (onClick != null) {
                 ElevatedCard(
                     onClick = onClick,
-                    modifier = modifier,
+                    modifier = shadowModifier,
                     enabled = enabled,
                     shape = shape,
                     colors = colors,
@@ -148,7 +157,7 @@ fun RepzoneCard(
                 }
             } else {
                 ElevatedCard(
-                    modifier = modifier,
+                    modifier = shadowModifier,
                     shape = shape,
                     colors = colors,
                     elevation = CardDefaults.elevatedCardElevation(defaultElevation = elevation)
@@ -178,7 +187,7 @@ fun RepzoneCard(
     colorScheme: CardColorScheme = CardColorScheme.DEFAULT,
     headerStyle: CardHeaderStyle = CardHeaderStyle.COMPACT,
     cornerRadius: Dp = 16.dp,
-    elevation: Dp = 1.dp,
+    elevation: Dp = 2.dp,
     onClick: (() -> Unit)? = null,
     enabled: Boolean = true,
     content: @Composable (ColumnScope.() -> Unit)? = null
@@ -198,7 +207,7 @@ fun RepzoneCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f))
+                    .background(getHeaderBackgroundColor())
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -294,6 +303,13 @@ fun RepzoneCard(
                     trailingContent()
                 }
             }
+
+            // DEFAULT stil için header-content ayırıcı divider
+            if (content != null) {
+                HorizontalDivider(
+                    color = getDividerColor()
+                )
+            }
         }
 
         // Content
@@ -381,7 +397,7 @@ fun StatCard(
         variant = CardVariant.ELEVATED,
         colorScheme = colorScheme,
         cornerRadius = 16.dp,
-        elevation = 2.dp,
+        elevation = 4.dp,
         onClick = onClick
     ) {
         if (icon != null) {
@@ -462,6 +478,7 @@ fun ExpandableCard(
         variant = variant,
         colorScheme = colorScheme,
         cornerRadius = 12.dp,
+        elevation = 2.dp,
         onClick = { onExpandChange(!expanded) },
         contentPadding = PaddingValues(0.dp)
     ) {
@@ -470,7 +487,7 @@ fun ExpandableCard(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f))
+                    .background(getHeaderBackgroundColor())
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -519,18 +536,29 @@ fun ExpandableCard(
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 if (leadingIcon != null) {
-                    Icon(
-                        imageVector = leadingIcon,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp)
-                    )
+                    val iconColor = getIconColor(colorScheme)
+                    val iconBgColor = getIconBackgroundColor(colorScheme)
+
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = iconBgColor,
+                        modifier = Modifier.size(44.dp)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = leadingIcon,
+                                contentDescription = null,
+                                tint = iconColor,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
                 }
 
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
                         text = title,
-                        style = MaterialTheme.typography.titleSmall,
+                        style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.SemiBold
                     )
                     if (subtitle != null) {
@@ -557,7 +585,7 @@ fun ExpandableCard(
         // Expandable content
         if (expanded) {
             HorizontalDivider(
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                color = getDividerColor()
             )
             Column(
                 modifier = Modifier.padding(16.dp),
@@ -576,14 +604,22 @@ private fun getCardColors(
     colorScheme: CardColorScheme,
     variant: CardVariant
 ): CardColors {
+    val isDark = isSystemInDarkTheme()
+
     val containerColor = when (colorScheme) {
-        CardColorScheme.DEFAULT -> MaterialTheme.colorScheme.surface
-        CardColorScheme.PRIMARY -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-        CardColorScheme.SECONDARY -> MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.3f)
-        CardColorScheme.TERTIARY -> MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.3f)
-        CardColorScheme.ERROR -> MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.3f)
-        CardColorScheme.SUCCESS -> Color(0xFF10B981).copy(alpha = 0.1f)
-        CardColorScheme.WARNING -> Color(0xFFF59E0B).copy(alpha = 0.1f)
+        CardColorScheme.DEFAULT -> {
+            if (isDark) {
+                MaterialTheme.colorScheme.surfaceContainerHigh
+            } else {
+                MaterialTheme.colorScheme.surface
+            }
+        }
+        CardColorScheme.PRIMARY -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = if (isDark) 0.4f else 0.3f)
+        CardColorScheme.SECONDARY -> MaterialTheme.colorScheme.secondaryContainer.copy(alpha = if (isDark) 0.4f else 0.3f)
+        CardColorScheme.TERTIARY -> MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = if (isDark) 0.4f else 0.3f)
+        CardColorScheme.ERROR -> MaterialTheme.colorScheme.errorContainer.copy(alpha = if (isDark) 0.4f else 0.3f)
+        CardColorScheme.SUCCESS -> Color(0xFF10B981).copy(alpha = if (isDark) 0.2f else 0.1f)
+        CardColorScheme.WARNING -> Color(0xFFF59E0B).copy(alpha = if (isDark) 0.2f else 0.1f)
     }
 
     return when (variant) {
@@ -595,14 +631,71 @@ private fun getCardColors(
 
 @Composable
 private fun getBorderColor(colorScheme: CardColorScheme): Color {
+    val isDark = isSystemInDarkTheme()
+
     return when (colorScheme) {
-        CardColorScheme.DEFAULT -> MaterialTheme.colorScheme.outlineVariant
-        CardColorScheme.PRIMARY -> MaterialTheme.colorScheme.primary.copy(alpha = 0.3f)
-        CardColorScheme.SECONDARY -> MaterialTheme.colorScheme.secondary.copy(alpha = 0.3f)
-        CardColorScheme.TERTIARY -> MaterialTheme.colorScheme.tertiary.copy(alpha = 0.3f)
-        CardColorScheme.ERROR -> MaterialTheme.colorScheme.error.copy(alpha = 0.3f)
-        CardColorScheme.SUCCESS -> Color(0xFF10B981).copy(alpha = 0.3f)
-        CardColorScheme.WARNING -> Color(0xFFF59E0B).copy(alpha = 0.3f)
+        CardColorScheme.DEFAULT -> {
+            if (isDark) {
+                // Dark mode'da çok daha belirgin border
+                MaterialTheme.colorScheme.outlineVariant
+            } else {
+                MaterialTheme.colorScheme.outlineVariant
+            }
+        }
+        CardColorScheme.PRIMARY -> {
+            val alpha = if (isDark) 0.8f else 0.5f
+            MaterialTheme.colorScheme.primary.copy(alpha = alpha)
+        }
+        CardColorScheme.SECONDARY -> {
+            val alpha = if (isDark) 0.8f else 0.5f
+            MaterialTheme.colorScheme.secondary.copy(alpha = alpha)
+        }
+        CardColorScheme.TERTIARY -> {
+            val alpha = if (isDark) 0.8f else 0.5f
+            MaterialTheme.colorScheme.tertiary.copy(alpha = alpha)
+        }
+        CardColorScheme.ERROR -> {
+            val alpha = if (isDark) 0.8f else 0.5f
+            MaterialTheme.colorScheme.error.copy(alpha = alpha)
+        }
+        CardColorScheme.SUCCESS -> {
+            val alpha = if (isDark) 0.8f else 0.5f
+            Color(0xFF10B981).copy(alpha = alpha)
+        }
+        CardColorScheme.WARNING -> {
+            val alpha = if (isDark) 0.8f else 0.5f
+            Color(0xFFF59E0B).copy(alpha = alpha)
+        }
+    }
+}
+
+@Composable
+private fun getDividerColor(): Color {
+    val isDark = isSystemInDarkTheme()
+    return if (isDark) {
+        MaterialTheme.colorScheme.outlineVariant
+    } else {
+        MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+    }
+}
+
+@Composable
+private fun getHeaderBackgroundColor(): Color {
+    val isDark = isSystemInDarkTheme()
+    return if (isDark) {
+        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.2f)
+    } else {
+        MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+    }
+}
+
+@Composable
+private fun getShadowColor(): Color {
+    val isDark = isSystemInDarkTheme()
+    return if (isDark) {
+        Color.Black.copy(alpha = 0.6f)
+    } else {
+        Color.Black.copy(alpha = 0.3f)
     }
 }
 
@@ -621,13 +714,16 @@ private fun getIconColor(colorScheme: CardColorScheme): Color {
 
 @Composable
 private fun getIconBackgroundColor(colorScheme: CardColorScheme): Color {
+    val isDark = isSystemInDarkTheme()
+    val alpha = if (isDark) 0.3f else 0.5f
+
     return when (colorScheme) {
-        CardColorScheme.DEFAULT -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
-        CardColorScheme.PRIMARY -> MaterialTheme.colorScheme.primaryContainer
-        CardColorScheme.SECONDARY -> MaterialTheme.colorScheme.secondaryContainer
-        CardColorScheme.TERTIARY -> MaterialTheme.colorScheme.tertiaryContainer
-        CardColorScheme.ERROR -> MaterialTheme.colorScheme.errorContainer
-        CardColorScheme.SUCCESS -> Color(0xFF10B981).copy(alpha = 0.15f)
-        CardColorScheme.WARNING -> Color(0xFFF59E0B).copy(alpha = 0.15f)
+        CardColorScheme.DEFAULT -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = alpha)
+        CardColorScheme.PRIMARY -> MaterialTheme.colorScheme.primaryContainer.copy(alpha = if (isDark) 0.5f else 1f)
+        CardColorScheme.SECONDARY -> MaterialTheme.colorScheme.secondaryContainer.copy(alpha = if (isDark) 0.5f else 1f)
+        CardColorScheme.TERTIARY -> MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = if (isDark) 0.5f else 1f)
+        CardColorScheme.ERROR -> MaterialTheme.colorScheme.errorContainer.copy(alpha = if (isDark) 0.5f else 1f)
+        CardColorScheme.SUCCESS -> Color(0xFF10B981).copy(alpha = if (isDark) 0.25f else 0.15f)
+        CardColorScheme.WARNING -> Color(0xFFF59E0B).copy(alpha = if (isDark) 0.25f else 0.15f)
     }
 }

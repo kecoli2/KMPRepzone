@@ -76,12 +76,13 @@ fun RepzoneTextField(
     onClear: (() -> Unit)? = null,
     enabled: Boolean = true,
     height: Dp = 35.dp,
-    backgroundColor: Color = Color.White,
+    backgroundColor: Color = Color.Unspecified,
     cornerRadius: Dp = 22.dp,
-    textStyle: TextStyle = MaterialTheme.typography.bodyMedium.copy(color = Color.Black),
-    placeholderColor: Color = Color.Gray,
-    iconTint: Color = Color.Gray,
-    cursorColor: Color = Color.Red,
+    textStyle: TextStyle? = null,
+    textColor: Color = Color.Unspecified,
+    placeholderColor: Color = Color.Unspecified,
+    iconTint: Color = Color.Unspecified,
+    cursorColor: Color = Color.Unspecified,
     leadingIcon: ImageVector? = Icons.Default.Search,
     showClearIcon: Boolean = true,
     inputType: TextFieldInputType = TextFieldInputType.TEXT,
@@ -96,8 +97,8 @@ fun RepzoneTextField(
     borderType: BorderType = BorderType.FULL,
     borderWidth: Dp = 1.5.dp,
     borderColor: Color = Color.Transparent,
-    focusedBorderColor: Color = MaterialTheme.colorScheme.primary,
-    unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f),
+    focusedBorderColor: Color = Color.Unspecified,
+    unfocusedBorderColor: Color = Color.Unspecified,
     // Text hizalama (placeholder ve yazılan text için)
     textAlignment: TextAlignment = TextAlignment.START,
     // Focus'ta seçim
@@ -109,6 +110,49 @@ fun RepzoneTextField(
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
+    // Tema uyumlu renkler - Color.Unspecified ise tema rengini kullan
+    val effectiveBackgroundColor = if (backgroundColor == Color.Unspecified) {
+        MaterialTheme.colorScheme.surfaceContainerHighest
+    } else {
+        backgroundColor
+    }
+
+    val effectiveTextColor = if (textColor == Color.Unspecified) {
+        MaterialTheme.colorScheme.onSurface
+    } else {
+        textColor
+    }
+
+    val effectivePlaceholderColor = if (placeholderColor == Color.Unspecified) {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    } else {
+        placeholderColor
+    }
+
+    val effectiveIconTint = if (iconTint == Color.Unspecified) {
+        MaterialTheme.colorScheme.onSurfaceVariant
+    } else {
+        iconTint
+    }
+
+    val effectiveCursorColor = if (cursorColor == Color.Unspecified) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        cursorColor
+    }
+
+    val effectiveFocusedBorderColor = if (focusedBorderColor == Color.Unspecified) {
+        MaterialTheme.colorScheme.primary
+    } else {
+        focusedBorderColor
+    }
+
+    val effectiveUnfocusedBorderColor = if (unfocusedBorderColor == Color.Unspecified) {
+        MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
+    } else {
+        unfocusedBorderColor
+    }
+
     // TextAlign belirleme
     val textAlign = when (textAlignment) {
         TextAlignment.START -> TextAlign.Start
@@ -116,8 +160,12 @@ fun RepzoneTextField(
         TextAlignment.END -> TextAlign.End
     }
 
-    // TextStyle'a textAlign ekle
-    val alignedTextStyle = textStyle.copy(textAlign = textAlign)
+    // TextStyle - ya verilen ya da tema bazlı
+    val baseTextStyle = textStyle ?: MaterialTheme.typography.bodyMedium
+    val alignedTextStyle = baseTextStyle.copy(
+        color = effectiveTextColor,
+        textAlign = textAlign
+    )
 
     val keyboardType = remember(inputType) {
         when (inputType) {
@@ -176,8 +224,8 @@ fun RepzoneTextField(
     val currentBorderColor = when {
         !showBorder -> Color.Transparent
         borderColor != Color.Transparent -> borderColor
-        isFocused -> focusedBorderColor
-        else -> unfocusedBorderColor
+        isFocused -> effectiveFocusedBorderColor
+        else -> effectiveUnfocusedBorderColor
     }
 
     val shape = RoundedCornerShape(cornerRadius)
@@ -262,13 +310,13 @@ fun RepzoneTextField(
             },
             modifier = modifier
                 .height(height)
-                .background(backgroundColor, shape)
+                .background(effectiveBackgroundColor, shape)
                 .then(borderModifier)
                 .padding(horizontal = 12.dp, vertical = 8.dp),
             textStyle = alignedTextStyle,
             singleLine = true,
             enabled = enabled,
-            cursorBrush = SolidColor(cursorColor),
+            cursorBrush = SolidColor(effectiveCursorColor),
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
             keyboardActions = KeyboardActions(
                 onSearch = { onSearch?.invoke() },
@@ -281,9 +329,9 @@ fun RepzoneTextField(
                     value = value,
                     innerTextField = innerTextField,
                     leadingIcon = leadingIcon,
-                    iconTint = iconTint,
+                    iconTint = effectiveIconTint,
                     prefix = prefix,
-                    placeholderColor = placeholderColor,
+                    placeholderColor = effectivePlaceholderColor,
                     placeholder = placeholder,
                     textAlignment = textAlignment,
                     textStyle = alignedTextStyle,
@@ -300,13 +348,13 @@ fun RepzoneTextField(
             onValueChange = filteredOnValueChange,
             modifier = modifier
                 .height(height)
-                .background(backgroundColor, shape)
+                .background(effectiveBackgroundColor, shape)
                 .then(borderModifier)
                 .padding(horizontal = 12.dp, vertical = 8.dp),
             textStyle = alignedTextStyle,
             singleLine = true,
             enabled = enabled,
-            cursorBrush = SolidColor(cursorColor),
+            cursorBrush = SolidColor(effectiveCursorColor),
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
             keyboardActions = KeyboardActions(
                 onSearch = { onSearch?.invoke() },
@@ -319,9 +367,9 @@ fun RepzoneTextField(
                     value = value,
                     innerTextField = innerTextField,
                     leadingIcon = leadingIcon,
-                    iconTint = iconTint,
+                    iconTint = effectiveIconTint,
                     prefix = prefix,
-                    placeholderColor = placeholderColor,
+                    placeholderColor = effectivePlaceholderColor,
                     placeholder = placeholder,
                     textAlignment = textAlignment,
                     textStyle = alignedTextStyle,
@@ -535,14 +583,14 @@ fun CurrencyTextField(
     placeholder: String = "0",
     enabled: Boolean = true,
     decimalPlaces: Int = 2,
-    backgroundColor: Color = Color.White,
+    backgroundColor: Color = Color.Unspecified,
     cornerRadius: Dp = 8.dp,
     height: Dp = 35.dp,
     showBorder: Boolean = true,
     borderType: BorderType = BorderType.FULL,
     borderWidth: Dp = 1.5.dp,
-    focusedBorderColor: Color = MaterialTheme.colorScheme.primary,
-    unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f),
+    focusedBorderColor: Color = Color.Unspecified,
+    unfocusedBorderColor: Color = Color.Unspecified,
     showClearIcon: Boolean = true,
     textAlignment: TextAlignment = TextAlignment.START,
     selectAllOnFocus: Boolean = false,
@@ -581,13 +629,13 @@ fun NumberTextField(
     enabled: Boolean = true,
     maxLength: Int? = null,
     suffix: String? = null,
-    backgroundColor: Color = Color.White,
+    backgroundColor: Color = Color.Unspecified,
     cornerRadius: Dp = 8.dp,
     height: Dp = 35.dp,
     showBorder: Boolean = true,
     borderType: BorderType = BorderType.FULL,
-    focusedBorderColor: Color = MaterialTheme.colorScheme.primary,
-    unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f),
+    focusedBorderColor: Color = Color.Unspecified,
+    unfocusedBorderColor: Color = Color.Unspecified,
     borderWidth: Dp = 1.5.dp,
     showClearIcon: Boolean = true,
     textAlignment: TextAlignment = TextAlignment.START,
@@ -628,14 +676,14 @@ fun DecimalTextField(
     enabled: Boolean = true,
     decimalPlaces: Int = 2,
     suffix: String? = null,
-    backgroundColor: Color = Color.White,
+    backgroundColor: Color = Color.Unspecified,
     cornerRadius: Dp = 8.dp,
     height: Dp = 35.dp,
     showBorder: Boolean = true,
     borderType: BorderType = BorderType.FULL,
-    focusedBorderColor: Color = MaterialTheme.colorScheme.primary,
-    unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f),
-    borderWidth: Dp = 1.5.dp,
+    focusedBorderColor: Color = Color.Unspecified,
+    unfocusedBorderColor: Color = Color.Unspecified,
+    borderWidth: Dp = 0.7.dp,
     showClearIcon: Boolean = true,
     textAlignment: TextAlignment = TextAlignment.START,
     selectAllOnFocus: Boolean = false,
@@ -675,13 +723,13 @@ fun SearchTextField(
     onSearch: (() -> Unit)? = null,
     onClear: (() -> Unit)? = null,
     enabled: Boolean = true,
-    backgroundColor: Color = Color.White,
+    backgroundColor: Color = Color.Unspecified,
     cornerRadius: Dp = 22.dp,
     height: Dp = 35.dp,
     showBorder: Boolean = false,
     borderType: BorderType = BorderType.FULL,
-    focusedBorderColor: Color = MaterialTheme.colorScheme.primary,
-    unfocusedBorderColor: Color = Color.Gray.copy(alpha = 0.3f),
+    focusedBorderColor: Color = Color.Unspecified,
+    unfocusedBorderColor: Color = Color.Unspecified,
     borderWidth: Dp = 1.5.dp,
     showClearIcon: Boolean = true,
     textAlignment: TextAlignment = TextAlignment.START,

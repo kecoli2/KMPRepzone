@@ -7,8 +7,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Discount
 import androidx.compose.material.icons.filled.Save
 import androidx.compose.material.icons.outlined.Inventory2
+import androidx.compose.material.icons.outlined.Summarize
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,6 +27,10 @@ import androidx.compose.ui.window.DialogProperties
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.DecimalMode
 import com.repzone.core.model.StringResource
+import com.repzone.core.ui.component.card.CardBadge
+import com.repzone.core.ui.component.card.CardHeaderStyle
+import com.repzone.core.ui.component.card.CardVariant
+import com.repzone.core.ui.component.card.RepzoneCard
 import com.repzone.core.ui.component.textfield.BorderType
 import com.repzone.core.ui.component.textfield.DecimalTextField
 import com.repzone.core.ui.component.textfield.TextAlignment
@@ -66,11 +72,15 @@ fun DiscountDialogLegacy(
                     ?: DiscountSlotEntry(
                         slotNumber = config.slotNumber,
                         isEnabled = config.allowManualEntry,
-                        maximumValue = config.maxPercentage
+                        maximumValue = config.maxPercentage,
+                        type = config.slotType
                     )
             }
         )
     }
+
+    // Enabled slot'ları filtrele
+    val enabledSlots = discountSlots.filter { it.isEnabled }
 
     val totalDiscount = calculateTotalDiscount(
         discountSlots = discountSlots.filter { it.value.isNotEmpty() },
@@ -109,6 +119,7 @@ fun DiscountDialogLegacy(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     contentPadding = PaddingValues(vertical = 16.dp)
                 ) {
+                    // Product Info Card
                     item {
                         ProductInfoCard(
                             product = product,
@@ -118,43 +129,27 @@ fun DiscountDialogLegacy(
                         )
                     }
 
+                    // İndirim Kalemleri Section - RepzoneCard içinde
                     item {
-                        Text(
-                            text = StringResource.DISCOUNT_ITEMS.fromResource(),
-                            style = MaterialTheme.typography.titleSmall,
-                            fontWeight = FontWeight.Bold,
-                            modifier = Modifier.padding(top = 8.dp)
-                        )
-                    }
-
-                    itemsIndexed(
-                        items = discountSlots.filter { it.isEnabled },
-                        key = { _, slot -> slot.slotNumber }
-                    ) { index, slot ->
-                        val config = slotConfigs.find { it.slotNumber == slot.slotNumber }
-
-                        if (config != null) {
-                            DiscountSlotCard(
-                                index = index + 1,
-                                slot = slot,
-                                config = config,
-                                onValueChanged = { newValue ->
-                                    discountSlots = discountSlots.map {
-                                        if (it.slotNumber == slot.slotNumber) {
-                                            it.copy(value = newValue)
-                                        } else it
-                                    }
-                                },
-                                onTypeChanged = { newType ->
-                                    focusManager.clearFocus()
-                                    discountSlots = discountSlots.map {
-                                        if (it.slotNumber == slot.slotNumber) {
-                                            it.copy(type = newType)
-                                        } else it
-                                    }
+                        DiscountSlotsSection(
+                            enabledSlots = enabledSlots,
+                            slotConfigs = slotConfigs,
+                            onValueChanged = { slotNumber, newValue ->
+                                discountSlots = discountSlots.map {
+                                    if (it.slotNumber == slotNumber) {
+                                        it.copy(value = newValue)
+                                    } else it
                                 }
-                            )
-                        }
+                            },
+                            onTypeChanged = { slotNumber, newType ->
+                                focusManager.clearFocus()
+                                discountSlots = discountSlots.map {
+                                    if (it.slotNumber == slotNumber) {
+                                        it.copy(type = newType)
+                                    } else it
+                                }
+                            }
+                        )
                     }
 
                     // Summary Card
@@ -167,9 +162,142 @@ fun DiscountDialogLegacy(
                             )
                         }
                     }
+
                     item { Spacer(modifier = Modifier.height(32.dp)) }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun DiscountSlotsSection(
+    enabledSlots: List<DiscountSlotEntry>,
+    slotConfigs: List<DiscountSlotConfig>,
+    onValueChanged: (Int, String) -> Unit,
+    onTypeChanged: (Int, DiscountType) -> Unit
+) {
+    RepzoneCard(
+        title = StringResource.DISCOUNT_ITEMS.fromResource(),
+        leadingIcon = Icons.Default.Discount,
+        trailingContent = { CardBadge(count = enabledSlots.size) },
+        modifier = Modifier.fillMaxWidth(),
+        variant = CardVariant.ELEVATED,
+        elevation = 2.dp,
+        headerStyle = CardHeaderStyle.COMPACT
+    ) {
+        Column(
+            modifier = Modifier.background(MaterialTheme.colorScheme.surface),
+            verticalArrangement = Arrangement.spacedBy(0.dp)
+        ) {
+            enabledSlots.forEachIndexed { index, slot ->
+                val config = slotConfigs.find { it.slotNumber == slot.slotNumber }
+
+                if (config != null) {
+                    DiscountSlotRow(
+                        index = index + 1,
+                        slot = slot,
+                        config = config,
+                        onValueChanged = { newValue -> onValueChanged(slot.slotNumber, newValue) },
+                        onTypeChanged = { newType -> onTypeChanged(slot.slotNumber, newType) }
+                    )
+
+                    // Divider between items
+                    if (index < enabledSlots.size - 1) {
+                        HorizontalDivider(
+                            modifier = Modifier.padding(start = 36.dp),
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
+                        )
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DiscountSlotRow(
+    index: Int,
+    slot: DiscountSlotEntry,
+    config: DiscountSlotConfig,
+    onValueChanged: (String) -> Unit,
+    onTypeChanged: (DiscountType) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        // Header
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // Number badge
+            Box(
+                modifier = Modifier
+                    .size(20.dp)
+                    .clip(RoundedCornerShape(6.dp))
+                    .background(MaterialTheme.colorScheme.primaryContainer),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = index.toString(),
+                    style = MaterialTheme.typography.labelSmall,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
+
+            Text(
+                text = config.name,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+        }
+
+        // Input row
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Type selector (segmented buttons)
+            DiscountTypeSelector(
+                selectedType = slot.type,
+                onTypeSelected = onTypeChanged
+            )
+
+            // Value input
+            DecimalTextField(
+                value = slot.value,
+                onValueChange = onValueChanged,
+                modifier = Modifier.weight(1f),
+                placeholder = "0",
+                cornerRadius = 6.dp,
+                showBorder = true,
+                borderType = BorderType.FULL,
+                textAlignment = TextAlignment.END,
+                selectAllOnFocus = true,
+                maxValue = slot.maximumValue,
+                showClearIcon = false,
+                borderWidth = 0.7.dp,
+                backgroundColor = Color.Transparent,
+                suffix = when (slot.type) {
+                    DiscountType.PERCENTAGE -> "%"
+                    DiscountType.FIXED_AMOUNT -> NumberFormatInfo.currencySymbol
+                }
+            )
+        }
+
+        // Validation error
+        if (slot.validationError != null) {
+            Text(
+                text = slot.validationError!!,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error
+            )
         }
     }
 }
@@ -189,7 +317,7 @@ private fun DiscountTopBar(
         title = StringResource.DISCOUNT_CUSTOM.fromResource(),
         subtitle = productName,
         rightIcons = listOf(
-            TopBarAction(Icons.Default.Save, "Kaydey", Color.White, onClick = {
+            TopBarAction(Icons.Default.Save, "Kaydet", Color.White, onClick = {
                 onApply()
             }),
         )
@@ -203,81 +331,38 @@ private fun ProductInfoCard(
     quantity: BigDecimal,
     basePrice: Double
 ) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.4f)
-        ),
-        shape = RoundedCornerShape(12.dp)
+    RepzoneCard(
+        title = product.name,
+        subtitle = product.sku.ifEmpty { null },
+        leadingIcon = Icons.Outlined.Inventory2,
+        modifier = Modifier.fillMaxWidth(),
+        variant = CardVariant.ELEVATED,
+        elevation = 2.dp,
+        headerStyle = CardHeaderStyle.DEFAULT
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
+        // Info grid
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            // Product header
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
-            ) {
-                // Product icon
-                Box(
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        imageVector = Icons.Outlined.Inventory2,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = product.name,
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1
-                    )
-                    if (product.sku.isNotEmpty()) {
-                        Text(
-                            text = product.sku,
-                            style = MaterialTheme.typography.bodySmall,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // Info grid
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                InfoItem(
-                    label = StringResource.QUANTITY.fromResource(),
-                    value = "${quantity.toPlainString()} ${unit.unitName}",
-                    modifier = Modifier.weight(1f)
-                )
-                InfoItem(
-                    label = StringResource.UNIT_PRICE.fromResource(),
-                    value = unit.price.doubleValue(false).toMoney(),
-                    modifier = Modifier.weight(1f),
-                    alignment = TextAlign.Center
-                )
-                InfoItem(
-                    label = StringResource.TOTAL_PURE.fromResource(),
-                    value = basePrice.toMoney(),
-                    modifier = Modifier.weight(1f),
-                    alignment = TextAlign.End,
-                    valueColor = MaterialTheme.colorScheme.primary
-                )
-            }
+            InfoItem(
+                label = StringResource.QUANTITY.fromResource(),
+                value = "${quantity.toPlainString()} ${unit.unitName}",
+                modifier = Modifier.weight(1f)
+            )
+            InfoItem(
+                label = StringResource.UNIT_PRICE.fromResource(),
+                value = unit.price.doubleValue(false).toMoney(),
+                modifier = Modifier.weight(1f),
+                alignment = TextAlign.Center
+            )
+            InfoItem(
+                label = StringResource.TOTAL_PURE.fromResource(),
+                value = basePrice.toMoney(),
+                modifier = Modifier.weight(1f),
+                alignment = TextAlign.End,
+                valueColor = MaterialTheme.colorScheme.primary
+            )
         }
     }
 }
@@ -311,101 +396,6 @@ private fun InfoItem(
 }
 
 @Composable
-private fun DiscountSlotCard(
-    index: Int,
-    slot: DiscountSlotEntry,
-    config: DiscountSlotConfig,
-    onValueChanged: (String) -> Unit,
-    onTypeChanged: (DiscountType) -> Unit
-) {
-    Card(
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp)
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            // Header
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                // Number badge
-                Box(
-                    modifier = Modifier
-                        .size(20.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(MaterialTheme.colorScheme.primaryContainer),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = index.toString(),
-                        style = MaterialTheme.typography.labelMedium,
-                        fontWeight = FontWeight.Bold,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
-                    )
-                }
-
-                Text(
-                    text = config.name,
-                    style = MaterialTheme.typography.bodySmall,
-                    fontWeight = FontWeight.SemiBold
-                )
-            }
-
-            // Input row
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(12.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                // Type selector (segmented buttons)
-                DiscountTypeSelector(
-                    selectedType = slot.type,
-                    onTypeSelected = onTypeChanged
-                )
-
-                // Value input
-                DecimalTextField(
-                    value = slot.value,
-                    onValueChange = onValueChanged,
-                    modifier = Modifier.weight(1f),
-                    placeholder = "0",
-                    cornerRadius = 6.dp,
-                    showBorder = true,
-                    borderType = BorderType.FULL,
-                    textAlignment = TextAlignment.END,
-                    selectAllOnFocus = true,
-                    maxValue = slot.maximumValue,
-                    showClearIcon = false,
-                    suffix= when(slot.type){
-                        DiscountType.PERCENTAGE -> "%"
-                        DiscountType.FIXED_AMOUNT -> NumberFormatInfo.currencySymbol
-                    },
-                    backgroundColor = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.3f),
-                    focusedBorderColor = MaterialTheme.colorScheme.primary,
-                    unfocusedBorderColor = Color.Transparent
-                )
-            }
-
-            // Validation error
-            if (slot.validationError != null) {
-                Text(
-                    text = slot.validationError!!,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.error
-                )
-            }
-        }
-    }
-}
-
-@Composable
 private fun DiscountTypeSelector(
     selectedType: DiscountType,
     onTypeSelected: (DiscountType) -> Unit
@@ -413,7 +403,7 @@ private fun DiscountTypeSelector(
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.5f))
+            .background(MaterialTheme.colorScheme.surfaceContainerHighest)
             .padding(4.dp),
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
@@ -468,45 +458,39 @@ private fun DiscountSummaryCard(
     totalDiscount: Double,
     finalPrice: Double
 ) {
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
-        ),
-        shape = RoundedCornerShape(16.dp)
+    RepzoneCard(
+        title = StringResource.DISCOUNT_SUMMARY.fromResource(),
+        leadingIcon = Icons.Outlined.Summarize,
+        modifier = Modifier.fillMaxWidth(),
+        variant = CardVariant.ELEVATED,
+        elevation = 2.dp,
+        headerStyle = CardHeaderStyle.COMPACT
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .background(MaterialTheme.colorScheme.surface),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Text(
-                text = "İskonto Özeti",
-                style = MaterialTheme.typography.titleSmall,
-                fontWeight = FontWeight.Bold
-            )
-
-            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
-
             // Base price
             SummaryRow(
-                label = "Ara Toplam",
+                label = StringResource.SUB_TOTAL.fromResource(),
                 value = basePrice.toMoney(),
                 valueColor = MaterialTheme.colorScheme.onSurface
             )
 
             // Discount
             SummaryRow(
-                label = "Toplam İskonto",
+                label = StringResource.DISCOUNT_TOTAL.fromResource(),
                 value = "- ${totalDiscount.toMoney()}",
                 valueColor = MaterialTheme.colorScheme.error
             )
 
-            HorizontalDivider(color = MaterialTheme.colorScheme.outline.copy(alpha = 0.2f))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
 
             // Final price
             SummaryRow(
-                label = "Genel Toplam",
+                label = StringResource.GRAND_TOTAL.fromResource(),
                 value = finalPrice.toMoney(),
                 valueColor = MaterialTheme.colorScheme.primary,
                 isBold = true

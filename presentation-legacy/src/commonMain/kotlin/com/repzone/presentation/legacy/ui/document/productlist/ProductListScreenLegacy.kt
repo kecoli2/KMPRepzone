@@ -56,6 +56,7 @@ import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.ui.util.getDocumentNameForResource
 import com.repzone.core.util.extensions.fromResource
 import com.repzone.domain.document.model.DiscountSlotConfig
+import com.repzone.domain.document.model.DiscountType
 import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.model.product.ProductRowState
 import com.repzone.presentation.legacy.model.enum.ProductSortOption
@@ -249,7 +250,10 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit, onNavigateDocumentSettings: 
                     name = "İndirim Iskontosu Tutar",
                     allowManualEntry = true,
                     allowAutomatic = true,
-                    maxPercentage = null
+                    maxPercentage = null,
+                    slotType = DiscountType.FIXED_AMOUNT
+
+
                 ),
                 DiscountSlotConfig(
                     slotNumber = 6,

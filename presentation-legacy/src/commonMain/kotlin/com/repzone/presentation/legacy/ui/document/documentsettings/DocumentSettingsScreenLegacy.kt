@@ -490,6 +490,7 @@ private fun DiscountRow(
             placeholder = "0.00",
             suffix = "%",
             decimalPlaces = 2,
+            backgroundColor = Color.Transparent,
             showBorder = true,
             borderType = BorderType.FULL,
             cornerRadius = 8.dp,

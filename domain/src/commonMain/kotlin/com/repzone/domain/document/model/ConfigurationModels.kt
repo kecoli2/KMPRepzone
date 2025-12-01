@@ -20,7 +20,9 @@ data class DiscountSlotConfig(
     val allowAutomatic: Boolean,
     
     /** Maksimum yüzde limiti */
-    val maxPercentage: BigDecimal?
+    val maxPercentage: BigDecimal?,
+
+    val slotType: DiscountType = DiscountType.PERCENTAGE
 )
 
 /**
