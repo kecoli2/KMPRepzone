@@ -250,14 +250,6 @@ private fun BasketScreenContent(
     val formatter = remember { NumberFormatter() }
 
     Scaffold(
-        topBar = {
-            RepzoneTopAppBar(
-                themeManager = themeManager,
-                leftIconType = TopBarLeftIcon.Back(onClick = onNavigateBack),
-                title = Res.string.basket.fromResource(),
-                subtitle = "${uiState.totalItemCount} ${Res.string.product.fromResource()}"
-            )
-        }
     ) { paddingValues ->
         Box(
             modifier = Modifier
@@ -267,6 +259,13 @@ private fun BasketScreenContent(
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {
+                //TOP BAR
+                RepzoneTopAppBar(
+                    themeManager = themeManager,
+                    leftIconType = TopBarLeftIcon.Back(onClick = onNavigateBack),
+                    title = Res.string.basket.fromResource(),
+                    subtitle = "${uiState.totalItemCount} ${Res.string.product.fromResource()}"
+                )
                 // Main Content with LazyColumn
                 LazyColumn(
                     modifier = Modifier
@@ -288,7 +287,7 @@ private fun BasketScreenContent(
                         )
                     }
 
-                    // ===== Görsel Ayırıcı =====
+                    // ===== Görsel Ayıraçımız =====
                     item {
                         Spacer(modifier = Modifier.height(4.dp))
                         HorizontalDivider(

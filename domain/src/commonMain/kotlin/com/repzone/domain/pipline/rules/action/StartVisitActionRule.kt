@@ -38,25 +38,7 @@ class StartVisitActionRule(
 
     override suspend fun execute(context: PipelineContext): RuleResult {
         try {
-            var activeLocation = context.getData<GpsLocation>("active_gps_location")
-            activeLocation = activeLocation ?: GpsLocation(
-                id = randomUUID(),
-                latitude = 0.0,
-                longitude = 0.0,
-                accuracy = 1F,
-                timestamp = now(),
-                speed = null,
-                bearing = null,
-                altitude = null,
-                provider = "fused",
-                isSynced = true,
-                altitudeAccuracy = null,
-                batteryLevel = null,
-                representativeId = 123456,
-                reverseGeocoded = null,
-                organizationId = 250,
-                tenantId = 250,
-                description = null)
+            val activeLocation = context.getData<GpsLocation>("active_gps_location")
             iVisitRepository.startVisit(customerItemModel, visitInfo, activeLocation!!)
             context.putData("has_visit_started", true)
             return RuleResult.Success(this)
