@@ -46,6 +46,7 @@ import com.repzone.domain.repository.IPaymentInformationRepository
 import com.repzone.domain.repository.IProductRepository
 import com.repzone.domain.util.ProductQueryBuilder
 import com.repzone.domain.util.ProductQueryParams
+import kotlinx.coroutines.flow.update
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -269,9 +270,31 @@ class DocumentManager(override val documentType: DocumentType,
         val existingLine = _lines.value.find { it.id == lineId }
             ?: return UpdateLineResult.NotFound
 
-        // Product bilgisi gerekli - TODO: Product cache veya repository
-        // Şimdilik simplified
-        return UpdateLineResult.Success
+        val validation = stockValidator.validate(
+            product = existingLine.productInfo,
+            newQuantity = newQuantity,
+            newUnit = newUnit,
+            existingLines = _lines.value,
+            currentLineId = null,
+            documentType = documentType
+        )
+
+        return when (validation) {
+            is StockValidationResult.Valid -> {
+                val newLine = existingLine.updateQuantity(newQuantity, newUnit)
+                _lines.update { list ->
+                    list.map { if (it.id == lineId) newLine else it }
+                }
+                recalculatePromotions()
+                UpdateLineResult.Success
+            }
+            is StockValidationResult.Warning -> {
+                UpdateLineResult.Success
+            }
+            is StockValidationResult.Blocked -> {
+                UpdateLineResult.Blocked(validation)
+            }
+        }
     }
 
     override suspend fun removeLine(lineId: String) {
@@ -415,7 +438,8 @@ class DocumentManager(override val documentType: DocumentType,
             quantity = quantity,
             unitPrice = unit.price,
             vatRate = vatTate,
-            productInfo = product.copy()
+            productInfo = product.copy(),
+            productUnit = unit.copy()
         )
     }
     private fun buildPromotionContext(): PromotionContext {

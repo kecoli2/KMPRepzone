@@ -2,6 +2,7 @@ package com.repzone.core.ui.component.card
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -39,6 +40,14 @@ enum class CardColorScheme {
     ERROR,          // Error container
     SUCCESS,        // Yeşil tonu
     WARNING         // Sarı tonu
+}
+
+/**
+ * Header stilleri
+ */
+enum class CardHeaderStyle {
+    DEFAULT,
+    COMPACT
 }
 
 /**
@@ -156,6 +165,7 @@ fun RepzoneCard(
 
 /**
  * Header'lı Card - Başlık, ikon ve aksiyonlarla
+ * headerStyle parametresi ile kompakt veya default stil seçilebilir
  */
 @Composable
 fun RepzoneCard(
@@ -166,6 +176,7 @@ fun RepzoneCard(
     trailingContent: @Composable (() -> Unit)? = null,
     variant: CardVariant = CardVariant.FILLED,
     colorScheme: CardColorScheme = CardColorScheme.DEFAULT,
+    headerStyle: CardHeaderStyle = CardHeaderStyle.COMPACT,
     cornerRadius: Dp = 16.dp,
     elevation: Dp = 1.dp,
     onClick: (() -> Unit)? = null,
@@ -182,72 +193,111 @@ fun RepzoneCard(
         enabled = enabled,
         contentPadding = PaddingValues(0.dp)
     ) {
-        // Header
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            // Leading icon
-            if (leadingIcon != null) {
-                val iconColor = getIconColor(colorScheme)
-                val iconBgColor = getIconBackgroundColor(colorScheme)
-
-                Surface(
-                    shape = RoundedCornerShape(12.dp),
-                    color = iconBgColor,
-                    modifier = Modifier.size(44.dp)
-                ) {
-                    Box(contentAlignment = Alignment.Center) {
-                        Icon(
-                            imageVector = leadingIcon,
-                            contentDescription = null,
-                            tint = iconColor,
-                            modifier = Modifier.size(24.dp)
-                        )
-                    }
+        // Header - Kompakt stil (BasketSection tarzı)
+        if (headerStyle == CardHeaderStyle.COMPACT) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f))
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // Leading icon - Doğrudan, background'suz
+                if (leadingIcon != null) {
+                    Icon(
+                        imageVector = leadingIcon,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
                 }
-            }
 
-            // Title & Subtitle
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                if (subtitle != null) {
+                // Title & Subtitle
+                Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        text = subtitle,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
+                    if (subtitle != null) {
+                        Text(
+                            text = subtitle,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+
+                // Trailing content
+                if (trailingContent != null) {
+                    trailingContent()
                 }
             }
+        } else {
+            // Header - Default stil (eski büyük stil)
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                // Leading icon with background
+                if (leadingIcon != null) {
+                    val iconColor = getIconColor(colorScheme)
+                    val iconBgColor = getIconBackgroundColor(colorScheme)
 
-            // Trailing content
-            if (trailingContent != null) {
-                trailingContent()
-            } else if (onClick != null) {
-                Icon(
-                    imageVector = Icons.Default.ChevronRight,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = iconBgColor,
+                        modifier = Modifier.size(44.dp)
+                    ) {
+                        Box(contentAlignment = Alignment.Center) {
+                            Icon(
+                                imageVector = leadingIcon,
+                                contentDescription = null,
+                                tint = iconColor,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
+                }
+
+                // Title & Subtitle
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                    if (subtitle != null) {
+                        Text(
+                            text = subtitle,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+                }
+
+                // Trailing content
+                if (trailingContent != null) {
+                    trailingContent()
+                }
             }
         }
 
         // Content
         if (content != null) {
-            HorizontalDivider(
-                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)
-            )
             Column(
                 modifier = Modifier.padding(16.dp),
                 content = content
@@ -257,55 +307,59 @@ fun RepzoneCard(
 }
 
 /**
- * Info Card - Bilgi gösterimi için
+ * Badge'li Card Header için yardımcı composable
+ * BasketSection'daki sayı badge'i gibi kullanılabilir
  */
 @Composable
-fun InfoCard(
+fun CardBadge(
+    count: Int,
+    modifier: Modifier = Modifier
+) {
+    Surface(
+        shape = RoundedCornerShape(12.dp),
+        color = MaterialTheme.colorScheme.primary,
+        modifier = modifier
+    ) {
+        Text(
+            text = "$count",
+            style = MaterialTheme.typography.labelMedium,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onPrimary,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp)
+        )
+    }
+}
+
+/**
+ * Navigasyon oklu Card
+ */
+@Composable
+fun NavigationCard(
     title: String,
-    value: String,
     modifier: Modifier = Modifier,
-    icon: ImageVector? = null,
+    subtitle: String? = null,
+    leadingIcon: ImageVector? = null,
     colorScheme: CardColorScheme = CardColorScheme.DEFAULT,
-    valueColor: Color = MaterialTheme.colorScheme.primary,
-    onClick: (() -> Unit)? = null
+    headerStyle: CardHeaderStyle = CardHeaderStyle.COMPACT,
+    onClick: () -> Unit
 ) {
     RepzoneCard(
-        modifier = modifier,
-        variant = CardVariant.FILLED,
+        title = title,
+        subtitle = subtitle,
+        leadingIcon = leadingIcon,
         colorScheme = colorScheme,
-        cornerRadius = 12.dp,
+        headerStyle = headerStyle,
+        modifier = modifier,
+        variant = CardVariant.OUTLINED,
         onClick = onClick,
-        contentPadding = PaddingValues(12.dp)
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            if (icon != null) {
-                Icon(
-                    imageVector = icon,
-                    contentDescription = null,
-                    tint = valueColor,
-                    modifier = Modifier.size(20.dp)
-                )
-            }
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = value,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = valueColor
-                )
-            }
+        trailingContent = {
+            Icon(
+                imageVector = Icons.Default.ChevronRight,
+                contentDescription = "İlerle",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         }
-    }
+    )
 }
 
 /**
@@ -400,6 +454,7 @@ fun ExpandableCard(
     leadingIcon: ImageVector? = null,
     variant: CardVariant = CardVariant.OUTLINED,
     colorScheme: CardColorScheme = CardColorScheme.DEFAULT,
+    headerStyle: CardHeaderStyle = CardHeaderStyle.COMPACT,
     content: @Composable ColumnScope.() -> Unit
 ) {
     RepzoneCard(
@@ -411,46 +466,92 @@ fun ExpandableCard(
         contentPadding = PaddingValues(0.dp)
     ) {
         // Header
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            if (leadingIcon != null) {
-                Icon(
-                    imageVector = leadingIcon,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.primary,
-                    modifier = Modifier.size(24.dp)
-                )
-            }
-
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.titleSmall,
-                    fontWeight = FontWeight.SemiBold
-                )
-                if (subtitle != null) {
-                    Text(
-                        text = subtitle,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+        if (headerStyle == CardHeaderStyle.COMPACT) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f))
+                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (leadingIcon != null) {
+                    Icon(
+                        imageVector = leadingIcon,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
                     )
                 }
-            }
 
-            Icon(
-                imageVector = if (expanded) {
-                    Icons.Default.KeyboardArrowUp
-                } else {
-                    Icons.Default.KeyboardArrowDown
-                },
-                contentDescription = if (expanded) "Kapat" else "Ac",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant
-            )
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                    if (subtitle != null) {
+                        Text(
+                            text = subtitle,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                Icon(
+                    imageVector = if (expanded) {
+                        Icons.Default.KeyboardArrowUp
+                    } else {
+                        Icons.Default.KeyboardArrowDown
+                    },
+                    contentDescription = if (expanded) "Kapat" else "Aç",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        } else {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                if (leadingIcon != null) {
+                    Icon(
+                        imageVector = leadingIcon,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(24.dp)
+                    )
+                }
+
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    if (subtitle != null) {
+                        Text(
+                            text = subtitle,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                Icon(
+                    imageVector = if (expanded) {
+                        Icons.Default.KeyboardArrowUp
+                    } else {
+                        Icons.Default.KeyboardArrowDown
+                    },
+                    contentDescription = if (expanded) "Kapat" else "Aç",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
 
         // Expandable content

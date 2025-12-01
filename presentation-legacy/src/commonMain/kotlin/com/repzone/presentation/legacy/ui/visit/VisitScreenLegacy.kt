@@ -89,6 +89,7 @@ import com.repzone.core.ui.component.topappbar.TopBarAction
 import com.repzone.core.ui.component.topappbar.TopBarLeftIcon
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.ui.platform.HandleBackPress
+import com.repzone.core.ui.util.getDocumentNameForResource
 import com.repzone.core.util.extensions.fromResource
 import com.repzone.core.util.extensions.isToday
 import com.repzone.core.util.extensions.isTomorrow
@@ -784,54 +785,7 @@ private fun TaskRepeatInterval.getDisplayName(): String = when (this) {
 private fun VisitActionItem.getMenuName(): String {
     return when (this.documentType) {
         DocumentActionType.ORDER,DocumentActionType.WAREHOUSERECEIPT, DocumentActionType.INVOICE, DocumentActionType.WAYBILL, DocumentActionType.COLLECTION -> {
-            when(this.name){
-                "ReceivedOrder" -> Res.string.receivedorder.fromResource()
-                "ElectronicOrder" -> Res.string.electronicorder.fromResource()
-                "SalesReturnsOrder" -> Res.string.salesreturnsorder.fromResource()
-                "DamagedReturnOrder" -> Res.string.damagedreturnorder.fromResource()
-                "ReturnElectronicOrder" -> Res.string.returnelectronicorder.fromResource()
-                "ReturnWholesaleInvoice" -> Res.string.returnwholesaleinvoice.fromResource()
-                "WholesaleInvoice" -> Res.string.wholesaleinvoice.fromResource()
-                "ElectronicInvoice" -> Res.string.electronicinvoice.fromResource()
-                "ReturnElectronicInvoice" -> Res.string.returnelectronicinvoice.fromResource()
-                "WholesaleDispatch" -> Res.string.wholesaledispatch.fromResource()
-                "ReturnWholesaleDispatch" -> Res.string.returnwholesaledispatch.fromResource()
-                "ElectronicDispatch" -> Res.string.electronicdispatch.fromResource()
-                "ReturnElectronicDispatch" -> Res.string.returnelectronicdispatch.fromResource()
-                "CollectionBill" -> Res.string.collectionbill.fromResource()
-                "CollectionCash" -> Res.string.collectioncash.fromResource()
-                "CollectionCheque" -> Res.string.collectioncheque.fromResource()
-                "CollectionCreditCard" -> Res.string.collectioncreditcard.fromResource()
-                "CollectionMoneyOrder" -> Res.string.collectionmoneyorder.fromResource()
-                "DebitAdvice" -> Res.string.debitadvice.fromResource()
-                "CreditAdvice" -> Res.string.creditadvice.fromResource()
-                "ReturnAssetsPurchaseInvoice" -> Res.string.returnassetspurchaseinvoice.fromResource()
-                "AssetsPurchaseInvoice" -> Res.string.assetspurchaseinvoice.fromResource()
-                "AssetsPurchaseElectronicInvoice" -> Res.string.assetspurchaseelectronicinvoice.fromResource()
-                "AssetsPurchaseReturnElectronicInvoice" -> Res.string.assetspurchasereturnelectronicinvoice.fromResource()
-                "GivenOrder" -> Res.string.givenorder.fromResource()
-                "AssetsPurchaseElectronicOrder" -> Res.string.assetspurchaseelectronicorder.fromResource()
-                "AssetsPurchaseReturnElectronicOrder" -> Res.string.assetspurchasereturnelectronicorder.fromResource()
-                "AssetsPurchaseReturnOrder" -> Res.string.assetspurchasereturnorder.fromResource()
-                "AssetsPurchaseReturnDispatch" -> Res.string.assetspurchasereturndispatch.fromResource()
-                "AssetsPurchaseDispatch" -> Res.string.assetspurchasedispatch.fromResource()
-                "AssetsPurchaseElectronicDispatch" -> Res.string.assetspurchaseelectronicdispatch.fromResource()
-                "AssetsPurchaseReturnElectronicDispatch" -> Res.string.assetspurchasereturnelectronicdispatch.fromResource()
-                "InvoiceVehicleReturn" -> Res.string.invoicevehiclereturn.fromResource()
-                "InvoiceOneToOneReturn" -> Res.string.invoiceonetoonereturn.fromResource()
-                "InvoiceDamagedReturn" -> Res.string.invoicedamagedreturn.fromResource()
-                "InvoiceOneToOneDamagedReturn" -> Res.string.invoiceonetoonedamagedreturn.fromResource()
-                "NamedDeliveryOrder" -> Res.string.nameddeliveryorder.fromResource()
-                "DamagedReturnElectronicOrder" -> Res.string.damaged_return_electronic_order.fromResource()
-                "EInvoiceVehicleReturn" -> Res.string.e_invoice_vehicle_return.fromResource()
-                "EInvoiceDamagedReturn" -> Res.string.e_invoice_damaged_return.fromResource()
-                "EInvoiceOneToOneDamagedReturn" -> Res.string.e_invoice_one_to_one_damaged_return.fromResource()
-                "DamagedReturnElectronicDispatch" -> Res.string.damaged_return_electronic_dispatch.fromResource()
-
-                else -> {
-                    this.name ?: this.documentName ?: ""
-                }
-            }
+            this.name?.getDocumentNameForResource() ?: this.documentName ?: ""
         }
         else -> {
             this.name ?: this.documentName ?: ""

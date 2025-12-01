@@ -29,6 +29,7 @@ import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.constant.CdnConfig
 import com.repzone.core.platform.NumberFormatter
 import com.repzone.core.ui.base.ViewModelHost
+import com.repzone.core.ui.component.card.CardHeaderStyle
 import com.repzone.core.ui.component.card.ExpandableCard
 import com.repzone.core.ui.component.dialog.RepzoneDialog
 import com.repzone.core.ui.component.selectiondialog.GenericPopupList
@@ -190,10 +191,10 @@ fun DocumentBasketScreenLegacy(
             selectedUnit = uiState.editingSelectedUnit,
             quantity = uiState.editingQuantity,
             onQuantityChange = { quantity ->
-                scope.launch { viewModel.onEvent(DocumentBasketViewModel.Event.UpdateEditingQuantity(quantity)) }
+                scope.launch { viewModel.onEvent(DocumentBasketViewModel.Event.UpdateEditingQuantity(line = uiState.editingLine!! ,quantity)) }
             },
             onUnitChange = { unit ->
-                scope.launch { viewModel.onEvent(DocumentBasketViewModel.Event.UpdateEditingUnit(unit)) }
+                scope.launch { viewModel.onEvent(DocumentBasketViewModel.Event.UpdateEditingUnit(line = uiState.editingLine!! ,unit)) }
             },
             onConfirm = {
                 scope.launch { viewModel.onEvent(DocumentBasketViewModel.Event.ConfirmLineEdit) }
@@ -305,7 +306,8 @@ private fun BasketScreenContent(
                             expanded = isPaymentInfoExpanded,
                             onExpandChange = onPaymentInfoExpandChange,
                             subtitle = uiState.selectedPayment?.name,
-                            leadingIcon = Icons.Default.Payment
+                            leadingIcon = Icons.Default.Payment,
+                            headerStyle = CardHeaderStyle.DEFAULT
                         ) {
                             PaymentInfoContent(
                                 selectedPayment = uiState.selectedPayment,
@@ -324,7 +326,8 @@ private fun BasketScreenContent(
                             expanded = isDiscountExpanded,
                             onExpandChange = onDiscountExpandChange,
                             subtitle = if (hasDiscounts) Res.string.discount_applied.fromResource() else null,
-                            leadingIcon = Icons.Default.Discount
+                            leadingIcon = Icons.Default.Discount,
+                            headerStyle = CardHeaderStyle.DEFAULT
                         ) {
                             InvoiceDiscountContent(
                                 discount1 = discount1Text,

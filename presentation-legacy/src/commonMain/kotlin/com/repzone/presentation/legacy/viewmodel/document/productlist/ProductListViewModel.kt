@@ -38,8 +38,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import repzonemobile.core.generated.resources.Res
-import repzonemobile.core.generated.resources.checking_credentials
 import kotlin.collections.iterator
 
 @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
@@ -92,23 +90,26 @@ class ProductListViewModel(
 
     fun startDocument() {
         scope.launch {
-            documentManager.lines.collect { lines ->
+            /*documentManager.lines.collect { lines ->
                 lines.forEach { line ->
                     updateRowState(line.productId) { state ->
                         state.copy(
-                            isInDocument = true,
                             documentQuantity = line.quantity,
                             documentUnitId = line.unitId,
                             documentUnitName = line.unitName
                         )
                     }
                 }
-            }
+            }*/
         }
     }
 
     fun getDocumentSubTitle(): String {
-        return documentManager.getDocumentMapModel().description + "- ${documentManager.getCustomer().name}"
+        return documentManager.getCustomer().name ?: ""
+    }
+
+    fun getDocumentName(): String {
+        return documentManager.getDocumentMapModel().name ?: ""
     }
 
     override fun onDispose() {
@@ -348,6 +349,7 @@ class ProductListViewModel(
                         onFabClickedProgress = true
                     )
                 }
+                documentManager.clearLines()
                 val statesWithEntries = _rowStates.value.filter { (_, state) -> state.hasAnyEntry }
 
                 if (statesWithEntries.isEmpty()) {
@@ -410,7 +412,7 @@ class ProductListViewModel(
                         }
 
                         // 3. State'i temizle
-                        updateRowState(productId) {
+                        /*updateRowState(productId) {
                             it.copy(
                                 quantityText = "",
                                 validationStatus = ValidationStatus.Empty,
@@ -419,7 +421,14 @@ class ProductListViewModel(
                                 discountSlots = emptyList(),
                                 isInDocument = true
                             )
+                        }*/
+
+                        updateRowState(productId) {
+                            it.copy(
+                                validationStatus = ValidationStatus.Empty,
+                            )
                         }
+
 
                     } catch (e: Exception) {
                         errorMessage = e.message

@@ -99,7 +99,7 @@ class DocumentSettingsViewModel(iDocumentSession: IDocumentSession):
                 }
             }
             is Event.NavigateToBack -> {
-                iDocumentManager.clearLines()
+
             }
             else -> {}
         }

@@ -2,6 +2,8 @@ package com.repzone.domain.document.base
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.domain.document.model.DiscountSlot
+import com.repzone.domain.document.model.ProductInformationModel
+import com.repzone.domain.document.model.ProductUnit
 
 interface IDocumentLine {
     val id: String
@@ -35,6 +37,8 @@ interface IDocumentLine {
     val baseQuantity: BigDecimal
     val netUnitPrice: BigDecimal
     val lineTotal: BigDecimal
+    val productUnit: ProductUnit
+    val productInfo: ProductInformationModel
 
     /**
      * Belirli bir slot'u günceller
@@ -52,4 +56,6 @@ interface IDocumentLine {
     fun getSlot(slotNumber: Int): DiscountSlot
 
     fun hasDiscount(): Boolean
+
+    fun updateQuantity(value: BigDecimal, unit: ProductUnit): IDocumentLine
 }

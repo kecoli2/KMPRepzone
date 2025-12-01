@@ -53,6 +53,7 @@ import com.repzone.core.ui.component.topappbar.RepzoneTopAppBar
 import com.repzone.core.ui.component.topappbar.TopBarAction
 import com.repzone.core.ui.component.topappbar.TopBarLeftIcon
 import com.repzone.core.ui.manager.theme.ThemeManager
+import com.repzone.core.ui.util.getDocumentNameForResource
 import com.repzone.core.util.extensions.fromResource
 import com.repzone.domain.document.model.DiscountSlotConfig
 import com.repzone.domain.document.model.ProductInformationModel
@@ -147,7 +148,7 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit, onNavigateDocumentSettings: 
                     TopBarAction(Icons.Default.Timer, "Timer", Color.White, {}),
                     TopBarAction(Icons.Default.Map, "Map", Color.White, {}),
                 ),
-                title = StringResource.PRODUCTS.fromResource(),
+                title = viewModel.getDocumentName().getDocumentNameForResource(),
                 subtitle = viewModel.getDocumentSubTitle()
             )
 

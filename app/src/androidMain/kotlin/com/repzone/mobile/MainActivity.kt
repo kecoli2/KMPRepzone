@@ -130,7 +130,8 @@ fun AppAndroidPreview() {
     val themeManager: ThemeManager = koinInject()
     themeManager.initialize(LegacyThemeConfig())
 
-    DocumentBasketScreen_Sample(themeManager)
+    //DocumentBasketScreen_Sample(themeManager)
+    DocumentSettingsScreen_Sample(themeManager)
     //ProductListScreen_Sample(themeManager)
 
 }

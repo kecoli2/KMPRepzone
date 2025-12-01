@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.platform.NumberFormatter
 import com.repzone.core.ui.base.ViewModelHost
+import com.repzone.core.ui.component.card.CardHeaderStyle
 import com.repzone.core.ui.component.card.CardVariant
 import com.repzone.core.ui.component.card.RepzoneCard
 import com.repzone.core.ui.component.dialog.RepzoneDialog
@@ -359,7 +360,8 @@ private fun CustomerFinancialCard(
     RepzoneCard(
         title = Res.string.customer_financial_status.fromResource(),
         leadingIcon = Icons.Default.AccountBalance,
-        variant = CardVariant.ELEVATED
+        variant = CardVariant.ELEVATED,
+        headerStyle = CardHeaderStyle.DEFAULT
     ) {
         Spacer(modifier = Modifier.height(8.dp))
 

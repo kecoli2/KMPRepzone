@@ -8,6 +8,7 @@ import com.repzone.domain.common.onError
 import com.repzone.domain.common.onSuccess
 import com.repzone.domain.document.base.IDocumentLine
 import com.repzone.domain.document.base.IDocumentSession
+import com.repzone.domain.document.base.UpdateLineResult
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.model.PaymentPlanModel
 import kotlinx.coroutines.flow.collectLatest
@@ -103,11 +104,33 @@ class DocumentBasketViewModel(iDocumentSession: IDocumentSession
             }
 
             is Event.UpdateEditingQuantity -> {
-                updateState { it.copy(editingQuantity = event.quantity) }
+                val result = iDocumentManager.updateLine(event.line.id, event.line.productUnit, event.line.quantity)
+                when(result) {
+                    is UpdateLineResult.Blocked -> {
+                        setError(result.error.message)
+                    }
+                    is UpdateLineResult.NeedsConfirmation -> {
+
+                    }
+                    else -> {
+                        updateState { it.copy(editingQuantity = event.quantity) }
+                    }
+                }
             }
 
             is Event.UpdateEditingUnit -> {
-                updateState { it.copy(editingSelectedUnit = event.unit) }
+                val result = iDocumentManager.updateLine(event.line.id, event.unit, event.line.quantity)
+                when(result) {
+                    is UpdateLineResult.Blocked -> {
+                        setError(result.error.message)
+                    }
+                    is UpdateLineResult.NeedsConfirmation -> {
+
+                    }
+                    else -> {
+                        updateState { it.copy(editingSelectedUnit = event.unit) }
+                    }
+                }
             }
 
             is Event.ConfirmLineEdit -> {
@@ -274,8 +297,8 @@ class DocumentBasketViewModel(iDocumentSession: IDocumentSession
         // Satır Düzenleme (Dialog)
         data class OpenEditDialog(val line: IDocumentLine) : Event()
         data object CloseEditDialog : Event()
-        data class UpdateEditingQuantity(val quantity: String) : Event()
-        data class UpdateEditingUnit(val unit: ProductUnit) : Event()
+        data class UpdateEditingQuantity(val line : IDocumentLine, val quantity: String) : Event()
+        data class UpdateEditingUnit(val line : IDocumentLine, val unit: ProductUnit) : Event()
         data object ConfirmLineEdit : Event()
 
         // Satır Inline Düzenleme (Row içinde)

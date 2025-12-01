@@ -27,7 +27,8 @@ data class DocumentLine(
     override val discount7: DiscountSlot = DiscountSlot.Empty,
     override val discount8: DiscountSlot = DiscountSlot.Empty,
     override val vatRate: BigDecimal,
-    val productInfo: ProductInformationModel
+    override val productUnit: ProductUnit,
+    override val productInfo: ProductInformationModel
 ) : IDocumentLine {
 
     // Computed properties
@@ -91,6 +92,22 @@ data class DocumentLine(
         return discountSlots.any { it is DiscountSlot.Applied }
     }
 
+    override fun updateQuantity(value: BigDecimal, unit: ProductUnit): IDocumentLine {
+        if(unitId != unit.unitId){
+            clearAllDiscounts()
+        }
+        val newLine = this.copy(
+            quantity = value,
+            unitId = unit.unitId,
+            unitName = unit.unitName,
+            conversionFactor = unit.multiplier,
+            unitPrice = unit.price,
+            productUnit = unit
+        )
+        calculateNetPrice()
+        return newLine
+    }
+
     /**
      * Net fiyat hesaplama
      * Her iskonto slot'u sırayla işlenir
@@ -113,5 +130,18 @@ data class DocumentLine(
         }
         
         return net.coerceAtLeast(BigDecimal.ZERO)
+    }
+
+    private fun clearAllDiscounts(){
+        this.copy(
+            discount1 = DiscountSlot.Empty,
+            discount2 = DiscountSlot.Empty,
+            discount3 = DiscountSlot.Empty,
+            discount4 = DiscountSlot.Empty,
+            discount5 = DiscountSlot.Empty,
+            discount6 = DiscountSlot.Empty,
+            discount7 = DiscountSlot.Empty,
+            discount8 = DiscountSlot.Empty
+        )
     }
 }
