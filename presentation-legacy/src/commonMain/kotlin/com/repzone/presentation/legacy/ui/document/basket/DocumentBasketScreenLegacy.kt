@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Inventory2
@@ -17,10 +18,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusManager
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -251,6 +255,7 @@ private fun BasketScreenContent(
     onSaveClick: () -> Unit
 ) {
     val formatter = remember { NumberFormatter() }
+    val focusManager = LocalFocusManager.current
 
     Scaffold(
     ) { paddingValues ->
@@ -277,7 +282,39 @@ private fun BasketScreenContent(
                     contentPadding = PaddingValues(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // ===== SECTION 1: Sepet Ürünleri =====
+                    // ===== SECTION 1: Ödeme Bilgileri =====
+                    item {
+                        ExpandableCard(
+                            title = Res.string.payment_info.fromResource(),
+                            expanded = isPaymentInfoExpanded,
+                            onExpandChange = onPaymentInfoExpandChange,
+                            subtitle = uiState.selectedPayment?.name,
+                            leadingIcon = Icons.Default.Payment,
+                            headerStyle = CardHeaderStyle.COMPACT,
+
+
+                        ) {
+                            PaymentInfoContent(
+                                selectedPayment = uiState.selectedPayment,
+                                dispatchDate = uiState.dispatchDate,
+                                onPaymentPlanClick = onPaymentPlanClick,
+                                onDatePickerClick = onDatePickerClick
+                            )
+                        }
+                    }
+
+                    // ===== Görsel Ayıraç =====
+                    item {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 24.dp),
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            thickness = 1.dp
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                    }
+
+                    // ===== SECTION 2: Sepet Ürünleri =====
                     item {
                         BasketProductsSection(
                             lines = uiState.lines,
@@ -290,36 +327,6 @@ private fun BasketScreenContent(
                         )
                     }
 
-                    // ===== Görsel Ayıraçımız =====
-                    item {
-                        Spacer(modifier = Modifier.height(4.dp))
-                        HorizontalDivider(
-                            modifier = Modifier.padding(horizontal = 24.dp),
-                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                            thickness = 1.dp
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                    }
-
-                    // ===== SECTION 2: Ödeme Bilgileri (Collapsible) =====
-                    item {
-                        ExpandableCard(
-                            title = Res.string.payment_info.fromResource(),
-                            expanded = isPaymentInfoExpanded,
-                            onExpandChange = onPaymentInfoExpandChange,
-                            subtitle = uiState.selectedPayment?.name,
-                            leadingIcon = Icons.Default.Payment,
-                            headerStyle = CardHeaderStyle.DEFAULT
-                        ) {
-                            PaymentInfoContent(
-                                selectedPayment = uiState.selectedPayment,
-                                dispatchDate = uiState.dispatchDate,
-                                onPaymentPlanClick = onPaymentPlanClick,
-                                onDatePickerClick = onDatePickerClick
-                            )
-                        }
-                    }
-
                     // ===== SECTION 3: Fatura Altı İskontolar (Collapsible) =====
                     item {
                         val hasDiscounts = discount1Text.isNotEmpty() || discount2Text.isNotEmpty() || discount3Text.isNotEmpty()
@@ -329,7 +336,7 @@ private fun BasketScreenContent(
                             onExpandChange = onDiscountExpandChange,
                             subtitle = if (hasDiscounts) Res.string.discount_applied.fromResource() else null,
                             leadingIcon = Icons.Default.Discount,
-                            headerStyle = CardHeaderStyle.DEFAULT
+                            headerStyle = CardHeaderStyle.COMPACT
                         ) {
                             InvoiceDiscountContent(
                                 discount1 = discount1Text,
@@ -337,7 +344,8 @@ private fun BasketScreenContent(
                                 discount3 = discount3Text,
                                 onDiscount1Change = onDiscount1Change,
                                 onDiscount2Change = onDiscount2Change,
-                                onDiscount3Change = onDiscount3Change
+                                onDiscount3Change = onDiscount3Change,
+                                focusManager = focusManager
                             )
                         }
                     }
@@ -776,25 +784,29 @@ private fun InvoiceDiscountContent(
     discount3: String,
     onDiscount1Change: (String) -> Unit,
     onDiscount2Change: (String) -> Unit,
-    onDiscount3Change: (String) -> Unit
+    onDiscount3Change: (String) -> Unit,
+    focusManager: FocusManager
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
         DiscountRow(
             label = "${Res.string.discount.fromResource()} 1",
             value = discount1,
-            onValueChange = onDiscount1Change
+            onValueChange = onDiscount1Change,
+            focusManager = focusManager
         )
 
         DiscountRow(
             label = "${Res.string.discount.fromResource()} 2",
             value = discount2,
-            onValueChange = onDiscount2Change
+            onValueChange = onDiscount2Change,
+            focusManager = focusManager
         )
 
         DiscountRow(
             label = "${Res.string.discount.fromResource()} 3",
             value = discount3,
-            onValueChange = onDiscount3Change
+            onValueChange = onDiscount3Change,
+            focusManager = focusManager
         )
     }
 }
@@ -944,7 +956,8 @@ private fun SelectableRow(
 private fun DiscountRow(
     label: String,
     value: String,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    focusManager: FocusManager
 ) {
     Row(
         modifier = Modifier.fillMaxWidth(),
@@ -970,7 +983,12 @@ private fun DiscountRow(
             cornerRadius = 8.dp,
             height = 40.dp,
             textAlignment = TextAlignment.END,
-            selectAllOnFocus = true
+            selectAllOnFocus = true,
+            imeAction = ImeAction.Done,
+            keyboardActions = KeyboardActions(
+                onNext = {  },
+                onDone = { focusManager.clearFocus() }
+            )
         )
     }
 }
