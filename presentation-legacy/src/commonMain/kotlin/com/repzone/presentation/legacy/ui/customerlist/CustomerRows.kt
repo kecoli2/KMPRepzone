@@ -32,6 +32,10 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.repzone.core.constant.CdnConfig
 import com.repzone.core.model.StringResource
+import com.repzone.core.ui.component.rowtemplate.BadgeConfig
+import com.repzone.core.ui.component.rowtemplate.ImageShapeType
+import com.repzone.core.ui.component.rowtemplate.LeadingImageConfig
+import com.repzone.core.ui.component.rowtemplate.RepzoneRowItemTemplate
 import com.repzone.core.ui.component.timerbadge.TimerBadge
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
@@ -209,104 +213,48 @@ fun CustomerCard(customer: CustomerItemModel,
 
 @OptIn(ExperimentalTime::class)
 @Composable
-fun CustomerCardParent(customer: CustomerItemModel,
-                       modifier: Modifier = Modifier,
-                       themeManager: ThemeManager,
-                       onCustomerClick: (CustomerItemModel) -> Unit = {}, uiState : CustomerListScreenUiState
+fun CustomerCardParent(
+    customer: CustomerItemModel,
+    modifier: Modifier = Modifier,
+    themeManager: ThemeManager,
+    onCustomerClick: (CustomerItemModel) -> Unit = {}
 ) {
+    val dayDesc = when {
+        customer.date?.toEpochMilliseconds()?.isToday() == true -> StringResource.ROUTETODAY.fromResource()
+        customer.date?.toEpochMilliseconds()?.isTomorrow() == true -> StringResource.ROUTETOMORROW.fromResource()
+        else -> customer.date?.toDayName() ?: ""
+    }
+
     Surface(
-        modifier = modifier.height(60.dp).clickable {
-            onCustomerClick(customer)
-        },
+        modifier = modifier.height(60.dp),
         color = MaterialTheme.colorScheme.surface
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            // Avatar
-            if (customer.imageUri != null) {
-                AsyncImage(
-                    model = "${CdnConfig.CDN_IMAGE_CONFIG}xs/${customer.imageUri}",
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop,
-                    alignment = Alignment.Center,
-                    error = painterResource(Res.drawable.image_not_found),
-                    onError = {
-                        println("Error: ${it.result.throwable.message}")
-                    },
+        RepzoneRowItemTemplate(
+            title = customer.name ?: "",
+            subtitle = customer.address,
+            titleSuffix = dayDesc.takeIf { it.isNotEmpty() },
+            leadingImage = if (customer.imageUri != null) {
+                LeadingImageConfig.Url(
+                    url = "${CdnConfig.CDN_IMAGE_CONFIG}xs/${customer.imageUri}",
+                    error = painterResource(Res.drawable.image_not_found)
                 )
             } else {
-                Icon(
+                LeadingImageConfig.Icon(
                     imageVector = Icons.Default.Person,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .clip(CircleShape)
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                        .padding(8.dp),
-                    tint = themeManager.getCurrentColorScheme().colorPalet.primary50
+                    tint = themeManager.getCurrentColorScheme().colorPalet.primary50,
+                    backgroundColor = MaterialTheme.colorScheme.surfaceVariant
                 )
-            }
-
-            // Orta metinler
-            val dayDesc =
-                when {
-                    customer.date?.toEpochMilliseconds()?.isToday() == true -> StringResource.ROUTETODAY.fromResource()
-                    customer.date?.toEpochMilliseconds()?.isTomorrow() == true -> StringResource.ROUTETOMORROW.fromResource()
-                    else -> customer.date?.toDayName() ?: ""
-                }
-
-            Column(
-                modifier = Modifier
-                    .padding(start = 12.dp)
-                    .weight(1f),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
-            ) {
-                Row(modifier = Modifier
-                    .fillMaxWidth()){
-                    Text(
-                        text = customer.name ?: "",
-                        style = MaterialTheme.typography.titleSmall,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                    if(customer.customerBlocked){
-                        Badge(containerColor = MaterialTheme.colorScheme.error) {
-                            Text(
-                                text = Res.string.customerblockedtitle.fromResource(),
-                                style = MaterialTheme.typography.labelSmall,
-                                fontSize = 10.sp
-                            )
-                        }
-                    }
-                    Text(
-                        modifier = Modifier.padding(start = 8.dp),
-                        text = dayDesc,
-                        fontWeight = FontWeight.Light,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-
-                Text(
-                    text = customer.address ?: "",
-                    fontWeight = FontWeight.Light,
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
+            },
+            leadingImageSize = 48.dp,
+            imageShapeType = ImageShapeType.CIRCLE,
+            badge = if (customer.customerBlocked) {
+                BadgeConfig(
+                    text = Res.string.customerblockedtitle.fromResource(),
+                    backgroundColor = MaterialTheme.colorScheme.error,
+                    textColor = MaterialTheme.colorScheme.onError
                 )
-            }
-        }
+            } else null,
+            onClick = { onCustomerClick(customer) }
+        )
     }
 }

@@ -333,7 +333,6 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                     items = uiState.customerParentModel?.parrentCustomers!!,
                     selectionMode = SelectionMode.SINGLE,
                     itemContent = { customer, isSelected ->
-
                         CustomerCardParent(customer, modifier = Modifier,
                             themeManager = themeManager,
                             onCustomerClick = { customer ->
@@ -342,7 +341,7 @@ fun CustomerListScreenLegacy(onNavigationDrawer: (type: NavigationItemType) -> U
                                 viewModel.scope.launch {
                                     viewModel.onEvent(CustomerListViewModel.Event.OnClickCustomerItem(customer) )
                                 }
-                            }, uiState = uiState)
+                            })
                     },
                     itemKey = {"${it.customerId}-${it.date}"},
                     searchEnabled = true,

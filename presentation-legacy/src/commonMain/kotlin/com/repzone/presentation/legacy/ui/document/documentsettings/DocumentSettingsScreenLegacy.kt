@@ -19,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.platform.NumberFormatter
 import com.repzone.core.ui.base.ViewModelHost
+import com.repzone.core.ui.component.rowtemplate.BadgeConfig
+import com.repzone.core.ui.component.rowtemplate.RepzoneRowItemTemplate
 import com.repzone.core.ui.component.card.CardHeaderStyle
 import com.repzone.core.ui.component.card.CardVariant
 import com.repzone.core.ui.component.card.RepzoneCard
@@ -574,43 +576,21 @@ private fun PaymentPlanSelectionDialog(
 }
 
 @Composable
-private fun PaymentPlanRow(
-    paymentPlan: PaymentPlanModel,
-    isSelected: Boolean
-) {
-    Column(
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Text(
-            text = paymentPlan.name,
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-            color = MaterialTheme.colorScheme.onSurface
-        )
-
-        Spacer(modifier = Modifier.height(4.dp))
-
-        Text(
-            text = paymentPlan.code,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        if (paymentPlan.isDefault) {
-            Spacer(modifier = Modifier.height(4.dp))
-            Surface(
-                shape = RoundedCornerShape(4.dp),
-                color = MaterialTheme.colorScheme.primaryContainer
-            ) {
-                Text(
-                    text = Res.string.default_text.fromResource(),
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onPrimaryContainer,
-                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp)
-                )
-            }
-        }
-    }
+private fun PaymentPlanRow(paymentPlan: PaymentPlanModel, isSelected: Boolean) {
+    RepzoneRowItemTemplate(
+        title = paymentPlan.name,
+        titleFontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+        height = 40.dp,
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+        subtitle = paymentPlan.code,
+        trailingBadge = if (paymentPlan.isDefault) {
+            BadgeConfig(
+                text = Res.string.default_text.fromResource(),
+                backgroundColor = MaterialTheme.colorScheme.primaryContainer,
+                textColor = MaterialTheme.colorScheme.onPrimaryContainer
+            )
+        } else null
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalTime::class)

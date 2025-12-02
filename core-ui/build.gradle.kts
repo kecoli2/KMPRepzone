@@ -43,6 +43,8 @@ kotlin {
                 implementation(compose.components.resources)
                 implementation(compose.materialIconsExtended)
                 implementation(libs.bignum)
+                implementation(libs.coil.compose)
+                implementation(libs.coil.network.ktor)
 
                 //PROJECT
                 implementation(projects.core)

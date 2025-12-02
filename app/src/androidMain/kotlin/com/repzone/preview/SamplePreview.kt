@@ -19,14 +19,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.TaskRepeatInterval
-import com.repzone.core.ui.component.BadgeConfig
-import com.repzone.core.ui.component.ImageShapeType
-import com.repzone.core.ui.component.RepzoneRowItemTemplate
+import com.repzone.core.ui.component.rowtemplate.BadgeConfig
+import com.repzone.core.ui.component.rowtemplate.ImageShapeType
+import com.repzone.core.ui.component.rowtemplate.LeadingImageConfig
+import com.repzone.core.ui.component.rowtemplate.RepzoneRowItemTemplate
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.domain.document.model.DiscountSlotConfig
@@ -481,7 +481,7 @@ fun RepzoneRowItemTemplate_Sample(themeManager: ThemeManager) {
         RepzoneRowItemTemplate(
             title = "Müşteri Adı",
             subtitle = "İstanbul, Türkiye",
-            leadingImage = painterResource(Res.drawable.profile),
+            leadingImage = LeadingImageConfig.Resource(painterResource(Res.drawable.profile)) ,
             imageShapeType = ImageShapeType.CIRCLE,
             leadingImageSize = 48.dp,
             badge = BadgeConfig(
@@ -494,7 +494,7 @@ fun RepzoneRowItemTemplate_Sample(themeManager: ThemeManager) {
         RepzoneRowItemTemplate(
             title = "Ürün Adı",
             subtitle = "Stok: 150 adet",
-            leadingImage = painterResource(Res.drawable.profile),
+            leadingImage = LeadingImageConfig.Resource(painterResource(Res.drawable.profile)),
             imageShapeType = ImageShapeType.ROUNDED,
             imageCornerRadius = 12.dp,
             leadingImageSize = 56.dp
