@@ -122,7 +122,11 @@ fun RepzoneTextField(
     stepValue: BigDecimal = BigDecimal.ONE,
     stepButtonSize: Dp = 32.dp,
     stepButtonBackgroundColor: Color = Color.Unspecified,
-    stepButtonIconColor: Color = Color.Unspecified
+    stepButtonIconColor: Color = Color.Unspecified,
+    // İçeriğe göre boyutlanma (NUMBER, DECIMAL için step butonlarıyla kullanılır)
+    wrapContentWidth: Boolean = false,
+    minTextFieldWidth: Dp = 45.dp,
+    maxTextFieldWidth: Dp = 120.dp
 ) {
     val formatter = remember { NumberFormatter() }
     val interactionSource = remember { MutableInteractionSource() }
@@ -325,7 +329,13 @@ fun RepzoneTextField(
             CoreTextField(
                 value = value,
                 onValueChange = filteredOnValueChange,
-                modifier = Modifier.weight(1f),
+                modifier = if (wrapContentWidth) {
+                    Modifier
+                        .width(IntrinsicSize.Min)
+                        .widthIn(min = minTextFieldWidth, max = maxTextFieldWidth)
+                } else {
+                    Modifier.weight(1f)
+                },
                 focusRequester = focusRequester,
                 height = height,
                 effectiveBackgroundColor = effectiveBackgroundColor,
@@ -354,7 +364,8 @@ fun RepzoneTextField(
                 decimalPlaces = decimalPlaces,
                 maxLength = maxLength,
                 maxValue = maxValue,
-                formatter = formatter
+                formatter = formatter,
+                wrapContentWidth = wrapContentWidth
             )
 
             // Artı butonu (sağda) - Yuvarlak
@@ -401,7 +412,8 @@ fun RepzoneTextField(
             decimalPlaces = decimalPlaces,
             maxLength = maxLength,
             maxValue = maxValue,
-            formatter = formatter
+            formatter = formatter,
+            wrapContentWidth = wrapContentWidth
         )
     }
 }
@@ -468,7 +480,8 @@ private fun CoreTextField(
     decimalPlaces: Int,
     maxLength: Int?,
     maxValue: BigDecimal?,
-    formatter: NumberFormatter
+    formatter: NumberFormatter,
+    wrapContentWidth: Boolean = false
 ) {
     if (selectAllOnFocus) {
         // TextFieldValue state'i
@@ -538,7 +551,10 @@ private fun CoreTextField(
                 .height(height)
                 .background(effectiveBackgroundColor, shape)
                 .then(borderModifier)
-                .padding(horizontal = 12.dp, vertical = 8.dp),
+                .padding(
+                    horizontal = if (wrapContentWidth) 6.dp else 12.dp,
+                    vertical = if (wrapContentWidth) 4.dp else 8.dp
+                ),
             textStyle = alignedTextStyle,
             singleLine = true,
             enabled = enabled,
@@ -561,7 +577,8 @@ private fun CoreTextField(
                     effectiveSuffix = effectiveSuffix,
                     showClearIcon = showClearIcon,
                     onClear = onClear,
-                    onValueChange = onValueChange
+                    onValueChange = onValueChange,
+                    wrapContentWidth = wrapContentWidth
                 )
             }
         )
@@ -574,7 +591,10 @@ private fun CoreTextField(
                 .height(height)
                 .background(effectiveBackgroundColor, shape)
                 .then(borderModifier)
-                .padding(horizontal = 12.dp, vertical = 8.dp),
+                .padding(
+                    horizontal = if (wrapContentWidth) 6.dp else 12.dp,
+                    vertical = if (wrapContentWidth) 4.dp else 8.dp
+                ),
             textStyle = alignedTextStyle,
             singleLine = true,
             enabled = enabled,
@@ -597,7 +617,8 @@ private fun CoreTextField(
                     effectiveSuffix = effectiveSuffix,
                     showClearIcon = showClearIcon,
                     onClear = onClear,
-                    onValueChange = onValueChange
+                    onValueChange = onValueChange,
+                    wrapContentWidth = wrapContentWidth
                 )
             }
         )
@@ -618,10 +639,11 @@ private fun DecorationContent(
     effectiveSuffix: String?,
     showClearIcon: Boolean,
     onClear: (() -> Unit)?,
-    onValueChange: (String) -> Unit
+    onValueChange: (String) -> Unit,
+    wrapContentWidth: Boolean = false
 ) {
     Row(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = if (wrapContentWidth) Modifier else Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (leadingIcon != null) {
@@ -640,19 +662,19 @@ private fun DecorationContent(
         }
 
         Box(
-            modifier = Modifier.weight(1f)
+            modifier = if (wrapContentWidth) Modifier else Modifier.weight(1f),
+            contentAlignment = if (wrapContentWidth) Alignment.Center else Alignment.CenterStart
         ) {
             if (value.isEmpty()) {
                 Text(
                     text = placeholder,
                     style = textStyle.copy(color = placeholderColor),
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = if (wrapContentWidth) Modifier else Modifier.fillMaxWidth()
                 )
             }
-            // propagateMinConstraints = true ile innerTextField genişliği zorlanır
             Box(
-                modifier = Modifier.fillMaxWidth(),
-                propagateMinConstraints = true
+                modifier = if (wrapContentWidth) Modifier else Modifier.fillMaxWidth(),
+                propagateMinConstraints = !wrapContentWidth
             ) {
                 innerTextField()
             }
@@ -920,7 +942,11 @@ fun NumberTextField(
     stepValue: BigDecimal = BigDecimal.ONE,
     stepButtonSize: Dp = 32.dp,
     stepButtonBackgroundColor: Color = Color.Unspecified,
-    stepButtonIconColor: Color = Color.Unspecified
+    stepButtonIconColor: Color = Color.Unspecified,
+    // İçeriğe göre boyutlanma
+    wrapContentWidth: Boolean = false,
+    minTextFieldWidth: Dp = 45.dp,
+    maxTextFieldWidth: Dp = 120.dp
 ) {
     RepzoneTextField(
         value = value,
@@ -952,7 +978,10 @@ fun NumberTextField(
         stepValue = stepValue,
         stepButtonSize = stepButtonSize,
         stepButtonBackgroundColor = stepButtonBackgroundColor,
-        stepButtonIconColor = stepButtonIconColor
+        stepButtonIconColor = stepButtonIconColor,
+        wrapContentWidth = wrapContentWidth,
+        minTextFieldWidth = minTextFieldWidth,
+        maxTextFieldWidth = maxTextFieldWidth
     )
 }
 
@@ -985,7 +1014,11 @@ fun DecimalTextField(
     stepValue: BigDecimal = BigDecimal.ONE,
     stepButtonSize: Dp = 32.dp,
     stepButtonBackgroundColor: Color = Color.Unspecified,
-    stepButtonIconColor: Color = Color.Unspecified
+    stepButtonIconColor: Color = Color.Unspecified,
+    // İçeriğe göre boyutlanma
+    wrapContentWidth: Boolean = false,
+    minTextFieldWidth: Dp = 45.dp,
+    maxTextFieldWidth: Dp = 120.dp
 ) {
     RepzoneTextField(
         value = value,
@@ -1016,7 +1049,10 @@ fun DecimalTextField(
         stepValue = stepValue,
         stepButtonSize = stepButtonSize,
         stepButtonBackgroundColor = stepButtonBackgroundColor,
-        stepButtonIconColor = stepButtonIconColor
+        stepButtonIconColor = stepButtonIconColor,
+        wrapContentWidth = wrapContentWidth,
+        minTextFieldWidth = minTextFieldWidth,
+        maxTextFieldWidth = maxTextFieldWidth
     )
 }
 

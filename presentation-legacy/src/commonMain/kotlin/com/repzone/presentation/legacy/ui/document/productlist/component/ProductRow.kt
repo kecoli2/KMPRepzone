@@ -370,7 +370,7 @@ private fun QuantityControls(
         NumberTextField(
             value = quantityText,
             onValueChange = onQuantityChanged,
-            modifier = Modifier.width(120.dp),
+            modifier = Modifier.wrapContentWidth(),
             placeholder = "0",
             height = 36.dp,
             cornerRadius = 0.dp,
@@ -393,7 +393,10 @@ private fun QuantityControls(
             showStepButtons = true,
             stepValue = BigDecimal.fromInt(1),
             maxValue = BigDecimal.fromInt(9999),
-            stepButtonSize = 22.dp
+            stepButtonSize = 22.dp,
+            wrapContentWidth = true,
+            minTextFieldWidth = 40.dp,
+            maxTextFieldWidth = 90.dp,
         )
     }
 }
