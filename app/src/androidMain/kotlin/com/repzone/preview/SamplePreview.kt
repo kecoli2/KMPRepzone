@@ -2,14 +2,31 @@
 
 package com.repzone.preview
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Switch
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.TaskRepeatInterval
+import com.repzone.core.ui.component.BadgeConfig
+import com.repzone.core.ui.component.ImageShapeType
+import com.repzone.core.ui.component.RepzoneRowItemTemplate
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.domain.document.model.DiscountSlotConfig
@@ -25,6 +42,9 @@ import com.repzone.presentation.legacy.ui.document.productlist.ProductListScreen
 import com.repzone.presentation.legacy.ui.document.productlist.component.DiscountDialogLegacy
 import com.repzone.presentation.legacy.ui.document.productlist.component.ProductRow
 import com.repzone.presentation.legacy.ui.visit.VisitActionList
+import org.jetbrains.compose.resources.painterResource
+import repzonemobile.core.generated.resources.Res
+import repzonemobile.core.generated.resources.profile
 import kotlin.time.ExperimentalTime
 
 //region -------------------- VISIT SAMPLE PREVIEW --------------------
@@ -405,7 +425,7 @@ fun DocumentSettingsScreen_Sample(themeManager: ThemeManager){
         )
     }
 }
-//ENDregion -------------------- DOCUMENT SETTING PREVIEW --------------------
+//endregion -------------------- DOCUMENT SETTING PREVIEW --------------------
 
 //region -------------------- BASKET PREVIEW --------------------
 @Composable
@@ -421,7 +441,100 @@ fun DocumentBasketScreen_Sample(themeManager: ThemeManager){
         )
     }
 }
-//ENDregion -------------------- BASKET PREVIEW --------------------
+//endregion -------------------- BASKET PREVIEW --------------------
+
+//region -------------------- ITEM TEMPLATE --------------------
+@Composable
+fun RepzoneRowItemTemplate_Sample(themeManager: ThemeManager) {
+    Column {
+        RepzoneRowItemTemplate(
+            title = "Ürün Adı"
+        )
+
+        RepzoneRowItemTemplate(
+            title = "Ürün Adı",
+            subtitle = "Kategori bilgisi"
+        )
+
+        RepzoneRowItemTemplate(
+            title = "Yazıcı",
+            subtitle = "Epson L3150",
+            badge = BadgeConfig(
+                text = "Varsayılan",
+                backgroundColor = Color(0xFFE3F2FD),
+                textColor = Color(0xFF1976D2)
+            )
+        )
+
+        RepzoneRowItemTemplate(
+            title = "Yazıcı",
+            subtitle = "Epson L3150",
+            badge = BadgeConfig(
+                text = "Varsayılan",
+                icon = Icons.Default.Check,
+                backgroundColor = Color(0xFFE8F5E9),
+                textColor = Color(0xFF2E7D32),
+                iconTint = Color(0xFF2E7D32)
+            )
+        )
+
+        RepzoneRowItemTemplate(
+            title = "Müşteri Adı",
+            subtitle = "İstanbul, Türkiye",
+            leadingImage = painterResource(Res.drawable.profile),
+            imageShapeType = ImageShapeType.CIRCLE,
+            leadingImageSize = 48.dp,
+            badge = BadgeConfig(
+                text = "VIP",
+                backgroundColor = Color(0xFFFFF3E0),
+                textColor = Color(0xFFE65100)
+            )
+        )
+
+        RepzoneRowItemTemplate(
+            title = "Ürün Adı",
+            subtitle = "Stok: 150 adet",
+            leadingImage = painterResource(Res.drawable.profile),
+            imageShapeType = ImageShapeType.ROUNDED,
+            imageCornerRadius = 12.dp,
+            leadingImageSize = 56.dp
+        )
+
+        RepzoneRowItemTemplate(
+            title = "Ayarlar",
+            subtitle = "Uygulama ayarları",
+            leadingContent = {
+                Box(
+                    modifier = Modifier
+                        .size(40.dp)
+                        .background(Color(0xFFF5F5F5), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Settings,
+                        contentDescription = null,
+                        tint = Color(0xFF666666)
+                    )
+                }
+            }
+        )
+
+        RepzoneRowItemTemplate(
+            title = "Bildirimler",
+            subtitle = "Push bildirimleri al",
+            trailingContent = {
+                Switch(
+                    checked = true,
+                    onCheckedChange = { }
+                )
+            }
+        )
+    }
+
+
+}
+//endregion -------------------- ITEM TEMPLATE --------------------
+
 
 
 

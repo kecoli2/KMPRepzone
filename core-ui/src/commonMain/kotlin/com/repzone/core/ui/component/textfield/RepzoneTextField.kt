@@ -132,7 +132,6 @@ fun RepzoneTextField(
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
 
-    // Tema uyumlu renkler - Color.Unspecified ise tema rengini kullan
     val effectiveBackgroundColor = if (backgroundColor == Color.Unspecified) {
         MaterialTheme.colorScheme.surfaceContainerHighest
     } else {
@@ -279,7 +278,6 @@ fun RepzoneTextField(
         else -> Modifier.border(borderWidth, currentBorderColor, shape)
     }
 
-    // Effective keyboard actions - eğer dışarıdan verilmemişse default davranış
     val effectiveKeyboardActions = keyboardActions ?: KeyboardActions(
         onSearch = { onSearch?.invoke() },
         onDone = { onSearch?.invoke() }
@@ -937,13 +935,11 @@ fun NumberTextField(
     imeAction: ImeAction = ImeAction.Done,
     keyboardActions: KeyboardActions? = null,
     focusRequester: FocusRequester? = null,
-    // Step butonları parametreleri
     showStepButtons: Boolean = false,
     stepValue: BigDecimal = BigDecimal.ONE,
     stepButtonSize: Dp = 32.dp,
     stepButtonBackgroundColor: Color = Color.Unspecified,
     stepButtonIconColor: Color = Color.Unspecified,
-    // İçeriğe göre boyutlanma
     wrapContentWidth: Boolean = false,
     minTextFieldWidth: Dp = 45.dp,
     maxTextFieldWidth: Dp = 120.dp

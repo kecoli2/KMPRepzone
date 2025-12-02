@@ -209,7 +209,7 @@ private fun ProductRowContent(
                     color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.padding(start = 4.dp)
+                    modifier = Modifier
                 )
 
                 Row(modifier = Modifier.fillMaxWidth()){

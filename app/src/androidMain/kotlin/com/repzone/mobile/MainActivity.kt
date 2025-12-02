@@ -44,6 +44,7 @@ import com.repzone.preview.DocumentBasketScreen_Sample
 import com.repzone.preview.DocumentSettingsScreen_Sample
 import com.repzone.preview.ProductListScreen_Sample
 import com.repzone.preview.Productrow_Preview
+import com.repzone.preview.RepzoneRowItemTemplate_Sample
 import com.repzone.sync.di.SyncModule
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
@@ -109,7 +110,7 @@ private fun AppContent() {
 
 @Composable
 //@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES, widthDp = 800, heightDp = 400)
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO, heightDp = 1000)
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_NO)
 fun AppAndroidPreview() {
     startKoin {
         androidContext(RepzoneApplication())
@@ -130,9 +131,8 @@ fun AppAndroidPreview() {
     val themeManager: ThemeManager = koinInject()
     themeManager.initialize(LegacyThemeConfig())
 
-    //DocumentBasketScreen_Sample(themeManager)
-    //DocumentSettingsScreen_Sample(themeManager)
-    //ProductListScreen_Sample(themeManager)
-    Productrow_Preview(themeManager)
+    RepzoneRowItemTemplate_Sample(themeManager)
+
+
 
 }
