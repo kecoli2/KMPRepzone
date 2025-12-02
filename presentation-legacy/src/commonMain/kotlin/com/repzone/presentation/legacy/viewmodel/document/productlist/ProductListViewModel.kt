@@ -90,7 +90,7 @@ class ProductListViewModel(
 
     fun startDocument() {
         scope.launch {
-            /*documentManager.lines.collect { lines ->
+            documentManager.lines.collect { lines ->
                 lines.forEach { line ->
                     updateRowState(line.productId) { state ->
                         state.copy(
@@ -100,7 +100,7 @@ class ProductListViewModel(
                         )
                     }
                 }
-            }*/
+            }
         }
     }
 

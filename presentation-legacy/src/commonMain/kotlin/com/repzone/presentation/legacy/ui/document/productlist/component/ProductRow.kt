@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.icons.outlined.Inventory2
@@ -13,17 +14,21 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.constant.CdnConfig
 import com.repzone.core.ui.component.textfield.BorderType
 import com.repzone.core.ui.component.textfield.NumberTextField
 import com.repzone.core.ui.component.textfield.TextAlignment
+import com.repzone.core.util.extensions.toCleanString
 import com.repzone.core.util.extensions.toMoney
 import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.document.model.ProductUnit
@@ -44,18 +49,20 @@ fun ProductRow(
     onDiscountClick: () -> Unit,
     modifier: Modifier = Modifier,
     indicatorColor: Color = Color.Red,
-    backgroundColor: Color
+    isLastItem: Boolean,
+    focusRequester: FocusRequester,
+    onNextRequested: () -> Unit
 ) {
     if (hasDiscountPermission) {
-        val dismissState = rememberSwipeToDismissBoxState(
-            confirmValueChange = { value ->
-                if (value == SwipeToDismissBoxValue.EndToStart) {
-                    onDiscountClick()
-                }
-                false
-            }
-        )
+        val dismissState = rememberSwipeToDismissBoxState()
         val discountCount = state.discountSlots.count { it.value.isNotEmpty() }
+
+        LaunchedEffect(dismissState.currentValue) {
+            if (dismissState.currentValue == SwipeToDismissBoxValue.EndToStart) {
+                onDiscountClick()
+                dismissState.snapTo(SwipeToDismissBoxValue.Settled)
+            }
+        }
 
         SwipeToDismissBox(
             state = dismissState,
@@ -75,8 +82,10 @@ fun ProductRow(
                 onUnitCycle = onUnitCycle,
                 onQuantityChanged = onQuantityChanged,
                 indicatorColor = indicatorColor,
-                backgroundColor = backgroundColor,
-                modifier = modifier
+                modifier = modifier,
+                isLastItem = isLastItem,
+                focusRequester = focusRequester,
+                onNextRequested = onNextRequested
             )
         }
     } else {
@@ -86,8 +95,10 @@ fun ProductRow(
             onUnitCycle = onUnitCycle,
             onQuantityChanged = onQuantityChanged,
             indicatorColor = indicatorColor,
-            backgroundColor = backgroundColor,
-            modifier = modifier
+            modifier = modifier,
+            isLastItem = isLastItem,
+            focusRequester = focusRequester,
+            onNextRequested = onNextRequested
         )
     }
 }
@@ -131,13 +142,15 @@ private fun ProductRowContent(
     onUnitCycle: () -> Unit,
     onQuantityChanged: (String) -> Unit,
     indicatorColor: Color,
-    backgroundColor: Color,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    isLastItem: Boolean,
+    focusRequester: FocusRequester,
+    onNextRequested: () -> Unit
 ) {
     val priceText = state.currentUnit?.price?.doubleValue(false)?.toMoney() ?: "-"
-    val stockQty = product.stock.doubleValue(false)
-    val stockText = "${stockQty.toInt()} ${product.baseUnit.unitName}"
-    val hasStock = stockQty > 0
+    val stockQty = product.getDefaultStock(state.currentUnit ?: product.baseUnit)
+    val stockText = "${stockQty.toCleanString()} ${state.currentUnit?.unitName ?: product.baseUnit.unitName}"
+    val hasStock = stockQty.compare(BigDecimal.ZERO) > 0
 
     Surface(
         modifier = modifier.fillMaxWidth(),
@@ -279,7 +292,9 @@ private fun ProductRowContent(
                 validationStatus = state.validationStatus,
                 onUnitCycle = onUnitCycle,
                 onQuantityChanged = onQuantityChanged,
-                backgroundColor = backgroundColor
+                isLastItem = isLastItem,
+                focusRequester = focusRequester,
+                onNextRequested = onNextRequested
             )
             Spacer(modifier = Modifier.width(4.dp))
         }
@@ -323,7 +338,9 @@ private fun QuantityControls(
     validationStatus: ValidationStatus,
     onUnitCycle: () -> Unit,
     onQuantityChanged: (String) -> Unit,
-    backgroundColor: Color
+    isLastItem: Boolean,
+    focusRequester: FocusRequester,
+    onNextRequested: () -> Unit
 ) {
     val isError = validationStatus is ValidationStatus.Error
 
@@ -367,7 +384,13 @@ private fun QuantityControls(
             selectAllOnFocus = true,
             focusedBorderColor = if (isError) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary,
             unfocusedBorderColor = if (isError) MaterialTheme.colorScheme.error.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.3f),
-            showClearIcon = false
+            showClearIcon = false,
+            imeAction = if (isLastItem) ImeAction.Done else ImeAction.Next,
+            keyboardActions = KeyboardActions(
+                onNext = { onNextRequested() },
+                onDone = { onNextRequested() }
+            ),
+            focusRequester = focusRequester
         )
     }
 }

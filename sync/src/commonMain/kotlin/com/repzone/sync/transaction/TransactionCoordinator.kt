@@ -40,6 +40,10 @@ class TransactionCoordinator(
     // Result channels for each operation
     private val resultChannels = mutableMapOf<Long, Channel<OperationResult>>()
 
+    private val transactionQueue = Channel<TransactionBlock<*>>(capacity = Channel.UNLIMITED)
+    private val transactionResultChannels = mutableMapOf<Long, Channel<TransactionResult<*>>>()
+
+
     private val statsMutex = Mutex()
     private var totalOperations = 0L
     private var successfulOperations = 0L
@@ -64,10 +68,34 @@ class TransactionCoordinator(
                 processCompositeOperation(compositeOp)
             }
         }
+
+        scope.launch {
+            for (transaction in transactionQueue) {
+                processTransaction(transaction)
+            }
+        }
     }
     //endregion
 
     //region Public Method
+    @Suppress("UNCHECKED_CAST")
+    suspend fun <T> executeTransaction(description: String = "Custom Transaction", block: suspend () -> T): TransactionResult<T> {
+        val operationId = generateOperationId()
+        val transactionBlock = TransactionBlock(
+            id = operationId,
+            description = description,
+            block = block
+        )
+
+        val resultChannel = Channel<TransactionResult<*>>(1)
+        transactionResultChannels[operationId] = resultChannel
+
+        transactionQueue.send(transactionBlock)
+        val result = resultChannel.receive()
+        transactionResultChannels.remove(operationId)
+
+        return result as TransactionResult<T>
+    }
     suspend fun executeCompositeOperation(compositeOp: CompositeOperation): OperationResult {
         val operationId = generateOperationId()
         compositeOp.id = operationId
@@ -111,6 +139,57 @@ class TransactionCoordinator(
     //endregion
 
     //region Private Method
+    @OptIn(ExperimentalTime::class)
+    private suspend fun <T> processTransaction(transactionBlock: TransactionBlock<T>) {
+        val startTime = now()
+
+        statsMutex.withLock {
+            totalOperations++
+        }
+
+        try {
+            val result = iDatabaseManager.getDatabase().transactionWithResult {
+                // Block'u çalıştır (suspend olduğu için runBlocking gerekebilir)
+                kotlinx.coroutines.runBlocking {
+                    transactionBlock.block()
+                }
+            }
+
+            val duration = now() - startTime
+
+            statsMutex.withLock {
+                successfulOperations++
+            }
+
+            val successResult = TransactionResult.Success(
+                data = result,
+                duration = duration,
+                operationId = transactionBlock.id
+            )
+
+            println("Transaction completed: ${transactionBlock.description} in ${duration}ms")
+
+            transactionResultChannels[transactionBlock.id]?.send(successResult)
+
+        } catch (e: Exception) {
+            val duration = now() - startTime
+
+            statsMutex.withLock {
+                failedOperations++
+            }
+
+            val errorResult = TransactionResult.Error<T>(
+                error = e.message ?: "Unknown error",
+                duration = duration,
+                operationId = transactionBlock.id
+            )
+
+            println("Transaction failed: ${transactionBlock.description} - ${e.message}")
+
+            transactionResultChannels[transactionBlock.id]?.send(errorResult)
+        }
+    }
+
     /**
      * Operation'ı işler - TEK THREAD'DE SIRAYLA
      */
@@ -312,6 +391,7 @@ class TransactionCoordinator(
     fun shutdown() {
         operationQueue.close()
         compositeQueue.close()
+        transactionQueue.close()
         scope.cancel()
         println("TransactionCoordinator shutdown")
     }

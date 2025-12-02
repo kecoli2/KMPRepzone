@@ -1,6 +1,8 @@
 package com.repzone.domain.document.model
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import com.ionspin.kotlin.bignum.decimal.DecimalMode
+import com.ionspin.kotlin.bignum.decimal.RoundingMode
 
 /**
  * Ürün
@@ -24,7 +26,7 @@ data class ProductInformationModel(
     val defaultUnitName: String,
     val defaultUnitWeight: BigDecimal? = null,
     val units: List<ProductUnit>,
-    val color: String = "#ffffff",
+    val color: String? = null,
     val brandPhotoPath: String? = null,
     val groupPhotoPath: String? = null,
     val displayOrder: Int = 0,
@@ -40,6 +42,16 @@ data class ProductInformationModel(
      */
     val baseUnit: ProductUnit
         get() = units.first { it.isBaseUnit }
+
+    fun getDefaultStock(unit: ProductUnit): BigDecimal {
+        val decimalMode = when(unit.multiplier.intValue()){
+            1 -> DecimalMode(decimalPrecision = 2, roundingMode = RoundingMode.ROUND_HALF_CEILING)
+            else -> {
+                DecimalMode(decimalPrecision = 2, roundingMode = RoundingMode.ROUND_HALF_CEILING)
+            }
+        }
+        return stock.divide(unit.multiplier, decimalMode)
+    }
 }
 
 

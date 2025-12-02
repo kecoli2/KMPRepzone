@@ -3,7 +3,10 @@
 package com.repzone.preview
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.TaskRepeatInterval
@@ -146,6 +149,7 @@ fun ProductListScreen_Sample(themeManager: ThemeManager){
 @Composable
 fun Productrow_Preview(themeManager: ThemeManager){
     val product = generateDummyProducts()[0]
+    val focusManager = LocalFocusManager.current
     val productState = ProductRowState(
         productId = product.id,
         availableUnits = product.units,
@@ -153,7 +157,11 @@ fun Productrow_Preview(themeManager: ThemeManager){
         quantityText = "1.00",
     )
     AppTheme(themeManager) {
-        ProductRow(
+        val focusRequesters = remember { mutableMapOf<Int, FocusRequester>() }
+        val focusRequester = remember {
+            focusRequesters.getOrPut(0) { FocusRequester() }
+        }
+/*        ProductRow(
             product = product,
             state = productState,
             hasDiscountPermission = true,
@@ -167,8 +175,12 @@ fun Productrow_Preview(themeManager: ThemeManager){
 
             },
             modifier = Modifier,
-            backgroundColor = themeManager.getCurrentColorScheme().colorPalet.neutral95
-        )
+            isLastItem = false,
+            focusRequester = focusRequester,
+            onNextRequested = {
+
+            }
+        )*/
     }
 }
 

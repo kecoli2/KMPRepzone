@@ -41,6 +41,8 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.platform.NumberFormatter
 
@@ -89,6 +91,7 @@ fun RepzoneTextField(
     prefix: String? = null,
     suffix: String? = null,
     imeAction: ImeAction = if (inputType == TextFieldInputType.TEXT) ImeAction.Search else ImeAction.Done,
+    keyboardActions: KeyboardActions? = null,
     maxLength: Int? = null,
     decimalPlaces: Int = 2,
     showCurrencySymbol: Boolean = true,
@@ -104,7 +107,9 @@ fun RepzoneTextField(
     // Focus'ta seçim
     selectAllOnFocus: Boolean = false,
     // Maksimum değer (NUMBER, DECIMAL, CURRENCY için)
-    maxValue: BigDecimal? = null
+    maxValue: BigDecimal? = null,
+    // Focus requester
+    focusRequester: FocusRequester? = null
 ) {
     val formatter = remember { NumberFormatter() }
     val interactionSource = remember { MutableInteractionSource() }
@@ -245,6 +250,12 @@ fun RepzoneTextField(
         else -> Modifier.border(borderWidth, currentBorderColor, shape)
     }
 
+    // Effective keyboard actions - eğer dışarıdan verilmemişse default davranış
+    val effectiveKeyboardActions = keyboardActions ?: KeyboardActions(
+        onSearch = { onSearch?.invoke() },
+        onDone = { onSearch?.invoke() }
+    )
+
     if (selectAllOnFocus) {
         // TextFieldValue state'i
         var textFieldValue by remember {
@@ -309,6 +320,7 @@ fun RepzoneTextField(
                 onValueChange(finalText)
             },
             modifier = modifier
+                .then(focusRequester?.let { Modifier.focusRequester(it) } ?: Modifier)
                 .height(height)
                 .background(effectiveBackgroundColor, shape)
                 .then(borderModifier)
@@ -318,10 +330,7 @@ fun RepzoneTextField(
             enabled = enabled,
             cursorBrush = SolidColor(effectiveCursorColor),
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
-            keyboardActions = KeyboardActions(
-                onSearch = { onSearch?.invoke() },
-                onDone = { onSearch?.invoke() }
-            ),
+            keyboardActions = effectiveKeyboardActions,
             visualTransformation = visualTransformation,
             interactionSource = interactionSource,
             decorationBox = { innerTextField ->
@@ -347,6 +356,7 @@ fun RepzoneTextField(
             value = value,
             onValueChange = filteredOnValueChange,
             modifier = modifier
+                .then(focusRequester?.let { Modifier.focusRequester(it) } ?: Modifier)
                 .height(height)
                 .background(effectiveBackgroundColor, shape)
                 .then(borderModifier)
@@ -356,10 +366,7 @@ fun RepzoneTextField(
             enabled = enabled,
             cursorBrush = SolidColor(effectiveCursorColor),
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType, imeAction = imeAction),
-            keyboardActions = KeyboardActions(
-                onSearch = { onSearch?.invoke() },
-                onDone = { onSearch?.invoke() }
-            ),
+            keyboardActions = effectiveKeyboardActions,
             visualTransformation = visualTransformation,
             interactionSource = interactionSource,
             decorationBox = { innerTextField ->
@@ -594,7 +601,9 @@ fun CurrencyTextField(
     showClearIcon: Boolean = true,
     textAlignment: TextAlignment = TextAlignment.START,
     selectAllOnFocus: Boolean = false,
-    maxValue: BigDecimal? = null
+    maxValue: BigDecimal? = null,
+    imeAction: ImeAction = ImeAction.Done,
+    keyboardActions: KeyboardActions? = null
 ) {
     RepzoneTextField(
         value = value,
@@ -616,7 +625,9 @@ fun CurrencyTextField(
         borderWidth = borderWidth,
         textAlignment = textAlignment,
         selectAllOnFocus = selectAllOnFocus,
-        maxValue = maxValue
+        maxValue = maxValue,
+        imeAction = imeAction,
+        keyboardActions = keyboardActions
     )
 }
 
@@ -640,7 +651,10 @@ fun NumberTextField(
     showClearIcon: Boolean = true,
     textAlignment: TextAlignment = TextAlignment.START,
     selectAllOnFocus: Boolean = false,
-    maxValue: BigDecimal? = null
+    maxValue: BigDecimal? = null,
+    imeAction: ImeAction = ImeAction.Done,
+    keyboardActions: KeyboardActions? = null,
+    focusRequester: FocusRequester? = null
 ) {
     RepzoneTextField(
         value = value,
@@ -663,7 +677,10 @@ fun NumberTextField(
         borderWidth = borderWidth,
         textAlignment = textAlignment,
         selectAllOnFocus = selectAllOnFocus,
-        maxValue = maxValue
+        maxValue = maxValue,
+        imeAction = imeAction,
+        keyboardActions = keyboardActions,
+        focusRequester = focusRequester
     )
 }
 
@@ -687,7 +704,9 @@ fun DecimalTextField(
     showClearIcon: Boolean = true,
     textAlignment: TextAlignment = TextAlignment.START,
     selectAllOnFocus: Boolean = false,
-    maxValue: BigDecimal? = null
+    maxValue: BigDecimal? = null,
+    imeAction: ImeAction = ImeAction.Done,
+    keyboardActions: KeyboardActions? = null
 ) {
     RepzoneTextField(
         value = value,
@@ -710,7 +729,9 @@ fun DecimalTextField(
         borderWidth = borderWidth,
         textAlignment = textAlignment,
         selectAllOnFocus = selectAllOnFocus,
-        maxValue = maxValue
+        maxValue = maxValue,
+        imeAction = imeAction,
+        keyboardActions = keyboardActions
     )
 }
 

@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.SkipNext
-import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -31,11 +29,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.FocusManager
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
@@ -45,18 +44,14 @@ import app.cash.paging.LoadStateNotLoading
 import app.cash.paging.compose.LazyPagingItems
 import app.cash.paging.compose.collectAsLazyPagingItems
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
-import com.repzone.core.model.StringResource
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.component.floatactionbutton.SmartFabScaffold
 import com.repzone.core.ui.component.floatactionbutton.model.FabAction
 import com.repzone.core.ui.component.topappbar.RepzoneTopAppBar
-import com.repzone.core.ui.component.topappbar.TopBarAction
 import com.repzone.core.ui.component.topappbar.TopBarLeftIcon
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.ui.util.getDocumentNameForResource
-import com.repzone.core.util.extensions.fromResource
 import com.repzone.domain.document.model.DiscountSlotConfig
-import com.repzone.domain.document.model.DiscountType
 import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.model.product.ProductRowState
 import com.repzone.presentation.legacy.model.enum.ProductSortOption
@@ -65,17 +60,15 @@ import com.repzone.presentation.legacy.ui.document.productlist.component.Product
 import com.repzone.presentation.legacy.ui.document.productlist.component.ProductListFilterBar
 import com.repzone.presentation.legacy.ui.document.productlist.component.ProductRow
 import com.repzone.presentation.legacy.viewmodel.document.productlist.ProductListViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductListScreenLegacy(onDissmiss: () -> Unit, onNavigateDocumentSettings: () -> Unit) = ViewModelHost<ProductListViewModel> { viewModel ->
     val themeManager: ThemeManager = koinInject()
-    val backgroundColor = remember(themeManager) {
-        themeManager.getCurrentColorScheme().colorPalet.neutral95
-    }
-
     val uiState by viewModel.state.collectAsState()
     val products = viewModel.products.collectAsLazyPagingItems()
     val rowStates by viewModel.rowStates.collectAsState()
@@ -83,6 +76,8 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit, onNavigateDocumentSettings: 
     val entryCount = viewModel.entryCount.collectAsState()
     var showFilterSheet by remember { mutableStateOf(false) }
     var selectedSort by remember { mutableStateOf(ProductSortOption.NAME_ASC) }
+    var isProgrammaticScroll by remember { mutableStateOf(false) }
+
 
     LaunchedEffect(Unit) {
         viewModel.startDocument()
@@ -145,10 +140,6 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit, onNavigateDocumentSettings: 
                 modifier = Modifier.padding(0.dp),
                 themeManager = themeManager,
                 leftIconType = TopBarLeftIcon.Back(onClick = onDissmiss),
-                rightIcons = listOf(
-                    TopBarAction(Icons.Default.Timer, "Timer", Color.White, {}),
-                    TopBarAction(Icons.Default.Map, "Map", Color.White, {}),
-                ),
                 title = viewModel.getDocumentName().getDocumentNameForResource(),
                 subtitle = viewModel.getDocumentSubTitle()
             )
@@ -180,7 +171,6 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit, onNavigateDocumentSettings: 
                     rowStates = rowStates,
                     hasDiscountPermission = true,
                     viewModel = viewModel,
-                    backgroundColor = backgroundColor
                 )
             }
         }
@@ -213,9 +203,6 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit, onNavigateDocumentSettings: 
     showDiscountDialog?.let { dialogEvent ->
         DiscountDialogLegacy(
             product = dialogEvent.product,
-            unit = dialogEvent.currentUnit,
-            quantity = dialogEvent.quantity,
-            existingDiscounts = dialogEvent.existingDiscounts,
             slotConfigs = listOf(
                 DiscountSlotConfig(
                     slotNumber = 1,
@@ -226,34 +213,31 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit, onNavigateDocumentSettings: 
                 ),
                 DiscountSlotConfig(
                     slotNumber = 2,
-                    name = "İndirim Iskontosu 2",
+                    name = "İndirim Iskontosu",
                     allowManualEntry = true,
                     allowAutomatic = true,
-                    maxPercentage = BigDecimal.fromInt(40)
+                    maxPercentage = BigDecimal.fromInt(100)
                 ),
                 DiscountSlotConfig(
                     slotNumber = 3,
-                    name = "İndirim Iskontosu 3 Deneme",
-                    allowManualEntry = false,
+                    name = "İndirim Iskontosu",
+                    allowManualEntry = true,
                     allowAutomatic = true,
                     maxPercentage = BigDecimal.fromInt(100)
                 ),
                 DiscountSlotConfig(
                     slotNumber = 4,
-                    name = "İndirim Iskontosu 4",
+                    name = "İndirim Iskontosu",
                     allowManualEntry = true,
                     allowAutomatic = true,
-                    maxPercentage = BigDecimal.fromInt(14)
+                    maxPercentage = BigDecimal.fromInt(100)
                 ),
                 DiscountSlotConfig(
                     slotNumber = 5,
-                    name = "İndirim Iskontosu Tutar",
+                    name = "İndirim Iskontosu",
                     allowManualEntry = true,
                     allowAutomatic = true,
-                    maxPercentage = null,
-                    slotType = DiscountType.FIXED_AMOUNT
-
-
+                    maxPercentage = BigDecimal.fromInt(100)
                 ),
                 DiscountSlotConfig(
                     slotNumber = 6,
@@ -284,6 +268,9 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit, onNavigateDocumentSettings: 
             onDismiss = {
                 showDiscountDialog = null
             },
+            existingDiscounts = dialogEvent.existingDiscounts,
+            unit = dialogEvent.currentUnit,
+            quantity = dialogEvent.quantity,
             themeManager = themeManager
         )
     }
@@ -294,24 +281,29 @@ private fun ProductList(
     products: LazyPagingItems<ProductInformationModel>,
     rowStates: Map<Int, ProductRowState>,
     hasDiscountPermission: Boolean,
-    viewModel: ProductListViewModel,
-    backgroundColor: Color
+    viewModel: ProductListViewModel
 ) {
     val listState = rememberLazyListState()
     val focusManager = LocalFocusManager.current
+    val coroutineScope = rememberCoroutineScope()
+
+    // FocusRequester'ları tutan map
+    val focusRequesters = remember { mutableMapOf<Int, FocusRequester>() }
+    var isProgrammaticScroll by remember { mutableStateOf(false) }
 
     LaunchedEffect(listState.isScrollInProgress) {
-        if (listState.isScrollInProgress) {
+        if (listState.isScrollInProgress && !isProgrammaticScroll) {
             focusManager.clearFocus()
         }
     }
 
     LazyColumn(
         state = listState,
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier
+            .fillMaxSize()
             .pointerInput(Unit) {
-            detectTapGestures(onTap = { focusManager.clearFocus() })
-        },
+                detectTapGestures(onTap = { focusManager.clearFocus() })
+            },
         contentPadding = PaddingValues(
             top = 8.dp,
             bottom = 88.dp
@@ -349,14 +341,42 @@ private fun ProductList(
         ) { index ->
             val product = products[index] ?: return@items
             val rowState = rowStates[product.id]
+            val isLastItem = index == products.itemCount - 1
+
+            // Bu index için FocusRequester al veya oluştur
+            val focusRequester = remember {
+                focusRequesters.getOrPut(index) { FocusRequester() }
+            }
 
             ProductRowOptimized(
                 product = product,
                 rowState = rowState,
                 hasDiscountPermission = hasDiscountPermission,
                 viewModel = viewModel,
-                backgroundColor = backgroundColor,
-                focusManager = focusManager
+                isLastItem = isLastItem,
+                focusRequester = focusRequester,
+                onNextRequested = {
+                    if (!isLastItem) {
+                        coroutineScope.launch {
+                            isProgrammaticScroll = true
+                            // Önce scroll et
+                            listState.animateScrollToItem(index + 1)
+                            // Biraz bekle ki item compose edilsin
+                            delay(150)
+                            // Sonra focus ver
+                            try {
+                                focusRequesters[index + 1]?.requestFocus()
+                                    ?: focusManager.moveFocus(FocusDirection.Down)
+                            } catch (e: Exception) {
+                                focusManager.moveFocus(FocusDirection.Down)
+                            }
+                            isProgrammaticScroll = false
+                        }
+                    } else {
+                        // Son item'da klavyeyi kapat
+                        focusManager.clearFocus()
+                    }
+                }
             )
         }
 
@@ -395,21 +415,22 @@ private fun ProductList(
         }
     }
 }
+
 @Composable
 private fun ProductRowOptimized(
     product: ProductInformationModel,
     rowState: ProductRowState?,
     hasDiscountPermission: Boolean,
     viewModel: ProductListViewModel,
-    backgroundColor: Color,
-    focusManager: FocusManager
+    isLastItem: Boolean,
+    focusRequester: FocusRequester,
+    onNextRequested: () -> Unit
 ) {
     val displayState = rowState ?: viewModel.getDisplayState(product)
 
     val callbacks = remember(product.id) {
         ProductRowCallbacks(
             onUnitCycle = {
-                focusManager.clearFocus()
                 viewModel.onUnitCycleClicked(product) },
             onQuantityChanged = { text -> viewModel.onQuantityChanged(product, text) },
             onDiscountClick = { viewModel.onDiscountButtonClicked(product) }
@@ -423,11 +444,14 @@ private fun ProductRowOptimized(
         onUnitCycle = callbacks.onUnitCycle,
         onQuantityChanged = callbacks.onQuantityChanged,
         onDiscountClick = callbacks.onDiscountClick,
-        backgroundColor = backgroundColor
+        isLastItem = isLastItem,
+        focusRequester = focusRequester,
+        onNextRequested = onNextRequested
     )
 
     HorizontalDivider()
 }
+
 private data class ProductRowCallbacks(
     val onUnitCycle: () -> Unit,
     val onQuantityChanged: (String) -> Unit,
