@@ -398,12 +398,13 @@ private fun QuantityControls(
             ),
             focusRequester = focusRequester,
             showStepButtons = true,
-            stepValue = BigDecimal.fromInt(1),
+            stepValue = BigDecimal.fromInt(5),
             maxValue = BigDecimal.fromInt(9999),
             stepButtonSize = 22.dp,
             wrapContentWidth = true,
             minTextFieldWidth = 40.dp,
             maxTextFieldWidth = 90.dp,
+
         )
     }
 }

@@ -59,6 +59,7 @@ import com.repzone.presentation.legacy.ui.document.productlist.component.Discoun
 import com.repzone.presentation.legacy.ui.document.productlist.component.ProductFilterBottomSheet
 import com.repzone.presentation.legacy.ui.document.productlist.component.ProductListFilterBar
 import com.repzone.presentation.legacy.ui.document.productlist.component.ProductRow
+import com.repzone.presentation.legacy.ui.document.productlist.component.ProductStatisticsPanel
 import com.repzone.presentation.legacy.viewmodel.document.productlist.ProductListViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -76,8 +77,7 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit, onNavigateDocumentSettings: 
     val entryCount = viewModel.entryCount.collectAsState()
     var showFilterSheet by remember { mutableStateOf(false) }
     var selectedSort by remember { mutableStateOf(ProductSortOption.NAME_ASC) }
-    var isProgrammaticScroll by remember { mutableStateOf(false) }
-
+    val productStatistics by viewModel.productStatistics.collectAsState()
 
     LaunchedEffect(Unit) {
         viewModel.startDocument()
@@ -131,50 +131,60 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit, onNavigateDocumentSettings: 
             }
         }
     ) { padding ->
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
         ) {
-            RepzoneTopAppBar(
-                modifier = Modifier.padding(0.dp),
-                themeManager = themeManager,
-                leftIconType = TopBarLeftIcon.Back(onClick = onDissmiss),
-                title = viewModel.getDocumentName().getDocumentNameForResource(),
-                subtitle = viewModel.getDocumentSubTitle()
-            )
+            // Main content column
+            Column(modifier = Modifier.fillMaxSize()) {
+                RepzoneTopAppBar(
+                    modifier = Modifier.padding(0.dp),
+                    themeManager = themeManager,
+                    leftIconType = TopBarLeftIcon.Back(onClick = onDissmiss),
+                    title = viewModel.getDocumentName().getDocumentNameForResource(),
+                    subtitle = viewModel.getDocumentSubTitle()
+                )
 
-            if(uiState.onFabClickedProgress){
-                CircularProgressIndicator()
-            }
-
-            if (uiState.uiFrame.isLoading) {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
+                if(uiState.onFabClickedProgress){
                     CircularProgressIndicator()
                 }
-            } else {
-                ProductListFilterBar(
-                    filterState = uiState.filterState,
-                    onSearchQueryChanged = viewModel::onSearchQueryChanged,
-                    onFilterButtonClick = { showFilterSheet = true },
-                    modifier = Modifier,
-                    themeManager = themeManager
-                )
 
-                HorizontalDivider()
+                if (uiState.uiFrame.isLoading) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        CircularProgressIndicator()
+                    }
+                } else {
+                    ProductListFilterBar(
+                        filterState = uiState.filterState,
+                        onSearchQueryChanged = viewModel::onSearchQueryChanged,
+                        onFilterButtonClick = { showFilterSheet = true },
+                        modifier = Modifier,
+                        themeManager = themeManager
+                    )
 
-                ProductList(
-                    products = products,
-                    rowStates = rowStates,
-                    hasDiscountPermission = true,
-                    viewModel = viewModel,
-                )
+                    HorizontalDivider()
+
+                    ProductList(
+                        products = products,
+                        rowStates = rowStates,
+                        hasDiscountPermission = true,
+                        viewModel = viewModel,
+                    )
+                }
             }
+
+            ProductStatisticsPanel(
+                statistics = productStatistics,
+                modifier = Modifier.align(Alignment.BottomCenter),
+                fabSpacing = true
+            )
         }
     }
+
 
     uiState.availableFilters?.let { filters ->
         ProductFilterBottomSheet(
@@ -306,7 +316,7 @@ private fun ProductList(
             },
         contentPadding = PaddingValues(
             top = 8.dp,
-            bottom = 88.dp
+            bottom = 95.dp
         ),
         verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
@@ -426,6 +436,10 @@ private fun ProductRowOptimized(
     focusRequester: FocusRequester,
     onNextRequested: () -> Unit
 ) {
+    LaunchedEffect(product.id) {
+        viewModel.cacheProduct(product)
+    }
+
     val displayState = rowState ?: viewModel.getDisplayState(product)
 
     val callbacks = remember(product.id) {

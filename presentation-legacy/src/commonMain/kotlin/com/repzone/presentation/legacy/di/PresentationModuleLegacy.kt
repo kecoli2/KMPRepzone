@@ -5,6 +5,8 @@ import com.repzone.presentation.legacy.theme.LegacyThemeConfig
 import com.repzone.presentation.legacy.viewmodel.login.LoginScreenViewModel
 import com.repzone.core.ui.viewmodel.splash.SplashScreenViewModel
 import com.repzone.core.ui.viewmodel.sync.SyncViewModel
+import com.repzone.domain.document.IProductStatisticsCalculator
+import com.repzone.domain.document.service.ProductStatisticsCalculator
 import com.repzone.domain.manager.visitmanager.IVisitManager
 import com.repzone.domain.manager.visitmanager.VisitManager
 import com.repzone.domain.usecase.visit.GetRouteInformationUseCase
@@ -16,6 +18,7 @@ import com.repzone.presentation.legacy.viewmodel.document.basket.DocumentBasketV
 import com.repzone.presentation.legacy.viewmodel.document.documentsettings.DocumentSettingsViewModel
 import com.repzone.presentation.legacy.viewmodel.gpstest.GpsTrackingViewModel
 import com.repzone.presentation.legacy.viewmodel.document.productlist.ProductListViewModel
+import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
@@ -28,6 +31,10 @@ val PresentationModuleLegacy = module {
     singleOf(::NavigationSharedStateHolder)
     singleOf<IPresentationConfig>(::LegacyThemeConfig)
     //endregion Single
+
+    //region Factory
+    factoryOf(::ProductStatisticsCalculator) {bind<IProductStatisticsCalculator>()}
+    //endregion Factory
 
     //region ViewModels
     factoryOf(::LoginScreenViewModel)
@@ -44,7 +51,6 @@ val PresentationModuleLegacy = module {
     //region Use Case
     factoryOf(::GetVisitMenuListUseCase)
     factoryOf(::GetRouteInformationUseCase)
-
     //endsregion Use Case
 
 }

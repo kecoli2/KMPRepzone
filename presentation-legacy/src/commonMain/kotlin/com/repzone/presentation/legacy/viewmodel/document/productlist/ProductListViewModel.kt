@@ -8,6 +8,7 @@ import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.ionspin.kotlin.bignum.decimal.toBigDecimal
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.data.repository.product.ProductPagingSource
+import com.repzone.domain.document.IProductStatisticsCalculator
 import com.repzone.domain.model.product.ProductRowState
 import com.repzone.domain.model.product.UnitEntry
 import com.repzone.domain.document.base.AddLineResult
@@ -16,6 +17,7 @@ import com.repzone.domain.document.base.IDocumentSession
 import com.repzone.domain.document.model.DiscountSlotEntry
 import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.document.model.ProductListValidator
+import com.repzone.domain.document.model.ProductStatistics
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.document.model.ValidationStatus
 import com.repzone.domain.model.product.PriceRange
@@ -34,7 +36,9 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -44,7 +48,8 @@ import kotlin.collections.iterator
 class ProductListViewModel(
     private val productRepository: IProductRepository,
     private val documentSession: IDocumentSession,
-    private val validator: ProductListValidator
+    private val validator: ProductListValidator,
+    private val statisticsCalculator: IProductStatisticsCalculator
 ): BaseViewModel<ProductListUiState, ProductListViewModel.Event>(ProductListUiState()) {
 
     //region Field
@@ -54,6 +59,11 @@ class ProductListViewModel(
     val rowStates: StateFlow<Map<Int, ProductRowState>> = _rowStates.asStateFlow()
     private val _navigationEvents = MutableSharedFlow<NavigationEvent>()
     val navigationEvents: SharedFlow<NavigationEvent> = _navigationEvents.asSharedFlow()
+
+    //Istatistics
+    private val _productsCache = mutableMapOf<Int, ProductInformationModel>()
+    private val _productStatistics = MutableStateFlow(ProductStatistics.EMPTY)
+    val productStatistics: StateFlow<ProductStatistics> = _productStatistics.asStateFlow()
     //endregion
 
     //region Properties
@@ -83,6 +93,7 @@ class ProductListViewModel(
     //region Constructor
     init {
         loadAvailableFilters()
+        observeRowStatesForStatistics()
     }
     //endregion
 
@@ -195,6 +206,8 @@ class ProductListViewModel(
                 return@launch
             }
 
+            cacheProduct(product)
+
             // State yoksa oluştur
             val state = existingState ?: ProductRowState(
                 productId = product.id,
@@ -243,6 +256,8 @@ class ProductListViewModel(
             )
 
             val currentUnit = state.currentUnit ?: return@launch
+
+            cacheProduct(product)
 
             // Mevcut birimde miktar varsa VE validation error değilse unitEntries'e kaydet
             var updatedEntries = state.unitEntries
@@ -455,10 +470,32 @@ class ProductListViewModel(
         }
     }
 
+    fun cacheProduct(product: ProductInformationModel) {
+        if (!_productsCache.containsKey(product.id)) {
+            _productsCache[product.id] = product
+        }
+    }
     //endregion
 
     //region Private Method
+    private fun observeRowStatesForStatistics() {
+        _rowStates
+            .debounce(300) // 300ms bekle (performans için)
+            .onEach { states ->
+                recalculateStatistics(states)
+            }
+            .launchIn(scope)
+    }
 
+    private fun recalculateStatistics(rowStates: Map<Int, ProductRowState>) {
+        scope.launch {
+            val statistics = statisticsCalculator.calculate(
+                products = _productsCache.toMap(),
+                rowStates = rowStates
+            )
+            _productStatistics.value = statistics
+        }
+    }
     private fun updateRowState(productId: Int, update: (ProductRowState) -> ProductRowState) {
         _rowStates.update { states ->
             val currentState = states[productId] ?: return@update states

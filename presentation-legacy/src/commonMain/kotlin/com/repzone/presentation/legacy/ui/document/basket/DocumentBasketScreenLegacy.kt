@@ -303,17 +303,6 @@ private fun BasketScreenContent(
                         }
                     }
 
-                    // ===== Görsel Ayıraç =====
-                    item {
-                        Spacer(modifier = Modifier.height(4.dp))
-                        HorizontalDivider(
-                            modifier = Modifier.padding(horizontal = 24.dp),
-                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
-                            thickness = 1.dp
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                    }
-
                     // ===== SECTION 2: Sepet Ürünleri =====
                     item {
                         BasketProductsSection(
@@ -325,6 +314,17 @@ private fun BasketScreenContent(
                             onQuantityChange = onQuantityChange,
                             onUnitCycle = onUnitCycle
                         )
+                    }
+
+                    // ===== Görsel Ayıraç =====
+                    item {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 24.dp),
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            thickness = 1.dp
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
                     }
 
                     // ===== SECTION 3: Fatura Altı İskontolar (Collapsible) =====
@@ -366,7 +366,7 @@ private fun BasketScreenContent(
                 )
             }
 
-            // ===== FAB - Positioned above TotalsSummaryCard =====
+            // ===== TotalsSummaryCard =====
             FloatingActionButton(
                 onClick = onSaveClick,
                 containerColor = MaterialTheme.colorScheme.primary,

@@ -23,7 +23,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
     //region Public Method
     override suspend fun getActiveDistributionListId(customer: SyncCustomerModel?, paymentPlanId: Int): DistributionControllerModel? {
         val ret = DistributionControllerModel()
-        return ret
+        //return ret
         iUserSession.getActiveSession()?.identity?.let {
             val repId = it.representativeId
             val repGroupId = it.groupId
