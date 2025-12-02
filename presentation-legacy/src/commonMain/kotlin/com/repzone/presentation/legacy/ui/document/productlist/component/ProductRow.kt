@@ -344,9 +344,8 @@ private fun QuantityControls(
 ) {
     val isError = validationStatus is ValidationStatus.Error
 
-    Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         currentUnit?.let { unit ->
             TextButton(
@@ -371,7 +370,7 @@ private fun QuantityControls(
         NumberTextField(
             value = quantityText,
             onValueChange = onQuantityChanged,
-            modifier = Modifier.width(60.dp),
+            modifier = Modifier.width(120.dp),
             placeholder = "0",
             height = 36.dp,
             cornerRadius = 0.dp,
@@ -390,7 +389,11 @@ private fun QuantityControls(
                 onNext = { onNextRequested() },
                 onDone = { onNextRequested() }
             ),
-            focusRequester = focusRequester
+            focusRequester = focusRequester,
+            showStepButtons = true,
+            stepValue = BigDecimal.fromInt(1),
+            maxValue = BigDecimal.fromInt(9999),
+            stepButtonSize = 22.dp
         )
     }
 }

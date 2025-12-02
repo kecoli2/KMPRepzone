@@ -131,7 +131,8 @@ fun AppAndroidPreview() {
     themeManager.initialize(LegacyThemeConfig())
 
     //DocumentBasketScreen_Sample(themeManager)
-    DocumentSettingsScreen_Sample(themeManager)
+    //DocumentSettingsScreen_Sample(themeManager)
     //ProductListScreen_Sample(themeManager)
+    Productrow_Preview(themeManager)
 
 }

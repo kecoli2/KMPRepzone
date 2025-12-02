@@ -2,15 +2,19 @@ package com.repzone.core.ui.component.textfield
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +28,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
@@ -108,8 +113,16 @@ fun RepzoneTextField(
     selectAllOnFocus: Boolean = false,
     // Maksimum değer (NUMBER, DECIMAL, CURRENCY için)
     maxValue: BigDecimal? = null,
+    // Minimum değer (NUMBER, DECIMAL, CURRENCY için) - step butonları için
+    minValue: BigDecimal? = null,
     // Focus requester
-    focusRequester: FocusRequester? = null
+    focusRequester: FocusRequester? = null,
+    // Step butonları parametreleri
+    showStepButtons: Boolean = false,
+    stepValue: BigDecimal = BigDecimal.ONE,
+    stepButtonSize: Dp = 32.dp,
+    stepButtonBackgroundColor: Color = Color.Unspecified,
+    stepButtonIconColor: Color = Color.Unspecified
 ) {
     val formatter = remember { NumberFormatter() }
     val interactionSource = remember { MutableInteractionSource() }
@@ -156,6 +169,18 @@ fun RepzoneTextField(
         MaterialTheme.colorScheme.outline.copy(alpha = 0.3f)
     } else {
         unfocusedBorderColor
+    }
+
+    val effectiveStepButtonBgColor = if (stepButtonBackgroundColor == Color.Unspecified) {
+        MaterialTheme.colorScheme.primaryContainer
+    } else {
+        stepButtonBackgroundColor
+    }
+
+    val effectiveStepButtonIconColor = if (stepButtonIconColor == Color.Unspecified) {
+        MaterialTheme.colorScheme.onPrimaryContainer
+    } else {
+        stepButtonIconColor
     }
 
     // TextAlign belirleme
@@ -256,6 +281,195 @@ fun RepzoneTextField(
         onDone = { onSearch?.invoke() }
     )
 
+    // Step butonları için artırma/azaltma fonksiyonları
+    val onIncrease: () -> Unit = {
+        val currentValue = parseValueToBigDecimal(value, formatter.decimalSeparator)
+        val newValue = currentValue + stepValue
+        val finalValue = if (maxValue != null && newValue > maxValue) maxValue else newValue
+        onValueChange(formatBigDecimalToString(finalValue, inputType, decimalPlaces, formatter.decimalSeparator))
+    }
+
+    val onDecrease: () -> Unit = {
+        val currentValue = parseValueToBigDecimal(value, formatter.decimalSeparator)
+        val newValue = currentValue - stepValue
+        val effectiveMinValue = minValue ?: BigDecimal.ZERO
+        val finalValue = if (newValue < effectiveMinValue) effectiveMinValue else newValue
+        onValueChange(formatBigDecimalToString(finalValue, inputType, decimalPlaces, formatter.decimalSeparator))
+    }
+
+    // Step butonları gösterilecek mi kontrol et (sadece NUMBER, DECIMAL, CURRENCY için)
+    val shouldShowStepButtons = showStepButtons && inputType in listOf(
+        TextFieldInputType.NUMBER,
+        TextFieldInputType.DECIMAL,
+        TextFieldInputType.CURRENCY
+    )
+
+    // Step butonları varsa wrapper Row kullan
+    if (shouldShowStepButtons) {
+        Row(
+            modifier = modifier,
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            // Eksi butonu (solda) - Yuvarlak
+            CircleStepButton(
+                icon = Icons.Default.Remove,
+                onClick = onDecrease,
+                enabled = enabled,
+                size = stepButtonSize,
+                backgroundColor = effectiveStepButtonBgColor,
+                iconColor = effectiveStepButtonIconColor
+            )
+
+            // TextField (ortada)
+            CoreTextField(
+                value = value,
+                onValueChange = filteredOnValueChange,
+                modifier = Modifier.weight(1f),
+                focusRequester = focusRequester,
+                height = height,
+                effectiveBackgroundColor = effectiveBackgroundColor,
+                shape = shape,
+                borderModifier = borderModifier,
+                alignedTextStyle = alignedTextStyle,
+                enabled = enabled,
+                effectiveCursorColor = effectiveCursorColor,
+                keyboardType = keyboardType,
+                imeAction = imeAction,
+                effectiveKeyboardActions = effectiveKeyboardActions,
+                visualTransformation = visualTransformation,
+                interactionSource = interactionSource,
+                leadingIcon = leadingIcon,
+                effectiveIconTint = effectiveIconTint,
+                prefix = prefix,
+                effectivePlaceholderColor = effectivePlaceholderColor,
+                placeholder = placeholder,
+                textAlignment = textAlignment,
+                effectiveSuffix = effectiveSuffix,
+                showClearIcon = false, // Step butonları varken clear icon gösterme
+                onClear = onClear,
+                selectAllOnFocus = selectAllOnFocus,
+                isFocused = isFocused,
+                inputType = inputType,
+                decimalPlaces = decimalPlaces,
+                maxLength = maxLength,
+                maxValue = maxValue,
+                formatter = formatter
+            )
+
+            // Artı butonu (sağda) - Yuvarlak
+            CircleStepButton(
+                icon = Icons.Default.Add,
+                onClick = onIncrease,
+                enabled = enabled,
+                size = stepButtonSize,
+                backgroundColor = effectiveStepButtonBgColor,
+                iconColor = effectiveStepButtonIconColor
+            )
+        }
+    } else {
+        // Step butonları yok - normal TextField
+        CoreTextField(
+            value = value,
+            onValueChange = filteredOnValueChange,
+            modifier = modifier,
+            focusRequester = focusRequester,
+            height = height,
+            effectiveBackgroundColor = effectiveBackgroundColor,
+            shape = shape,
+            borderModifier = borderModifier,
+            alignedTextStyle = alignedTextStyle,
+            enabled = enabled,
+            effectiveCursorColor = effectiveCursorColor,
+            keyboardType = keyboardType,
+            imeAction = imeAction,
+            effectiveKeyboardActions = effectiveKeyboardActions,
+            visualTransformation = visualTransformation,
+            interactionSource = interactionSource,
+            leadingIcon = leadingIcon,
+            effectiveIconTint = effectiveIconTint,
+            prefix = prefix,
+            effectivePlaceholderColor = effectivePlaceholderColor,
+            placeholder = placeholder,
+            textAlignment = textAlignment,
+            effectiveSuffix = effectiveSuffix,
+            showClearIcon = showClearIcon,
+            onClear = onClear,
+            selectAllOnFocus = selectAllOnFocus,
+            isFocused = isFocused,
+            inputType = inputType,
+            decimalPlaces = decimalPlaces,
+            maxLength = maxLength,
+            maxValue = maxValue,
+            formatter = formatter
+        )
+    }
+}
+
+/**
+ * Yuvarlak step butonu
+ */
+@Composable
+private fun CircleStepButton(
+    icon: ImageVector,
+    onClick: () -> Unit,
+    enabled: Boolean,
+    size: Dp,
+    backgroundColor: Color,
+    iconColor: Color
+) {
+    Box(
+        modifier = Modifier
+            .size(size)
+            .clip(CircleShape)
+            .background(if (enabled) backgroundColor else backgroundColor.copy(alpha = 0.5f))
+            .clickable(enabled = enabled, onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = if (icon == Icons.Default.Add) "Artır" else "Azalt",
+            tint = if (enabled) iconColor else iconColor.copy(alpha = 0.5f),
+            modifier = Modifier.size(size * 0.55f)
+        )
+    }
+}
+
+@Composable
+private fun CoreTextField(
+    value: String,
+    onValueChange: (String) -> Unit,
+    modifier: Modifier,
+    focusRequester: FocusRequester?,
+    height: Dp,
+    effectiveBackgroundColor: Color,
+    shape: RoundedCornerShape,
+    borderModifier: Modifier,
+    alignedTextStyle: TextStyle,
+    enabled: Boolean,
+    effectiveCursorColor: Color,
+    keyboardType: KeyboardType,
+    imeAction: ImeAction,
+    effectiveKeyboardActions: KeyboardActions,
+    visualTransformation: VisualTransformation,
+    interactionSource: MutableInteractionSource,
+    leadingIcon: ImageVector?,
+    effectiveIconTint: Color,
+    prefix: String?,
+    effectivePlaceholderColor: Color,
+    placeholder: String,
+    textAlignment: TextAlignment,
+    effectiveSuffix: String?,
+    showClearIcon: Boolean,
+    onClear: (() -> Unit)?,
+    selectAllOnFocus: Boolean,
+    isFocused: Boolean,
+    inputType: TextFieldInputType,
+    decimalPlaces: Int,
+    maxLength: Int?,
+    maxValue: BigDecimal?,
+    formatter: NumberFormatter
+) {
     if (selectAllOnFocus) {
         // TextFieldValue state'i
         var textFieldValue by remember {
@@ -354,7 +568,7 @@ fun RepzoneTextField(
     } else {
         BasicTextField(
             value = value,
-            onValueChange = filteredOnValueChange,
+            onValueChange = onValueChange,
             modifier = modifier
                 .then(focusRequester?.let { Modifier.focusRequester(it) } ?: Modifier)
                 .height(height)
@@ -462,6 +676,38 @@ private fun DecorationContent(
                 )
             }
         }
+    }
+}
+
+// Value'yu BigDecimal'e parse et
+private fun parseValueToBigDecimal(value: String, decimalSeparator: Char): BigDecimal {
+    if (value.isEmpty()) return BigDecimal.ZERO
+    return try {
+        val normalized = value.replace(decimalSeparator, '.')
+        BigDecimal.parseString(normalized)
+    } catch (e: Exception) {
+        BigDecimal.ZERO
+    }
+}
+
+// BigDecimal'i String'e formatla
+private fun formatBigDecimalToString(
+    value: BigDecimal,
+    inputType: TextFieldInputType,
+    decimalPlaces: Int,
+    decimalSeparator: Char
+): String {
+    return when (inputType) {
+        TextFieldInputType.NUMBER -> value.toBigInteger().toString()
+        TextFieldInputType.DECIMAL, TextFieldInputType.CURRENCY -> {
+            val str = value.toPlainString()
+            if (decimalSeparator != '.') {
+                str.replace('.', decimalSeparator)
+            } else {
+                str
+            }
+        }
+        else -> value.toPlainString()
     }
 }
 
@@ -602,8 +848,15 @@ fun CurrencyTextField(
     textAlignment: TextAlignment = TextAlignment.START,
     selectAllOnFocus: Boolean = false,
     maxValue: BigDecimal? = null,
+    minValue: BigDecimal? = null,
     imeAction: ImeAction = ImeAction.Done,
-    keyboardActions: KeyboardActions? = null
+    keyboardActions: KeyboardActions? = null,
+    // Step butonları parametreleri
+    showStepButtons: Boolean = false,
+    stepValue: BigDecimal = BigDecimal.ONE,
+    stepButtonSize: Dp = 32.dp,
+    stepButtonBackgroundColor: Color = Color.Unspecified,
+    stepButtonIconColor: Color = Color.Unspecified
 ) {
     RepzoneTextField(
         value = value,
@@ -626,8 +879,14 @@ fun CurrencyTextField(
         textAlignment = textAlignment,
         selectAllOnFocus = selectAllOnFocus,
         maxValue = maxValue,
+        minValue = minValue,
         imeAction = imeAction,
-        keyboardActions = keyboardActions
+        keyboardActions = keyboardActions,
+        showStepButtons = showStepButtons,
+        stepValue = stepValue,
+        stepButtonSize = stepButtonSize,
+        stepButtonBackgroundColor = stepButtonBackgroundColor,
+        stepButtonIconColor = stepButtonIconColor
     )
 }
 
@@ -652,9 +911,16 @@ fun NumberTextField(
     textAlignment: TextAlignment = TextAlignment.START,
     selectAllOnFocus: Boolean = false,
     maxValue: BigDecimal? = null,
+    minValue: BigDecimal? = null,
     imeAction: ImeAction = ImeAction.Done,
     keyboardActions: KeyboardActions? = null,
-    focusRequester: FocusRequester? = null
+    focusRequester: FocusRequester? = null,
+    // Step butonları parametreleri
+    showStepButtons: Boolean = false,
+    stepValue: BigDecimal = BigDecimal.ONE,
+    stepButtonSize: Dp = 32.dp,
+    stepButtonBackgroundColor: Color = Color.Unspecified,
+    stepButtonIconColor: Color = Color.Unspecified
 ) {
     RepzoneTextField(
         value = value,
@@ -678,9 +944,15 @@ fun NumberTextField(
         textAlignment = textAlignment,
         selectAllOnFocus = selectAllOnFocus,
         maxValue = maxValue,
+        minValue = minValue,
         imeAction = imeAction,
         keyboardActions = keyboardActions,
-        focusRequester = focusRequester
+        focusRequester = focusRequester,
+        showStepButtons = showStepButtons,
+        stepValue = stepValue,
+        stepButtonSize = stepButtonSize,
+        stepButtonBackgroundColor = stepButtonBackgroundColor,
+        stepButtonIconColor = stepButtonIconColor
     )
 }
 
@@ -705,8 +977,15 @@ fun DecimalTextField(
     textAlignment: TextAlignment = TextAlignment.START,
     selectAllOnFocus: Boolean = false,
     maxValue: BigDecimal? = null,
+    minValue: BigDecimal? = null,
     imeAction: ImeAction = ImeAction.Done,
-    keyboardActions: KeyboardActions? = null
+    keyboardActions: KeyboardActions? = null,
+    // Step butonları parametreleri
+    showStepButtons: Boolean = false,
+    stepValue: BigDecimal = BigDecimal.ONE,
+    stepButtonSize: Dp = 32.dp,
+    stepButtonBackgroundColor: Color = Color.Unspecified,
+    stepButtonIconColor: Color = Color.Unspecified
 ) {
     RepzoneTextField(
         value = value,
@@ -730,8 +1009,14 @@ fun DecimalTextField(
         textAlignment = textAlignment,
         selectAllOnFocus = selectAllOnFocus,
         maxValue = maxValue,
+        minValue = minValue,
         imeAction = imeAction,
-        keyboardActions = keyboardActions
+        keyboardActions = keyboardActions,
+        showStepButtons = showStepButtons,
+        stepValue = stepValue,
+        stepButtonSize = stepButtonSize,
+        stepButtonBackgroundColor = stepButtonBackgroundColor,
+        stepButtonIconColor = stepButtonIconColor
     )
 }
 

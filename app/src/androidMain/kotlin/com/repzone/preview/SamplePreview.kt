@@ -161,7 +161,7 @@ fun Productrow_Preview(themeManager: ThemeManager){
         val focusRequester = remember {
             focusRequesters.getOrPut(0) { FocusRequester() }
         }
-/*        ProductRow(
+        ProductRow(
             product = product,
             state = productState,
             hasDiscountPermission = true,
@@ -180,7 +180,7 @@ fun Productrow_Preview(themeManager: ThemeManager){
             onNextRequested = {
 
             }
-        )*/
+        )
     }
 }
 
