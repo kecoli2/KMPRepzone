@@ -6,15 +6,16 @@ import com.repzone.database.metadata.SyncCustomerEmailEntityMetadata
 import com.repzone.database.toSqlValuesString
 import com.repzone.network.dto.CustomerEmailDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
-import com.repzone.sync.transaction.CompositeOperation
-import com.repzone.sync.transaction.TableOperation
-import com.repzone.sync.transaction.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.CompositeOperation
+import com.repzone.domain.transactioncoordinator.TableOperation
+import com.repzone.data.transactioncoordinator.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.ITransactionCoordinator
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_template_desc
 import repzonemobile.core.generated.resources.job_email
 
 class CustomerEmailRawSqlBulkInsertService(private val mapper: SyncCustomerEmailEntityDbMapper,
-                                           coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<CustomerEmailDto>>(coordinator) {
+                                           coordinator: ITransactionCoordinator): CompositeRawSqlBulkInsertService<List<CustomerEmailDto>>(coordinator) {
     //region Public Method
     override suspend fun buildCompositeOperation(items: List<CustomerEmailDto>, includeClears: Boolean, useUpsert: Boolean,): CompositeOperation {
         val emails = items.map { mapper.fromDto(it) }

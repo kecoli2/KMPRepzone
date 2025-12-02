@@ -7,17 +7,17 @@ import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.core.ui.ui.sync.SyncUiState
 import com.repzone.domain.common.DomainException
 import com.repzone.sync.interfaces.ISyncManager
-import com.repzone.sync.transaction.TransactionCoordinator
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.repzone.domain.common.Result
 import com.repzone.domain.common.onError
 import com.repzone.domain.common.onSuccess
 import com.repzone.domain.manager.gps.IGpsTrackingManager
+import com.repzone.domain.transactioncoordinator.ITransactionCoordinator
 
 class SyncViewModel(private val syncManager: ISyncManager,
                     private val iusereSession: IUserSession,
-                    private val transactionCoordinator: TransactionCoordinator,
+                    private val transactionCoordinator: ITransactionCoordinator,
                     private val gpsTrackingManager: IGpsTrackingManager,
                     private val iFirebaseManager: IFirebaseManager)
 

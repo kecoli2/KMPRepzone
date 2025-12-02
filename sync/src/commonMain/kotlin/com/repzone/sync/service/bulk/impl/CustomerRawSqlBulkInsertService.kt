@@ -7,14 +7,15 @@ import com.repzone.database.metadata.SyncCustomerEntityMetadata
 import com.repzone.database.toSqlValuesString
 import com.repzone.network.dto.CustomerDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
-import com.repzone.sync.transaction.CompositeOperation
-import com.repzone.sync.transaction.TableOperation
-import com.repzone.sync.transaction.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.CompositeOperation
+import com.repzone.domain.transactioncoordinator.TableOperation
+import com.repzone.data.transactioncoordinator.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.ITransactionCoordinator
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_template_desc
 import repzonemobile.core.generated.resources.job_customer
 
-class CustomerRawSqlBulkInsertService(private val mapper: CustomerEntityDbMapper, coordinator: TransactionCoordinator):
+class CustomerRawSqlBulkInsertService(private val mapper: CustomerEntityDbMapper, coordinator: ITransactionCoordinator):
     CompositeRawSqlBulkInsertService<List<CustomerDto>>(coordinator) {
     //region Public Method
     override suspend fun buildCompositeOperation( items: List<CustomerDto>, includeClears: Boolean, useUpsert: Boolean,): CompositeOperation {

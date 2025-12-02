@@ -18,14 +18,18 @@ import com.repzone.data.repository.imp.RepresentativeRepositoryImpl
 import com.repzone.data.repository.imp.RouteAppointmentRepositoryImpl
 import com.repzone.data.repository.imp.SettingsRepositoryImpl
 import com.repzone.data.repository.imp.SyncModuleRepositoryImpl
+import com.repzone.data.transactioncoordinator.TransactionCoordinator
 import com.repzone.domain.repository.*
 import com.repzone.domain.repository.IMobileModuleParameterRepository
+import com.repzone.domain.transactioncoordinator.ITransactionCoordinator
 import org.koin.core.module.dsl.bind
 import org.koin.core.module.dsl.factoryOf
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
 val RepositoryModule = module {
+
+    singleOf(::TransactionCoordinator){ bind<ITransactionCoordinator>() }
 
     //region REPOSITORY
     singleOf(::CustomerRepositoryImpl){ bind<ICustomerRepository>() }

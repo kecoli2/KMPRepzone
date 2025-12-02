@@ -15,7 +15,7 @@ import com.repzone.mobile.di.FirebaseAndroidModule
 import com.repzone.network.di.NetworkModule
 import com.repzone.network.di.PlatformNetworkModule
 import com.repzone.sync.di.SyncModule
-import com.repzone.sync.transaction.TransactionCoordinator
+import com.repzone.data.transactioncoordinator.TransactionCoordinator
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.context.GlobalContext.startKoin

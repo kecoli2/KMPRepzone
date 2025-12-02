@@ -5,7 +5,7 @@ import com.repzone.core.model.UiFrame
 import com.repzone.sync.model.SyncJobStatus
 import com.repzone.sync.model.SyncJobType
 import com.repzone.sync.model.SyncProgress
-import com.repzone.sync.transaction.TransactionStats
+import com.repzone.domain.transactioncoordinator.TransactionStats
 
 data class SyncUiState(
     override val uiFrame: UiFrame = UiFrame(),

@@ -28,7 +28,7 @@ import com.repzone.sync.service.api.impl.*
 import com.repzone.sync.service.bulk.impl.CustomerEmailRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerGroupPriceParameterslRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.*
-import com.repzone.sync.transaction.TransactionCoordinator
+import com.repzone.data.transactioncoordinator.TransactionCoordinator
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -42,7 +42,7 @@ val SyncModule = module {
 
     //region ------------------- PRODUCT --------------------
     //region PRODUCT
-    single<IBulkInsertService<List<ProductDto>>>(named("productBulkInsert")) { ProductRawSqlBulkInsertService(get(), get(), get()) }
+    single<IBulkInsertService<List<ProductDto>>>(named("productBulkInsert")) { ProductRawSqlBulkInsertService(get(), get()) }
     single<ISyncApiService<List<ProductDto>>>(named("productSyncApi")){ SyncApiProductImpl(get()) }
     //endregion PRODUCT
 

@@ -6,15 +6,16 @@ import com.repzone.database.metadata.SyncRouteAppointmentEntityMetadata
 import com.repzone.database.toSqlValuesString
 import com.repzone.network.dto.RouteDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
-import com.repzone.sync.transaction.CompositeOperation
-import com.repzone.sync.transaction.TableOperation
-import com.repzone.sync.transaction.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.CompositeOperation
+import com.repzone.domain.transactioncoordinator.TableOperation
+import com.repzone.data.transactioncoordinator.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.ITransactionCoordinator
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_template_desc
 import repzonemobile.core.generated.resources.job_rota
 
 class RouteDataRawSqlBulkInsertService(private val dbMapper: SyncRouteAppointmentEntityDbMapper,
-                                       coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<RouteDto>>(coordinator) {
+                                       coordinator: ITransactionCoordinator): CompositeRawSqlBulkInsertService<List<RouteDto>>(coordinator) {
     //region Public Method
     override suspend fun buildCompositeOperation(items: List<RouteDto>, includeClears: Boolean, useUpsert: Boolean,): CompositeOperation {
         val routeList = items.map { dbMapper.fromDto(it) }

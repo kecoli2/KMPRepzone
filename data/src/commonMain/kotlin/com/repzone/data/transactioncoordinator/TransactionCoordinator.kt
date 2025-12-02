@@ -1,10 +1,18 @@
-package com.repzone.sync.transaction
+package com.repzone.data.transactioncoordinator
 
-import app.cash.sqldelight.db.SqlDriver
 import com.repzone.core.platform.Logger
 import com.repzone.core.util.extensions.now
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.database.runtime.rawExecute
+import com.repzone.domain.transactioncoordinator.CompositeOperation
+import com.repzone.domain.transactioncoordinator.DatabaseOperation
+import com.repzone.domain.transactioncoordinator.ITransactionCoordinator
+import com.repzone.domain.transactioncoordinator.OperationResult
+import com.repzone.domain.transactioncoordinator.OperationType
+import com.repzone.domain.transactioncoordinator.TableOperation
+import com.repzone.domain.transactioncoordinator.TransactionBlock
+import com.repzone.domain.transactioncoordinator.TransactionResult
+import com.repzone.domain.transactioncoordinator.TransactionStats
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
@@ -22,7 +30,8 @@ import kotlin.time.ExperimentalTime
  */
 class TransactionCoordinator(
     private val iDatabaseManager: IDatabaseManager,
-    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)) {
+    private val scope: CoroutineScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+): ITransactionCoordinator {
     //region Field
     companion object {
         private val operationIdMutex = Mutex()
@@ -34,16 +43,13 @@ class TransactionCoordinator(
             }
         }
     }
-    private val operationQueue = Channel<DatabaseOperation>(capacity = Channel.UNLIMITED)
-    private val compositeQueue = Channel<CompositeOperation>(capacity = Channel.UNLIMITED)
+    private val operationQueue = Channel<DatabaseOperation>(capacity = Channel.Factory.UNLIMITED)
+    private val compositeQueue = Channel<CompositeOperation>(capacity = Channel.Factory.UNLIMITED)
     private val compositeResultChannels = mutableMapOf<Long, Channel<OperationResult>>()
     // Result channels for each operation
     private val resultChannels = mutableMapOf<Long, Channel<OperationResult>>()
-
-    private val transactionQueue = Channel<TransactionBlock<*>>(capacity = Channel.UNLIMITED)
+    private val transactionQueue = Channel<TransactionBlock<*>>(capacity = Channel.Factory.UNLIMITED)
     private val transactionResultChannels = mutableMapOf<Long, Channel<TransactionResult<*>>>()
-
-
     private val statsMutex = Mutex()
     private var totalOperations = 0L
     private var successfulOperations = 0L
@@ -79,7 +85,7 @@ class TransactionCoordinator(
 
     //region Public Method
     @Suppress("UNCHECKED_CAST")
-    suspend fun <T> executeTransaction(description: String = "Custom Transaction", block: suspend () -> T): TransactionResult<T> {
+    override suspend fun <T> executeTransaction(description: String , block: suspend () -> T): TransactionResult<T> {
         val operationId = generateOperationId()
         val transactionBlock = TransactionBlock(
             id = operationId,
@@ -96,7 +102,7 @@ class TransactionCoordinator(
 
         return result as TransactionResult<T>
     }
-    suspend fun executeCompositeOperation(compositeOp: CompositeOperation): OperationResult {
+    override suspend fun executeCompositeOperation(compositeOp: CompositeOperation): OperationResult {
         val operationId = generateOperationId()
         compositeOp.id = operationId
 
@@ -114,7 +120,7 @@ class TransactionCoordinator(
      * Bulk operation'ı queue'ya ekler ve sonucu bekler
      * Thread-safe, multiple job'lar aynı anda çağırabilir
      */
-    suspend fun executeBulkOperation(operation: DatabaseOperation): OperationResult {
+    override suspend fun executeBulkOperation(operation: DatabaseOperation): OperationResult {
         val operationId = generateOperationId()
         operation.id = operationId
 
@@ -133,6 +139,25 @@ class TransactionCoordinator(
 
         return result
     }
+
+    override suspend fun getStats(): TransactionStats {
+        return statsMutex.withLock {
+            TransactionStats(
+                totalOperations = totalOperations,
+                successfulOperations = successfulOperations,
+                failedOperations = failedOperations,
+                queueSize = 0 // Approximate
+            )
+        }
+    }
+
+    override fun shutdown() {
+        operationQueue.close()
+        compositeQueue.close()
+        transactionQueue.close()
+        scope.cancel()
+        println("TransactionCoordinator shutdown")
+    }
     //endregion
 
     //region Protected Method
@@ -150,7 +175,7 @@ class TransactionCoordinator(
         try {
             val result = iDatabaseManager.getDatabase().transactionWithResult {
                 // Block'u çalıştır (suspend olduğu için runBlocking gerekebilir)
-                kotlinx.coroutines.runBlocking {
+                runBlocking {
                     transactionBlock.block()
                 }
             }
@@ -259,11 +284,10 @@ class TransactionCoordinator(
             resultChannels[operation.id]?.send(errorResult)
         }
     }
-
     private fun executeRawSql(sql: String) {
         try {
             runBlocking {
-                iDatabaseManager.getSqlDriver().rawExecute (sql)
+                iDatabaseManager.getSqlDriver().rawExecute(sql)
             }
         }catch (ex: Exception){
             Logger.error(ex)
@@ -271,23 +295,19 @@ class TransactionCoordinator(
         }
 
     }
-
     private fun executeBulkInsert(operation: DatabaseOperation) {
         val sql = buildBulkInsertSql(operation)
         executeRawSql(sql)
     }
-
     private fun executeBulkUpsert(operation: DatabaseOperation) {
         val sql = buildBulkUpsertSql(operation)
         executeRawSql(sql)
     }
-
     private fun buildBulkInsertSql(operation: DatabaseOperation): String {
         val columns = operation.columns.joinToString(", ")
         val values = operation.values.joinToString(", ")
         return "INSERT INTO ${operation.tableName} ($columns) VALUES $values"
     }
-
     private fun buildBulkUpsertSql(operation: DatabaseOperation): String {
         val columns = operation.columns.joinToString(", ") { "`$it`" }
         val values = operation.values.joinToString(", ")
@@ -310,8 +330,8 @@ class TransactionCoordinator(
                     if (tableOp.recordCount <= 0) {
                         return@forEach
                     }
-                    if(tableOp.includeClears && tableOp.clearSql != null && tableOp.clearSql.isNotEmpty()){
-                        tableOp.clearSql.forEach { clearSql ->
+                    if(tableOp.includeClears && tableOp.clearSql != null && tableOp.clearSql?.isNotEmpty() == true){
+                        tableOp.clearSql?.forEach { clearSql ->
                             executeRawSql(clearSql)
                         }
                     }
@@ -361,39 +381,15 @@ class TransactionCoordinator(
             compositeResultChannels[compositeOp.id]?.send(errorResult)
         }
     }
-
     private fun buildBulkInsertSqlFromTableOp(tableOp: TableOperation): String {
         val columns = tableOp.columns.joinToString(", ")
         val values = tableOp.values.joinToString(", ")
         return "INSERT INTO ${tableOp.tableName} ($columns) VALUES $values"
     }
-
     private fun buildBulkUpsertSqlFromTableOp(tableOp: TableOperation): String {
         val columns = tableOp.columns.joinToString(", ")
         val values = tableOp.values.joinToString(", ")
         return "INSERT OR REPLACE INTO ${tableOp.tableName} ($columns) VALUES $values"
-    }
-
-    /**
-     * Statistics - Thread-safe
-     */
-    suspend fun getStats(): TransactionStats {
-        return statsMutex.withLock {
-            TransactionStats(
-                totalOperations = totalOperations,
-                successfulOperations = successfulOperations,
-                failedOperations = failedOperations,
-                queueSize = 0 // Approximate
-            )
-        }
-    }
-
-    fun shutdown() {
-        operationQueue.close()
-        compositeQueue.close()
-        transactionQueue.close()
-        scope.cancel()
-        println("TransactionCoordinator shutdown")
     }
     //endregion
 }

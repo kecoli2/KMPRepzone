@@ -1,4 +1,4 @@
-package com.repzone.sync.transaction
+package com.repzone.domain.transactioncoordinator
 
 data class DatabaseOperation(
     val type: OperationType,

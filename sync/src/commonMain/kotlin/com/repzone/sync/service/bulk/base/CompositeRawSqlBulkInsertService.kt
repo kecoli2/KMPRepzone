@@ -1,11 +1,11 @@
 package com.repzone.sync.service.bulk.base
 
 import com.repzone.sync.interfaces.IBulkInsertService
-import com.repzone.sync.transaction.CompositeOperation
-import com.repzone.sync.transaction.OperationResult
-import com.repzone.sync.transaction.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.CompositeOperation
+import com.repzone.domain.transactioncoordinator.ITransactionCoordinator
+import com.repzone.domain.transactioncoordinator.OperationResult
 
-abstract class CompositeRawSqlBulkInsertService<T>(private val coordinator: TransactionCoordinator) : IBulkInsertService<T> {
+abstract class CompositeRawSqlBulkInsertService<T>(private val coordinator: ITransactionCoordinator) : IBulkInsertService<T> {
 
     //region Public Method
     override suspend fun insertBatch(items: T): Int {

@@ -8,17 +8,17 @@ import com.repzone.database.metadata.SyncFormBaseEntityMetadata
 import com.repzone.database.toSqlValuesString
 import com.repzone.network.dto.form.FormBaseDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
-import com.repzone.sync.transaction.CompositeOperation
-import com.repzone.sync.transaction.TableOperation
-import com.repzone.sync.transaction.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.CompositeOperation
+import com.repzone.domain.transactioncoordinator.TableOperation
+import com.repzone.data.transactioncoordinator.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.ITransactionCoordinator
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_template_desc
 import repzonemobile.core.generated.resources.job_form_definations
 import kotlin.time.ExperimentalTime
 
 @OptIn(ExperimentalTime::class)
-class FormDataFetchSqlBulkInsertService(coordinator: TransactionCoordinator
-): CompositeRawSqlBulkInsertService<List<FormBaseDto>>(coordinator) {
+class FormDataFetchSqlBulkInsertService(coordinator: ITransactionCoordinator): CompositeRawSqlBulkInsertService<List<FormBaseDto>>(coordinator) {
 
     //region Public Method
     override suspend fun buildCompositeOperation(items: List<FormBaseDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {

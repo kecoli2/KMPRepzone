@@ -6,15 +6,16 @@ import com.repzone.database.metadata.SyncPaymentPlanEntityMetadata
 import com.repzone.database.toSqlValuesString
 import com.repzone.network.dto.SyncPaymentPlanDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
-import com.repzone.sync.transaction.CompositeOperation
-import com.repzone.sync.transaction.TableOperation
-import com.repzone.sync.transaction.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.CompositeOperation
+import com.repzone.domain.transactioncoordinator.TableOperation
+import com.repzone.data.transactioncoordinator.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.ITransactionCoordinator
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_template_desc
 import repzonemobile.core.generated.resources.job_email
 
 class PaymentRawSqlBulkInsertService(private val mapper: SyncPaymentPlanEntityDbMapper,
-                                     coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<SyncPaymentPlanDto>>(coordinator) {
+                                     coordinator: ITransactionCoordinator): CompositeRawSqlBulkInsertService<List<SyncPaymentPlanDto>>(coordinator) {
     //region Field
     //endregion Field
 

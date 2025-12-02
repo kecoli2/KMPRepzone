@@ -10,16 +10,17 @@ import com.repzone.database.metadata.SyncDocumentMapProcessStepEntityMetadata
 import com.repzone.database.toSqlValuesString
 import com.repzone.network.dto.DocumentMapModelDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
-import com.repzone.sync.transaction.CompositeOperation
-import com.repzone.sync.transaction.TableOperation
-import com.repzone.sync.transaction.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.CompositeOperation
+import com.repzone.domain.transactioncoordinator.TableOperation
+import com.repzone.data.transactioncoordinator.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.ITransactionCoordinator
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_template_desc
 import repzonemobile.core.generated.resources.job_document_map
 
 class DocumentMapsRawSqlBulkInsertService(private val mapperDocument: SyncDocumentMapEntityDbMapper,
                                           private val mapperProcess: SyncDocumentMapProcessEntityDbMapper,
-                                          private val mapperProcessStep: SyncDocumentMapProcessStepEntityDbMapper, coordinator: TransactionCoordinator
+                                          private val mapperProcessStep: SyncDocumentMapProcessStepEntityDbMapper, coordinator: ITransactionCoordinator
 ): CompositeRawSqlBulkInsertService<List<DocumentMapModelDto>>(coordinator) {
     //region Public Method
     override suspend fun buildCompositeOperation(items: List<DocumentMapModelDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {

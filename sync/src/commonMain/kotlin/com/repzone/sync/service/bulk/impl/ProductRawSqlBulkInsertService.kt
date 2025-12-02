@@ -15,9 +15,10 @@ import com.repzone.database.runtime.toSqlCriteriaWithParams
 import com.repzone.database.toSqlValuesString
 import com.repzone.network.dto.ProductDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
-import com.repzone.sync.transaction.CompositeOperation
-import com.repzone.sync.transaction.TableOperation
-import com.repzone.sync.transaction.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.CompositeOperation
+import com.repzone.domain.transactioncoordinator.TableOperation
+import com.repzone.data.transactioncoordinator.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.ITransactionCoordinator
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_template_desc
 import repzonemobile.core.generated.resources.job_product_parameters
@@ -25,7 +26,7 @@ import repzonemobile.core.generated.resources.job_product_parameters
 
 @Suppress("UNCHECKED_CAST")
 class ProductRawSqlBulkInsertService(private val dbMapper: ProductEntityDtoDbMapper,
-                                     coordinator: TransactionCoordinator, private val iDatabaseManager: IDatabaseManager): CompositeRawSqlBulkInsertService<List<ProductDto>>(coordinator) {
+                                     coordinator: ITransactionCoordinator): CompositeRawSqlBulkInsertService<List<ProductDto>>(coordinator) {
 
     //region Public Method
     override suspend fun buildCompositeOperation(items: List<ProductDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {

@@ -6,15 +6,16 @@ import com.repzone.database.metadata.SyncDynamicPageReportEntityMetadata
 import com.repzone.database.toSqlValuesString
 import com.repzone.network.dto.DynamicPageReportDto
 import com.repzone.sync.service.bulk.base.CompositeRawSqlBulkInsertService
-import com.repzone.sync.transaction.CompositeOperation
-import com.repzone.sync.transaction.TableOperation
-import com.repzone.sync.transaction.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.CompositeOperation
+import com.repzone.domain.transactioncoordinator.TableOperation
+import com.repzone.data.transactioncoordinator.TransactionCoordinator
+import com.repzone.domain.transactioncoordinator.ITransactionCoordinator
 import repzonemobile.core.generated.resources.Res
 import repzonemobile.core.generated.resources.job_complate_template_desc
 import repzonemobile.core.generated.resources.job_dynamic_event_reasons
 
 class DynamicPageReportRawSqlBulkInsertService(private val mapper: SyncDynamicPageReportEntityDbMapper,
-                                               coordinator: TransactionCoordinator): CompositeRawSqlBulkInsertService<List<DynamicPageReportDto>>(coordinator) {
+                                               coordinator: ITransactionCoordinator): CompositeRawSqlBulkInsertService<List<DynamicPageReportDto>>(coordinator) {
     //region Public Method
     override suspend fun buildCompositeOperation(items: List<DynamicPageReportDto>, includeClears: Boolean, useUpsert: Boolean): CompositeOperation {
         val pages = items.map { mapper.fromDto(it) }
