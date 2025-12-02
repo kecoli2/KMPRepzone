@@ -186,8 +186,8 @@ private fun ProductRowContent(
                 verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 // Name Row
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (product.sku.isNotEmpty()) {
+                if (product.sku.isNotEmpty()) {
+                    Row{
                         Text(
                             "•",
                             style = MaterialTheme.typography.bodySmall,
@@ -201,102 +201,109 @@ private fun ProductRowContent(
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
-                    Text(
-                        text = product.name,
-                        style = MaterialTheme.typography.titleSmall,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = Modifier.padding(start = 4.dp)
-                    )
                 }
-
-                // Brand
-                if (product.brandName?.isNotEmpty() == true) {
-                    Text(
-                        text = product.brandName!!,
-                        style = MaterialTheme.typography.bodySmall,
-                        fontWeight = FontWeight.Medium,
-                        color = MaterialTheme.colorScheme.primary,
-                        overflow = TextOverflow.Ellipsis,
-                        maxLines = 1
-                    )
-                }
-                // Price
                 Text(
-                    text = priceText,
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.primary
+                    text = product.name,
+                    style = MaterialTheme.typography.titleSmall,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis,
+                    modifier = Modifier.padding(start = 4.dp)
                 )
 
-                // Stock
-                StockInfoRow(stockText = stockText, hasStock = hasStock)
-
-                // Document Badge
-                if (state.isInDocument) {
-                    Badge(
-                        containerColor = MaterialTheme.colorScheme.primary,
-                        contentColor = MaterialTheme.colorScheme.onPrimary
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ShoppingCart,
-                            contentDescription = null,
-                            modifier = Modifier.size(10.dp)
-                        )
-                    }
-                }
-
-                // Validation Status
-                ValidationStatusRow(
-                    validationStatus = state.validationStatus,
-                    isInDocument = state.isInDocument,
-                    documentQuantity = state.documentQuantity.toPlainString(),
-                    documentUnitName = state.documentUnitName
-                )
-
-                if (state.hasAnyEntry) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(4.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.padding(top = 4.dp)
-                    ) {
-                        // Kaydedilmiş entry'ler (unitEntries)
-                        state.unitEntries.values.forEach { entry ->
-                            EntryChip(
-                                text = "${entry.quantity.toPlainString()} ${entry.unitName}",
-                                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                                contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                Row(modifier = Modifier.fillMaxWidth()){
+                    Column( modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)){
+                        // Brand
+                        if (product.brandName?.isNotEmpty() == true) {
+                            Text(
+                                text = product.brandName!!,
+                                style = MaterialTheme.typography.bodySmall,
+                                fontWeight = FontWeight.Medium,
+                                color = MaterialTheme.colorScheme.primary,
+                                overflow = TextOverflow.Ellipsis,
+                                maxLines = 1
                             )
                         }
+                        // Price
+                        Text(
+                            text = priceText,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
 
-                        // Mevcut giriş (henüz kaydedilmemiş)
-                        if (state.isValidQuantity) {
-                            state.currentUnit?.let { unit ->
-                                EntryChip(
-                                    text = "${state.quantityText} ${unit.unitName}",
-                                    containerColor = MaterialTheme.colorScheme.tertiaryContainer,
-                                    contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                        // Stock
+                        StockInfoRow(stockText = stockText, hasStock = hasStock)
+
+                        // Document Badge
+                        if (state.isInDocument) {
+                            Badge(
+                                containerColor = MaterialTheme.colorScheme.primary,
+                                contentColor = MaterialTheme.colorScheme.onPrimary
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.ShoppingCart,
+                                    contentDescription = null,
+                                    modifier = Modifier.size(10.dp)
                                 )
                             }
                         }
-                    }
-                }
-            }
 
-            // Quantity Controls
-            QuantityControls(
-                currentUnit = state.currentUnit,
-                quantityText = state.quantityText,
-                validationStatus = state.validationStatus,
-                onUnitCycle = onUnitCycle,
-                onQuantityChanged = onQuantityChanged,
-                isLastItem = isLastItem,
-                focusRequester = focusRequester,
-                onNextRequested = onNextRequested
-            )
-            Spacer(modifier = Modifier.width(4.dp))
+                        // Validation Status
+                        ValidationStatusRow(
+                            validationStatus = state.validationStatus,
+                            isInDocument = state.isInDocument,
+                            documentQuantity = state.documentQuantity.toPlainString(),
+                            documentUnitName = state.documentUnitName
+                        )
+
+                        if (state.hasAnyEntry) {
+                            Row(
+                                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.padding(top = 4.dp)
+                            ) {
+                                // Kaydedilmiş entry'ler (unitEntries)
+                                state.unitEntries.values.forEach { entry ->
+                                    EntryChip(
+                                        text = "${entry.quantity.toPlainString()} ${entry.unitName}",
+                                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                                    )
+                                }
+
+                                // Mevcut giriş (henüz kaydedilmemiş)
+                                if (state.isValidQuantity) {
+                                    state.currentUnit?.let { unit ->
+                                        EntryChip(
+                                            text = "${state.quantityText} ${unit.unitName}",
+                                            containerColor = MaterialTheme.colorScheme.tertiaryContainer,
+                                            contentColor = MaterialTheme.colorScheme.onTertiaryContainer
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+
+                    // Quantity Controls
+                    QuantityControls(
+                        currentUnit = state.currentUnit,
+                        quantityText = state.quantityText,
+                        validationStatus = state.validationStatus,
+                        onUnitCycle = onUnitCycle,
+                        onQuantityChanged = onQuantityChanged,
+                        isLastItem = isLastItem,
+                        focusRequester = focusRequester,
+                        onNextRequested = onNextRequested
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
+                }
+
+            }
         }
     }
 }

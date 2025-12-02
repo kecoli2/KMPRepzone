@@ -189,7 +189,7 @@ private fun generateDummyProducts(): List<ProductInformationModel> {
     val groups = listOf("Telefon", "Tablet", "Laptop", "Aksesuar", "TV")
     val tagOptions = listOf("Elektronik", "Yeni", "İndirimli", "Popüler", "Öne Çıkan", "Sınırlı Stok", "Kampanya")
 
-    return (1..50).map { index ->
+    return (1..1).map { index ->
         val brandIndex = index % brands.size
         val groupIndex = (index % 5)
         val brand = brands[brandIndex]
@@ -197,8 +197,8 @@ private fun generateDummyProducts(): List<ProductInformationModel> {
 
         ProductInformationModel(
             id = index,
-            name = "${brand} Ürün $index",
-            sku = "CODE-$index",
+            name = "${brand} Ürün adı buraya gelecek uzunlukl deneme deneme sss fdfsdfsdf fdsfdfsd$index",
+            sku = "CODE-denemeler var  -$index",
             vat = BigDecimal.fromInt(20),
             tags = selectedTags,
             brandId = brandIndex + 1,
