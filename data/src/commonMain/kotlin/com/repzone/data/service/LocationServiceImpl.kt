@@ -27,10 +27,13 @@ import com.repzone.domain.manager.gps.IPlatformGpsEnabler
 import com.repzone.domain.platform.IPlatformServiceController
 import com.repzone.domain.service.IPlatformGeocoder
 import com.repzone.domain.util.notification.IPlatformNotificationHelper
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.awaitCancellation
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlin.coroutines.cancellation.CancellationException
 
 /**
  *  Sorumluluk: GPS toplama servisini yönetir
@@ -75,6 +78,7 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
     private val debouncePeriod = 3000L // 3 saniye
     private var lastProcessedLocationId: String? = null
     private val _gpsStatus = MutableStateFlow<GpsStatus>(GpsStatus.DISABLED)
+    private var platformLocationJob: Job? = null
     //endregion
 
     //region Properties
@@ -116,9 +120,6 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             // Platform location updates'i başlat
             startPlatformLocationUpdates(config)
 
-            // Schedule monitoring başlat (her zaman - service start/stop kontrolü için)
-            startScheduleMonitoring(config)
-
             startGpsMonitoring()
             if (!platformProvider.isLocationEnabled()) {
                 Logger.d("LocationService:️ GPS kapalı! Bildirim gösteriliyor...")
@@ -128,6 +129,8 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             isRunning = true
             isPaused = false
             _serviceState.value = ServiceState.Running
+            // Schedule monitoring başlat (her zaman - service start/stop kontrolü için)
+            startScheduleMonitoring(config)
             val deleteSql = "DELETE FROM GeoLocationEntity WHERE Time < (strftime('%s', 'now', 'utc', '-2 days') * 1000)"
             iDAtabaseManager.getSqlDriver().rawExecute(deleteSql)
             Result.Success(Unit)
@@ -214,28 +217,54 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
     }
 
     override suspend fun forceGpsUpdate(): Result<GpsLocation> {
+        val originalPauseState = isPaused
         return try {
+            Logger.d("LOCATION_SERVICE", "forceGpsUpdate() - Schedule'dan bağımsız")
+
+            isPaused = false
+
             platformProvider.stopLocationUpdates()
             delay(500)
+
+            Logger.d("LOCATION_SERVICE", "Force Gps location isteniyor...")
             val locationResult = platformProvider.requestLocation()
+
             if (locationResult.isSuccess) {
                 val location = locationResult.getOrThrow()
 
                 // Validate
                 if (!location.isValid()) {
+                    Logger.d("LOCATION_SERVICE", "Invalid GPS location")
                     restartPeriodicUpdates()
+                    isPaused = originalPauseState
                     return Result.Error(DomainException.UnknownException(cause = IllegalStateException("Invalid GPS location")))
                 }
-                processNewLocation(location)
+
+                Logger.d("LOCATION_SERVICE", "Valid location alındı: (${location.latitude}, ${location.longitude})")
+
+                // Force sync ile işle (schedule kontrolü YOK!)
+                processNewLocation(location, forceSync = true)
+
                 delay(500)
                 restartPeriodicUpdates()
+
+                // Pause state'i geri döndür
+                isPaused = originalPauseState
+
+                Logger.d("LOCATION_SERVICE", "forceGpsUpdate başarılı!")
                 Result.Success(location)
+
             } else {
+                Logger.d("LOCATION_SERVICE", "Location alınamadı")
                 restartPeriodicUpdates()
+                isPaused = originalPauseState
                 locationResult
             }
+
         } catch (e: Exception) {
+            Logger.d("LOCATION_SERVICE", "forceGpsUpdate hatası: ${e.message}")
             restartPeriodicUpdates()
+            isPaused = originalPauseState
             Result.Error(DomainException.UnknownException(cause = e))
         }
     }
@@ -351,6 +380,8 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
     }
     private fun startScheduleMonitoring(config: GpsConfig) {
         coroutineScope.launch {
+            var lastScheduleState = config.shouldRunBackgroundService()
+
             while (isRunning && !isPaused) {
                 delay(60_000) // Her 1 dakikada kontrol et
 
@@ -359,22 +390,55 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
                 val currentlyRunning = serviceController?.isServiceRunning() ?: false
 
                 when {
-                    // Schedule içine girildi → Service başlat
+                    // Schedule içine girildi Service başlat
                     shouldRun && !currentlyRunning -> {
                         Logger.d("LOCATION_SERVICE", "Schedule içine girildi, Foreground Service başlatılıyor...")
                         serviceController?.startForegroundService()
+
+                        // Location updatesi başlat
+                        Logger.d("LOCATION_SERVICE", "▶Location updates başlatılıyor...")
+                        startPlatformLocationUpdates(config)
                     }
 
-                    // Schedule dışına çıkıldı → Service durdur
+                    // Schedule dışına çıkıldı Service durdur
                     !shouldRun && currentlyRunning -> {
                         Logger.d("LOCATION_SERVICE", "Schedule dışına çıkıldı, Foreground Service durduruluyor...")
+
+                        //Location updates'i DURDUR (Job iptal + Platform durdur)
+                        Logger.d("LOCATION_SERVICE", "Location updates durduruluyor...")
+                        stopLocationUpdates()
+
+                        // Service'i durdur
                         serviceController.stopForegroundService()
+
+                        // Notification'ları temizle
+                        try {
+                            notificationHelper.dismissAllTrackingNotifications()
+                        } catch (e: Exception) {
+                            Logger.d("LOCATION_SERVICE", "Notification temizleme hatası: ${e.message}")
+                        }
                     }
+                }
+
+                // Schedule durumu değişikliğini logla
+                val currentScheduleState = config.shouldRunBackgroundService()
+                if (lastScheduleState != currentScheduleState) {
+                    if (currentScheduleState) {
+                        Logger.d("LOCATION_SERVICE", "Schedule başladı!")
+                    } else {
+                        Logger.d("LOCATION_SERVICE", "Schedule bitti!")
+                    }
+                    lastScheduleState = currentScheduleState
                 }
             }
         }
     }
     private fun startPlatformLocationUpdates(config: GpsConfig) {
+        // Önce mevcut updates'i durdur
+        stopLocationUpdates()
+
+        Logger.d("LOCATION_SERVICE", "📡 Platform location updates başlatılıyor...")
+
         // Doğruluk seviyesini ayarla
         val accuracy = if (config.batteryOptimizationEnabled) {
             LocationAccuracy.BALANCED
@@ -386,10 +450,118 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
         // Platform location updates'i başlat
         val intervalMs = config.gpsIntervalMinutes * 60 * 1000L
 
-        platformProvider.startLocationUpdates(intervalMs = intervalMs, minDistanceMeters = config.minDistanceMeters) { location ->
-            coroutineScope.launch {
-                processNewLocation(location)
+        platformProvider.startLocationUpdates(
+            intervalMs = intervalMs,
+            minDistanceMeters = config.minDistanceMeters
+        ) { location ->
+            // Callback içinde job kontrolü yap
+            if (platformLocationJob?.isActive == true) {
+                coroutineScope.launch {
+                    // Schedule kontrolü ekle
+                    if (isRunning && !isPaused) {
+                        Logger.d("LOCATION_SERVICE", "Location alındı: (${location.latitude}, ${location.longitude})")
+                        processNewLocation(location)
+                    } else {
+                        Logger.d("LOCATION_SERVICE", " Location atlandı (isRunning=$isRunning, isPaused=$isPaused)")
+                    }
+                }
+            } else {
+                Logger.d("LOCATION_SERVICE", "Location atlandı (Job iptal edilmiş)")
             }
+        }
+
+        // ⭐ Dummy job oluştur (callback'in aktif olduğunu takip için)
+        platformLocationJob = coroutineScope.launch {
+            // Bu job, callback'in aktif olduğunu gösterir
+            // İptal edildiğinde callback'ler ignore edilir
+            try {
+                // Sonsuza kadar bekle (iptal edilene kadar)
+                awaitCancellation()
+            } catch (e: CancellationException) {
+                Logger.d("LOCATION_SERVICE", "Platform location job iptal edildi")
+                throw e
+            }
+        }
+
+        Logger.d("LOCATION_SERVICE", "✅ Platform location updates başlatıldı (interval=${intervalMs}ms)")
+    }
+
+    private fun stopLocationUpdates() {
+        platformLocationJob?.cancel()
+        platformLocationJob = null
+        platformProvider.stopLocationUpdates()
+    }
+
+    private suspend fun processNewLocation(location: GpsLocation, forceSync: Boolean = false) {
+        try {
+            val now = now()
+            val isDuplicate = location.id == lastProcessedLocationId
+            val isTooRecent = (now - lastProcessedTime) < debouncePeriod
+
+            // Force sync ise debounce/duplicate kontrollerini ATLA
+            if (!forceSync && (isDuplicate || isTooRecent)) {
+                Logger.d("LOCATION_SERVICE", "Location skipped - duplicate: $isDuplicate, too recent: $isTooRecent, id: ${location.id}")
+                return
+            }
+
+            if(iGeocoder.isAvailable()){
+                val adress = iGeocoder.getAddress(location.latitude,location.longitude)
+                adress?.let {
+                    location.reverseGeocoded = it.fullAddress
+                }
+            }
+
+            val config = currentConfig ?: return
+
+            if (!config.isActive) {
+                Logger.d("LOCATION_SERVICE", "Location rejected - service not active")
+                return
+            }
+
+            // Doğruluk kontrolü
+            if (location.accuracy > config.accuracyThreshold) {
+                Logger.d("LOCATION_SERVICE","Location rejected: accuracy too low (${location.accuracy}m > ${config.accuracyThreshold}m)")
+                return
+            }
+
+            // Force sync ise mesafe kontrolünü ATLA
+            if (!forceSync && config.batteryOptimizationEnabled) {
+                val lastLocation = locationRepository.getLastLocation()
+                if (lastLocation != null) {
+                    val distance = locationRepository.calculateDistance(lastLocation, location)
+                    if (distance < config.minDistanceMeters) {
+                        Logger.d("LOCATION_SERVICE","Location rejected: distance too small (${distance}m < ${config.minDistanceMeters}m)")
+                        return
+                    }
+                }
+            }
+
+            // Konumu kaydet
+            locationRepository.saveLocation(location).onSuccess {
+                _locationUpdates.value = location
+                lastProcessedLocationId = location.id
+                lastProcessedTime = now
+
+                // Firebase gönderimi: forceSync VEYA (schedule içi VE shouldSendToFirebase)
+                val shouldSendFirebase = forceSync ||
+                        (config.shouldSendToFirebase() && config.shouldRunBackgroundService())
+
+                if (shouldSendFirebase) {
+                    Logger.d("LOCATION_SERVICE", "Firebase'e gönderiliyor (forceSync=$forceSync)...")
+                    coroutineScope.launch {
+                        //sendToFirebase(location)
+                    }
+                } else {
+                    Logger.d("LOCATION_SERVICE", "Firebase gönderimi atlandı (schedule dışı)")
+                }
+
+                Logger.d("LOCATION_SERVICE","Location saved: ${location.toReadableString()}")
+            }.onError { e ->
+                Logger.error("LOCATION_SERVICE",e)
+            }
+
+        } catch (e: Exception) {
+            Logger.error("LOCATION_SERVICE",e)
         }
     }
     private suspend fun processNewLocation(location: GpsLocation) {

@@ -98,7 +98,7 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
                 gpsIntervalMinutes = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackInterval ?: 1,
                 startTimeHour = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackStartTime?.getLocalDateTime()?.hour ?: 0,
                 startTimeMinute = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackStartTime?.getLocalDateTime()?.minute ?: 0,
-                endTimeHour = 23,
+                endTimeHour = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackEndTime?.getLocalDateTime()?.hour ?: 0,
                 endTimeMinute = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackEndTime?.getLocalDateTime()?.minute ?: 0,
                 activeDays = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackDays ?: emptyList(),
                 serverSyncIntervalMinutes = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackInterval ?: 1,
@@ -169,16 +169,44 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
 
     override suspend fun stop(): Result<Unit> {
         return try {
+            Logger.d("GpsTrackingManager", "stop() çağrıldı")
+
+            // LocationService'i durdur
+            val result = locationService.stopService()
+
+            if (result.isError) {
+                Logger.d("GpsTrackingManager", "LocationService durdurulamadı")
+                return result
+            }
+
+            // Foreground Service'i durdur
             serviceController.stopForegroundService()
-            locationService.stopService().getOrThrow()
+
+            Logger.d("GpsTrackingManager", "Tracking durduruldu")
             Result.Success(Unit)
+
         } catch (e: Exception) {
-            Result.Error(DomainException.UnknownException(cause =e ))
+            Logger.d("GpsTrackingManager", "stop hatası: ${e.message}")
+            Result.Error(DomainException.UnknownException(cause = e))
         }
     }
 
     override suspend fun pause(): Result<Unit> {
-        return locationService.pauseService()
+        return try {
+            val result = locationService.pauseService()
+
+            if (result.isSuccess) {
+                Logger.d("GpsTrackingManager", "Tracking duraklatıldı")
+            } else {
+                Logger.d("GpsTrackingManager", "Pause başarısız")
+            }
+
+            result
+
+        } catch (e: Exception) {
+            Logger.d("GpsTrackingManager", "Pause hatası: ${e.message}")
+            Result.Error(DomainException.UnknownException(cause = e))
+        }
     }
 
     override suspend fun resume(): Result<Unit> {
