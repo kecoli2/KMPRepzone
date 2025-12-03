@@ -13,8 +13,13 @@ import com.repzone.network.dto.PackageCustomFieldDto
 import com.repzone.network.dto.ProductDto
 import com.repzone.network.dto.ProductGroupDto
 import com.repzone.network.dto.RouteDto
+import com.repzone.network.dto.SyncCustomerGroupProductDistributionDto
+import com.repzone.network.dto.SyncCustomerProductDistributionDto
 import com.repzone.network.dto.SyncMandatoryFormDto
 import com.repzone.network.dto.SyncPaymentPlanDto
+import com.repzone.network.dto.SyncProductDistributionDto
+import com.repzone.network.dto.SyncProductDistributionLineDto
+import com.repzone.network.dto.SyncRepresentativeProductDistributionDto
 import com.repzone.network.dto.SyncStockDto
 import com.repzone.network.dto.SyncUnitDto
 import com.repzone.network.dto.form.FormBaseDto
@@ -58,6 +63,16 @@ interface ISyncFactory {
         stockApi: ISyncApiService<List<SyncStockDto>>,
         stockBulkInsert: IBulkInsertService<List<SyncStockDto>>,
         paymentApi: ISyncApiService<List<SyncPaymentPlanDto>>,
-        paymentBulkInsert: IBulkInsertService<List<SyncPaymentPlanDto>>
+        paymentBulkInsert: IBulkInsertService<List<SyncPaymentPlanDto>>,
+        customerProductDistributionsApi: ISyncApiService<List<SyncCustomerProductDistributionDto>>,
+        customerProductDistributionsBulkInsert: IBulkInsertService<List<SyncCustomerProductDistributionDto>>,
+        customerProductGroupDistributionsApi: ISyncApiService<List<SyncCustomerGroupProductDistributionDto>>,
+        customerProductGroupDistributionsBulkInsert: IBulkInsertService<List<SyncCustomerGroupProductDistributionDto>>,
+        productDistributionApi: ISyncApiService<List<SyncProductDistributionDto>>,
+        productDistributionBulkInsert: IBulkInsertService<List<SyncProductDistributionDto>>,
+        productDistributionLineApi: ISyncApiService<List<SyncProductDistributionLineDto>>,
+        productDistributionLineBulkInsert: IBulkInsertService<List<SyncProductDistributionLineDto>>,
+        representativeProductDistributionApi: ISyncApiService<List<SyncRepresentativeProductDistributionDto>>,
+        representativeProductDistributionBulkInsert: IBulkInsertService<List<SyncRepresentativeProductDistributionDto>>,
     ):Map<SyncJobType, ISyncJob>
 }

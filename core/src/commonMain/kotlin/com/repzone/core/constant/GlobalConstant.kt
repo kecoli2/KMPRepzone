@@ -65,6 +65,16 @@ object IFormApiControllerConstant {
     const val FORM_MANDATORY_ENDPOINT = "/api/v1/Form/MandatoryForms"
 }
 
+object IDistributionApiControllerConstant {
+    const val CUSTOMER_PRODUCT_DISTRIBUTION_ENDPOINT = "/api/Distribution/CustomerProductDistributions"
+    const val CUSTOMER_PRODUCT_GROUP_DISTRIBUTION_ENDPOINT = "/api/Distribution/CustomerProductGroupDistributions"
+    const val PRODUCT_DISTRIBUTION_PRODUCT_ENDPOINT = "/api/Distribution/ProductDistributions"
+    const val PRODUCT_DISTRIBUTION_LINES_ENDPOINT = "/api/Distribution/ProductDistributionLines"
+    const val REPRESENATIVE_DISTRIBUTION_ENDPOINT = "/api/Distribution/RepresentativeDistributions"
+}
+
+
+
 object VersionModuleConstant {
     const val LEGACY_VERSION = "LegacyVersion"
     const val NEW_VERSION = "NewVersion"

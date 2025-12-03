@@ -29,6 +29,7 @@ actual fun randomUUID(): String {
     return NSUUID().UUIDString()
 }
 
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class NumberFormatter {
     private val locale = NSLocale.currentLocale
     private val formatter = NSNumberFormatter().apply {

@@ -3,7 +3,10 @@ package com.repzone.data.mapper
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncProductDistributionEntity
 import com.repzone.domain.model.SyncProductDistributionModel
+import com.repzone.network.dto.SyncProductDistributionDto
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class SyncProductDistributionEntityDbMapper : Mapper<SyncProductDistributionEntity, SyncProductDistributionModel> {
     //region Public Method
     override fun toDomain(from: SyncProductDistributionEntity): SyncProductDistributionModel {
@@ -31,6 +34,20 @@ class SyncProductDistributionEntityDbMapper : Mapper<SyncProductDistributionEnti
             RecordDateUtc = domain.recordDateUtc,
             State = domain.state,
             TenantId = domain.tenantId
+        )
+    }
+
+    fun fromDto(dto: SyncProductDistributionDto): SyncProductDistributionEntity {
+        return SyncProductDistributionEntity(
+            Id = dto.id.toLong(),
+            Description = dto.description,
+            ModificationDateUtc = dto.modificationDateUtc?.toEpochMilliseconds(),
+            Name = dto.name,
+            OrganizationId = dto.organizationId.toLong(),
+            ParentId = dto.parentId.toLong(),
+            RecordDateUtc = dto.recordDateUtc?.toEpochMilliseconds(),
+            State = dto.state.toLong(),
+            TenantId = dto.tenantId.toLong()
         )
     }
     //endregion

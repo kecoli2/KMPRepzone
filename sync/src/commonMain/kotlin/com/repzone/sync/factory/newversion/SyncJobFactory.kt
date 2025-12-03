@@ -52,7 +52,17 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
         stockApi: ISyncApiService<List<SyncStockDto>>,
         stockBulkInsert: IBulkInsertService<List<SyncStockDto>>,
         paymentApi: ISyncApiService<List<SyncPaymentPlanDto>>,
-        paymentBulkInsert: IBulkInsertService<List<SyncPaymentPlanDto>>
+        paymentBulkInsert: IBulkInsertService<List<SyncPaymentPlanDto>>,
+        customerProductDistributionsApi: ISyncApiService<List<SyncCustomerProductDistributionDto>>,
+        customerProductDistributionsBulkInsert: IBulkInsertService<List<SyncCustomerProductDistributionDto>>,
+        customerProductGroupDistributionsApi: ISyncApiService<List<SyncCustomerGroupProductDistributionDto>>,
+        customerProductGroupDistributionsBulkInsert: IBulkInsertService<List<SyncCustomerGroupProductDistributionDto>>,
+        productDistributionApi: ISyncApiService<List<SyncProductDistributionDto>>,
+        productDistributionBulkInsert: IBulkInsertService<List<SyncProductDistributionDto>>,
+        productDistributionLineApi: ISyncApiService<List<SyncProductDistributionLineDto>>,
+        productDistributionLineBulkInsert: IBulkInsertService<List<SyncProductDistributionLineDto>>,
+        representativeProductDistributionApi: ISyncApiService<List<SyncRepresentativeProductDistributionDto>>,
+        representativeProductDistributionBulkInsert: IBulkInsertService<List<SyncRepresentativeProductDistributionDto>>,
     ): Map<SyncJobType, ISyncJob> {
         return mapOf(
             SyncJobType.PRODUCTS to ProductSyncJob(productApi, productBulkInsert, syncModuleRepository),
@@ -72,7 +82,12 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
             SyncJobType.FORM to FormDataFetchSyncJob(formDefinationsApi, formDefinationBulkInsert, syncModuleRepository),
             SyncJobType.FORM_MANDATORY to FormMandatoryDataSyncJob(formMandatoryDataApi, formMandatoryDataBulkInsert, syncModuleRepository),
             SyncJobType.STOCK to StockSyncJob(stockApi, stockBulkInsert, syncModuleRepository),
-            SyncJobType.PAYMENT_PLAN to PaymentSyncJob(paymentApi, paymentBulkInsert, syncModuleRepository)
+            SyncJobType.PAYMENT_PLAN to PaymentSyncJob(paymentApi, paymentBulkInsert, syncModuleRepository),
+            SyncJobType.DISTRIBUTIONS_CUSTOMER_PRODUCT to CustomerProductDistributionsSyncJob(customerProductDistributionsApi, customerProductDistributionsBulkInsert, syncModuleRepository),
+            SyncJobType.DISTRIBUTIONS_CUSTOMER_PRODUCT_GROUP to CustomerProductGroupDistributionsSyncJob(customerProductGroupDistributionsApi, customerProductGroupDistributionsBulkInsert, syncModuleRepository),
+            SyncJobType.DISTRIBUTIONS_PRODUCT to ProductDistributionSyncJob(productDistributionApi, productDistributionBulkInsert, syncModuleRepository),
+            SyncJobType.DISTRIBUTIONS_LINES to ProductDistributionLineSyncJob(productDistributionLineApi, productDistributionLineBulkInsert, syncModuleRepository),
+            SyncJobType.DISTRIBUTIONS_REPRESENTATIVE_PRODUCT to RepresentativeProductDistributionSyncJob(representativeProductDistributionApi, representativeProductDistributionBulkInsert, syncModuleRepository)
         )
     }
     //endregion

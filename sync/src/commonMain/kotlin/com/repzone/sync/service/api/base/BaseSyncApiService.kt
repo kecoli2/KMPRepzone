@@ -3,9 +3,11 @@ package com.repzone.sync.service.api.base
 import com.repzone.core.util.extensions.toDateString
 import com.repzone.core.util.extensions.jsonToModel
 import com.repzone.domain.model.SyncModuleModel
+import com.repzone.domain.util.retryWithBackoff
 import com.repzone.network.http.extensions.toApiException
 import com.repzone.network.http.wrapper.ApiResult
 import com.repzone.network.models.request.FilterModelRequest
+import com.repzone.network.util.retryWithBackoff
 import com.repzone.sync.interfaces.ISyncApiService
 import io.ktor.client.HttpClient
 import kotlinx.coroutines.flow.Flow
@@ -14,7 +16,10 @@ import kotlinx.datetime.TimeZone
 import kotlinx.serialization.SerializationException
 
 abstract class BaseSyncApiService<TDto : Any>(val client: HttpClient) : ISyncApiService<TDto> {
-    /*protected abstract fun extractLastId(data: TDto): Int*/
+
+    protected open val maxRetries: Int = 3
+    protected open val initialRetryDelayMs: Long = 1000
+    protected open val maxRetryDelayMs: Long = 10000
     protected abstract fun getDataSize(data: TDto): Int
 
     override suspend fun fetchAll(model: SyncModuleModel): ApiResult<TDto> {
@@ -29,7 +34,13 @@ abstract class BaseSyncApiService<TDto : Any>(val client: HttpClient) : ISyncApi
 
         while (hasMore) {
             try {
-                val response = performApiCall(model, requestModel)
+                val response = retryWithBackoff(
+                    maxRetries = maxRetries,
+                    initialDelayMs = initialRetryDelayMs,
+                    maxDelayMs = maxRetryDelayMs
+                ) {
+                    performApiCall(model, requestModel)
+                }
                 when (response) {
                     is ApiResult.Error -> {
                         emit(response)

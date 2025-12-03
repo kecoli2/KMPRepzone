@@ -9,6 +9,7 @@ expect fun randomUUID(): String
 /**
  * Platform-specific number/currency formatter
  */
+@Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 expect class NumberFormatter() {
     /** Ondalık ayırıcı (TR: ',' EN: '.') */
     val decimalSeparator: Char

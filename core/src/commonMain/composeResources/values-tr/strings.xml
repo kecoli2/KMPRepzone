@@ -809,6 +809,12 @@
     <string name="server_error">Sunucu hatası, lütfen daha sonra tekrar deneyin</string>
     <string name="unknown_error">Bilinmeyen hata: %1$s</string>
     <string name="job_email">Müşteri Email leri</string>
+    <string name="job_productdistribution_lines">Dağıtım Listesi Satırları</string>
+    <string name="job_RepresentativetDistributions">Temsilci Dağıtım Listeleri</string>
+
+    <string name="job_customer_distribution">Distribütör Müşteri Ürün leri</string>
+    <string name="job_customer_group_distribution">Distribütör Müşteri Grup ları</string>
+    <string name="job_customer_distribution_product">Distribütör Ürün leri</string>
     <string name="job_payment_plan">Ödeme Plan ları</string>
     <string name="job_customer_price">Müşteri Grup Fiyatları</string>
     <string name="job_customer_group">Müşteri Grupları</string>

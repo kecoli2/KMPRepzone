@@ -3,7 +3,10 @@ package com.repzone.data.mapper
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncCustomerGroupProductDistributionEntity
 import com.repzone.domain.model.SyncCustomerGroupProductDistributionModel
+import com.repzone.network.dto.SyncCustomerGroupProductDistributionDto
+import kotlin.time.ExperimentalTime
 
+@OptIn(ExperimentalTime::class)
 class SyncCustomerGroupProductDistributionEntityDbMapper : Mapper<SyncCustomerGroupProductDistributionEntity, SyncCustomerGroupProductDistributionModel> {
     //region Public Method
     override fun toDomain(from: SyncCustomerGroupProductDistributionEntity): SyncCustomerGroupProductDistributionModel {
@@ -38,6 +41,24 @@ class SyncCustomerGroupProductDistributionEntityDbMapper : Mapper<SyncCustomerGr
             RecordDateUtc = domain.recordDateUtc,
             State = domain.state
         )
+    }
+
+    fun fromDto(dto : SyncCustomerGroupProductDistributionDto): SyncCustomerGroupProductDistributionEntity {
+        return SyncCustomerGroupProductDistributionEntity(
+            Id = dto.id.toLong(),
+            ModificationDateUtc = dto.modificationDateUtc?.toEpochMilliseconds(),
+            MustStockListId = dto.mustStockListId.toLong(),
+            OrganizationId = dto.organizationId.toLong(),
+            PricePurchaseReturnDamagedListId = dto.pricePurchaseReturnDamagedListId?.toLong(),
+            PriceSalesDamagedListId = dto.priceSalesDamagedListId?.toLong(),
+            PriceSalesDistributionListId = dto.priceSalesDistributionListId.toLong(),
+            PriceSalesReturnDistributionListId = dto.priceSalesReturnDistributionListId.toLong(),
+            ProductSalesDistributionListId = dto.productSalesDistributionListId.toLong(),
+            ProductSalesReturnDistributionListId = dto.productSalesReturnDistributionListId.toLong(),
+            RecordDateUtc = dto.recordDateUtc?.toEpochMilliseconds(),
+            State = dto.state.toLong()
+        )
+
     }
     //endregion
 

@@ -29,6 +29,11 @@ import com.repzone.sync.service.bulk.impl.CustomerEmailRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.CustomerGroupPriceParameterslRawSqlBulkInsertService
 import com.repzone.sync.service.bulk.impl.*
 import com.repzone.data.transactioncoordinator.TransactionCoordinator
+import com.repzone.network.dto.SyncCustomerGroupProductDistributionDto
+import com.repzone.network.dto.SyncCustomerProductDistributionDto
+import com.repzone.network.dto.SyncProductDistributionDto
+import com.repzone.network.dto.SyncProductDistributionLineDto
+import com.repzone.network.dto.SyncRepresentativeProductDistributionDto
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -159,8 +164,25 @@ val SyncModule = module {
     //region PAYMENT
     single<IBulkInsertService<List<SyncPaymentPlanDto>>>(named("paymentBulkInsert")) { PaymentRawSqlBulkInsertService(get(), get()) }
     single<ISyncApiService<List<SyncPaymentPlanDto>>>(named("paymentSyncApi")){ SyncApiPaymentImpl(get()) }
-    //region PAYMENT
+    //endregion PAYMENT
     //endregion ------------------- OTHER -------------------
+
+    //region ------------------- DISTRIBUTION ----------------------
+    single<IBulkInsertService<List<SyncCustomerProductDistributionDto>>>(named("syncCustomerProductDistributionBulkInsert")) {CustomerProductDistributionsRawSqlBulkInsertService(get(), get()) }
+    single<ISyncApiService<List<SyncCustomerProductDistributionDto>>>(named("syncCustomerProductDistributionSyncApi")){ SyncApiCustomerProductDistributionsImpl(get()) }
+
+    single<ISyncApiService<List<SyncCustomerGroupProductDistributionDto>>>(named("syncApiCustomerProductGroupDistributionsImpl")){ SyncApiCustomerProductGroupDistributionsImpl(get()) }
+    single<IBulkInsertService<List<SyncCustomerGroupProductDistributionDto>>>(named("syncCustomerProductGroupDistributionsBulkInsert")) {CustomerProductGroupDistributionsRawSqlBulkInsertService(get(), get()) }
+
+    single<ISyncApiService<List<SyncProductDistributionDto>>>(named("syncApiProductDistributionImpl")){ SyncApiProductDistributionImpl(get()) }
+    single<IBulkInsertService<List<SyncProductDistributionDto>>>(named("productDistributionRawSqlBulkInsert")) {ProductDistributionRawSqlBulkInsert(get(), get()) }
+
+    single<ISyncApiService<List<SyncProductDistributionLineDto>>>(named("syncApiProductDistributionLineImpl")){ SyncApiProductDistributionLineImpl(get()) }
+    single<IBulkInsertService<List<SyncProductDistributionLineDto>>>(named("productDistributionLineRawSqlBulkInsert")) {ProductDistributionLineRawSqlBulkInsert(get(), get()) }
+
+    single<ISyncApiService<List<SyncRepresentativeProductDistributionDto>>>(named("syncApiRepresentativeProductDistributionImpl")){ SyncApiRepresentativeProductDistributionImpl(get()) }
+    single<IBulkInsertService<List<SyncRepresentativeProductDistributionDto>>>(named("representativeProductDistributionRawSqlBulkService")) {RepresentativeProductDistributionRawSqlBulkService(get(), get()) }
+    //endregion ------------------- DISTRIBUTION ----------------------
 
     single {
         get<ISyncFactory>().createJobs(
@@ -201,8 +223,19 @@ val SyncModule = module {
             stockBulkInsert = get(named("stockBulkInsert")),
             paymentApi = get(named("paymentSyncApi")),
             paymentBulkInsert = get(named("paymentBulkInsert")),
+            customerProductDistributionsApi = get(named("syncCustomerProductDistributionSyncApi")),
+            customerProductDistributionsBulkInsert = get(named("syncCustomerProductDistributionBulkInsert")),
+            customerProductGroupDistributionsApi = get(named("syncApiCustomerProductGroupDistributionsImpl")),
+            customerProductGroupDistributionsBulkInsert = get(named("syncCustomerProductGroupDistributionsBulkInsert")),
+            productDistributionApi = get(named("syncApiProductDistributionImpl")),
+            productDistributionBulkInsert = get(named("productDistributionRawSqlBulkInsert")),
+            productDistributionLineApi = get(named("syncApiProductDistributionLineImpl")),
+            productDistributionLineBulkInsert = get(named("productDistributionLineRawSqlBulkInsert")),
+            representativeProductDistributionApi = get(named("syncApiRepresentativeProductDistributionImpl")),
+            representativeProductDistributionBulkInsert = get(named("representativeProductDistributionRawSqlBulkService")),
 
 
         )
+
     }
 }
