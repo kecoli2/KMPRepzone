@@ -13,22 +13,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.os.LocaleListCompat
 import androidx.lifecycle.lifecycleScope
 import com.repzone.core.di.CoreModule
-import com.repzone.core.enums.DocumentActionType
-import com.repzone.core.enums.TaskRepeatInterval
 import com.repzone.core.ui.config.IPresentationConfig
 import com.repzone.core.ui.di.CoreUiModule
 import com.repzone.core.ui.manager.theme.AppTheme
 import com.repzone.core.ui.manager.theme.ThemeManager
+import com.repzone.core.util.extensions.NumberFormatterProvider
 import com.repzone.data.di.RepositoryModulePreview
 import com.repzone.database.di.DatabaseAndroidPreviewModule
 import com.repzone.database.di.DatabaseModulePreview
 import com.repzone.domain.platform.providerImpl.AndroidGpsEnabler
-import com.repzone.domain.util.models.VisitActionItem
 import com.repzone.mobile.di.AndroidDIModulePreview
 import com.repzone.mobile.di.FirebaseMockAndroidModule
 import com.repzone.navigation.AppRouter
@@ -37,13 +34,6 @@ import com.repzone.network.di.PlatformNetworkModule
 import com.repzone.platform.FirebaseManager
 import com.repzone.presentation.legacy.di.PresentationModuleLegacy
 import com.repzone.presentation.legacy.theme.LegacyThemeConfig
-import com.repzone.presentation.legacy.ui.visit.VisitActionList
-import com.repzone.preview.ActivityVisit_Sample
-import com.repzone.preview.DiscountScreen_Sample
-import com.repzone.preview.DocumentBasketScreen_Sample
-import com.repzone.preview.DocumentSettingsScreen_Sample
-import com.repzone.preview.ProductListScreen_Sample
-import com.repzone.preview.Productrow_Preview
 import com.repzone.preview.RepzoneRowItemTemplate_Sample
 import com.repzone.sync.di.SyncModule
 import kotlinx.coroutines.launch
@@ -81,6 +71,7 @@ class MainActivity : AppCompatActivity() {
         Locale.setDefault(locale)
         val config = Configuration(resources.configuration)
         config.setLocale(locale)
+        NumberFormatterProvider.reset()
         @Suppress("DEPRECATION")
         resources.updateConfiguration(config, resources.displayMetrics)
         recreate()

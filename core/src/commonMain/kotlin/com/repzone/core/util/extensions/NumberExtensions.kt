@@ -7,11 +7,32 @@ import com.repzone.core.platform.NumberFormatter
 // ============================================
 // NumberFormatter Instance (lazy singleton)
 // ============================================
-private val numberFormatter by lazy { NumberFormatter() }
+object NumberFormatterProvider {
+    private var _formatter: NumberFormatter? = null
+
+    val instance: NumberFormatter
+        get() {
+            if (_formatter == null) {
+                _formatter = NumberFormatter()
+            }
+            return _formatter!!
+        }
+
+    /**
+     * Dil değiştiğinde çağır
+     */
+    fun reset() {
+        _formatter = null
+    }
+
+}
+private val numberFormatter: NumberFormatter
+    get() = NumberFormatterProvider.instance
 
 // ============================================
 // Double Extensions
 // ============================================
+
 
 /**
  * Para formatına çevir: 1234.56 -> "1.234,56 ₺"

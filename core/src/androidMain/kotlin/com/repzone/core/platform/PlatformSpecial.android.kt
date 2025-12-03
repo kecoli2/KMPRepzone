@@ -28,15 +28,14 @@ actual fun randomUUID(): String {
 
 @Suppress("EXPECT_ACTUAL_CLASSIFIERS_ARE_IN_BETA_WARNING")
 actual class NumberFormatter {
-    private val locale: Locale = Locale.getDefault()
-    private val symbols = DecimalFormatSymbols(locale)
+    private val symbols = DecimalFormatSymbols(Locale.getDefault())
 
     actual val decimalSeparator: Char = symbols.decimalSeparator
     actual val groupingSeparator: Char = symbols.groupingSeparator
     actual val currencySymbol: String = "₺"
 
-    private val currencyFormat = (NumberFormat.getCurrencyInstance(locale) as DecimalFormat).apply {
-        currency = Currency.getInstance(locale)
+    private val currencyFormat = (NumberFormat.getCurrencyInstance(Locale.getDefault()) as DecimalFormat).apply {
+        currency = Currency.getInstance(Locale.getDefault())
     }
 
     private val decimalFormat = DecimalFormat("#,##0.##", symbols)
