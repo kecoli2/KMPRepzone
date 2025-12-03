@@ -13,9 +13,9 @@ data class SyncUnitDto(
     override val id: Int,
     override val state: Int,
     @Serializable(with = InstantSerializer::class)
-    override val modificationDateUtc: Instant?,
+    override val modificationDateUtc: Instant? = null,
     @Serializable(with = InstantSerializer::class)
-    override val recordDateUtc: Instant?,
+    override val recordDateUtc: Instant? = null,
     val tenantId: Int,
     val name: String,
     val isVisible: Boolean

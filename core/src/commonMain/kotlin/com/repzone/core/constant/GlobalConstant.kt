@@ -73,7 +73,10 @@ object IDistributionApiControllerConstant {
     const val REPRESENATIVE_DISTRIBUTION_ENDPOINT = "/api/Distribution/RepresentativeDistributions"
 }
 
-
+object IPriceListApiControllerConstant {
+    const val PRICE_LIST_ENDPOINT = "/api/PriceList/List"
+    const val PRICE_LINE_ENDPOINT = "/api/PriceList/Lines"
+}
 
 object VersionModuleConstant {
     const val LEGACY_VERSION = "LegacyVersion"

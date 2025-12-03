@@ -12,15 +12,15 @@ data class SyncPaymentPlanDto(
     override val id: Int,
     override val state: Int,
     @Serializable(with = InstantSerializer::class)
-    override val modificationDateUtc: Instant?,
+    override val modificationDateUtc: Instant? = null,
     @Serializable(with = InstantSerializer::class)
-    override val recordDateUtc: Instant?,
+    override val recordDateUtc: Instant? = null,
     val tenantId: Int,
-    val name: String,
+    val name: String = "",
     val isDefault: Boolean,
     val organizationId: Int,
-    val ids: String?,
-    val code: String?,
+    val ids: String? = null,
+    val code: String? = null,
     val maturityDays: Int
 ): IBaseModel {
     override fun getUpdateTime(): Instant? {

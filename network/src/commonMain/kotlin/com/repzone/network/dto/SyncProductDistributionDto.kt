@@ -12,13 +12,13 @@ data class SyncProductDistributionDto(
     override val id: Int,
     override val state: Int,
     @Serializable(with = InstantSerializer::class)
-    override val modificationDateUtc: Instant?,
+    override val modificationDateUtc: Instant? = null,
     @Serializable(with = InstantSerializer::class)
-    override val recordDateUtc: Instant?,
+    override val recordDateUtc: Instant? = null,
     val tenantId: Int,
     val organizationId:Int,
-    val name: String?,
-    val description: String?,
+    val name: String? = null,
+    val description: String? = null,
     val parentId: Int
 ): IBaseModel {
     override fun getUpdateTime(): Instant? {
