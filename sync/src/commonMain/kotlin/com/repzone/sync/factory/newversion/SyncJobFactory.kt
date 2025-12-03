@@ -63,6 +63,10 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
         productDistributionLineBulkInsert: IBulkInsertService<List<SyncProductDistributionLineDto>>,
         representativeProductDistributionApi: ISyncApiService<List<SyncRepresentativeProductDistributionDto>>,
         representativeProductDistributionBulkInsert: IBulkInsertService<List<SyncRepresentativeProductDistributionDto>>,
+        priceListApi: ISyncApiService<List<SyncProductPricesDto>>,
+        priceListBulkInsert: IBulkInsertService<List<SyncProductPricesDto>>,
+        productPriceLinesApi: ISyncApiService<List<SyncProductPriceLinesDto>>,
+        productPriceLinesBulkInsert: IBulkInsertService<List<SyncProductPriceLinesDto>>,
     ): Map<SyncJobType, ISyncJob> {
         return mapOf(
             SyncJobType.PRODUCTS to ProductSyncJob(productApi, productBulkInsert, syncModuleRepository),
@@ -87,7 +91,9 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
             SyncJobType.DISTRIBUTIONS_CUSTOMER_PRODUCT_GROUP to CustomerProductGroupDistributionsSyncJob(customerProductGroupDistributionsApi, customerProductGroupDistributionsBulkInsert, syncModuleRepository),
             SyncJobType.DISTRIBUTIONS_PRODUCT to ProductDistributionSyncJob(productDistributionApi, productDistributionBulkInsert, syncModuleRepository),
             SyncJobType.DISTRIBUTIONS_LINES to ProductDistributionLineSyncJob(productDistributionLineApi, productDistributionLineBulkInsert, syncModuleRepository),
-            SyncJobType.DISTRIBUTIONS_REPRESENTATIVE_PRODUCT to RepresentativeProductDistributionSyncJob(representativeProductDistributionApi, representativeProductDistributionBulkInsert, syncModuleRepository)
+            SyncJobType.DISTRIBUTIONS_REPRESENTATIVE_PRODUCT to RepresentativeProductDistributionSyncJob(representativeProductDistributionApi, representativeProductDistributionBulkInsert, syncModuleRepository),
+            SyncJobType.PRODUCT_PRICE_LIST to PriceListSyncJob(priceListApi, priceListBulkInsert, syncModuleRepository),
+            SyncJobType.PRODUCT_PRICE_LINE to ProductPriceLinesSyncJob(productPriceLinesApi, productPriceLinesBulkInsert, syncModuleRepository)
         )
     }
     //endregion

@@ -811,6 +811,8 @@
     <string name="job_email">Customer Emails</string>
     <string name="job_productdistribution_lines">Product Distribution Lines</string>
     <string name="job_RepresentativetDistributions">Representative Distributions</string>
+    <string name="job_product_prices">Product Prices</string>
+    <string name="job_product_prices_lines">Product Prices Lines</string>
     <string name="job_customer_distribution">Distributor Customer' s Products</string>
     <string name="job_customer_group_distribution">Distributor Customer Groups</string>
     <string name="job_customer_distribution_product">Distributor Products</string>

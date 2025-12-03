@@ -33,6 +33,8 @@ import com.repzone.network.dto.SyncCustomerGroupProductDistributionDto
 import com.repzone.network.dto.SyncCustomerProductDistributionDto
 import com.repzone.network.dto.SyncProductDistributionDto
 import com.repzone.network.dto.SyncProductDistributionLineDto
+import com.repzone.network.dto.SyncProductPriceLinesDto
+import com.repzone.network.dto.SyncProductPricesDto
 import com.repzone.network.dto.SyncRepresentativeProductDistributionDto
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
@@ -49,6 +51,13 @@ val SyncModule = module {
     //region PRODUCT
     single<IBulkInsertService<List<ProductDto>>>(named("productBulkInsert")) { ProductRawSqlBulkInsertService(get(), get()) }
     single<ISyncApiService<List<ProductDto>>>(named("productSyncApi")){ SyncApiProductImpl(get()) }
+
+    single<ISyncApiService<List<SyncProductPricesDto>>>(named("syncApiPriceListImpl")){ SyncApiPriceListImpl(get()) }
+    single<IBulkInsertService<List<SyncProductPricesDto>>>(named("priceListRawSqlBulkInsertService")) { PriceListRawSqlBulkInsertService(get(), get()) }
+
+    single<ISyncApiService<List<SyncProductPriceLinesDto>>>(named("syncApiProductPriceLinesImpl")){ SyncApiProductPriceLinesImpl(get()) }
+    single<IBulkInsertService<List<SyncProductPriceLinesDto>>>(named("productPriceLinesRawSqlBulkInsertService")) { ProductPriceLinesRawSqlBulkInsertService(get(), get()) }
+
     //endregion PRODUCT
 
     //region PRODUCT GROUP
@@ -233,8 +242,10 @@ val SyncModule = module {
             productDistributionLineBulkInsert = get(named("productDistributionLineRawSqlBulkInsert")),
             representativeProductDistributionApi = get(named("syncApiRepresentativeProductDistributionImpl")),
             representativeProductDistributionBulkInsert = get(named("representativeProductDistributionRawSqlBulkService")),
-
-
+            priceListApi = get(named("syncApiPriceListImpl")),
+            priceListBulkInsert = get(named("priceListRawSqlBulkInsertService")),
+            productPriceLinesApi = get(named("syncApiProductPriceLinesImpl")),
+            productPriceLinesBulkInsert =get(named("productPriceLinesRawSqlBulkInsertService"))
         )
 
     }
