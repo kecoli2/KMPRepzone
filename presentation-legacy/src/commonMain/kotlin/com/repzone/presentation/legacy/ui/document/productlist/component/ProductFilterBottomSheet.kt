@@ -2,6 +2,8 @@
 
 package com.repzone.presentation.legacy.ui.document.productlist.component
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -12,6 +14,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.repzone.core.model.StringResource
@@ -19,6 +22,7 @@ import com.repzone.core.ui.component.FilterSection
 import com.repzone.core.ui.component.textfield.CurrencyTextField
 import com.repzone.core.util.extensions.fromResource
 import com.repzone.core.util.extensions.toBigDecimalOrNullLocalized
+import com.repzone.core.util.extensions.toColorOrDefault
 import com.repzone.domain.model.product.PriceRange
 import com.repzone.domain.model.product.ProductFilterState
 import com.repzone.domain.model.product.ProductFilters
@@ -147,6 +151,7 @@ fun ProductFilterBottomSheet(
                             content = {
                                 MultiSelectChipGroup(
                                     options = availableFilters.colors.toList(),
+                                    isColorSection = true,
                                     selectedOptions = tempColors,
                                     onToggle = { color ->
                                         tempColors = if (color in tempColors) {
@@ -327,8 +332,10 @@ private fun PriceRangeInput(
 private fun MultiSelectChipGroup(
     options: List<String>,
     selectedOptions: Set<String>,
-    onToggle: (String) -> Unit
+    onToggle: (String) -> Unit,
+    isColorSection : Boolean = false
 ) {
+
     FlowRow(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -336,21 +343,47 @@ private fun MultiSelectChipGroup(
     ) {
         options.forEach { option ->
             val isSelected = option in selectedOptions
+            if(!isColorSection){
+                FilterChip(
+                    selected = isSelected,
+                    onClick = { onToggle(option) },
+                    label = { Text(option) },
+                    leadingIcon = if (isSelected) {
+                        {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    } else null
+                )
+            }else{
+                FilterChip(
+                    selected = isSelected,
+                    onClick = { onToggle(option) },
+                    label = { Text("   ") },
+                    colors = FilterChipDefaults.filterChipColors(
+                        containerColor = option.toColorOrDefault(),
+                        selectedContainerColor = option.toColorOrDefault()
+                    ),
+                    leadingIcon = if (isSelected) {
+                        {
+                            Icon(
+                                imageVector = Icons.Default.Check,
+                                contentDescription = null,
+                                modifier = Modifier.size(12.dp),
+                                tint = MaterialTheme.colorScheme.secondaryContainer
+                            )
+                        }
+                    } else null,
+                    border = BorderStroke(
+                        width = if (isSelected) 2.dp else 0.dp,
+                        color = if (isSelected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
+                    )
+                )
+            }
 
-            FilterChip(
-                selected = isSelected,
-                onClick = { onToggle(option) },
-                label = { Text(option) },
-                leadingIcon = if (isSelected) {
-                    {
-                        Icon(
-                            imageVector = Icons.Default.Check,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
-                    }
-                } else null
-            )
         }
     }
 }

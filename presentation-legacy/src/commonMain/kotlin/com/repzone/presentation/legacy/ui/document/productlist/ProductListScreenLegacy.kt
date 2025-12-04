@@ -53,6 +53,7 @@ import com.repzone.core.ui.component.topappbar.RepzoneTopAppBar
 import com.repzone.core.ui.component.topappbar.TopBarLeftIcon
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.ui.util.getDocumentNameForResource
+import com.repzone.core.util.extensions.toColorOrDefault
 import com.repzone.domain.document.model.DiscountSlotConfig
 import com.repzone.domain.document.model.ProductInformationModel
 import com.repzone.domain.model.product.ProductRowState
@@ -463,11 +464,7 @@ private fun ProductRowOptimized(
         isLastItem = isLastItem,
         focusRequester = focusRequester,
         onNextRequested = onNextRequested,
-        indicatorColor = if(product.color?.isEmpty() == true){
-            Color.Transparent
-        }else{
-            Color.Blue
-        }
+        indicatorColor = product.color?.toColorOrDefault()!!
     )
 
     HorizontalDivider()
