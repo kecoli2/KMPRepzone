@@ -19,13 +19,12 @@ data class ProductStatistics(
 data class ProductGroupStatistic(
     val groupId: Int,
     val groupName: String,
-    val groupColor: Long, // Color as ARGB long value
+    val groupColor: Long,
     val entryCount: Int,
     val totalAmount: BigDecimal,
     val unitBreakdown: List<UnitStatistic>
 ) {
     companion object {
-        // Predefined colors for groups (will cycle through these)
         val GROUP_COLORS = listOf(
             0xFF6366F1, // Indigo
             0xFFF59E0B, // Amber

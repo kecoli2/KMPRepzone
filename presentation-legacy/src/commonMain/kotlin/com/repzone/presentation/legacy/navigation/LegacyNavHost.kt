@@ -156,26 +156,8 @@ fun LegacyNavHost(
                             navController.navigateUp()
                         },
 
-                        onNavigateDocumentSettings = {
-                            navController.navigate(LegacyScreen.DocumentSettings)
-                        }
-                    )
-                }
-
-                composable<LegacyScreen.DocumentSettings> { backStackEntry ->
-                    RegisterBackStackEntry(backStackEntry.id, "DocumentSettingsViewModel")
-
-                    DocumentSettingsScreenLegacy(
                         onBasketNavigate = {
                             navController.navigate(LegacyScreen.DocumentBasket)
-                        },
-
-                        onNavigateBack = {
-                            navController.navigateUp()
-                        }
-                        ,
-                        onElectronicSignatureNavigate = {
-
                         }
                     )
                 }

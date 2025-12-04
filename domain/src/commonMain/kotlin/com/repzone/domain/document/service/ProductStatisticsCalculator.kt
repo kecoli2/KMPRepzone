@@ -9,38 +9,73 @@ import com.repzone.domain.document.model.UnitStatistic
 import com.repzone.domain.model.product.ProductRowState
 
 class ProductStatisticsCalculator : IProductStatisticsCalculator {
+    override suspend fun calculate(
+        products: Map<Int, ProductInformationModel>,
+        rowStates: Map<Int, ProductRowState>
+    ): ProductStatistics {
+        val allEntries = mutableListOf<EntryData>()
 
-    override suspend fun calculate(products: Map<Int, ProductInformationModel>, rowStates: Map<Int, ProductRowState>): ProductStatistics {
-        val entriesWithProducts = rowStates
-            .filter { (_, state) -> state.hasValidQuantity() }
-            .mapNotNull { (productId, state) ->
-                products[productId]?.let { product ->
-                    EntryData(product, state)
+        rowStates.forEach { (productId, state) ->
+            val product = products[productId] ?: return@forEach
+
+            state.unitEntries.forEach { (unitId, unitEntry) ->
+                if (unitEntry.quantity.compare(BigDecimal.ZERO) > 0) {
+                    val unit = state.availableUnits.find { it.unitId == unitId }
+                    if (unit != null) {
+                        allEntries.add(
+                            EntryData(
+                                product = product,
+                                unitName = unit.unitName,
+                                quantity = unitEntry.quantity,
+                                unitPrice = unit.price
+                            )
+                        )
+                    }
                 }
             }
 
-        if (entriesWithProducts.isEmpty()) {
+            val currentQuantity = state.quantityText.toBigDecimalOrNull()
+            val currentUnit = state.currentUnit
+
+            if (currentQuantity != null &&
+                currentQuantity.compare(BigDecimal.ZERO) > 0 &&
+                currentUnit != null) {
+                val alreadyInEntries = state.unitEntries.containsKey(currentUnit.unitId)
+                if (!alreadyInEntries) {
+                    allEntries.add(
+                        EntryData(
+                            product = product,
+                            unitName = currentUnit.unitName,
+                            quantity = currentQuantity,
+                            unitPrice = currentUnit.price
+                        )
+                    )
+                }
+            }
+        }
+
+        if (allEntries.isEmpty()) {
             return ProductStatistics.EMPTY
         }
 
-        // Group by category/group
-        val groupedEntries = entriesWithProducts.groupBy { entry ->
-            (entry.product.groupId) to (entry.product.groupName)
+        // Group by product group
+        val groupedEntries = allEntries.groupBy { entry ->
+            entry.product.groupId to entry.product.groupName
         }
 
         // Build group statistics
-        val groups = groupedEntries.entries.mapIndexed { index, (categoryPair, entries) ->
-            val (categoryId, categoryName) = categoryPair
+        val groups = groupedEntries.entries.mapIndexed { index, (groupPair, entries) ->
+            val (groupId, groupName) = groupPair
             buildGroupStatistic(
-                groupId = categoryId,
-                groupName = categoryName,
+                groupId = groupId,
+                groupName = groupName,
                 entries = entries,
                 colorIndex = index
             )
         }.sortedByDescending { it.totalAmount }
 
         // Calculate totals
-        val totalEntryCount = entriesWithProducts.size
+        val totalEntryCount = allEntries.size
         val totalAmount = groups.fold(BigDecimal.ZERO) { acc, group ->
             acc + group.totalAmount
         }
@@ -51,14 +86,17 @@ class ProductStatisticsCalculator : IProductStatisticsCalculator {
             groups = groups
         )
     }
-    private fun buildGroupStatistic(groupId: Int, groupName: String, entries: List<EntryData>, colorIndex: Int): ProductGroupStatistic {
-        val unitGroups = entries.groupBy { entry ->
-            entry.state.currentUnit?.unitName ?: entry.product.baseUnit.unitName
-        }
 
+    private fun buildGroupStatistic(
+        groupId: Int,
+        groupName: String,
+        entries: List<EntryData>,
+        colorIndex: Int
+    ): ProductGroupStatistic {
+        val unitGroups = entries.groupBy { it.unitName }
         val unitBreakdown = unitGroups.map { (unitName, unitEntries) ->
             val totalQuantity = unitEntries.fold(BigDecimal.ZERO) { acc, entry ->
-                acc + entry.getQuantity()
+                acc + entry.quantity
             }
             val totalAmount = unitEntries.fold(BigDecimal.ZERO) { acc, entry ->
                 acc + entry.calculateAmount()
@@ -85,39 +123,16 @@ class ProductStatisticsCalculator : IProductStatisticsCalculator {
         )
     }
 
-    private data class EntryData(val product: ProductInformationModel, val state: ProductRowState) {
-        fun getQuantity(): BigDecimal {
-            return state.quantityText.toBigDecimalOrNull() ?: BigDecimal.ZERO
-        }
-
-        fun calculateAmount(): BigDecimal {
-            val quantity = getQuantity()
-            val unitPrice = state.currentUnit?.price ?: product.baseUnit.price
-            return quantity * unitPrice
-        }
-
-        private fun String.toBigDecimalOrNull(): BigDecimal? {
-            return try {
-                if (this.isBlank()) null
-                else BigDecimal.parseString(this.replace(",", "."))
-            } catch (e: Exception) {
-                null
-            }
-        }
+    private data class EntryData(val product: ProductInformationModel, val unitName: String, val quantity: BigDecimal, val unitPrice: BigDecimal) {
+        fun calculateAmount(): BigDecimal = quantity * unitPrice
     }
 
-
-    private fun ProductRowState.hasValidQuantity(): Boolean {
-        if (quantityText.isNotBlank()) {
-            try {
-                val value = BigDecimal.parseString(quantityText.replace(",", "."))
-                if (value.compare(BigDecimal.ZERO) > 0) return true
-            } catch (e: Exception) {
-            }
-        }
-
-        return unitEntries.any { (_, entry) ->
-            entry.quantity.compare(BigDecimal.ZERO) > 0
+    private fun String.toBigDecimalOrNull(): BigDecimal? {
+        return try {
+            if (this.isBlank()) null
+            else BigDecimal.parseString(this.replace(",", "."))
+        } catch (e: Exception) {
+            null
         }
     }
 }

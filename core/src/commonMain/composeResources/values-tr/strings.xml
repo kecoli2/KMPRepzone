@@ -1054,4 +1054,8 @@
     <string name="total">Toplam</string>
     <string name="save">Kaydet</string>
     <string name="delete">Sil</string>
+    <string name="basket_summary">Sepet Özeti</string>
+    <string name="basket_summary_detail">%1$d grup - %2$d ürün</string>
+    <string name="not_in_discount">İskontosuz tutar</string>
+    <string name="group">Grup</string>
 </resources>

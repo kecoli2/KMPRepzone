@@ -1041,4 +1041,8 @@
     <string name="total">Total</string>
     <string name="save">Save</string>
     <string name="delete">Delete</string>
+    <string name="basket_summary">Sepet Özeti</string>
+    <string name="basket_summary_detail">%1$d group - %2$d product</string>
+    <string name="not_in_discount">Amount without discount</string>
+    <string name="group">Group</string>
 </resources>

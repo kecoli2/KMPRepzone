@@ -45,6 +45,7 @@ import com.repzone.core.ui.component.textfield.DecimalTextField
 import com.repzone.core.ui.component.textfield.NumberTextField
 import com.repzone.core.ui.component.textfield.TextAlignment
 import com.repzone.core.ui.component.topappbar.RepzoneTopAppBar
+import com.repzone.core.ui.component.topappbar.TopBarAction
 import com.repzone.core.ui.component.topappbar.TopBarLeftIcon
 import com.repzone.core.ui.manager.theme.ThemeManager
 import com.repzone.core.ui.platform.HandleBackPress
@@ -272,7 +273,26 @@ private fun BasketScreenContent(
                     themeManager = themeManager,
                     leftIconType = TopBarLeftIcon.Back(onClick = onNavigateBack),
                     title = Res.string.basket.fromResource(),
-                    subtitle = "${uiState.totalItemCount} ${Res.string.product.fromResource()}"
+                    subtitle = "${uiState.totalItemCount} ${Res.string.product.fromResource()}",
+                    rightIcons = listOf(
+                        TopBarAction(
+                            icon = Icons.Default.Save,
+                            contentDescription = "",
+                            tintColor = Color.White,
+                            onClick = {
+
+                            },
+                        ),
+                        TopBarAction(
+                            icon = Icons.Default.Share,
+                            contentDescription = "",
+                            tintColor = Color.White,
+                            onClick = {
+
+                            },
+                        )
+                    )
+
                 )
                 // Main Content with LazyColumn
                 LazyColumn(
@@ -981,14 +1001,14 @@ private fun DiscountRow(
             showBorder = true,
             borderType = BorderType.FULL,
             cornerRadius = 8.dp,
-            height = 40.dp,
             textAlignment = TextAlignment.END,
             selectAllOnFocus = true,
             imeAction = ImeAction.Done,
             keyboardActions = KeyboardActions(
                 onNext = {  },
                 onDone = { focusManager.clearFocus() }
-            )
+            ),
+            backgroundColor = Color.Transparent
         )
     }
 }

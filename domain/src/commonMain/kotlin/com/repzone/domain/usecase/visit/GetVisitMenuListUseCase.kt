@@ -163,7 +163,7 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
                 actionMenuList.add(
                     VisitActionItem(
                         name = it.name,
-                        description = it.description,
+                        description = null,
                         documentType = DocumentActionType.ORDER,
                         isFulfillment = it.isFulfillment,
                         documentMapId = it.id
@@ -177,7 +177,7 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
                 actionMenuList.add(
                     VisitActionItem(
                         name = it.name,
-                        description = it.description,
+                        description = null,
                         documentType = DocumentActionType.INVOICE,
                         isFulfillment = it.isFulfillment,
                         documentMapId = it.id
@@ -191,7 +191,7 @@ class GetVisitMenuListUseCase(private val iModuleParameters: IMobileModuleParame
                 actionMenuList.add(
                     VisitActionItem(
                         name = it.name,
-                        description = it.description,
+                        description = null,
                         documentType = DocumentActionType.WAYBILL,
                         isFulfillment = it.isFulfillment,
                         documentMapId = it.id

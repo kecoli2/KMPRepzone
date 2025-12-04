@@ -68,7 +68,7 @@ import org.koin.compose.koinInject
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductListScreenLegacy(onDissmiss: () -> Unit, onNavigateDocumentSettings: () -> Unit) = ViewModelHost<ProductListViewModel> { viewModel ->
+fun ProductListScreenLegacy(onDissmiss: () -> Unit, onBasketNavigate: () -> Unit) = ViewModelHost<ProductListViewModel> { viewModel ->
     val themeManager: ThemeManager = koinInject()
     val uiState by viewModel.state.collectAsState()
     val products = viewModel.products.collectAsLazyPagingItems()
@@ -111,7 +111,7 @@ fun ProductListScreenLegacy(onDissmiss: () -> Unit, onNavigateDocumentSettings: 
                     showDiscountDialog = event
                 }
                 ProductListViewModel.NavigationEvent.NavigateToCart -> {
-                    onNavigateDocumentSettings()
+                    onBasketNavigate()
                 }
             }
         }

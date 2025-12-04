@@ -27,8 +27,11 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.toLowerCase
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.repzone.core.model.StringResource
+import com.repzone.core.util.extensions.fromResource
 import com.repzone.core.util.extensions.toMoney
 import com.repzone.domain.document.model.ProductGroupStatistic
 import com.repzone.domain.document.model.ProductStatistics
@@ -124,7 +127,7 @@ private fun CollapsedContent(
                         tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                     Text(
-                        text = "${statistics.totalEntryCount} ürün",
+                        text = "${statistics.totalEntryCount} ${StringResource.PRODUCT.fromResource()}",
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer
@@ -144,7 +147,7 @@ private fun CollapsedContent(
                     tint = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = "${statistics.groupCount} grup",
+                    text = "${statistics.groupCount} ${StringResource.GROUP.fromResource().lowercase()}",
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -155,7 +158,7 @@ private fun CollapsedContent(
                 text = statistics.totalAmountWithoutDiscount.doubleValue(false).toMoney(),
                 style = MaterialTheme.typography.titleSmall,
                 fontWeight = FontWeight.SemiBold,
-                color = MaterialTheme.colorScheme.onSurface
+                color = MaterialTheme.colorScheme.primary
             )
         }
 
@@ -185,7 +188,6 @@ private fun ExpandedContent(
     onCollapseClick: () -> Unit,
     fabSpacing: Boolean = true
 ) {
-    // Track which groups are expanded
     var expandedGroups by remember { mutableStateOf(setOf<Int>()) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
@@ -212,13 +214,13 @@ private fun ExpandedContent(
                         )
                 )
                 Text(
-                    text = "Sepet Özeti",
+                    text = StringResource.BASKET_SUMMARY.fromResource(),
                     style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.SemiBold,
                     color = MaterialTheme.colorScheme.onSurface
                 )
                 Text(
-                    text = "${statistics.groupCount} grup • ${statistics.totalEntryCount} ürün",
+                    text = StringResource.BASKET_SUMMARY_DETAIL.fromResource(statistics.groupCount,statistics.totalEntryCount),
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
@@ -276,13 +278,13 @@ private fun ExpandedContent(
             ) {
                 Column {
                     Text(
-                        text = "Genel Toplam",
+                        text = StringResource.TOTAL_AMOUNT.fromResource(),
                         style = MaterialTheme.typography.labelMedium,
                         fontWeight = FontWeight.Medium,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Text(
-                        text = "İskontosuz tutar",
+                        text = StringResource.NOT_IN_DISCOUNT.fromResource(),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -374,7 +376,7 @@ private fun GroupCard(
                                 color = groupColor.copy(alpha = 0.15f)
                             ) {
                                 Text(
-                                    text = "${group.entryCount} ürün",
+                                    text = "${group.entryCount} " + StringResource.PRODUCT.fromResource(),
                                     modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp),
                                     style = MaterialTheme.typography.labelSmall,
                                     color = groupColor
@@ -504,7 +506,7 @@ private fun UnitRow(unit: UnitStatistic) {
                     color = unitColor.copy(alpha = 0.1f)
                 ) {
                     Text(
-                        text = "${unit.quantity.toPlainString()} adet",
+                        text = "${unit.quantity.toPlainString()} ${unit.unitName}",
                         modifier = Modifier.padding(horizontal = 6.dp, vertical = 2.dp),
                         style = MaterialTheme.typography.labelSmall,
                         color = unitColor

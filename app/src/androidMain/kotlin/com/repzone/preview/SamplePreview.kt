@@ -159,7 +159,7 @@ fun ProductListScreen_Sample(themeManager: ThemeManager){
             onDissmiss = {
 
             },
-            onNavigateDocumentSettings = {
+            onBasketNavigate = {
 
             }
 
