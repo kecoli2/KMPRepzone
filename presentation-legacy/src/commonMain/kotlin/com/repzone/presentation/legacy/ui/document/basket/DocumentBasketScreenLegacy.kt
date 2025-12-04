@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.constant.CdnConfig
+import com.repzone.core.model.StringResource
 import com.repzone.core.platform.NumberFormatter
 import com.repzone.core.ui.base.ViewModelHost
 import com.repzone.core.ui.component.card.CardHeaderStyle
@@ -308,7 +309,7 @@ private fun BasketScreenContent(
                             title = Res.string.payment_info.fromResource(),
                             expanded = isPaymentInfoExpanded,
                             onExpandChange = onPaymentInfoExpandChange,
-                            subtitle = uiState.selectedPayment?.name,
+                            subtitle = StringResource.PAYMENT_SECTION_SUBTITLE.fromResource(uiState.selectedPayment?.name ?: "",uiState.dispatchDate?.toEpochMilliseconds()?.toDateString("dd/MM/yyyy") ?: "") ,
                             leadingIcon = Icons.Default.Payment,
                             headerStyle = CardHeaderStyle.COMPACT,
 
