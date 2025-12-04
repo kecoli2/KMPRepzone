@@ -48,7 +48,7 @@ fun ProductRow(
     onQuantityChanged: (String) -> Unit,
     onDiscountClick: () -> Unit,
     modifier: Modifier = Modifier,
-    indicatorColor: Color = Color.Red,
+    indicatorColor: Color = Color.Transparent,
     isLastItem: Boolean,
     focusRequester: FocusRequester,
     onNextRequested: () -> Unit

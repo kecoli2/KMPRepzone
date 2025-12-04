@@ -468,6 +468,9 @@ fun ExpandableCard(
     modifier: Modifier = Modifier,
     subtitle: String? = null,
     leadingIcon: ImageVector? = null,
+    cornerRadius: Dp = 12.dp,
+    elevation: Dp = 2.dp,
+    borderWidth: Dp = 0.5.dp,
     variant: CardVariant = CardVariant.OUTLINED,
     colorScheme: CardColorScheme = CardColorScheme.DEFAULT,
     headerStyle: CardHeaderStyle = CardHeaderStyle.COMPACT,
@@ -477,8 +480,9 @@ fun ExpandableCard(
         modifier = modifier.animateContentSize(),
         variant = variant,
         colorScheme = colorScheme,
-        cornerRadius = 12.dp,
-        elevation = 2.dp,
+        cornerRadius = cornerRadius,
+        elevation = elevation,
+        borderWidth = borderWidth,
         onClick = { onExpandChange(!expanded) },
         contentPadding = PaddingValues(0.dp)
     ) {

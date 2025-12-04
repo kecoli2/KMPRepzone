@@ -57,6 +57,7 @@ import com.repzone.core.util.extensions.toMoney
 import com.repzone.domain.document.base.IDocumentLine
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.model.PaymentPlanModel
+import com.repzone.presentation.legacy.ui.document.basket.component.BasketStatisticsCard
 import com.repzone.presentation.legacy.viewmodel.document.basket.DocumentBasketUiState
 import com.repzone.presentation.legacy.viewmodel.document.basket.DocumentBasketViewModel
 import kotlinx.coroutines.launch
@@ -369,6 +370,22 @@ private fun BasketScreenContent(
                                 focusManager = focusManager
                             )
                         }
+                    }
+
+                    // ===== Görsel Ayıraç =====
+                    item {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 24.dp),
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f),
+                            thickness = 1.dp
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                    }
+
+                    // ===== SECTION 4: Istatistikler (Collapsible) =====
+                    item {
+                        BasketStatisticsCard(uiState.basketStatistics, modifier = Modifier, initialExpanded = false)
                     }
 
                     item {

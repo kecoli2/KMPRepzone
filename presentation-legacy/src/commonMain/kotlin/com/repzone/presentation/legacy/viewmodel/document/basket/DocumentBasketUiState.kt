@@ -4,6 +4,7 @@ import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.model.HasUiFrame
 import com.repzone.core.model.UiFrame
 import com.repzone.domain.document.base.IDocumentLine
+import com.repzone.domain.document.model.BasketStatistics
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.model.PaymentPlanModel
 import kotlin.time.ExperimentalTime
@@ -37,6 +38,8 @@ data class DocumentBasketUiState(
     val netTotal: BigDecimal = BigDecimal.ZERO,          // Net Tutar
     val vatTotal: BigDecimal = BigDecimal.ZERO,          // KDV Tutarı
     val grandTotal: BigDecimal = BigDecimal.ZERO,        // Toplam Tutar
+    // Sepet İstatistikleri
+    val basketStatistics: BasketStatistics = BasketStatistics.EMPTY,
 
     override val uiFrame: UiFrame = UiFrame()
 ) : HasUiFrame {

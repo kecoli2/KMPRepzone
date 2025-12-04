@@ -35,6 +35,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.ColorPainter
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
@@ -460,7 +462,12 @@ private fun ProductRowOptimized(
         onDiscountClick = callbacks.onDiscountClick,
         isLastItem = isLastItem,
         focusRequester = focusRequester,
-        onNextRequested = onNextRequested
+        onNextRequested = onNextRequested,
+        indicatorColor = if(product.color?.isEmpty() == true){
+            Color.Transparent
+        }else{
+            Color.Blue
+        }
     )
 
     HorizontalDivider()

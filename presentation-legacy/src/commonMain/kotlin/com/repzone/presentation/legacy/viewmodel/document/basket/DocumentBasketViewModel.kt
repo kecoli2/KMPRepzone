@@ -6,9 +6,11 @@ import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.core.ui.base.setError
 import com.repzone.domain.common.onError
 import com.repzone.domain.common.onSuccess
+import com.repzone.domain.document.IProductStatisticsCalculator
 import com.repzone.domain.document.base.IDocumentLine
 import com.repzone.domain.document.base.IDocumentSession
 import com.repzone.domain.document.base.UpdateLineResult
+import com.repzone.domain.document.model.BasketStatistics
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.model.PaymentPlanModel
 import kotlinx.coroutines.flow.collectLatest
@@ -16,7 +18,8 @@ import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
-class DocumentBasketViewModel(iDocumentSession: IDocumentSession
+class DocumentBasketViewModel(iDocumentSession: IDocumentSession,
+                              private val statisticsCalculator: IProductStatisticsCalculator
 ) : BaseViewModel<DocumentBasketUiState, DocumentBasketViewModel.Event>(DocumentBasketUiState()) {
 
     //region Field
@@ -39,9 +42,11 @@ class DocumentBasketViewModel(iDocumentSession: IDocumentSession
 
         // Lines'ı collect et
         iDocumentManager.lines.collectLatest { lines ->
+            val statistics = calculateBasketStatistics(lines)
             updateState { currentState ->
                 currentState.copy(
-                    lines = lines
+                    lines = lines,
+                    basketStatistics = statistics
                 ).calculateTotals()
             }
         }
@@ -67,13 +72,27 @@ class DocumentBasketViewModel(iDocumentSession: IDocumentSession
                 iDocumentManager.setInvoiceDiscont(event.order, event.value).onError {
                     setError(it.message)
                 }.onSuccess {
-                    updateState { currentState ->
-                        when (event.order) {
-                            1 -> currentState.copy(invoiceDiscount1 = event.value)
-                            2 -> currentState.copy(invoiceDiscount2 = event.value)
-                            3 -> currentState.copy(invoiceDiscount3 = event.value)
-                            else -> currentState
-                        }.calculateTotals()
+                    val updatedState = when (event.order) {
+                        1 -> state.value.copy(invoiceDiscount1 = event.value)
+                        2 -> state.value.copy(invoiceDiscount2 = event.value)
+                        3 -> state.value.copy(invoiceDiscount3 = event.value)
+                        else -> state.value
+                    }
+
+                    // İstatistikleri yeniden hesapla
+                    val statistics = statisticsCalculator.calculateBasketStatistics(
+                        lines = updatedState.lines,
+                        invoiceDiscounts = listOf(
+                            updatedState.invoiceDiscount1,
+                            updatedState.invoiceDiscount2,
+                            updatedState.invoiceDiscount3
+                        ).filter { it.compare(BigDecimal.ZERO) > 0 }
+                    )
+
+                    updateState {
+                        updatedState.copy(
+                            basketStatistics = statistics
+                        ).calculateTotals()
                     }
                 }
             }
@@ -233,6 +252,18 @@ class DocumentBasketViewModel(iDocumentSession: IDocumentSession
     //endregion Public Method
 
     //region Private Method
+    private suspend fun calculateBasketStatistics(lines: List<IDocumentLine>): BasketStatistics {
+        val invoiceDiscounts = listOf(
+            state.value.invoiceDiscount1,
+            state.value.invoiceDiscount2,
+            state.value.invoiceDiscount3
+        ).filter { it.compare(BigDecimal.ZERO) > 0 }
+
+        return statisticsCalculator.calculateBasketStatistics(
+            lines = lines,
+            invoiceDiscounts = invoiceDiscounts
+        )
+    }
     private fun DocumentBasketUiState.calculateTotals(): DocumentBasketUiState {
         if (lines.isEmpty()) {
             return copy(
