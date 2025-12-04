@@ -1061,6 +1061,7 @@
     <string name="payment_section_subtitle">Ödeme tipi %1$s, Sevk tarihi %2$s</string>
     <string name="line_summary_info">%1$d satır</string>
     <string name="basket_lines_distribution">Miktar Dağılımı</string>
-    <string name="discount_percent_summary">İndirim (%%1s)</string>
-    <string name="total_base_quantity">Toplam: %1s adet (baz birim)</string>
+    <string name="discount_percent_summary">İndirim (%%1$s)</string>
+    <string name="total_base_quantity">Toplam: %1$s adet (baz birim)</string>
+    <string name="detail">Detay</string>
 </resources>

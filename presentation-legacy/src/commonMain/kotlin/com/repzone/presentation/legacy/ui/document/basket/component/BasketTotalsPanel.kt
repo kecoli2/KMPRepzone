@@ -165,7 +165,7 @@ private fun CollapsedContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "TOPLAM",
+                text = StringResource.TOTAL_AMOUNT.fromResource(),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
@@ -193,7 +193,7 @@ private fun CollapsedContent(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "Detay",
+                            text = StringResource.DETAIL.fromResource(),
                             style = MaterialTheme.typography.labelSmall,
                             fontWeight = FontWeight.Medium,
                             color = MaterialTheme.colorScheme.onPrimaryContainer

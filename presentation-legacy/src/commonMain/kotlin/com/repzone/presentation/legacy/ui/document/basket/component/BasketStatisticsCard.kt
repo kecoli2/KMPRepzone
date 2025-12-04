@@ -17,9 +17,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import com.repzone.core.model.StringResource
 import com.repzone.core.ui.component.card.CardHeaderStyle
 import com.repzone.core.ui.component.card.CardVariant
 import com.repzone.core.ui.component.card.ExpandableCard
+import com.repzone.core.util.extensions.fromResource
 import com.repzone.core.util.extensions.toCleanString
 import com.repzone.core.util.extensions.toMoney
 import com.repzone.domain.document.model.BasketStatistics
@@ -39,7 +41,7 @@ fun BasketStatisticsCard(
     var expanded by remember { mutableStateOf(initialExpanded) }
 
     ExpandableCard(
-        title = "Sepet Özeti",
+        title = StringResource.BASKET_SUMMARY.fromResource(),
         subtitle = buildSubtitle(statistics),
         leadingIcon = Icons.Default.Analytics,
         expanded = expanded,
@@ -57,7 +59,7 @@ fun BasketStatisticsCard(
         ) {
             // Miktar Dağılımı
             StatisticsSection(
-                title = "Miktar Dağılımı",
+                title = StringResource.BASKET_LINES_DISTRIBUTION.fromResource(),
                 icon = Icons.Outlined.Inventory2
             ) {
                 UnitBreakdownRow(
