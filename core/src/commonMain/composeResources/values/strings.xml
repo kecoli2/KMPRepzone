@@ -126,8 +126,8 @@
     <string name="replicationneeded">Repzone have to replicate by server. Please check internet connection and start again.</string>
     <string name="askdelete">Element will be remove. Are you sure?</string>
     <string name="cantopenwarning">Link doesn not have any url.</string>
-    <string name="gross">Gross Amount:</string>
-    <string name="netsale">Net Amount:</string>
+    <string name="gross">Gross Amount</string>
+    <string name="netsale">Net Amount</string>
     <string name="tax">Tax</string>
     <string name="draft">Draft</string>
     <string name="sent">Sent</string>
@@ -1046,4 +1046,9 @@
     <string name="not_in_discount">Amount without discount</string>
     <string name="group">Group</string>
     <string name="payment_section_subtitle">Payment type %1$s, Delivery date %2$s</string>
+    <string name="line_summary_info">%1$d lines</string>
+    <string name="basket_lines_distribution">Distribution of quantities</string>
+    <string name="discount_percent_summary">Discount (%%1$s)</string>
+    <string name="total_base_quantity">Total: %1s units (base unit)</string>
+
 </resources>

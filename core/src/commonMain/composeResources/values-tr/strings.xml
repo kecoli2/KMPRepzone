@@ -126,8 +126,8 @@
     <string name="replicationneeded">Repzone veri uyumu için sunucu ile bağlantı kurmak istiyor. Lütfen bağlalntınızı kontrol edip yeniden deneyiniz.</string>
     <string name="askdelete">Seçim silinecektir. Emin misiniz?</string>
     <string name="cantopenwarning">Adreste dosya bulunmuyor.</string>
-    <string name="gross">Brüt Tutar:</string>
-    <string name="netsale">Net Tutar:</string>
+    <string name="gross">Brüt Tutar</string>
+    <string name="netsale">Net Tutar</string>
     <string name="tax">Vergi</string>
     <string name="draft">Taslak</string>
     <string name="sent">Gönderildi</string>
@@ -1059,4 +1059,8 @@
     <string name="not_in_discount">İskontosuz tutar</string>
     <string name="group">Grup</string>
     <string name="payment_section_subtitle">Ödeme tipi %1$s, Sevk tarihi %2$s</string>
+    <string name="line_summary_info">%1$d satır</string>
+    <string name="basket_lines_distribution">Miktar Dağılımı</string>
+    <string name="discount_percent_summary">İndirim (%%1s)</string>
+    <string name="total_base_quantity">Toplam: %1s adet (baz birim)</string>
 </resources>

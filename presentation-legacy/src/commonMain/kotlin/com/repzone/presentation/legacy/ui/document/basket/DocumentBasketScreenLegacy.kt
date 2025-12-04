@@ -1,6 +1,8 @@
 package com.repzone.presentation.legacy.ui.document.basket
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -58,6 +60,7 @@ import com.repzone.domain.document.base.IDocumentLine
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.model.PaymentPlanModel
 import com.repzone.presentation.legacy.ui.document.basket.component.BasketStatisticsCard
+import com.repzone.presentation.legacy.ui.document.basket.component.BasketTotalsPanel
 import com.repzone.presentation.legacy.viewmodel.document.basket.DocumentBasketUiState
 import com.repzone.presentation.legacy.viewmodel.document.basket.DocumentBasketViewModel
 import kotlinx.coroutines.launch
@@ -259,6 +262,7 @@ private fun BasketScreenContent(
 ) {
     val formatter = remember { NumberFormatter() }
     val focusManager = LocalFocusManager.current
+    var floatingButtonBottom by remember { mutableStateOf(170.dp) }
 
     Scaffold(
     ) { paddingValues ->
@@ -394,23 +398,44 @@ private fun BasketScreenContent(
                 }
 
                 // ===== BOTTOM: Tutar Özeti =====
-                TotalsSummaryCard(
+                /*TotalsSummaryCard(
                     grossTotal = uiState.grossTotal,
                     discountTotal = uiState.discountTotal,
                     netTotal = uiState.netTotal,
                     vatTotal = uiState.vatTotal,
                     grandTotal = uiState.grandTotal,
                     formatter = formatter
-                )
+                )*/
+
+                BasketTotalsPanel(
+                    statistics = uiState.basketStatistics,
+                    modifier = Modifier,
+                    fabSpacing = true,
+                    onExpended = { it ->
+                        floatingButtonBottom = if (it){
+                            30.dp
+                        } else{
+                           if(uiState.basketStatistics.hasDiscount){
+                               170.dp
+                           }else{
+                               160.dp
+                           }
+                        }
+                    })
             }
 
             // ===== TotalsSummaryCard =====
+            val floatingButtonBottom by animateDpAsState(
+                targetValue = floatingButtonBottom,
+                animationSpec = tween(300),
+                label = "fab_padding"
+            )
             FloatingActionButton(
                 onClick = onSaveClick,
                 containerColor = MaterialTheme.colorScheme.primary,
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
-                    .padding(end = 16.dp, bottom = 180.dp)
+                    .padding(end = 16.dp, bottom = floatingButtonBottom)
             ) {
                 Icon(
                     imageVector = Icons.Default.Save,
