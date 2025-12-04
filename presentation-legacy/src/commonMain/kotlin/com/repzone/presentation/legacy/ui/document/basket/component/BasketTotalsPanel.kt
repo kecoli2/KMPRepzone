@@ -123,30 +123,28 @@ private fun CollapsedContent(
     ) {
         // Brüt Tutar
         FinancialRow(
-            label = "Brüt Tutar",
+            label = StringResource.GROSS.fromResource(),
             value = formatter.formatCurrency(statistics.grossTotal.doubleValue(false)),
             valueColor = MaterialTheme.colorScheme.onSurface
         )
 
         // İndirim (varsa)
-        if (statistics.hasDiscount) {
-            FinancialRow(
-                label = "İndirim (%${statistics.discountPercentage.toCleanString()})",
-                value = "-${formatter.formatCurrency(statistics.discountAmount.doubleValue(false))}",
-                valueColor = Color(0xFF10B981)
-            )
-        }
+        FinancialRow(
+            label = StringResource.DISCOUNT_PERCENT_SUMMARY.fromResource(statistics.discountPercentage.toCleanString()) ,
+            value = "-${formatter.formatCurrency(statistics.discountAmount.doubleValue(false))}",
+            valueColor = Color(0xFF10B981)
+        )
 
         // Net Tutar
         FinancialRow(
-            label = "Net Tutar",
+            label = StringResource.NETSALE.fromResource(),
             value = formatter.formatCurrency(statistics.netTotal.doubleValue(false)),
             valueColor = MaterialTheme.colorScheme.onSurface
         )
 
         // KDV
         FinancialRow(
-            label = "KDV Tutarı",
+            label = StringResource.VAT_TOTAL.fromResource(),
             value = "+${formatter.formatCurrency(statistics.vatTotal.doubleValue(false))}",
             valueColor = MaterialTheme.colorScheme.onSurfaceVariant
         )
@@ -317,13 +315,11 @@ private fun ExpandedContent(
             )
 
             // İndirim (varsa)
-            if (statistics.hasDiscount) {
-                FinancialRow(
-                    label = StringResource.DISCOUNT_PERCENT_SUMMARY.fromResource(statistics.discountPercentage.toCleanString()) ,
-                    value = "-${formatter.formatCurrency(statistics.discountAmount.doubleValue(false))}",
-                    valueColor = Color(0xFF10B981)
-                )
-            }
+            FinancialRow(
+                label = StringResource.DISCOUNT_PERCENT_SUMMARY.fromResource(statistics.discountPercentage.toCleanString()) ,
+                value = "-${formatter.formatCurrency(statistics.discountAmount.doubleValue(false))}",
+                valueColor = Color(0xFF10B981)
+            )
 
             // Net Tutar
             FinancialRow(

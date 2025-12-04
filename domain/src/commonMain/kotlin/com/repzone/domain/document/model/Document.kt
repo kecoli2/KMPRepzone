@@ -30,7 +30,10 @@ data class Document(
     val dispatchDate: Instant? = null
 ){
     //region Fields
-    val subtotal: BigDecimal  // Ara toplam (KDV hariç)
+    /**
+     * Ara toplam (KDV hariç)
+     */
+    val subtotal: BigDecimal
         get() = lines.fold(BigDecimal.ZERO) { acc, line -> acc + line.lineTotal }
 
     val totalVat: BigDecimal  // Toplam KDV

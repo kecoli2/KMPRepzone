@@ -262,7 +262,7 @@ private fun BasketScreenContent(
 ) {
     val formatter = remember { NumberFormatter() }
     val focusManager = LocalFocusManager.current
-    var floatingButtonBottom by remember { mutableStateOf(170.dp) }
+    var floatingButtonBottom by remember { mutableStateOf(175.dp) }
 
     Scaffold(
     ) { paddingValues ->
@@ -415,11 +415,7 @@ private fun BasketScreenContent(
                         floatingButtonBottom = if (it){
                             30.dp
                         } else{
-                           if(uiState.basketStatistics.hasDiscount){
-                               170.dp
-                           }else{
-                               160.dp
-                           }
+                           175.dp
                         }
                     })
             }

@@ -102,6 +102,7 @@ class TransactionCoordinator(
 
         return result as TransactionResult<T>
     }
+
     override suspend fun executeCompositeOperation(compositeOp: CompositeOperation): OperationResult {
         val operationId = generateOperationId()
         compositeOp.id = operationId

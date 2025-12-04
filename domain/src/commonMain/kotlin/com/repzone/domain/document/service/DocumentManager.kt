@@ -75,7 +75,6 @@ class DocumentManager(override val documentType: DocumentType,
     private var paymentPlan: PaymentPlanModel? = null
     private var paymentPlanList: List<PaymentPlanModel> = emptyList()
     private var dispatchDate: Instant? = null
-
     private var invoiceDiscont1: BigDecimal = BigDecimal.ZERO
     private var invoiceDiscont2: BigDecimal = BigDecimal.ZERO
     private var invoiceDiscont3: BigDecimal = BigDecimal.ZERO
@@ -91,7 +90,6 @@ class DocumentManager(override val documentType: DocumentType,
     //endregion Fields
 
     //region Public Method
-
     //region ============ Document Operations ============
     override fun toDocument(): Document {
         return Document(
