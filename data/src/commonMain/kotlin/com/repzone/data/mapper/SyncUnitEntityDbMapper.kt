@@ -1,5 +1,6 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.util.extensions.enumToLong
 import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncUnitEntity
@@ -41,8 +42,8 @@ class SyncUnitEntityDbMapper : Mapper<SyncUnitEntity, SyncUnitModel> {
             ModificationDateUtc = model.modificationDateUtc?.toEpochMilliseconds(),
             Name = model.name,
             RecordDateUtc = model.recordDateUtc?.toEpochMilliseconds(),
-            State = model.state.toLong(),
-            TenantId = model.state.toLong()
+            State = model.state.enumToLong(),
+            TenantId = model.tenantId.toLong()
         )
     }
     //endregion

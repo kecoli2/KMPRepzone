@@ -1,6 +1,7 @@
 package com.repzone.network.dto.form
 
 import com.repzone.core.enums.EntityModelType
+import com.repzone.core.enums.StateType
 import com.repzone.core.model.base.IBaseModel
 import com.repzone.core.util.InstantSerializer
 import kotlinx.serialization.Serializable
@@ -11,7 +12,8 @@ import kotlin.time.Instant
 @Serializable
 data class FormRowDto(
     override val id: Int,
-    override val state: Int,
+    @Serializable(with = StateType.Companion.Serializer::class)
+    override val state: StateType,
     @Serializable(with = InstantSerializer::class)
     override val modificationDateUtc: Instant? = null,
     @Serializable(with = InstantSerializer::class)

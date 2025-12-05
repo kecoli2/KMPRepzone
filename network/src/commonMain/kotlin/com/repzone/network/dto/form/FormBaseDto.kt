@@ -4,6 +4,7 @@ import com.repzone.core.enums.FormDocumentType
 import com.repzone.core.enums.FormOperationType
 import com.repzone.core.enums.FormVisibleOption
 import com.repzone.core.enums.MonitoringActionType
+import com.repzone.core.enums.StateType
 import com.repzone.core.enums.TaskRepeatInterval
 import com.repzone.core.model.base.IBaseModel
 import com.repzone.core.util.InstantSerializer
@@ -15,7 +16,8 @@ import kotlin.time.Instant
 @Serializable
 data class FormBaseDto(
     override val id: Int,
-    override val state: Int,
+    @Serializable(with = StateType.Companion.Serializer::class)
+    override val state: StateType,
     @Serializable(with = InstantSerializer::class)
     override val modificationDateUtc: Instant? = null,
     @Serializable(with = InstantSerializer::class)

@@ -36,7 +36,7 @@ class FormDataFetchSqlBulkInsertService(coordinator: ITransactionCoordinator): C
                 FormName = form.schemaName,
                 ModificationDateUtc = form.modificationDateUtc?.toEpochMilliseconds(),
                 RecordDateUtc = form.recordDateUtc?.toEpochMilliseconds(),
-                State = form.state.toLong(),
+                State = form.state.enumToLong(),
                 VisibleOption = form.visibleOption?.enumToLong()
             )
         }

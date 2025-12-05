@@ -1,5 +1,6 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.util.extensions.enumToLong
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncProductPricesEntity
 import com.repzone.domain.model.SyncProductPricesModel
@@ -52,7 +53,7 @@ class SyncProductPricesEntityDbMapper : Mapper<SyncProductPricesEntity, SyncProd
             OrganizationId = dto.organizationId.toLong(),
             ParentId = dto.parentId.toLong(),
             RecordDateUtc = dto.recordDateUtc?.toEpochMilliseconds(),
-            State = dto.state.toLong(),
+            State = dto.state.enumToLong(),
             TenantId = dto.tenantId.toLong()
         )
     }

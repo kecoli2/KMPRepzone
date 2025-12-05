@@ -1,13 +1,16 @@
 package com.repzone.domain.model.forms
 
+import com.repzone.core.enums.StateType
 import com.repzone.core.model.base.IBaseModel
+import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 data class FormFilters(
     override val id: Int,
-    override val state: Int,
+    @Serializable(with = StateType.Companion.Serializer::class)
+    override val state: StateType,
     override val modificationDateUtc: Instant?,
     override val recordDateUtc: Instant?,
     var attribute: FormAttributeObject? = null,

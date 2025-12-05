@@ -1,5 +1,6 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.util.extensions.enumToLong
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncStockEntity
 import com.repzone.domain.model.SyncStockModel
@@ -45,7 +46,7 @@ class SyncStockEntityDbMapper : Mapper<SyncStockEntity, SyncStockModel> {
             OrganizationId = dto.organizationId.toLong(),
             ProductId = dto.productId.toLong(),
             RecordDateUtc = dto.recordDateUtc?.toEpochMilliseconds(),
-            State = dto.state.toLong(),
+            State = dto.state.enumToLong(),
             Stock = dto.stock,
             UnitId = dto.unitId.toLong()
         )

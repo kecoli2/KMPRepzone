@@ -3,6 +3,7 @@ package com.repzone.network.dto.form
 import com.repzone.core.enums.EntityModelType
 import com.repzone.core.enums.ImageQuality
 import com.repzone.core.enums.ImageQualitySerializer
+import com.repzone.core.enums.StateType
 import com.repzone.core.enums.UniqueControlIntervalEnum
 import com.repzone.core.enums.UniqueControlIntervalEnumSerializer
 import com.repzone.core.enums.VideoDuration
@@ -19,7 +20,8 @@ import kotlin.time.Instant
 @Serializable
 data class FormRowColumnDto(
     override val id: Int,
-    override val state: Int,
+    @Serializable(with = StateType.Companion.Serializer::class)
+    override val state: StateType,
     @Serializable(with = InstantSerializer::class)
     override val modificationDateUtc: Instant?,
     @Serializable(with = InstantSerializer::class)

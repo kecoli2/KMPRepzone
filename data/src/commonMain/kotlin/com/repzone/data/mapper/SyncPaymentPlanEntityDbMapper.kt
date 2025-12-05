@@ -1,5 +1,6 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.util.extensions.enumToLong
 import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncPaymentPlanEntity
@@ -50,7 +51,7 @@ class SyncPaymentPlanEntityDbMapper : Mapper<SyncPaymentPlanEntity, SyncPaymentP
             ModificationDateUtc = dto.modificationDateUtc?.toEpochMilliseconds(),
             Name = dto.name,
             RecordDateUtc = dto.recordDateUtc?.toEpochMilliseconds(),
-            State = dto.state.toLong(),
+            State = dto.state.enumToLong(),
             TenantId = dto.tenantId.toLong()
         )
     }

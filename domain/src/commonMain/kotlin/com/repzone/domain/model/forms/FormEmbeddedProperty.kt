@@ -1,13 +1,16 @@
 package com.repzone.domain.model.forms
 
+import com.repzone.core.enums.StateType
 import com.repzone.core.model.base.IBaseModel
+import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 data class FormEmbeddedProperty(
     override val id: Int,
-    override val state: Int,
+    @Serializable(with = StateType.Companion.Serializer::class)
+    override val state: StateType,
     override val modificationDateUtc: Instant? = null,
     override val recordDateUtc: Instant? = null,
 

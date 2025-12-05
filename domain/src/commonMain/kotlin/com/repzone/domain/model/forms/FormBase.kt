@@ -3,15 +3,18 @@ package com.repzone.domain.model.forms
 import com.repzone.core.enums.FormDocumentType
 import com.repzone.core.enums.FormOperationType
 import com.repzone.core.enums.FormVisibleOption
+import com.repzone.core.enums.StateType
 import com.repzone.core.enums.TaskRepeatInterval
 import com.repzone.core.model.base.IBaseModel
+import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 data class FormBase(
     override val id: Int,
-    override val state: Int,
+    @Serializable(with = StateType.Companion.Serializer::class)
+    override val state: StateType,
     override val modificationDateUtc: Instant? = null,
     override val recordDateUtc: Instant? = null,
     /**

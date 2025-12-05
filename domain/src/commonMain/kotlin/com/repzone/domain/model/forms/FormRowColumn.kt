@@ -2,17 +2,20 @@ package com.repzone.domain.model.forms
 
 import com.repzone.core.enums.EntityModelType
 import com.repzone.core.enums.ImageQuality
+import com.repzone.core.enums.StateType
 import com.repzone.core.enums.UniqueControlIntervalEnum
 import com.repzone.core.enums.VideoDuration
 import com.repzone.core.enums.VideoQuality
 import com.repzone.core.model.base.IBaseModel
+import kotlinx.serialization.Serializable
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 data class FormRowColumn(
     override val id: Int,
-    override val state: Int,
+    @Serializable(with = StateType.Companion.Serializer::class)
+    override val state: StateType,
     override val modificationDateUtc: Instant?,
     override val recordDateUtc: Instant?,
     var formRowId: Int = 0,

@@ -1,5 +1,6 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.util.extensions.enumToLong
 import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncProductDistributionLineEntity
@@ -48,7 +49,7 @@ class SyncProductDistributionLineEntityDbMapper : Mapper<SyncProductDistribution
             MustHave = dto.mustHave.toLong(),
             ProductId = dto.productId.toLong(),
             RecordDateUtc = dto.recordDateUtc?.toEpochMilliseconds(),
-            State = dto.state.toLong()
+            State = dto.state.enumToLong()
         )
     }
     //endregion

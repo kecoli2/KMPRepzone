@@ -37,7 +37,7 @@ class DynamicFormRepositoryImpl(private val iDatabaseManager: IDatabaseManager, 
                 FormId = s.id.toLong(),
                 ModificationDateUtc = s.modificationDateUtc?.toEpochMilliseconds(),
                 RecordDateUtc = s.recordDateUtc?.toEpochMilliseconds(),
-                State = s.state.toLong(),
+                State = s.state.enumToLong(),
                 Id = s.id.toLong(),
                 VisibleOption = s.visibleOption?.enumToLong()
             )
