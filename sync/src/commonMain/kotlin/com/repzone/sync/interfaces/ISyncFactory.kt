@@ -24,6 +24,7 @@ import com.repzone.network.dto.SyncProductPricesDto
 import com.repzone.network.dto.SyncRepresentativeProductDistributionDto
 import com.repzone.network.dto.SyncStockDto
 import com.repzone.network.dto.SyncUnitDto
+import com.repzone.network.dto.SyncWarehouseDto
 import com.repzone.network.dto.form.FormBaseDto
 import com.repzone.sync.model.SyncJobType
 
@@ -80,5 +81,7 @@ interface ISyncFactory {
         priceListBulkInsert: IBulkInsertService<List<SyncProductPricesDto>>,
         productPriceLinesApi: ISyncApiService<List<SyncProductPriceLinesDto>>,
         productPriceLinesBulkInsert: IBulkInsertService<List<SyncProductPriceLinesDto>>,
+        warehousesRawSqlBulkInsertService: IBulkInsertService<List<SyncWarehouseDto>>,
+        syncApiWarehousesImpl: ISyncApiService<List<SyncWarehouseDto>>,
     ):Map<SyncJobType, ISyncJob>
 }

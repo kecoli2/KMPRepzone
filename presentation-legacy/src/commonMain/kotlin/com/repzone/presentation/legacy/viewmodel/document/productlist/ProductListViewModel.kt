@@ -92,7 +92,7 @@ class ProductListViewModel(
 
     //region Constructor
     init {
-        loadAvailableFilters()
+        prepareListView()
         observeRowStatesForStatistics()
     }
     //endregion
@@ -516,11 +516,11 @@ class ProductListViewModel(
             }
     }
 
-    private fun loadAvailableFilters() {
+    private fun prepareListView() {
         scope.launch {
             try {
                 val filters = documentManager.getAvailableFilters()
-                updateState { it.copy(availableFilters = filters) }
+                updateState { it.copy(availableFilters = filters, documentParameters = documentManager.getDocumentParameters()) }
             } catch (e: Exception) {
                 sendEvent(ShowError("Filtreler yüklenemedi: ${e.message}"))
             }

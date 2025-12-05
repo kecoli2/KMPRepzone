@@ -809,6 +809,7 @@
     <string name="server_error">Server error, please try again later</string>
     <string name="unknown_error">Unknown error: %1$s</string>
     <string name="job_email">Customer Emails</string>
+    <string name="job_warehouse">Warehouse Lists</string>
     <string name="job_productdistribution_lines">Product Distribution Lines</string>
     <string name="job_RepresentativetDistributions">Representative Distributions</string>
     <string name="job_product_prices">Product Prices</string>
@@ -1051,5 +1052,6 @@
     <string name="discount_percent_summary">Discount (%%1$s)</string>
     <string name="total_base_quantity">Total: %1$s units (base unit)</string>
     <string name="detail">Detail</string>
+    <string name="search_warehouse">Warehouse search...</string>
 
 </resources>

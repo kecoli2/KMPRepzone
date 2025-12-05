@@ -67,6 +67,8 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
         priceListBulkInsert: IBulkInsertService<List<SyncProductPricesDto>>,
         productPriceLinesApi: ISyncApiService<List<SyncProductPriceLinesDto>>,
         productPriceLinesBulkInsert: IBulkInsertService<List<SyncProductPriceLinesDto>>,
+        warehousesRawSqlBulkInsertService: IBulkInsertService<List<SyncWarehouseDto>>,
+        syncApiWarehousesImpl: ISyncApiService<List<SyncWarehouseDto>>,
     ): Map<SyncJobType, ISyncJob> {
         return mapOf(
             SyncJobType.PRODUCTS to ProductSyncJob(productApi, productBulkInsert, syncModuleRepository),
@@ -93,7 +95,8 @@ class SyncJobFactory(private val syncModuleRepository: ISyncModuleRepository): I
             SyncJobType.DISTRIBUTIONS_LINES to ProductDistributionLineSyncJob(productDistributionLineApi, productDistributionLineBulkInsert, syncModuleRepository),
             SyncJobType.DISTRIBUTIONS_REPRESENTATIVE_PRODUCT to RepresentativeProductDistributionSyncJob(representativeProductDistributionApi, representativeProductDistributionBulkInsert, syncModuleRepository),
             SyncJobType.PRODUCT_PRICE_LIST to PriceListSyncJob(priceListApi, priceListBulkInsert, syncModuleRepository),
-            SyncJobType.PRODUCT_PRICE_LINE to ProductPriceLinesSyncJob(productPriceLinesApi, productPriceLinesBulkInsert, syncModuleRepository)
+            SyncJobType.PRODUCT_PRICE_LINE to ProductPriceLinesSyncJob(productPriceLinesApi, productPriceLinesBulkInsert, syncModuleRepository),
+            SyncJobType.WAREHOUSES to WarehousesSyncJob(syncApiWarehousesImpl, warehousesRawSqlBulkInsertService, syncModuleRepository)
         )
     }
     //endregion

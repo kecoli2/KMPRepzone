@@ -2,6 +2,7 @@ package com.repzone.presentation.legacy.viewmodel.document.productlist
 
 import com.repzone.core.model.HasUiFrame
 import com.repzone.core.model.UiFrame
+import com.repzone.core.model.module.base.IDocumentBaseParameters
 import com.repzone.domain.document.model.DiscountDialogState
 import com.repzone.domain.model.product.ProductFilterState
 import com.repzone.domain.model.product.ProductFilters
@@ -12,7 +13,8 @@ data class ProductListUiState(
     val filterState: ProductFilterState = ProductFilterState(),
     val availableFilters: ProductFilters? = null,
     val discountDialogState: DiscountDialogState? = null,
-    val onFabClickedProgress: Boolean = false
+    val onFabClickedProgress: Boolean = false,
+    val documentParameters: IDocumentBaseParameters? = null
 ): HasUiFrame {
 
     override fun copyWithUiFrame(newUiFrame: UiFrame): ProductListUiState {

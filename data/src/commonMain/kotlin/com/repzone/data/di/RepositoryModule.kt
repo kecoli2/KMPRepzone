@@ -18,6 +18,7 @@ import com.repzone.data.repository.imp.RepresentativeRepositoryImpl
 import com.repzone.data.repository.imp.RouteAppointmentRepositoryImpl
 import com.repzone.data.repository.imp.SettingsRepositoryImpl
 import com.repzone.data.repository.imp.SyncModuleRepositoryImpl
+import com.repzone.data.repository.imp.WareHouseRepositoryImpl
 import com.repzone.data.transactioncoordinator.TransactionCoordinator
 import com.repzone.domain.repository.*
 import com.repzone.domain.repository.IMobileModuleParameterRepository
@@ -51,6 +52,7 @@ val RepositoryModule = module {
     factoryOf(::DistributionRepositoryImpl) { bind<IDistributionRepository>() }
     factoryOf(::PriceRepositoryImpl) { bind<IPriceRepository>() }
     factoryOf(::PaymentInformationRepositoryImpl) { bind<IPaymentInformationRepository>() }
+    factoryOf(::WareHouseRepositoryImpl) { bind<IWareHouseRepository>() }
     //endregion REPOSITORY
 
     //region DBMAPPERS

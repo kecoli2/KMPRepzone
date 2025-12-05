@@ -18,8 +18,8 @@ class PaymentInformationRepositoryImpl(private val iDatabaseManager: IDatabaseMa
     //endregion Constructor
 
     //region Public Method
-    override suspend fun getPaymentInformation(customerOrgIdOrganizationId: Long): List<PaymentPlanModel> {
-        val customerOrgId = iUserSession.decideWhichOrgIdToBeUsed(customerOrgIdOrganizationId.toInt())
+    override suspend fun getPaymentInformation(customerOrgIdOrganizationId: Int): List<PaymentPlanModel> {
+        val customerOrgId = iUserSession.decideWhichOrgIdToBeUsed(customerOrgIdOrganizationId)
         val list = iDatabaseManager.getSqlDriver().select<SyncPaymentPlanEntity> {
             where {
                 criteria("State", StateType.ACTIVE.ordinal)

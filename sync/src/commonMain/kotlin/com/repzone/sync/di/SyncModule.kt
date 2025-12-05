@@ -36,6 +36,7 @@ import com.repzone.network.dto.SyncProductDistributionLineDto
 import com.repzone.network.dto.SyncProductPriceLinesDto
 import com.repzone.network.dto.SyncProductPricesDto
 import com.repzone.network.dto.SyncRepresentativeProductDistributionDto
+import com.repzone.network.dto.SyncWarehouseDto
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -173,6 +174,9 @@ val SyncModule = module {
     //region PAYMENT
     single<IBulkInsertService<List<SyncPaymentPlanDto>>>(named("paymentBulkInsert")) { PaymentRawSqlBulkInsertService(get(), get()) }
     single<ISyncApiService<List<SyncPaymentPlanDto>>>(named("paymentSyncApi")){ SyncApiPaymentImpl(get()) }
+
+    single<IBulkInsertService<List<SyncWarehouseDto>>>(named("warehousesRawSqlBulkInsertService")) { WarehousesRawSqlBulkInsertService(get(), get()) }
+    single<ISyncApiService<List<SyncWarehouseDto>>>(named("syncApiWarehousesImpl")){ SyncApiWarehousesImpl(get()) }
     //endregion PAYMENT
     //endregion ------------------- OTHER -------------------
 
@@ -245,7 +249,9 @@ val SyncModule = module {
             priceListApi = get(named("syncApiPriceListImpl")),
             priceListBulkInsert = get(named("priceListRawSqlBulkInsertService")),
             productPriceLinesApi = get(named("syncApiProductPriceLinesImpl")),
-            productPriceLinesBulkInsert =get(named("productPriceLinesRawSqlBulkInsertService"))
+            productPriceLinesBulkInsert =get(named("productPriceLinesRawSqlBulkInsertService")),
+            warehousesRawSqlBulkInsertService = get(named("warehousesRawSqlBulkInsertService")),
+            syncApiWarehousesImpl = get(named("syncApiWarehousesImpl")),
         )
 
     }

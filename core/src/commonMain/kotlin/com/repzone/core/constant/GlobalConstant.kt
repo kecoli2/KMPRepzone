@@ -42,6 +42,7 @@ object  IStockApiControllerConstant {
 
 object  IMiscApiControllerConstant {
     const val PAYMENT_PLAN_LIST_ENDPOINT = "/api/v1/Misc/PaymentPlans"
+    const val WAREHOUSE_LIST_ENDPOINT = "/api/v1/Misc/Warehouses"
 }
 
 object ICommonApiControllerConstant {

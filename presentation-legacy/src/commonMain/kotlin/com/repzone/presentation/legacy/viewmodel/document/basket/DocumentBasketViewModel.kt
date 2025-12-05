@@ -2,8 +2,10 @@ package com.repzone.presentation.legacy.viewmodel.document.basket
 
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import com.repzone.core.enums.UserSelectionType
 import com.repzone.core.ui.base.BaseViewModel
 import com.repzone.core.ui.base.setError
+import com.repzone.core.ui.base.setLoading
 import com.repzone.domain.common.onError
 import com.repzone.domain.common.onSuccess
 import com.repzone.domain.document.IProductStatisticsCalculator
@@ -13,13 +15,16 @@ import com.repzone.domain.document.base.UpdateLineResult
 import com.repzone.domain.document.model.BasketStatistics
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.model.PaymentPlanModel
+import com.repzone.domain.model.SyncWarehouseModel
+import com.repzone.domain.repository.IWareHouseRepository
 import kotlinx.coroutines.flow.collectLatest
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
 @OptIn(ExperimentalTime::class)
 class DocumentBasketViewModel(iDocumentSession: IDocumentSession,
-                              private val statisticsCalculator: IProductStatisticsCalculator
+                              private val statisticsCalculator: IProductStatisticsCalculator,
+    private val iWareHouseRepository: IWareHouseRepository
 ) : BaseViewModel<DocumentBasketUiState, DocumentBasketViewModel.Event>(DocumentBasketUiState()) {
 
     //region Field
@@ -28,33 +33,52 @@ class DocumentBasketViewModel(iDocumentSession: IDocumentSession,
 
     //region Public Method
     suspend fun onStartDocument() {
-        // Document Manager'dan verileri al
-        updateState { currentState ->
-            currentState.copy(
-                selectedPayment = iDocumentManager.getAvailablePaymentPlan(),
-                paymentPlanList = iDocumentManager.getAvailablePaymentPlanList(),
-                invoiceDiscount1 = iDocumentManager.getInvoiceDiscont(1),
-                invoiceDiscount2 = iDocumentManager.getInvoiceDiscont(2),
-                invoiceDiscount3 = iDocumentManager.getInvoiceDiscont(3),
-                dispatchDate = iDocumentManager.getDispatchDate()
-            )
-        }
+        try {
+            setLoading(true)
+            val wareHouseList: List<SyncWarehouseModel> = if(iDocumentManager.getDocumentParameters().isActive && iDocumentManager.getDocumentParameters().showWarehouseSelection != UserSelectionType.No) {
+                iWareHouseRepository.getWarehouseList(iDocumentManager.getCustomer().organizationId, iDocumentManager.getDocumentMapModel().operationType)
+            }else{
+                emptyList()
+            }
 
-        // Lines'ı collect et
-        iDocumentManager.lines.collectLatest { lines ->
-            val statistics = calculateBasketStatistics(lines)
             updateState { currentState ->
                 currentState.copy(
-                    lines = lines,
-                    basketStatistics = statistics
-                ).calculateTotals()
+                    selectedPayment = iDocumentManager.getAvailablePaymentPlan(),
+                    paymentPlanList = iDocumentManager.getAvailablePaymentPlanList(),
+                    invoiceDiscount1 = iDocumentManager.getInvoiceDiscont(1),
+                    invoiceDiscount2 = iDocumentManager.getInvoiceDiscont(2),
+                    invoiceDiscount3 = iDocumentManager.getInvoiceDiscont(3),
+                    dispatchDate = iDocumentManager.getDispatchDate(),
+                    documentParameters = iDocumentManager.getDocumentParameters(),
+                    documentType = iDocumentManager.documentType,
+                    selectedWareHouse = iDocumentManager.getDocumentWarehouseModel().getOrNull(),
+                    wareHouseList = wareHouseList
+                )
             }
+
+            // Document Manager'dan verileri al
+
+            // Lines'ı collect et
+            iDocumentManager.lines.collectLatest { lines ->
+                val statistics = calculateBasketStatistics(lines)
+                updateState { currentState ->
+                    currentState.copy(
+                        lines = lines,
+                        basketStatistics = statistics
+                    ).calculateTotals()
+                }
+            }
+
+
+        }catch (e: Exception){
+            setError(e.message)
         }
+
     }
 
     suspend fun onEvent(event: Event) {
         when (event) {
-            // ===== Ödeme Bilgileri Events =====
+            //region ===== Belge Bilgileri Events =====
             is Event.SetPaymentPlan -> {
                 iDocumentManager.setPaymentPlan(event.paymentPlan)
                 updateState { it.copy(selectedPayment = event.paymentPlan) }
@@ -97,7 +121,16 @@ class DocumentBasketViewModel(iDocumentSession: IDocumentSession,
                 }
             }
 
-            // ===== Satır Düzenleme Events =====
+            is Event.SetWareHouseModel -> {
+                iDocumentManager.setDocumentWarehouseModel(event.model).onSuccess {
+                    state.value.copy(selectedWareHouse = event.model)
+                }.onError {
+                    setError(it)
+                }
+            }
+            //endregion ===== Belge Bilgileri Events =====
+
+            //region ===== Satır Düzenleme Events =====
             is Event.OpenEditDialog -> {
                 val units = iDocumentManager.getProductUnitMap()[event.line.productId] ?: emptyList()
                 val currentUnit = units.find { it.unitId == event.line.unitId }
@@ -170,8 +203,9 @@ class DocumentBasketViewModel(iDocumentSession: IDocumentSession,
                 iDocumentManager.updateLine(editingLine.id, newUnit, newQuantity)
                 onEvent(Event.CloseEditDialog)
             }
+            //endregion ===== Satır Düzenleme Events =====
 
-            // ===== Satır Inline Düzenleme Events =====
+            //region ===== Satır Inline Düzenleme Events =====
             is Event.UpdateLineQuantity -> {
                 val newQuantity = try {
                     BigDecimal.parseString(event.quantity.replace(",", "."))
@@ -198,8 +232,9 @@ class DocumentBasketViewModel(iDocumentSession: IDocumentSession,
 
                 iDocumentManager.updateLine(event.lineId, nextUnit, line.quantity)
             }
+            //endregion ===== Satır Inline Düzenleme Events =====
 
-            // ===== Satır Silme Events =====
+            //region ===== Satır Silme Events =====
             is Event.OpenDeleteDialog -> {
                 updateState { it.copy(lineToDelete = event.line) }
             }
@@ -213,8 +248,9 @@ class DocumentBasketViewModel(iDocumentSession: IDocumentSession,
                 iDocumentManager.removeLine(lineToDelete.id)
                 updateState { it.copy(lineToDelete = null) }
             }
+            //endregion ===== Satır Silme Events =====
 
-            // ===== Kaydetme =====
+            //region ===== Kaydetme =====
             is Event.SaveDocument -> {
                 if (state.value.lines.isEmpty()) {
                     setError("Sepet boş, kaydetmek için ürün ekleyin")
@@ -234,8 +270,9 @@ class DocumentBasketViewModel(iDocumentSession: IDocumentSession,
                     setError("Belge kaydedilemedi: ${e.message}")
                 }
             }
+            //endregion ===== Kaydetme =====
 
-            // ===== Navigasyon =====
+            //region ===== Navigasyon =====
             is Event.NavigateBack -> {
                 // Handle navigation
             }
@@ -243,6 +280,7 @@ class DocumentBasketViewModel(iDocumentSession: IDocumentSession,
             is Event.NavigateToSuccess -> {
                 // Handle navigation
             }
+            //endregion ===== Navigasyon =====
 
             is Event.ShowError -> {
                 setError(event.message)
@@ -324,6 +362,7 @@ class DocumentBasketViewModel(iDocumentSession: IDocumentSession,
         @OptIn(ExperimentalTime::class)
         data class SetDispatchDate(val date: Instant) : Event()
         data class SetInvoiceDiscount(val order: Int, val value: BigDecimal) : Event()
+        data class SetWareHouseModel(val model: SyncWarehouseModel) : Event()
 
         // Satır Düzenleme (Dialog)
         data class OpenEditDialog(val line: IDocumentLine) : Event()

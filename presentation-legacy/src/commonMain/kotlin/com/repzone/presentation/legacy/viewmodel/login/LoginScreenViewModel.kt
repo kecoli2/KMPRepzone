@@ -33,6 +33,7 @@ import repzonemobile.core.generated.resources.unknown_error
 import kotlin.uuid.ExperimentalUuidApi
 import kotlin.uuid.Uuid
 
+@Suppress("UNCHECKED_CAST")
 class LoginScreenViewModel(
     private val tokenApiController: ITokenApiController,
     private val isharedPreferences: IPreferencesManager,

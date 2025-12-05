@@ -1,3 +1,5 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.repzone.core.ui.base
 
 import androidx.lifecycle.ViewModel

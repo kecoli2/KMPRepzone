@@ -19,6 +19,7 @@ import com.repzone.domain.document.model.StockValidationResult
 import com.repzone.domain.model.PaymentPlanModel
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.SyncDocumentMapModel
+import com.repzone.domain.model.SyncWarehouseModel
 import com.repzone.domain.model.product.ProductFilters
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -136,6 +137,8 @@ interface IDocumentManager {
     fun getDispatchDate(): Instant
     fun clearLines()
     fun getDocumentParameters(): IDocumentBaseParameters
+    fun getDocumentWarehouseModel(): Result<SyncWarehouseModel?>
+    fun setDocumentWarehouseModel(warehouseModel: SyncWarehouseModel): Result<Unit>
 
     //endregion ============ Document Operations ============
 }

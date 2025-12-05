@@ -19,6 +19,8 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.automirrored.filled.Note
 import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.ArrowUpward
@@ -798,10 +800,10 @@ private fun getIconForActionType(type: ActionButtonType): ImageVector {
         ActionButtonType.VISITING_START -> Icons.Default.PlayArrow
         ActionButtonType.VISITING_END -> Icons.Default.Stop
         ActionButtonType.MAP -> Icons.Default.LocationOn
-        ActionButtonType.ORDER_LOG -> Icons.Default.List
+        ActionButtonType.ORDER_LOG -> Icons.AutoMirrored.Filled.List
         ActionButtonType.DRIVE -> Icons.Default.Folder
         ActionButtonType.REPORT -> Icons.Default.Assessment
-        ActionButtonType.NOTES -> Icons.Default.Note
+        ActionButtonType.NOTES -> Icons.AutoMirrored.Filled.Note
     }
 }
 @Composable

@@ -3,10 +3,14 @@ package com.repzone.presentation.legacy.viewmodel.document.basket
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.model.HasUiFrame
 import com.repzone.core.model.UiFrame
+import com.repzone.core.model.module.base.IDocumentBaseParameters
 import com.repzone.domain.document.base.IDocumentLine
 import com.repzone.domain.document.model.BasketStatistics
+import com.repzone.domain.document.model.DocumentType
 import com.repzone.domain.document.model.ProductUnit
+import com.repzone.domain.model.GenericKeyValueModel
 import com.repzone.domain.model.PaymentPlanModel
+import com.repzone.domain.model.SyncWarehouseModel
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -19,6 +23,10 @@ data class DocumentBasketUiState(
     val invoiceDiscount2: BigDecimal = BigDecimal.ZERO,
     val invoiceDiscount3: BigDecimal = BigDecimal.ZERO,
     val dispatchDate: Instant? = null,
+    val documentParameters: IDocumentBaseParameters? = null,
+    val documentType: DocumentType = DocumentType.ORDER,
+    val selectedWareHouse: SyncWarehouseModel? = null,
+    val wareHouseList: List<SyncWarehouseModel> = emptyList(),
 
     // Sepet Satırları
     val lines: List<IDocumentLine> = emptyList(),

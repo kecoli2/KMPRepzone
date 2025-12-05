@@ -27,7 +27,7 @@ data class SyncCustomerModel(
     val orderMonitoringAction: MonitoringActionType?,
     val orderProposalMonitoringAction: MonitoringActionType?,
     val organizationCode: String?,
-    val organizationId: Long?,
+    val organizationId: Int,
     val organizationName: String?,
     val parentId: Long?,
     val paymentPlanId: Long?,

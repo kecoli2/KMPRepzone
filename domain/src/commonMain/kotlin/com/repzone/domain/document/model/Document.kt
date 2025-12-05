@@ -3,8 +3,10 @@ package com.repzone.domain.document.model
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.domain.document.base.IDocumentLine
 import com.repzone.domain.model.CustomerItemModel
+import com.repzone.domain.model.GenericKeyValueModel
 import com.repzone.domain.model.PaymentPlanModel
 import com.repzone.domain.model.SyncCustomerModel
+import com.repzone.domain.model.SyncWarehouseModel
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
 
@@ -27,7 +29,8 @@ data class Document(
     val invoiceDiscont3: BigDecimal = BigDecimal.ZERO,
     val documentNote: String? = null,
     val documentPrintedNo: String? = null,
-    val dispatchDate: Instant? = null
+    val dispatchDate: Instant? = null,
+    val warehouseModel: SyncWarehouseModel
 ){
     //region Fields
     /**

@@ -40,10 +40,10 @@ import com.repzone.domain.model.DistributionControllerModel
 import com.repzone.domain.model.PaymentPlanModel
 import com.repzone.domain.model.SyncCustomerModel
 import com.repzone.domain.model.SyncDocumentMapModel
+import com.repzone.domain.model.SyncWarehouseModel
 import com.repzone.domain.model.product.ProductFilters
 import com.repzone.domain.repository.ICustomerRepository
 import com.repzone.domain.repository.IDistributionRepository
-import com.repzone.domain.repository.IDocumentMapRepository
 import com.repzone.domain.repository.IPaymentInformationRepository
 import com.repzone.domain.repository.IProductRepository
 import com.repzone.domain.util.ProductQueryBuilder
@@ -81,6 +81,7 @@ class DocumentManager(override val documentType: DocumentType,
     private var invoiceDiscont3: BigDecimal = BigDecimal.ZERO
     private var documentNote: String? = null
     private var documentPrintedNo: String? = null
+    private var warehouseModel: SyncWarehouseModel? = null
 
     private val _lines = MutableStateFlow<List<IDocumentLine>>(emptyList())
     override val lines: StateFlow<List<IDocumentLine>> = _lines.asStateFlow()
@@ -107,7 +108,8 @@ class DocumentManager(override val documentType: DocumentType,
             invoiceDiscont1 = invoiceDiscont1,
             invoiceDiscont2 = invoiceDiscont2,
             invoiceDiscont3 = invoiceDiscont3,
-            dispatchDate = dispatchDate
+            dispatchDate = dispatchDate,
+            warehouseModel = warehouseModel!!
         )
     }
 
@@ -119,6 +121,7 @@ class DocumentManager(override val documentType: DocumentType,
         activeDistribution = null
         productUnitMap?.clear()
         productUnitMap = null
+        warehouseModel = null
     }
 
     override fun getCustomer(): SyncCustomerModel {
@@ -128,13 +131,13 @@ class DocumentManager(override val documentType: DocumentType,
     override suspend fun setMasterValues(customerId: Long, documentId: Long): Result<IDocumentManager> {
         try {
             currentCustomer = iCustomerRepository.getById(customerId)
-            //documentMapModel = iDocumentMapRepository.get(documentId.toInt(), currentCustomer!!.organizationId?.toInt() ?: 0)
             activeDistribution = iDistributionRepository.getActiveDistributionListId(currentCustomer, iUserSession.decideWhichOrgIdToBeUsed(currentCustomer!!.organizationId?.toInt() ?: 0))!!
-            dispatchDate = now().toInstant().addDays(2)
             iDocumentParameters.preLoadDocumentParameters(documentType = documentType, customer = currentCustomer!!, documentId = documentId)
+            dispatchDate = now().toInstant().addDays(iDocumentParameters.getDocumentParameters().dayToShip)
             prepareProductQueryBuilder()
             prepareProductUnit()
             preparePayment()
+            prepareWarehouse()
             return Result.Success(this)
         }catch (ex: Exception){
             return Result.Error(DomainException.UnknownException(cause = ex))
@@ -234,8 +237,16 @@ class DocumentManager(override val documentType: DocumentType,
         return iDocumentParameters.getDocumentParameters()
     }
 
-    //endregion ============ Document Operations ============
+    override fun getDocumentWarehouseModel(): Result<SyncWarehouseModel?> {
+        return Result.Success(warehouseModel)
+    }
 
+    override fun setDocumentWarehouseModel(warehouseModel: SyncWarehouseModel): Result<Unit> {
+        this.warehouseModel = warehouseModel
+        return Result.Success(Unit)
+    }
+
+    //endregion ============ Document Operations ============
     //region ============ Line Operations ============
 
     override suspend fun addLine(product: ProductInformationModel, unit: ProductUnit, quantity: BigDecimal): AddLineResult {
@@ -491,7 +502,7 @@ class DocumentManager(override val documentType: DocumentType,
         }
     }
     private suspend fun preparePayment(){
-        paymentPlanList = iPaymentPlanRepository.getPaymentInformation(currentCustomer!!.organizationId!!)
+        paymentPlanList = iPaymentPlanRepository.getPaymentInformation(currentCustomer!!.organizationId)
         val selectedPlan = paymentPlanList.firstOrNull()
         if(selectedPlan != null){
             paymentPlan = selectedPlan
@@ -506,6 +517,18 @@ class DocumentManager(override val documentType: DocumentType,
             }
         }
     }
+
+    private suspend fun prepareWarehouse(){
+        when(documentType){
+            DocumentType.ORDER -> {
+                warehouseModel = iDocumentParameters.getWareHouse()
+            }
+            else -> {
+
+            }
+        }
+    }
+
 
     //endregion ============ Private Helpers ============
     //endregion Private Method

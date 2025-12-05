@@ -28,11 +28,14 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.constant.CdnConfig
+import com.repzone.core.enums.ShowPaytermSelectionType
+import com.repzone.core.enums.UserSelectionType
 import com.repzone.core.model.StringResource
 import com.repzone.core.platform.NumberFormatter
 import com.repzone.core.ui.base.ViewModelHost
@@ -57,8 +60,11 @@ import com.repzone.core.util.extensions.toBigDecimalOrNull
 import com.repzone.core.util.extensions.toDateString
 import com.repzone.core.util.extensions.toMoney
 import com.repzone.domain.document.base.IDocumentLine
+import com.repzone.domain.document.model.DocumentLine
+import com.repzone.domain.document.model.DocumentType
 import com.repzone.domain.document.model.ProductUnit
 import com.repzone.domain.model.PaymentPlanModel
+import com.repzone.domain.model.SyncWarehouseModel
 import com.repzone.presentation.legacy.ui.document.basket.component.BasketStatisticsCard
 import com.repzone.presentation.legacy.ui.document.basket.component.BasketTotalsPanel
 import com.repzone.presentation.legacy.viewmodel.document.basket.DocumentBasketUiState
@@ -89,6 +95,9 @@ fun DocumentBasketScreenLegacy(
     var showPaymentPlanDialog by rememberSaveable { mutableStateOf(false) }
     var showDatePickerDialog by rememberSaveable { mutableStateOf(false) }
     var paymentSearchQuery by rememberSaveable { mutableStateOf("") }
+    var showWareHouseDialog by rememberSaveable { mutableStateOf(false) }
+    var wareHouseSearchQuery by rememberSaveable { mutableStateOf("") }
+
 
     // Local state for discount fields
     var discount1Text by remember { mutableStateOf("") }
@@ -159,7 +168,13 @@ fun DocumentBasketScreenLegacy(
         onNavigateBack = onNavigateBack,
         onSaveClick = {
             scope.launch { viewModel.onEvent(DocumentBasketViewModel.Event.SaveDocument) }
+        },
+        onWareHouseSelectionClick = {
+            if(uiState.documentParameters?.allowWarehouseSelection == true){
+                showWareHouseDialog = true
+            }
         }
+
     )
 
     //region ===== DIALOGS =====
@@ -231,6 +246,30 @@ fun DocumentBasketScreenLegacy(
             scope.launch { viewModel.onEvent(DocumentBasketViewModel.Event.CloseDeleteDialog) }
         }
     )
+
+    //WareHouse Selection Dialog
+    if(showWareHouseDialog) {
+        WareHouseSelectionDialog(
+            wareHouseList = uiState.wareHouseList,
+            selectedWareHouse = uiState.selectedWareHouse,
+            searchQuery = wareHouseSearchQuery,
+            onSearchQueryChange = {wareHouseSearchQuery = it},
+            onWareHouseSelected = {
+                uiState.documentParameters?.let { param ->
+                    if (param.isActive && param.showWarehouseSelection == UserSelectionType.YES_ALLOW_USER_TO_SELECT ){
+                        scope.launch { viewModel.onEvent(DocumentBasketViewModel.Event.SetWareHouseModel(it)) }
+                    }
+                }
+
+                showWareHouseDialog = false
+            },
+            onDismiss = {
+                showWareHouseDialog = false
+                wareHouseSearchQuery = ""
+            }
+        )
+    }
+
     //endregion ===== DIALOGS =====
 }
 //endregion Public Method
@@ -253,6 +292,7 @@ private fun BasketScreenContent(
     onDiscount3Change: (String) -> Unit,
     onPaymentPlanClick: () -> Unit,
     onDatePickerClick: () -> Unit,
+    onWareHouseSelectionClick: () -> Unit,
     onLineEditClick: (IDocumentLine) -> Unit,
     onLineDeleteClick: (IDocumentLine) -> Unit,
     onQuantityChange: (String, String) -> Unit,
@@ -280,15 +320,20 @@ private fun BasketScreenContent(
                     leftIconType = TopBarLeftIcon.Back(onClick = onNavigateBack),
                     title = Res.string.basket.fromResource(),
                     subtitle = "${uiState.totalItemCount} ${Res.string.product.fromResource()}",
-                    rightIcons = listOf(
-                        TopBarAction(
-                            icon = Icons.Default.Save,
-                            contentDescription = "",
-                            tintColor = Color.White,
-                            onClick = {
+                    rightIcons = listOfNotNull(
+                        uiState.documentParameters?.let { parameters ->
+                            if(parameters.isActive && parameters.allowDraft){
+                                TopBarAction(
+                                    icon = Icons.Default.Save,
+                                    contentDescription = "",
+                                    tintColor = Color.White,
+                                    onClick = {
 
-                            },
-                        ),
+                                    },
+                                )
+                            } else null
+                        },
+
                         TopBarAction(
                             icon = Icons.Default.Share,
                             contentDescription = "",
@@ -298,7 +343,6 @@ private fun BasketScreenContent(
                             },
                         )
                     )
-
                 )
                 // Main Content with LazyColumn
                 LazyColumn(
@@ -320,11 +364,11 @@ private fun BasketScreenContent(
 
 
                         ) {
-                            PaymentInfoContent(
-                                selectedPayment = uiState.selectedPayment,
-                                dispatchDate = uiState.dispatchDate,
+                            DocumentInfoContent(
+                                uiState = uiState,
                                 onPaymentPlanClick = onPaymentPlanClick,
-                                onDatePickerClick = onDatePickerClick
+                                onDatePickerClick = onDatePickerClick,
+                                onWareHouseClick = onWareHouseSelectionClick
                             )
                         }
                     }
@@ -631,7 +675,7 @@ private fun BasketLineRowContent(
 
             // Product Image
             ProductImage(
-                imageUrl = (line as? com.repzone.domain.document.model.DocumentLine)?.productInfo?.photoPath,
+                imageUrl = (line as? DocumentLine)?.productInfo?.photoPath,
                 productName = line.productName
             )
 
@@ -660,7 +704,7 @@ private fun BasketLineRowContent(
                             text = priceText,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            textDecoration = androidx.compose.ui.text.style.TextDecoration.LineThrough
+                            textDecoration = TextDecoration.LineThrough
                         )
                         Text(
                             text = netPriceText,
@@ -814,25 +858,44 @@ private fun EmptyBasketView() {
 
 @OptIn(ExperimentalTime::class)
 @Composable
-private fun PaymentInfoContent(
-    selectedPayment: PaymentPlanModel?,
-    dispatchDate: Instant?,
+private fun DocumentInfoContent(
+    uiState: DocumentBasketUiState,
     onPaymentPlanClick: () -> Unit,
-    onDatePickerClick: () -> Unit
+    onDatePickerClick: () -> Unit,
+    onWareHouseClick: () -> Unit
 ) {
     Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-        SelectableRow(
-            label = Res.string.payment_plan.fromResource(),
-            value = selectedPayment?.name ?: Res.string.select.fromResource(),
-            onClick = onPaymentPlanClick
-        )
+        uiState.documentParameters?.let { parameters ->
+            if(parameters.showPaytermSelection != ShowPaytermSelectionType.No){
+                SelectableRow(
+                    label = Res.string.payment_plan.fromResource(),
+                    value = uiState.selectedPayment?.name ?: Res.string.select.fromResource(),
+                    onClick = onPaymentPlanClick
+                )
+            }
+        }
 
-        SelectableRow(
-            label = Res.string.dispatch_date.fromResource(),
-            value = dispatchDate?.toEpochMilliseconds()?.toDateString("dd/MM/yyyy") ?: Res.string.select_date.fromResource(),
-            onClick = onDatePickerClick,
-            trailingIcon = Icons.Default.DateRange
-        )
+
+        if(uiState.documentType == DocumentType.ORDER){
+            SelectableRow(
+                label = Res.string.dispatch_date.fromResource(),
+                value = uiState.dispatchDate?.toEpochMilliseconds()?.toDateString("dd/MM/yyyy") ?: Res.string.select_date.fromResource(),
+                onClick = onDatePickerClick,
+                trailingIcon = Icons.Default.DateRange
+            )
+        }
+        uiState.documentParameters?.let { parameters ->
+            if(parameters.showWarehouseSelection != UserSelectionType.No){
+                SelectableRow(
+                    label = StringResource.PICKWAREHOUSE.fromResource(),
+                    value = uiState.selectedWareHouse?.name ?: Res.string.select.fromResource(),
+                    onClick = {
+                        onWareHouseClick
+                    },
+                    trailingIcon = Icons.Default.Warehouse
+                )
+            }
+        }
     }
 }
 
@@ -1255,6 +1318,59 @@ private fun PaymentPlanSelectionDialog(
             cancelButtonText = Res.string.dialogcancel.fromResource(),
             onConfirm = { selected ->
                 selected.firstOrNull()?.let { onPaymentSelected(it) }
+            },
+            onDismiss = onDismiss
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun WareHouseSelectionDialog(
+    wareHouseList: List<SyncWarehouseModel>,
+    selectedWareHouse: SyncWarehouseModel?,
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    onWareHouseSelected: (SyncWarehouseModel) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = sheetState,
+        shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp),
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onSurface,
+        tonalElevation = 0.dp,
+        scrimColor = Color.Black.copy(alpha = 0.5f),
+        dragHandle = null,
+    ) {
+        GenericPopupList(
+            items = wareHouseList,
+            selectionMode = SelectionMode.SINGLE,
+            selectedItems = selectedWareHouse?.let { listOf(it) },
+            searchQuery = searchQuery,
+            onSearchQueryChange = onSearchQueryChange,
+            itemContent = { wareHouse, isSelected ->
+                /*PaymentPlanRow(paymentPlan = paymentPlan, isSelected = isSelected)*/
+                RepzoneRowItemTemplate(
+                    title = wareHouse.name ?: "",
+                    titleFontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                    height = 40.dp,
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
+                )
+            },
+            itemKey = { it.id },
+            searchEnabled = true,
+            searchPredicate = { wareHouse, query ->
+                wareHouse.name?.contains(query, ignoreCase = true) == true
+            },
+            searchPlaceholder = Res.string.search_warehouse.fromResource(),
+            confirmButtonText = Res.string.select.fromResource(),
+            cancelButtonText = Res.string.dialogcancel.fromResource(),
+            onConfirm = { selected ->
+                selected.firstOrNull()?.let { onWareHouseSelected(it) }
             },
             onDismiss = onDismiss
         )
