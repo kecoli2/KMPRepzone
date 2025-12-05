@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.OrderLogInformationEntity
 import com.repzone.domain.model.OrderLogInformationModel
@@ -26,7 +29,7 @@ class OrderLogInformationEntityDbMapper : Mapper<OrderLogInformationEntity, Orde
             restServiceTaskId = from.RestServiceTaskId,
             routeAppointmentId = from.RouteAppointmentId,
             sessionId = from.SessionId,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             status = from.Status,
             totalCost = from.TotalCost,
             transferStatus = from.TransferStatus,
@@ -54,7 +57,7 @@ class OrderLogInformationEntityDbMapper : Mapper<OrderLogInformationEntity, Orde
             RestServiceTaskId = domain.restServiceTaskId,
             RouteAppointmentId = domain.routeAppointmentId,
             SessionId = domain.sessionId,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             Status = domain.status,
             TotalCost = domain.totalCost,
             TransferStatus = domain.transferStatus,

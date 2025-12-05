@@ -3,6 +3,7 @@ package com.repzone.domain.model
 import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.IoType
 import com.repzone.core.enums.SalesOperationType
+import com.repzone.core.enums.StateType
 import com.repzone.core.enums.WarehouseType
 import kotlin.time.ExperimentalTime
 import kotlin.time.Instant
@@ -27,7 +28,7 @@ data class SyncDocumentMapModel(
     val printerTemplatePath: String?,
     val printQrCode: Boolean,
     val recordDateUtc: Instant,
-    val state: Long?,
+    val state: StateType,
     val uniqueIdCaption: String?,
     val useFinancialLogo: Boolean,
     val warehouseType: WarehouseType,

@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncDocumentOrganizationModel(
   val id: Long,
   val documentHeader: String?,
@@ -15,7 +17,7 @@ data class SyncDocumentOrganizationModel(
   val printerTemplatePath: String?,
   val printQrCode: Long?,
   val recordDateUtc: Long?,
-  val state: Long?,
+  val state: StateType,
   val uniqueIdCaption: String?,
   val useFinancialLogo: Long?,
 )

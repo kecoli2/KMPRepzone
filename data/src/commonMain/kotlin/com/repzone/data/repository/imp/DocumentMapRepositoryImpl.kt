@@ -6,6 +6,7 @@ import com.repzone.core.enums.NumberTemplateType
 import com.repzone.core.enums.PrinterDeviceType
 import com.repzone.core.enums.StateType
 import com.repzone.core.model.PrinterListItem
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.mapper.DocumentMapDocNumberInformationEntityDbMapper
 import com.repzone.data.mapper.PrinterDocumentRelationInformationEntityDbMapper
 import com.repzone.data.mapper.SyncDocumentMapEntityDbMapper
@@ -450,7 +451,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
 
     override suspend fun softDeleteDocumentMapNumber(docNumber: DocumentMapDocNumberInformationModel) {
         docNumber.copy(
-            state = 4
+            state = StateType.DELETED
         )
         iDatabaseManager.getSqlDriver().update(mapperNumberDocument.fromDomain(docNumber))
     }

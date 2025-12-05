@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncFeedbackListModel(
   val id: Long,
   val categoryId: Long?,
@@ -12,7 +14,7 @@ data class SyncFeedbackListModel(
   val parentId: Long?,
   val recordDateUtc: Long?,
   val rootId: Long?,
-  val state: Long?,
+  val state: StateType,
   val userId: Long?,
   val userName: String?,
 )

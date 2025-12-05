@@ -2,6 +2,7 @@ package com.repzone.data.mapper
 
 import com.repzone.core.enums.MonitoringActionType
 import com.repzone.core.enums.PriceType
+import com.repzone.core.enums.StateType
 import com.repzone.core.util.extensions.enumToLong
 import com.repzone.core.util.extensions.toBoolean
 import com.repzone.core.util.extensions.toEnum
@@ -44,7 +45,7 @@ class SyncCustomerEntityDbMapper : Mapper<SyncCustomerEntity, SyncCustomerModel>
             returnPriceType = from.ReturnPriceType?.toEnum<PriceType>(),
             risk = from.Risk,
             riskDueDay = from.RiskDueDay,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             tags = from.Tags,
             taxNumber = from.TaxNumber,
             taxOffice = from.TaxOffice
@@ -83,7 +84,7 @@ class SyncCustomerEntityDbMapper : Mapper<SyncCustomerEntity, SyncCustomerModel>
             ReturnPriceType = domain.returnPriceType?.enumToLong(),
             Risk = domain.risk,
             RiskDueDay = domain.riskDueDay,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             Tags = domain.tags,
             TaxNumber = domain.taxNumber,
             TaxOffice = domain.taxOffice

@@ -1,6 +1,7 @@
 package com.repzone.domain.model
 
 import com.repzone.core.enums.AddressType
+import com.repzone.core.enums.StateType
 
 data class SyncAddressModel(
     val id: Long,
@@ -15,7 +16,7 @@ data class SyncAddressModel(
     val latitude: Double?,
     val longitude: Double?,
     val phoneNumber: String?,
-    val state: Long?,
+    val state: StateType,
     val street: String?,
     val street2: String?,
 )

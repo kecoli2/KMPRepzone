@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncFormBaseModel(
   val id: Long,
   val data: String?,
@@ -9,6 +11,6 @@ data class SyncFormBaseModel(
   val formName: String?,
   val modificationDateUtc: Long?,
   val recordDateUtc: Long?,
-  val state: Long?,
+  val state: StateType,
   val visibleOption: Long?,
 )

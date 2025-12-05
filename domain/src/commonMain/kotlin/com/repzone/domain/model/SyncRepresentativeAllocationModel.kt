@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncRepresentativeAllocationModel(
   val id: Long,
   val amount: Double?,
@@ -11,5 +13,5 @@ data class SyncRepresentativeAllocationModel(
   val recordDateUtc: Long?,
   val representativeId: Long?,
   val scope: Long?,
-  val state: Long?,
+  val state: StateType,
 )

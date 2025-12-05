@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class ProductParameterv4Model(
   val id: Long,
   val color: String?,
@@ -10,5 +12,5 @@ data class ProductParameterv4Model(
   val organizationId: Long?,
   val productId: Long?,
   val recordDateUtc: Long?,
-  val state: Long?,
+  val state: StateType,
 )

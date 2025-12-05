@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncCustomerOrganizationScopeModel(
   val id: Long,
   val customerId: Long?,
@@ -10,5 +12,5 @@ data class SyncCustomerOrganizationScopeModel(
   val organizationName: String?,
   val recordDateUtc: Long?,
   val salesNotAllowed: Long?,
-  val state: Long?,
+  val state: StateType,
 )

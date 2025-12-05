@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncTenantDiscountEntity
 import com.repzone.domain.model.SyncTenantDiscountModel
@@ -19,7 +22,7 @@ class SyncTenantDiscountEntityDbMapper : Mapper<SyncTenantDiscountEntity, SyncTe
             recordDateUtc = from.RecordDateUtc,
             reserved = from.Reserved,
             scope = from.Scope,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             tenantId = from.TenantId
         )
     }
@@ -37,7 +40,7 @@ class SyncTenantDiscountEntityDbMapper : Mapper<SyncTenantDiscountEntity, SyncTe
             RecordDateUtc = domain.recordDateUtc,
             Reserved = domain.reserved,
             Scope = domain.scope,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             TenantId = domain.tenantId
         )
     }

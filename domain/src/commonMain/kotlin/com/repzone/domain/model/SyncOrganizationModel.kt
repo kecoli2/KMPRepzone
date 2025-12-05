@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncOrganizationModel(
   val id: Long,
   val isParent: Long?,
@@ -8,5 +10,5 @@ data class SyncOrganizationModel(
   val parentId: Long?,
   val recordDateUtc: Long?,
   val relationId: Long?,
-  val state: Long?,
+  val state: StateType,
 )

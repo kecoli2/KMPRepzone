@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncGameEntity
 import com.repzone.domain.model.SyncGameModel
@@ -22,7 +25,7 @@ class SyncGameEntityDbMapper : Mapper<SyncGameEntity, SyncGameModel> {
             stageIcon = from.StageIcon,
             stageId = from.StageId,
             stageName = from.StageName,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             unSuccessIcon = from.UnSuccessIcon
         )
     }
@@ -43,7 +46,7 @@ class SyncGameEntityDbMapper : Mapper<SyncGameEntity, SyncGameModel> {
             StageIcon = domain.stageIcon,
             StageId = domain.stageId,
             StageName = domain.stageName,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             UnSuccessIcon = domain.unSuccessIcon
         )
     }

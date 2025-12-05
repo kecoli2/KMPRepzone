@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncProductAllocationEntity
 import com.repzone.domain.model.SyncProductAllocationModel
@@ -18,7 +21,7 @@ class SyncProductAllocationEntityDbMapper : Mapper<SyncProductAllocationEntity, 
             quantity = from.Quantity,
             recordDateUtc = from.RecordDateUtc,
             scope = from.Scope,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             unitId = from.UnitId
         )
     }
@@ -35,7 +38,7 @@ class SyncProductAllocationEntityDbMapper : Mapper<SyncProductAllocationEntity, 
             Quantity = domain.quantity,
             RecordDateUtc = domain.recordDateUtc,
             Scope = domain.scope,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             UnitId = domain.unitId
         )
     }

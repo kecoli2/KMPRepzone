@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncMessageUserEntity
 import com.repzone.domain.model.SyncMessageUserModel
@@ -20,7 +23,7 @@ class SyncMessageUserEntityDbMapper : Mapper<SyncMessageUserEntity, SyncMessageU
             recordDateUtc = from.RecordDateUtc,
             roleId = from.RoleId,
             roleName = from.RoleName,
-            state = from.State
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE
         )
     }
 
@@ -38,7 +41,7 @@ class SyncMessageUserEntityDbMapper : Mapper<SyncMessageUserEntity, SyncMessageU
             RecordDateUtc = domain.recordDateUtc,
             RoleId = domain.roleId,
             RoleName = domain.roleName,
-            State = domain.state
+            State = domain.state.enumToLong()
         )
     }
     //endregion

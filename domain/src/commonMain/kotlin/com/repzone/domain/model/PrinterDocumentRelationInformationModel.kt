@@ -1,6 +1,7 @@
 package com.repzone.domain.model
 
 import com.repzone.core.enums.PrinterDeviceType
+import com.repzone.core.enums.StateType
 
 data class PrinterDocumentRelationInformationModel(
   val documentMapId: Long,
@@ -8,5 +9,5 @@ data class PrinterDocumentRelationInformationModel(
   val printerAddress: String?,
   val printerName: String?,
   val printerType: PrinterDeviceType,
-  val state: Long?,
+  val state: StateType,
 )

@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncProductDistributionLineModel(
   val id: Long,
   val color: String?,
@@ -9,5 +11,5 @@ data class SyncProductDistributionLineModel(
   val mustHave: Long?,
   val productId: Long?,
   val recordDateUtc: Long?,
-  val state: Long?,
+  val state: StateType,
 )

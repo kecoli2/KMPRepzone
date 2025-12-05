@@ -1,6 +1,7 @@
 package com.repzone.data.mapper
 
 import com.repzone.core.enums.CrmParameterEntityType
+import com.repzone.core.enums.StateType
 import com.repzone.core.util.extensions.enumToLong
 import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.MapperDto
@@ -26,7 +27,7 @@ class SyncCrmPriceListParameterEntityDbMapper : MapperDto<SyncCrmPriceListParame
             recordDateUtc = from.RecordDateUtc,
             salesPriceListId = from.SalesPriceListId,
             salesReturnPriceListId = from.SalesReturnPriceListId,
-            state = from.State
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE
         )
     }
 
@@ -45,7 +46,7 @@ class SyncCrmPriceListParameterEntityDbMapper : MapperDto<SyncCrmPriceListParame
             RecordDateUtc = domain.recordDateUtc,
             SalesPriceListId = domain.salesPriceListId,
             SalesReturnPriceListId = domain.salesReturnPriceListId,
-            State = domain.state
+            State = domain.state.enumToLong()
         )
     }
 

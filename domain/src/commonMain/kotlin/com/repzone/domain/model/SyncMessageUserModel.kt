@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncMessageUserModel(
   val id: Long,
   val cellPhone: String?,
@@ -13,5 +15,5 @@ data class SyncMessageUserModel(
   val recordDateUtc: Long?,
   val roleId: Long?,
   val roleName: String?,
-  val state: Long?,
+  val state: StateType,
 )

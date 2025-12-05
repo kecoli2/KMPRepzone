@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncProductEntity
 import com.repzone.domain.model.SyncProductModel
@@ -33,7 +36,7 @@ class ProductEntityDbMapper: Mapper<SyncProductEntity, SyncProductModel> {
             recordDateUtc = from.RecordDateUtc,
             shared = from.Shared,
             sku = from.Sku,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             tags = from.Tags,
             tenantId = from.TenantId,
             vat = from.Vat
@@ -67,7 +70,7 @@ class ProductEntityDbMapper: Mapper<SyncProductEntity, SyncProductModel> {
             RecordDateUtc = domain.recordDateUtc,
             Shared = domain.shared,
             Sku = domain.sku,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             Tags = domain.tags,
             TenantId = domain.tenantId,
             Vat = domain.vat

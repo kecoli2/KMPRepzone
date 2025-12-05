@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncCampaignResultRuleEntity
 import com.repzone.domain.model.SyncCampaignResultRuleModel
@@ -24,7 +27,7 @@ class SyncCampaignResultRuleEntityDbMapper : Mapper<SyncCampaignResultRuleEntity
             operator = from.Operator,
             property = from.Property,
             recordDateUtc = from.RecordDateUtc,
-            state = from.State
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE
         )
     }
 
@@ -46,7 +49,7 @@ class SyncCampaignResultRuleEntityDbMapper : Mapper<SyncCampaignResultRuleEntity
             Operator = domain.operator,
             Property = domain.property,
             RecordDateUtc = domain.recordDateUtc,
-            State = domain.state
+            State = domain.state.enumToLong()
         )
     }
     //endregion

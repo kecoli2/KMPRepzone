@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class CustomerNoteSpModel(
   val id: Long,
   val beginDate: Long?,
@@ -12,7 +14,7 @@ data class CustomerNoteSpModel(
   val organizationId: Long?,
   val packageId: String?,
   val recordDateUtc: Long?,
-  val state: Long?,
+  val state: StateType?,
   val status: Long?,
   val userId: Long?,
   val userName: String?,

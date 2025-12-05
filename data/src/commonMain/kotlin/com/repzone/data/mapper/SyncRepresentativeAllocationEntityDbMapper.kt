@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncRepresentativeAllocationEntity
 import com.repzone.domain.model.SyncRepresentativeAllocationModel
@@ -18,7 +21,7 @@ class SyncRepresentativeAllocationEntityDbMapper : Mapper<SyncRepresentativeAllo
             recordDateUtc = from.RecordDateUtc,
             representativeId = from.RepresentativeId,
             scope = from.Scope,
-            state = from.State
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE
         )
     }
 
@@ -34,7 +37,7 @@ class SyncRepresentativeAllocationEntityDbMapper : Mapper<SyncRepresentativeAllo
             RecordDateUtc = domain.recordDateUtc,
             RepresentativeId = domain.representativeId,
             Scope = domain.scope,
-            State = domain.state
+            State = domain.state.enumToLong()
         )
     }
     //endregion

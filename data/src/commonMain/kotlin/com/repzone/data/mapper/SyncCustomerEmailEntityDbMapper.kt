@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncCustomerEmailEntity
@@ -19,7 +22,7 @@ class SyncCustomerEmailEntityDbMapper : MapperDto<SyncCustomerEmailEntity, SyncC
             modificationDateUtc = from.ModificationDateUtc,
             name = from.Name,
             recordDateUtc = from.RecordDateUtc,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             title = from.Title
         )
     }
@@ -33,7 +36,7 @@ class SyncCustomerEmailEntityDbMapper : MapperDto<SyncCustomerEmailEntity, SyncC
             ModificationDateUtc = domain.modificationDateUtc,
             Name = domain.name,
             RecordDateUtc = domain.recordDateUtc,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             Title = domain.title
         )
     }

@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncDynamicPageReportModel(
   val id: Long,
   val category: String?,
@@ -11,5 +13,5 @@ data class SyncDynamicPageReportModel(
   val quickAccessShow: Boolean = false,
   val recordDateUtc: Long?,
   val requested: Long?,
-  val state: Long?,
+  val state: StateType,
 )

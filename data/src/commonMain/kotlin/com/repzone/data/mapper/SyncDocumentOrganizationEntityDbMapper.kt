@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
 import com.repzone.data.util.MapperDto
@@ -27,7 +30,7 @@ class SyncDocumentOrganizationEntityDbMapper : MapperDto<SyncDocumentOrganizatio
             printerTemplatePath = from.PrinterTemplatePath,
             printQrCode = from.PrintQrCode,
             recordDateUtc = from.RecordDateUtc,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             uniqueIdCaption = from.UniqueIdCaption,
             useFinancialLogo = from.UseFinancialLogo
         )
@@ -49,7 +52,7 @@ class SyncDocumentOrganizationEntityDbMapper : MapperDto<SyncDocumentOrganizatio
             PrinterTemplatePath = domain.printerTemplatePath,
             PrintQrCode = domain.printQrCode,
             RecordDateUtc = domain.recordDateUtc,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             UniqueIdCaption = domain.uniqueIdCaption,
             UseFinancialLogo = domain.useFinancialLogo
         )

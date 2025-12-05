@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.CampaignMasterResultRequiredProductEntity
 import com.repzone.domain.model.CampaignMasterResultRequiredProductModel
@@ -14,7 +17,7 @@ class CampaignMasterResultRequiredProductEntityDbMapper : Mapper<CampaignMasterR
             productId = from.ProductId,
             quantity = from.Quantity,
             recordDateUtc = from.RecordDateUtc,
-            state = from.State
+            state = from.State?.toEnum<StateType>()
         )
     }
 
@@ -26,7 +29,7 @@ class CampaignMasterResultRequiredProductEntityDbMapper : Mapper<CampaignMasterR
             ProductId = domain.productId,
             Quantity = domain.quantity,
             RecordDateUtc = domain.recordDateUtc,
-            State = domain.state
+            State = domain.state?.enumToLong()
         )
     }
     //endregion

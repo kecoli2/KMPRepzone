@@ -1,6 +1,7 @@
 package com.repzone.data.mapper
 
 import com.repzone.core.enums.AddressType
+import com.repzone.core.enums.StateType
 import com.repzone.core.util.extensions.enumToLong
 import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
@@ -23,7 +24,7 @@ class SyncAddressEntityDbMapper : Mapper<SyncAddressEntity, SyncAddressModel> {
             latitude = from.Latitude,
             longitude = from.Longitude,
             phoneNumber = from.PhoneNumber,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             street = from.Street,
             street2 = from.Street2
         )
@@ -43,7 +44,7 @@ class SyncAddressEntityDbMapper : Mapper<SyncAddressEntity, SyncAddressModel> {
             Latitude = domain.latitude,
             Longitude = domain.longitude,
             PhoneNumber = domain.phoneNumber,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             Street = domain.street,
             Street2 = domain.street2
         )

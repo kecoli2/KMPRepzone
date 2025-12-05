@@ -1,5 +1,6 @@
 package com.repzone.core.ui.viewmodel.splash
 
+import com.repzone.core.enums.StateType
 import com.repzone.core.interfaces.IFirebaseManager
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.ui.base.BaseViewModel
@@ -145,7 +146,7 @@ class SplashScreenViewModel(private val tokenController: ITokenApiController,
 
                 when(responseInfo){
                     is ApiResult.Success -> {
-                        if (responseInfo.data.state == 1){
+                        if (responseInfo.data.state == StateType.ACTIVE){
                             userSession.getActiveSession()!!.identity = responseInfo.data
                             userSession.save()
                             _nextOprerations.remove(SplashScreenOperation.CHECK_TOKEN)

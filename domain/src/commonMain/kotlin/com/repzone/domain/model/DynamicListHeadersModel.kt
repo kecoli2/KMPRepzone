@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class DynamicListHeadersModel(
   val id: Long,
   val description: String?,
@@ -9,5 +11,5 @@ data class DynamicListHeadersModel(
   val organizationId: Long?,
   val recordDateUtc: Long?,
   val shareStatus: Long?,
-  val state: Long?,
+  val state: StateType,
 )

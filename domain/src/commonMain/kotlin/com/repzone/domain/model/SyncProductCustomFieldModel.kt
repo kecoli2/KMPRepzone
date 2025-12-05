@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncProductCustomFieldModel(
   val id: Long,
   val entityId: Long?,
@@ -8,6 +10,6 @@ data class SyncProductCustomFieldModel(
   val organizationId: Long?,
   val productId: Long?,
   val recordDateUtc: Long?,
-  val state: Long?,
+  val state: StateType,
   val value: String?,
 )

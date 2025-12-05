@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncRiskDueDayModel(
   val id: Long,
   val customerId: Long?,
@@ -7,5 +9,5 @@ data class SyncRiskDueDayModel(
   val modificationDateUtc: Long?,
   val organizationId: Long?,
   val recordDateUtc: Long?,
-  val state: Long?,
+  val state: StateType,
 )

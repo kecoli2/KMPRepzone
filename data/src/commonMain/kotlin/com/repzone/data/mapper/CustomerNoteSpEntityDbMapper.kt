@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.CustomerNoteSpEntity
 import com.repzone.domain.model.CustomerNoteSpModel
@@ -19,7 +22,7 @@ class CustomerNoteSpEntityDbMapper : Mapper<CustomerNoteSpEntity, CustomerNoteSp
             organizationId = from.OrganizationId,
             packageId = from.PackageId,
             recordDateUtc = from.RecordDateUtc,
-            state = from.State,
+            state = from.State?.toEnum<StateType>(),
             status = from.Status,
             userId = from.UserId,
             userName = from.UserName
@@ -39,7 +42,7 @@ class CustomerNoteSpEntityDbMapper : Mapper<CustomerNoteSpEntity, CustomerNoteSp
             OrganizationId = domain.organizationId,
             PackageId = domain.packageId,
             RecordDateUtc = domain.recordDateUtc,
-            State = domain.state,
+            State = domain.state?.enumToLong(),
             Status = domain.status,
             UserId = domain.userId,
             UserName = domain.userName

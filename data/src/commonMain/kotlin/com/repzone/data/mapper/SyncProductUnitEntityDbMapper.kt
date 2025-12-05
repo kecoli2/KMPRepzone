@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncProductUnitEntity
 import com.repzone.domain.model.SyncProductUnitModel
@@ -27,7 +30,7 @@ class SyncProductUnitEntityDbMapper: Mapper<SyncProductUnitEntity, SyncProductUn
             salesDamagedReturnPrice = from.SalesDamagedReturnPrice,
             salesReturnPrice = from.SalesReturnPrice,
             selected = from.Selected?.let { it != 0L } ?: false,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             tenantId = from.TenantId,
             unitId = from.UnitId?.toInt(),
             weight = from.Weight
@@ -55,7 +58,7 @@ class SyncProductUnitEntityDbMapper: Mapper<SyncProductUnitEntity, SyncProductUn
             SalesDamagedReturnPrice = domain.salesDamagedReturnPrice,
             SalesReturnPrice = domain.salesReturnPrice,
             Selected = domain.selected.let{ if (it) 1L else 0L },
-            State = domain.state,
+            State = domain.state.enumToLong(),
             TenantId = domain.tenantId,
             UnitId = domain.unitId?.toLong(),
             Weight = domain.weight

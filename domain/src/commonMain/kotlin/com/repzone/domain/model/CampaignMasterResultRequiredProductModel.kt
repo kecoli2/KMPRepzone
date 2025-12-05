@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class CampaignMasterResultRequiredProductModel(
   val id: Long,
   val campaignMasterResultId: Long?,
@@ -7,5 +9,5 @@ data class CampaignMasterResultRequiredProductModel(
   val productId: Long?,
   val quantity: Long?,
   val recordDateUtc: Long?,
-  val state: Long?,
+  val state: StateType?,
 )

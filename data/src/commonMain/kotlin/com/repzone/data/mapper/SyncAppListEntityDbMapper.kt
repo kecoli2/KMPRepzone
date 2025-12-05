@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncAppListEntity
 import com.repzone.domain.model.SyncAppListModel
@@ -17,7 +20,7 @@ class SyncAppListEntityDbMapper : Mapper<SyncAppListEntity, SyncAppListModel> {
             name = from.Name,
             organizationId = from.OrganizationId,
             recordDateUtc = from.RecordDateUtc,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             tenantId = from.TenantId,
             url = from.Url
         )
@@ -34,7 +37,7 @@ class SyncAppListEntityDbMapper : Mapper<SyncAppListEntity, SyncAppListModel> {
             Name = domain.name,
             OrganizationId = domain.organizationId,
             RecordDateUtc = domain.recordDateUtc,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             TenantId = domain.tenantId,
             Url = domain.url
         )

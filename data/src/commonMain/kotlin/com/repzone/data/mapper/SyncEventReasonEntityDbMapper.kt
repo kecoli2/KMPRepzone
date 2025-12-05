@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncEventReasonEntity
@@ -16,7 +19,7 @@ class SyncEventReasonEntityDbMapper : MapperDto<SyncEventReasonEntity, SyncEvent
             name = from.Name,
             reasonType = from.ReasonType,
             recordDateUtc = from.RecordDateUtc,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             tags = from.Tags
         )
     }
@@ -28,7 +31,7 @@ class SyncEventReasonEntityDbMapper : MapperDto<SyncEventReasonEntity, SyncEvent
             Name = domain.name,
             ReasonType = domain.reasonType,
             RecordDateUtc = domain.recordDateUtc,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             Tags = domain.tags
         )
     }

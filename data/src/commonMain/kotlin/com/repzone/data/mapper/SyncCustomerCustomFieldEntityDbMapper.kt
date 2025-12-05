@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncCustomerCustomFieldEntity
 import com.repzone.domain.model.SyncCustomerCustomFieldModel
@@ -15,7 +18,7 @@ class SyncCustomerCustomFieldEntityDbMapper : Mapper<SyncCustomerCustomFieldEnti
             organizationId = from.OrganizationId,
             productId = from.ProductId,
             recordDateUtc = from.RecordDateUtc,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             value = from.Value
         )
     }
@@ -29,7 +32,7 @@ class SyncCustomerCustomFieldEntityDbMapper : Mapper<SyncCustomerCustomFieldEnti
             OrganizationId = domain.organizationId,
             ProductId = domain.productId,
             RecordDateUtc = domain.recordDateUtc,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             Value = domain.value
         )
     }

@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncProductAllocationModel(
   val id: Long,
   val begin: Long?,
@@ -11,6 +13,6 @@ data class SyncProductAllocationModel(
   val quantity: Long?,
   val recordDateUtc: Long?,
   val scope: Long?,
-  val state: Long?,
+  val state: StateType,
   val unitId: Long?,
 )

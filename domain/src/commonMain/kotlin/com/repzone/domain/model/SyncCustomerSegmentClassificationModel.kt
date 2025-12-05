@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncCustomerSegmentClassificationModel(
   val id: Long,
   val classificationId: Long?,
@@ -9,5 +11,5 @@ data class SyncCustomerSegmentClassificationModel(
   val organizationId: Long?,
   val recordDateUtc: Long?,
   val shareStatus: Long?,
-  val state: Long?,
+  val state: StateType,
 )

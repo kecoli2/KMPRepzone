@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncRouteAppointmentEntity
 import com.repzone.domain.model.SyncRouteAppointmentModel
@@ -16,7 +19,7 @@ class SyncRouteAppointmentEntityDbMapper: MapperDto<SyncRouteAppointmentEntity, 
             endDate = from.EndDate,
             sprintId = from.SprintId,
             startDate = from.StartDate,
-            state = from.State
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE
         )
     }
 
@@ -28,7 +31,7 @@ class SyncRouteAppointmentEntityDbMapper: MapperDto<SyncRouteAppointmentEntity, 
             EndDate = domain.endDate,
             SprintId = domain.sprintId,
             StartDate = domain.startDate,
-            State = domain.state
+            State = domain.state.enumToLong()
         )
     }
 

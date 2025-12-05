@@ -1,6 +1,9 @@
 package com.repzone.data.mapper
 
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncDocumentMapProcessStepEntity
 import com.repzone.domain.model.SyncDocumentMapProcessStepModel
@@ -15,7 +18,7 @@ class SyncDocumentMapProcessStepEntityDbMapper :
             name = from.Name,
             objectName = from.ObjectName,
             processId = from.ProcessId,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             stepOrder = from.StepOrder
         )
     }
@@ -26,7 +29,7 @@ class SyncDocumentMapProcessStepEntityDbMapper :
             Name = domain.name,
             ObjectName = domain.objectName,
             ProcessId = domain.processId,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             StepOrder = domain.stepOrder
         )
     }

@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncTaskStepModel(
   val id: Long,
   val controlType: Long?,
@@ -8,7 +10,7 @@ data class SyncTaskStepModel(
   val needComplteThisToGoToNextStep: Long?,
   val order: Long?,
   val recordDateUtc: Long?,
-  val state: Long?,
+  val state: StateType,
   val taskId: Long?,
   val title: String?,
 )

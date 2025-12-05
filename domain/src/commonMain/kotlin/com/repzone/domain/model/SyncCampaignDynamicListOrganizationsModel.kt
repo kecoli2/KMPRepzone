@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncCampaignDynamicListOrganizationsModel(
   val id: Long,
   val campaignMasterId: Long?,
@@ -7,6 +9,6 @@ data class SyncCampaignDynamicListOrganizationsModel(
   val modificationDateUtc: Long?,
   val organizationId: Long?,
   val recordDateUtc: Long?,
-  val state: Long?,
+  val state: StateType,
   val tenantId: Long?,
 )

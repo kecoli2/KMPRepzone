@@ -1,6 +1,9 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
 import com.repzone.core.util.extensions.toBoolean
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.core.util.extensions.toLong
 import com.repzone.data.util.Mapper
 import com.repzone.data.util.MapperDto
@@ -24,7 +27,7 @@ class SyncDynamicPageReportEntityDbMapper :
             quickAccessShow = from.QuickAccessShow?.toBoolean() ?: false,
             recordDateUtc = from.RecordDateUtc,
             requested = from.Requested,
-            state = from.State
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE
         )
     }
 
@@ -40,7 +43,7 @@ class SyncDynamicPageReportEntityDbMapper :
             QuickAccessShow = domain.quickAccessShow.toLong(),
             RecordDateUtc = domain.recordDateUtc,
             Requested = domain.requested,
-            State = domain.state
+            State = domain.state.enumToLong()
         )
     }
 

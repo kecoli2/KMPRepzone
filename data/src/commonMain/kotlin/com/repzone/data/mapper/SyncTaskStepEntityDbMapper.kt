@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncTaskStepEntity
 import com.repzone.domain.model.SyncTaskStepModel
@@ -15,7 +18,7 @@ class SyncTaskStepEntityDbMapper : Mapper<SyncTaskStepEntity, SyncTaskStepModel>
             needComplteThisToGoToNextStep = from.NeedComplteThisToGoToNextStep,
             order = from.Order,
             recordDateUtc = from.RecordDateUtc,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             taskId = from.TaskId,
             title = from.Title
         )
@@ -30,7 +33,7 @@ class SyncTaskStepEntityDbMapper : Mapper<SyncTaskStepEntity, SyncTaskStepModel>
             NeedComplteThisToGoToNextStep = domain.needComplteThisToGoToNextStep,
             Order = domain.order,
             RecordDateUtc = domain.recordDateUtc,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             TaskId = domain.taskId,
             Title = domain.title
         )

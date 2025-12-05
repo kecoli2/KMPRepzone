@@ -1,5 +1,6 @@
 package com.repzone.presentation.legacy.viewmodel.login
 
+import com.repzone.core.enums.StateType
 import com.repzone.core.interfaces.IPreferencesManager
 import com.repzone.core.model.UiFrame
 import com.repzone.core.model.UserSessionModel
@@ -147,7 +148,7 @@ class LoginScreenViewModel(
 
         when(responseInfo){
             is ApiResult.Success -> {
-                if (responseInfo.data.state == 1){
+                if (responseInfo.data.state == StateType.ACTIVE){
                     val model = isharedPreferences.getUserSessions()?.jsonToModel<UserSessionModel>()
                     model?.identity = responseInfo.data
                     model?.let {

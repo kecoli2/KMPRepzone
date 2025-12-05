@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncCustomerEmailModel(
   val id: Long,
   val companyName: String?,
@@ -8,6 +10,6 @@ data class SyncCustomerEmailModel(
   val modificationDateUtc: Long?,
   val name: String?,
   val recordDateUtc: Long?,
-  val state: Long?,
+  val state: StateType,
   val title: String?,
 )

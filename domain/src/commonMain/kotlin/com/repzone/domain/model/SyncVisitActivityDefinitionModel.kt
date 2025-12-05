@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncVisitActivityDefinitionModel(
   val id: Long,
   val customerTags: String?,
@@ -10,5 +12,5 @@ data class SyncVisitActivityDefinitionModel(
   val order: Long?,
   val recordDateUtc: Long?,
   val representativeTags: String?,
-  val state: Long?,
+  val state: StateType,
 )

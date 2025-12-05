@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.DynamicListItemsEntity
 import com.repzone.domain.model.DynamicListItemsModel
@@ -14,7 +17,7 @@ class DynamicListItemsEntityDbMapper : Mapper<DynamicListItemsEntity, DynamicLis
             itemType = from.ItemType,
             modificationDateUtc = from.ModificationDateUtc,
             recordDateUtc = from.RecordDateUtc,
-            state = from.State
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE
         )
     }
 
@@ -26,7 +29,7 @@ class DynamicListItemsEntityDbMapper : Mapper<DynamicListItemsEntity, DynamicLis
             ItemType = domain.itemType,
             ModificationDateUtc = domain.modificationDateUtc,
             RecordDateUtc = domain.recordDateUtc,
-            State = domain.state
+            State = domain.state.enumToLong()
         )
     }
     //endregion

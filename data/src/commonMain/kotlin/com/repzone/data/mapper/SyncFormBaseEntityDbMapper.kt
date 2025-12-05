@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncFormBaseEntity
 import com.repzone.domain.model.SyncFormBaseModel
@@ -16,7 +19,7 @@ class SyncFormBaseEntityDbMapper : Mapper<SyncFormBaseEntity, SyncFormBaseModel>
             formName = from.FormName,
             modificationDateUtc = from.ModificationDateUtc,
             recordDateUtc = from.RecordDateUtc,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             visibleOption = from.VisibleOption
         )
     }
@@ -31,7 +34,7 @@ class SyncFormBaseEntityDbMapper : Mapper<SyncFormBaseEntity, SyncFormBaseModel>
             FormName = domain.formName,
             ModificationDateUtc = domain.modificationDateUtc,
             RecordDateUtc = domain.recordDateUtc,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             VisibleOption = domain.visibleOption
         )
     }

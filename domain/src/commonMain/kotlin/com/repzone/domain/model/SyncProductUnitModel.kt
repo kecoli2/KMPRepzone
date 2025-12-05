@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncProductUnitModel (
     val id: Long,
     val barcode: String?,
@@ -20,7 +22,7 @@ data class SyncProductUnitModel (
     val salesDamagedReturnPrice: Double?,
     val salesReturnPrice: Double?,
     val selected: Boolean,
-    val state: Long?,
+    val state: StateType,
     val tenantId: Long?,
     val unitId: Int?,
     val weight: Double?,

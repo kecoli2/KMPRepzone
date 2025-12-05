@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncTaskModel(
   val id: Long,
   val beginDate: Long?,
@@ -9,7 +11,7 @@ data class SyncTaskModel(
   val note: String?,
   val organizationId: Long?,
   val recordDateUtc: Long?,
-  val state: Long?,
+  val state: StateType,
   val status: Long?,
   val target: Long?,
   val targetGroupId: Long?,

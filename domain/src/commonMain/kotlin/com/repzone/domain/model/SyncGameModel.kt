@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncGameModel(
   val id: Long,
   val description: String?,
@@ -15,6 +17,6 @@ data class SyncGameModel(
   val stageIcon: String?,
   val stageId: Long?,
   val stageName: String?,
-  val state: Long?,
+  val state: StateType,
   val unSuccessIcon: String?,
 )

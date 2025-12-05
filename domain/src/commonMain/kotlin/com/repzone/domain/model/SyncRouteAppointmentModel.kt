@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncRouteAppointmentModel(
     val id: Long,
     val customerId: Long?,
@@ -7,5 +9,5 @@ data class SyncRouteAppointmentModel(
     val endDate: Long?,
     val sprintId: Long?,
     val startDate: Long?,
-    val state: Long?,
+    val state: StateType,
 )

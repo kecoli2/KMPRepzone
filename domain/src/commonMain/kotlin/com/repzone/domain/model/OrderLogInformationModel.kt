@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class OrderLogInformationModel(
   val id: Long,
   val closedStatus: Long?,
@@ -19,7 +21,7 @@ data class OrderLogInformationModel(
   val restServiceTaskId: Long?,
   val routeAppointmentId: Long?,
   val sessionId: String?,
-  val state: Long?,
+  val state: StateType,
   val status: Long?,
   val totalCost: Double?,
   val transferStatus: Long?,

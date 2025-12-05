@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncCustomerGroupModel(
   val id: Long,
   val iconIndex: Long?,
@@ -10,5 +12,5 @@ data class SyncCustomerGroupModel(
   val parentId: Long?,
   val recordDateUtc: Long?,
   val shared: Long?,
-  val state: Long?,
+  val state: StateType,
 )

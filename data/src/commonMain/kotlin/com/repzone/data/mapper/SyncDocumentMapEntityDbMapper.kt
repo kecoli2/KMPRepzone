@@ -3,6 +3,7 @@ package com.repzone.data.mapper
 import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.IoType
 import com.repzone.core.enums.SalesOperationType
+import com.repzone.core.enums.StateType
 import com.repzone.core.enums.WarehouseType
 import com.repzone.core.util.extensions.enumToLong
 import com.repzone.core.util.extensions.now
@@ -39,7 +40,7 @@ class SyncDocumentMapEntityDbMapper : MapperDto<SyncDocumentMapEntity, SyncDocum
             printerTemplatePath = from.PrinterTemplatePath,
             printQrCode = from.PrintQrCode?.toBoolean() ?: false,
             recordDateUtc = from.RecordDateUtc?.toInstant() ?: now().toInstant(),
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             uniqueIdCaption = from.UniqueIdCaption,
             useFinancialLogo = from.UseFinancialLogo?.toBoolean() ?: false,
             warehouseType = from.WarehouseType?.toEnum<WarehouseType>() ?: WarehouseType.EMPTY
@@ -66,7 +67,7 @@ class SyncDocumentMapEntityDbMapper : MapperDto<SyncDocumentMapEntity, SyncDocum
             PrinterTemplatePath = domain.printerTemplatePath,
             PrintQrCode = domain.printQrCode.toLong(),
             RecordDateUtc = domain.recordDateUtc.toEpochMilliseconds(),
-            State = domain.state,
+            State = domain.state.enumToLong(),
             UniqueIdCaption = domain.uniqueIdCaption,
             UseFinancialLogo = domain.useFinancialLogo.toLong(),
             WarehouseType = domain.warehouseType.enumToLong()

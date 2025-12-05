@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncProductDistributionModel(
   val id: Long,
   val description: String?,
@@ -8,6 +10,6 @@ data class SyncProductDistributionModel(
   val organizationId: Long?,
   val parentId: Long?,
   val recordDateUtc: Long?,
-  val state: Long?,
+  val state: StateType,
   val tenantId: Long?,
 )

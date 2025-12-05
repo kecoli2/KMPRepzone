@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncCustomerClassClassificationEntity
 import com.repzone.domain.model.SyncCustomerClassClassificationModel
@@ -16,7 +19,7 @@ class SyncCustomerClassClassificationEntityDbMapper : Mapper<SyncCustomerClassCl
             organizationId = from.OrganizationId,
             recordDateUtc = from.RecordDateUtc,
             shareStatus = from.ShareStatus,
-            state = from.State
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE
         )
     }
 
@@ -30,7 +33,7 @@ class SyncCustomerClassClassificationEntityDbMapper : Mapper<SyncCustomerClassCl
             OrganizationId = domain.organizationId,
             RecordDateUtc = domain.recordDateUtc,
             ShareStatus = domain.shareStatus,
-            State = domain.state
+            State = domain.state.enumToLong()
         )
     }
     //endregion

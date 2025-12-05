@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncCampaignMasterEntity
 import com.repzone.domain.model.SyncCampaignMasterModel
@@ -22,7 +25,7 @@ class SyncCampaignMasterEntityDbMapper : Mapper<SyncCampaignMasterEntity, SyncCa
             organizationId = from.OrganizationId,
             recordDateUtc = from.RecordDateUtc,
             start = from.Start,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             title = from.Title
         )
     }
@@ -43,7 +46,7 @@ class SyncCampaignMasterEntityDbMapper : Mapper<SyncCampaignMasterEntity, SyncCa
             OrganizationId = domain.organizationId,
             RecordDateUtc = domain.recordDateUtc,
             Start = domain.start,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             Title = domain.title
         )
     }

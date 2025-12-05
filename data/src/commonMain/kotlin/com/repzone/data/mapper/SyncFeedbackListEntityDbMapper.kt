@@ -1,5 +1,8 @@
 package com.repzone.data.mapper
 
+import com.repzone.core.enums.StateType
+import com.repzone.core.util.extensions.enumToLong
+import com.repzone.core.util.extensions.toEnum
 import com.repzone.data.util.Mapper
 import com.repzone.database.SyncFeedbackListEntity
 import com.repzone.domain.model.SyncFeedbackListModel
@@ -19,7 +22,7 @@ class SyncFeedbackListEntityDbMapper : Mapper<SyncFeedbackListEntity, SyncFeedba
             parentId = from.ParentId,
             recordDateUtc = from.RecordDateUtc,
             rootId = from.RootId,
-            state = from.State,
+            state = from.State?.toEnum<StateType>() ?: StateType.ACTIVE,
             userId = from.UserId,
             userName = from.UserName
         )
@@ -38,7 +41,7 @@ class SyncFeedbackListEntityDbMapper : Mapper<SyncFeedbackListEntity, SyncFeedba
             ParentId = domain.parentId,
             RecordDateUtc = domain.recordDateUtc,
             RootId = domain.rootId,
-            State = domain.state,
+            State = domain.state.enumToLong(),
             UserId = domain.userId,
             UserName = domain.userName
         )

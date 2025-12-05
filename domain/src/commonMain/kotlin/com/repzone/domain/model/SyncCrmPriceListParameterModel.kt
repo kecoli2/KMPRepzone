@@ -1,6 +1,7 @@
 package com.repzone.domain.model
 
 import com.repzone.core.enums.CrmParameterEntityType
+import com.repzone.core.enums.StateType
 
 data class SyncCrmPriceListParameterModel(
   val id: Long,
@@ -16,5 +17,5 @@ data class SyncCrmPriceListParameterModel(
   val recordDateUtc: Long?,
   val salesPriceListId: Long?,
   val salesReturnPriceListId: Long?,
-  val state: Long?,
+  val state: StateType,
 )

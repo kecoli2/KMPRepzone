@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncTaskModelAddressModel(
   val id: Long,
   val city: String?,
@@ -10,7 +12,7 @@ data class SyncTaskModelAddressModel(
   val phoneNumber: String?,
   val postalCode: String?,
   val relatedPerson: String?,
-  val state: Long?,
+  val state: StateType,
   val street1: String?,
   val street2: String?,
   val taskStepId: Long?,

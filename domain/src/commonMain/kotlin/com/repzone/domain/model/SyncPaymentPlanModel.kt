@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncPaymentPlanModel(
   val id: Long,
   val code: String?,
@@ -9,6 +11,6 @@ data class SyncPaymentPlanModel(
   val modificationDateUtc: Long?,
   val name: String?,
   val recordDateUtc: Long?,
-  val state: Long?,
+  val state: StateType,
   val tenantId: Long?,
 )

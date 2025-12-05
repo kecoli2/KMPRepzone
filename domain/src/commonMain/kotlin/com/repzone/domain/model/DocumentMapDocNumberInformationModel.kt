@@ -1,6 +1,7 @@
 package com.repzone.domain.model
 
 import com.repzone.core.enums.DocumentActionType
+import com.repzone.core.enums.StateType
 
 data class DocumentMapDocNumberInformationModel(
     val id: Long = 0,
@@ -9,5 +10,5 @@ data class DocumentMapDocNumberInformationModel(
     val documentNumberPostfix: String?,
     val documentNumberPrefix: String?,
     val documentType: DocumentActionType,
-    val state: Long? = 0L,
+    val state: StateType = StateType.ACTIVE,
 )

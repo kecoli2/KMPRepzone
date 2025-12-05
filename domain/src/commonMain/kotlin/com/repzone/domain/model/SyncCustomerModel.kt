@@ -2,6 +2,7 @@ package com.repzone.domain.model
 
 import com.repzone.core.enums.MonitoringActionType
 import com.repzone.core.enums.PriceType
+import com.repzone.core.enums.StateType
 
 data class SyncCustomerModel(
     val id: Long,
@@ -34,7 +35,7 @@ data class SyncCustomerModel(
     val returnPriceType: PriceType?,
     val risk: Double?,
     val riskDueDay: Long?,
-    val state: Long?,
+    val state: StateType,
     val tags: String?,
     val taxNumber: String?,
     val taxOffice: String?,

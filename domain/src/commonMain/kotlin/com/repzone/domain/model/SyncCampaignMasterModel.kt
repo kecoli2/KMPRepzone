@@ -1,5 +1,7 @@
 package com.repzone.domain.model
 
+import com.repzone.core.enums.StateType
+
 data class SyncCampaignMasterModel(
   val id: Long,
   val documentTypes: String?,
@@ -15,6 +17,6 @@ data class SyncCampaignMasterModel(
   val organizationId: Long?,
   val recordDateUtc: Long?,
   val start: Long?,
-  val state: Long?,
+  val state: StateType,
   val title: String?,
 )

@@ -1,6 +1,7 @@
 package com.repzone.core.model
 
 import com.repzone.core.enums.CustomerOrRepresentativeOrganizationSelection
+import com.repzone.core.enums.StateType
 import com.repzone.core.enums.UserRole
 import com.repzone.core.util.InstantSerializer
 import kotlinx.serialization.Serializable
@@ -32,7 +33,8 @@ data class RepresentativeMobileIdentityModel(
     val notificationTagsRaw: String? = null,
     val tokenType: String? = null,
     val tokenCode: String? = null,
-    val state: Int,
+    @Serializable(StateType.Companion.Serializer::class)
+    val state: StateType,
     val trackStatus: Boolean,
     val trackInterval: Int? = null,
     @Serializable(with = InstantSerializer::class)
