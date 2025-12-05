@@ -78,19 +78,6 @@ class GpsTrackingManagerImpl(private val locationService: ILocationService,
     override suspend fun initialize(): Result<Unit> {
         return try {
             var config = GpsConfig()
-          /*  config = config.copy(
-                autoSyncOnGpsUpdate = true,
-                batteryOptimizationEnabled = true,
-                enableBackgroundTracking = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.backgroundTracking ?: false,
-                gpsIntervalMinutes = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackInterval ?: 1,
-                startTimeHour = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackStartTime?.getLocalDateTime()?.hour ?: 0,
-                startTimeMinute = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackStartTime?.getLocalDateTime()?.minute ?: 0,
-                endTimeHour = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackEndTime?.getLocalDateTime()?.hour ?: 0,
-                endTimeMinute = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackEndTime?.getLocalDateTime()?.minute ?: 0,
-                activeDays = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackDays ?: emptyList(),
-                serverSyncIntervalMinutes = iModuleParameterRepository.getEagleEyeLocationTrackingParameters()?.trackInterval ?: 1,
-            )*/
-
             config = config.copy(
                 autoSyncOnGpsUpdate = true,
                 batteryOptimizationEnabled = true,

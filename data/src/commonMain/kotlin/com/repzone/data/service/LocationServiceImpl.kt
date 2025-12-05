@@ -450,32 +450,34 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
         // Platform location updates'i başlat
         val intervalMs = config.gpsIntervalMinutes * 60 * 1000L
 
-        platformProvider.startLocationUpdates(
-            intervalMs = intervalMs,
-            minDistanceMeters = config.minDistanceMeters
-        ) { location ->
-            // Callback içinde job kontrolü yap
-            if (platformLocationJob?.isActive == true) {
-                coroutineScope.launch {
-                    // Schedule kontrolü ekle
-                    if (isRunning && !isPaused) {
-                        Logger.d("LOCATION_SERVICE", "Location alındı: (${location.latitude}, ${location.longitude})")
-                        processNewLocation(location)
-                    } else {
-                        Logger.d("LOCATION_SERVICE", " Location atlandı (isRunning=$isRunning, isPaused=$isPaused)")
+        val shouldProcess = isRunning &&
+                !isPaused &&
+                (currentConfig?.enableBackgroundTracking != true ||
+                        config.shouldRunBackgroundService())
+        if(shouldProcess){
+            platformProvider.startLocationUpdates(
+                intervalMs = intervalMs,
+                minDistanceMeters = config.minDistanceMeters
+            ) { location ->
+                // Callback içinde job kontrolü yap
+                if (platformLocationJob?.isActive == true) {
+                    coroutineScope.launch {
+                        // Schedule kontrolü ekle
+                        if (isRunning && !isPaused) {
+                            Logger.d("LOCATION_SERVICE", "Location alındı: (${location.latitude}, ${location.longitude})")
+                            processNewLocation(location)
+                        } else {
+                            Logger.d("LOCATION_SERVICE", " Location atlandı (isRunning=$isRunning, isPaused=$isPaused)")
+                        }
                     }
+                } else {
+                    Logger.d("LOCATION_SERVICE", "Location atlandı (Job iptal edilmiş)")
                 }
-            } else {
-                Logger.d("LOCATION_SERVICE", "Location atlandı (Job iptal edilmiş)")
             }
         }
 
-        // ⭐ Dummy job oluştur (callback'in aktif olduğunu takip için)
         platformLocationJob = coroutineScope.launch {
-            // Bu job, callback'in aktif olduğunu gösterir
-            // İptal edildiğinde callback'ler ignore edilir
             try {
-                // Sonsuza kadar bekle (iptal edilene kadar)
                 awaitCancellation()
             } catch (e: CancellationException) {
                 Logger.d("LOCATION_SERVICE", "Platform location job iptal edildi")
@@ -483,7 +485,7 @@ class LocationServiceImpl(private val platformProvider: IPlatformLocationProvide
             }
         }
 
-        Logger.d("LOCATION_SERVICE", "✅ Platform location updates başlatıldı (interval=${intervalMs}ms)")
+        Logger.d("LOCATION_SERVICE", "Platform location updates başlatıldı (interval=${intervalMs}ms)")
     }
 
     private fun stopLocationUpdates() {
