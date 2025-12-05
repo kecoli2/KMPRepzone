@@ -2,6 +2,7 @@ package com.repzone.domain.document.service
 
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.domain.common.Result
+import com.repzone.domain.document.IDocumentParameters
 import com.repzone.domain.document.IPromotionEngine
 import com.repzone.domain.document.base.IDocumentManager
 import com.repzone.domain.document.base.IDocumentSession
@@ -24,7 +25,8 @@ class DocumentSession(
     private val distributionRepository: IDistributionRepository,
     private val userSession: IUserSession,
     private val productRepository: IProductRepository,
-    private val paymentPlanRepository: IPaymentInformationRepository
+    private val paymentPlanRepository: IPaymentInformationRepository,
+    private val iDocumentParameters: IDocumentParameters
 ) : IDocumentSession {
 
     //region Field
@@ -40,11 +42,11 @@ class DocumentSession(
                 stockValidator = stockValidator,
                 lineCalculator = lineCalculator,
                 iCustomerRepository = customerRepository,
-                iDocumentMapRepository = documentMapRepository,
                 iDistributionRepository = distributionRepository,
                 iUserSession = userSession,
                 iProductRepository = productRepository,
-                iPaymentPlanRepository = paymentPlanRepository
+                iPaymentPlanRepository = paymentPlanRepository,
+                iDocumentParameters = iDocumentParameters
             )
            return _documentManager!!.setMasterValues(customerId, documentId)
         }

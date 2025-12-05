@@ -24,14 +24,12 @@ import com.repzone.core.model.module.parameters.TaskManagmentParameters
 import com.repzone.core.model.module.parameters.VisitParameters
 import com.repzone.core.model.module.parameters.WorkingHoursParameters
 import com.repzone.data.mapper.SyncPackageCustomFieldProductEntityDbMapper
-import com.repzone.data.util.MapperDto
 import com.repzone.database.SyncPackageCustomFieldProductEntity
 import com.repzone.database.interfaces.IDatabaseManager
 import com.repzone.database.runtime.select
 import com.repzone.domain.model.MobileParameterModel
 import com.repzone.domain.model.SyncPackageCustomFieldProductModel
 import com.repzone.domain.repository.IMobileModuleParameterRepository
-import com.repzone.network.dto.PackageCustomFieldProductDto
 import kotlinx.coroutines.runBlocking
 import kotlin.time.ExperimentalTime
 

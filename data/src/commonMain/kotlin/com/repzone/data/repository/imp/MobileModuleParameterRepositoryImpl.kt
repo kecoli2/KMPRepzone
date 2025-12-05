@@ -223,11 +223,25 @@ class MobileModuleParameterRepositoryImpl(
                     }
                     ModuleProductIdsEnum.INVOICESANDEINVOICES -> {
                         modules.invoice = parameters.getBooleanValue("IsActive", false)
+                        val baseparameters = getMobileModulePrameters(ModuleProductIdsEnum.ORDERS.value)
                         val model = InvoiceEInvoiceParameters(
                             isActive = parameters.getBooleanValue("IsActive", false),
+                            allowDraft = baseparameters.getBooleanValue("AllowDraft", false),
+                            allowStockEntry = baseparameters.getEnumValue<OnOf>("AllowStockEntry", OnOf.OFF),
+                            stockEntryFormId = baseparameters.getEnumValue<StockEntryForm>("StockEntryFormId", StockEntryForm.PRODUCTLIST),
+                            askReasonCode = baseparameters.getEnumValue<OnOf>("AskReasonCode", OnOf.OFF),
                             printingAllowed = parameters.getBooleanValue("PrintingAllowed", false),
-                            showDocumentLabels = parameters.getEnumValue<ShowDocumentLabelsType>("ShowDocumentLabels", ShowDocumentLabelsType.No)
-                        )
+                            keepDraftAfterProcess = baseparameters.getBooleanValue("KeepDraftAfterProcess", false),
+                            allowWarehouseSelection = baseparameters.getBooleanValue("AllowWarehouseSelection", false),
+                            showDocumentLabels = parameters.getEnumValue<ShowDocumentLabelsOrderType>("ShowDocumentLabels", ShowDocumentLabelsOrderType.No),
+                            formOrganizationSelectionOptions = baseparameters.getEnumValue<OrganizationType>("FormOrganizationSelectionOptions", OrganizationType.CUSTOMERORGANIZATION),
+                            showProductOrderPending = baseparameters.getBooleanValue("ShowProductOrderPending", false),
+                            showPaytermSelection = baseparameters.getEnumValue<ShowPaytermSelectionType>("ShowPaytermSelection", ShowPaytermSelectionType.No),
+                            showWarehouseSelection = baseparameters.getEnumValue<UserSelectionType>("ShowWarehouseSelection", UserSelectionType.No),
+                            dayToShip = baseparameters.getIntValue("DaysToShip", 0),
+                            autoFilterByStock = baseparameters.getEnumValue<AutoFilterByStock>("AutoFilterByStock", AutoFilterByStock.NO),
+                            showProductOrderAvailableStock = baseparameters.getBooleanValue("ShowProductOrderAvailableStock", false),
+                            showProductOrderTransitStock = baseparameters.getBooleanValue("ShowProductOrderTransitStock", false))
 
                         parametersMap.put(ModuleProductIdsEnum.INVOICESANDEINVOICES, model)
                     }
@@ -344,10 +358,25 @@ class MobileModuleParameterRepositoryImpl(
                     }
                     ModuleProductIdsEnum.DISPATCHES -> {
                         modules.dispatch = parameters.getBooleanValue("IsActive", false)
+                        val baseparameters = getMobileModulePrameters(ModuleProductIdsEnum.ORDERS.value)
                         val model = DispatchesParameters(
                             isActive = parameters.getBooleanValue("IsActive", false),
+                            allowDraft = baseparameters.getBooleanValue("AllowDraft", false),
+                            allowStockEntry = baseparameters.getEnumValue<OnOf>("AllowStockEntry", OnOf.OFF),
+                            stockEntryFormId = baseparameters.getEnumValue<StockEntryForm>("StockEntryFormId", StockEntryForm.PRODUCTLIST),
+                            askReasonCode = baseparameters.getEnumValue<OnOf>("AskReasonCode", OnOf.OFF),
                             printingAllowed = parameters.getBooleanValue("PrintingAllowed", false),
-                            showDocumentLabels = parameters.getEnumValue<ShowDocumentLabelsType>("ShowDocumentLabels", ShowDocumentLabelsType.No)
+                            keepDraftAfterProcess = baseparameters.getBooleanValue("KeepDraftAfterProcess", false),
+                            allowWarehouseSelection = baseparameters.getBooleanValue("AllowWarehouseSelection", false),
+                            showDocumentLabels = parameters.getEnumValue<ShowDocumentLabelsOrderType>("ShowDocumentLabels", ShowDocumentLabelsOrderType.No),
+                            formOrganizationSelectionOptions = baseparameters.getEnumValue<OrganizationType>("FormOrganizationSelectionOptions", OrganizationType.CUSTOMERORGANIZATION),
+                            showProductOrderPending = baseparameters.getBooleanValue("ShowProductOrderPending", false),
+                            showPaytermSelection = baseparameters.getEnumValue<ShowPaytermSelectionType>("ShowPaytermSelection", ShowPaytermSelectionType.No),
+                            showWarehouseSelection = baseparameters.getEnumValue<UserSelectionType>("ShowWarehouseSelection", UserSelectionType.No),
+                            dayToShip = baseparameters.getIntValue("DaysToShip", 0),
+                            autoFilterByStock = baseparameters.getEnumValue<AutoFilterByStock>("AutoFilterByStock", AutoFilterByStock.NO),
+                            showProductOrderAvailableStock = baseparameters.getBooleanValue("ShowProductOrderAvailableStock", false),
+                            showProductOrderTransitStock = baseparameters.getBooleanValue("ShowProductOrderTransitStock", false)
                         )
                         parametersMap.put(ModuleProductIdsEnum.DISPATCHES, model)
                     }
@@ -454,10 +483,25 @@ class MobileModuleParameterRepositoryImpl(
                         }
                         ModuleProductIdsEnum.INVOICESANDEINVOICES -> {
                             modules.invoice = parameters.getBooleanValue("IsActive", false)
+                            val baseparameters = getMobileModulePrameters(ModuleProductIdsEnum.ORDERS.value)
                             val model = InvoiceEInvoiceParameters(
                                 isActive = parameters.getBooleanValue("IsActive", false),
+                                allowDraft = baseparameters.getBooleanValue("AllowDraft", false),
+                                allowStockEntry = baseparameters.getEnumValue<OnOf>("AllowStockEntry", OnOf.OFF),
+                                stockEntryFormId = baseparameters.getEnumValue<StockEntryForm>("StockEntryFormId", StockEntryForm.PRODUCTLIST),
+                                askReasonCode = baseparameters.getEnumValue<OnOf>("AskReasonCode", OnOf.OFF),
                                 printingAllowed = parameters.getBooleanValue("PrintingAllowed", false),
-                                showDocumentLabels = parameters.getEnumValue<ShowDocumentLabelsType>("ShowDocumentLabels", ShowDocumentLabelsType.No)
+                                keepDraftAfterProcess = baseparameters.getBooleanValue("KeepDraftAfterProcess", false),
+                                allowWarehouseSelection = baseparameters.getBooleanValue("AllowWarehouseSelection", false),
+                                showDocumentLabels = parameters.getEnumValue<ShowDocumentLabelsOrderType>("ShowDocumentLabels", ShowDocumentLabelsOrderType.No),
+                                formOrganizationSelectionOptions = baseparameters.getEnumValue<OrganizationType>("FormOrganizationSelectionOptions", OrganizationType.CUSTOMERORGANIZATION),
+                                showProductOrderPending = baseparameters.getBooleanValue("ShowProductOrderPending", false),
+                                showPaytermSelection = baseparameters.getEnumValue<ShowPaytermSelectionType>("ShowPaytermSelection", ShowPaytermSelectionType.No),
+                                showWarehouseSelection = baseparameters.getEnumValue<UserSelectionType>("ShowWarehouseSelection", UserSelectionType.No),
+                                dayToShip = baseparameters.getIntValue("DaysToShip", 0),
+                                autoFilterByStock = baseparameters.getEnumValue<AutoFilterByStock>("AutoFilterByStock", AutoFilterByStock.NO),
+                                showProductOrderAvailableStock = baseparameters.getBooleanValue("ShowProductOrderAvailableStock", false),
+                                showProductOrderTransitStock = baseparameters.getBooleanValue("ShowProductOrderTransitStock", false)
                             )
 
                             parametersMap.put(ModuleProductIdsEnum.INVOICESANDEINVOICES, model)
@@ -575,10 +619,25 @@ class MobileModuleParameterRepositoryImpl(
                         }
                         ModuleProductIdsEnum.DISPATCHES -> {
                             modules.dispatch = parameters.getBooleanValue("IsActive", false)
+                            val baseparameters = getMobileModulePrameters(ModuleProductIdsEnum.ORDERS.value)
                             val model = DispatchesParameters(
                                 isActive = parameters.getBooleanValue("IsActive", false),
+                                allowDraft = baseparameters.getBooleanValue("AllowDraft", false),
+                                allowStockEntry = baseparameters.getEnumValue<OnOf>("AllowStockEntry", OnOf.OFF),
+                                stockEntryFormId = baseparameters.getEnumValue<StockEntryForm>("StockEntryFormId", StockEntryForm.PRODUCTLIST),
+                                askReasonCode = baseparameters.getEnumValue<OnOf>("AskReasonCode", OnOf.OFF),
                                 printingAllowed = parameters.getBooleanValue("PrintingAllowed", false),
-                                showDocumentLabels = parameters.getEnumValue<ShowDocumentLabelsType>("ShowDocumentLabels", ShowDocumentLabelsType.No)
+                                keepDraftAfterProcess = baseparameters.getBooleanValue("KeepDraftAfterProcess", false),
+                                allowWarehouseSelection = baseparameters.getBooleanValue("AllowWarehouseSelection", false),
+                                showDocumentLabels = parameters.getEnumValue<ShowDocumentLabelsOrderType>("ShowDocumentLabels", ShowDocumentLabelsOrderType.No),
+                                formOrganizationSelectionOptions = baseparameters.getEnumValue<OrganizationType>("FormOrganizationSelectionOptions", OrganizationType.CUSTOMERORGANIZATION),
+                                showProductOrderPending = baseparameters.getBooleanValue("ShowProductOrderPending", false),
+                                showPaytermSelection = baseparameters.getEnumValue<ShowPaytermSelectionType>("ShowPaytermSelection", ShowPaytermSelectionType.No),
+                                showWarehouseSelection = baseparameters.getEnumValue<UserSelectionType>("ShowWarehouseSelection", UserSelectionType.No),
+                                dayToShip = baseparameters.getIntValue("DaysToShip", 0),
+                                autoFilterByStock = baseparameters.getEnumValue<AutoFilterByStock>("AutoFilterByStock", AutoFilterByStock.NO),
+                                showProductOrderAvailableStock = baseparameters.getBooleanValue("ShowProductOrderAvailableStock", false),
+                                showProductOrderTransitStock = baseparameters.getBooleanValue("ShowProductOrderTransitStock", false)
                             )
                             parametersMap.put(ModuleProductIdsEnum.DISPATCHES, model)
                         }

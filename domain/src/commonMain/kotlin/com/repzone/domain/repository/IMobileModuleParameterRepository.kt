@@ -22,7 +22,6 @@ import com.repzone.core.model.module.parameters.TaskManagmentParameters
 import com.repzone.core.model.module.parameters.VisitParameters
 import com.repzone.core.model.module.parameters.WorkingHoursParameters
 import com.repzone.domain.model.MobileParameterModel
-import com.repzone.domain.model.SyncPackageCustomFieldProductModel
 
 interface IMobileModuleParameterRepository {
 

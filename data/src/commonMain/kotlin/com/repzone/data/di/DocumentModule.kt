@@ -1,9 +1,11 @@
 package com.repzone.data.di
 
 import com.repzone.data.repository.imp.PromotionRuleRepository
+import com.repzone.domain.document.IDocumentParameters
 import com.repzone.domain.document.IPromotionEngine
 import com.repzone.domain.document.base.IDocumentSession
 import com.repzone.domain.document.model.ProductListValidator
+import com.repzone.domain.document.service.DocumentParametersImpl
 import com.repzone.domain.document.service.DocumentSession
 import com.repzone.domain.document.service.LineDiscountCalculator
 import com.repzone.domain.document.service.PromotionEngine
@@ -38,6 +40,7 @@ var DocumentModule = module {
     }
 
     factoryOf(::ProductListValidator)
+    factoryOf(::DocumentParametersImpl) {bind<IDocumentParameters>()}
 
     singleOf(::PromotionRuleRepository) { bind<IPromotionRuleRepository>() }
     singleOf(::PromotionEngine) {bind<IPromotionEngine>()}

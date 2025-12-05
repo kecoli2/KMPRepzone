@@ -3,6 +3,7 @@ package com.repzone.domain.document.service
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.enums.SalesOperationType
 import com.repzone.core.interfaces.IUserSession
+import com.repzone.core.model.module.base.IDocumentBaseParameters
 import com.repzone.core.platform.randomUUID
 import com.repzone.core.util.extensions.addDays
 import com.repzone.core.util.extensions.now
@@ -26,6 +27,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import com.repzone.domain.common.Result
 import com.repzone.domain.common.businessRuleException
 import com.repzone.domain.common.fold
+import com.repzone.domain.document.IDocumentParameters
 import com.repzone.domain.document.model.DiscountSlot
 import com.repzone.domain.document.model.DiscountType
 import com.repzone.domain.document.model.Document
@@ -60,15 +62,14 @@ class DocumentManager(override val documentType: DocumentType,
                       private val stockValidator: StockValidator,
                       private val lineCalculator: LineDiscountCalculator,
                       private val iCustomerRepository: ICustomerRepository,
-                      private val iDocumentMapRepository: IDocumentMapRepository,
                       private val iDistributionRepository: IDistributionRepository,
                       private val iUserSession: IUserSession,
                       private val iProductRepository: IProductRepository,
-                      private val iPaymentPlanRepository: IPaymentInformationRepository
+                      private val iPaymentPlanRepository: IPaymentInformationRepository,
+                      private val iDocumentParameters: IDocumentParameters
 ) : IDocumentManager {
     //region Fields
     private var currentCustomer: SyncCustomerModel? = null
-    private var documentMapModel: SyncDocumentMapModel? = null
     private var activeDistribution: DistributionControllerModel? = null
     private var productQueryParams: ProductQueryParams? = null
     private var productUnitMap: MutableMap<Int, List<ProductUnit>>? = null
@@ -115,7 +116,6 @@ class DocumentManager(override val documentType: DocumentType,
         _pendingConflicts.value = emptyList()
         _pendingGiftSelections.value = emptyList()
         currentCustomer = null
-        documentMapModel = null
         activeDistribution = null
         productUnitMap?.clear()
         productUnitMap = null
@@ -128,9 +128,10 @@ class DocumentManager(override val documentType: DocumentType,
     override suspend fun setMasterValues(customerId: Long, documentId: Long): Result<IDocumentManager> {
         try {
             currentCustomer = iCustomerRepository.getById(customerId)
-            documentMapModel = iDocumentMapRepository.get(documentId.toInt(), currentCustomer!!.organizationId?.toInt() ?: 0)
+            //documentMapModel = iDocumentMapRepository.get(documentId.toInt(), currentCustomer!!.organizationId?.toInt() ?: 0)
             activeDistribution = iDistributionRepository.getActiveDistributionListId(currentCustomer, iUserSession.decideWhichOrgIdToBeUsed(currentCustomer!!.organizationId?.toInt() ?: 0))!!
             dispatchDate = now().toInstant().addDays(2)
+            iDocumentParameters.preLoadDocumentParameters(documentType = documentType, customer = currentCustomer!!, documentId = documentId)
             prepareProductQueryBuilder()
             prepareProductUnit()
             preparePayment()
@@ -141,7 +142,7 @@ class DocumentManager(override val documentType: DocumentType,
     }
 
     override fun getDocumentMapModel(): SyncDocumentMapModel {
-        return documentMapModel!!
+        return iDocumentParameters.getDocumentMapModel()
     }
 
     override fun getProductQueryString(): String {
@@ -227,6 +228,10 @@ class DocumentManager(override val documentType: DocumentType,
 
     override fun clearLines() {
         _lines.value = emptyList()
+    }
+
+    override fun getDocumentParameters(): IDocumentBaseParameters {
+        return iDocumentParameters.getDocumentParameters()
     }
 
     //endregion ============ Document Operations ============

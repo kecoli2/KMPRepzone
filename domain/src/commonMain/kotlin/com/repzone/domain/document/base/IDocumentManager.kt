@@ -1,6 +1,7 @@
 package com.repzone.domain.document.base
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
+import com.repzone.core.model.module.base.IDocumentBaseParameters
 import kotlinx.coroutines.flow.StateFlow
 import com.repzone.domain.common.Result
 import com.repzone.domain.document.model.DiscountType
@@ -133,8 +134,8 @@ interface IDocumentManager {
     fun changeDispatchDate(value: Instant): Result<Unit>
     suspend fun getAvailablePaymentPlan(): PaymentPlanModel?
     fun getDispatchDate(): Instant
-
     fun clearLines()
+    fun getDocumentParameters(): IDocumentBaseParameters
 
     //endregion ============ Document Operations ============
 }

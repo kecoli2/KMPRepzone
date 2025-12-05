@@ -2,6 +2,7 @@ package com.repzone.domain.document.service
 
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.domain.common.Result
+import com.repzone.domain.document.IDocumentParameters
 import com.repzone.domain.document.IPromotionEngine
 import com.repzone.domain.document.base.IDocumentManager
 import com.repzone.domain.document.base.IDocumentSession
@@ -22,7 +23,9 @@ class DocumentSessionPreview(private val promotionEngine: IPromotionEngine,
                              private val documentMapRepository: IDocumentMapRepository,
                              private val distributionRepository: IDistributionRepository,
                              private val userSession: IUserSession,
-                             private val productRepository: IProductRepository, private val iPaymentInformationRepository: IPaymentInformationRepository) : IDocumentSession {
+                             private val productRepository: IProductRepository,
+                             private val iPaymentInformationRepository: IPaymentInformationRepository,
+                             private val iDocumentParameters: IDocumentParameters) : IDocumentSession {
 
     //region Field
     private var _documentManager: IDocumentManager? = null
@@ -37,11 +40,11 @@ class DocumentSessionPreview(private val promotionEngine: IPromotionEngine,
                 stockValidator = stockValidator,
                 lineCalculator = lineCalculator,
                 iCustomerRepository = customerRepository,
-                iDocumentMapRepository = documentMapRepository,
                 iDistributionRepository = distributionRepository,
                 iUserSession = userSession,
                 iProductRepository = productRepository,
-                iPaymentPlanRepository = iPaymentInformationRepository
+                iPaymentPlanRepository = iPaymentInformationRepository,
+                iDocumentParameters = iDocumentParameters
             )
             return _documentManager!!.setMasterValues(customerId, documentId)
 
@@ -56,11 +59,11 @@ class DocumentSessionPreview(private val promotionEngine: IPromotionEngine,
             stockValidator = stockValidator,
             lineCalculator = lineCalculator,
             iCustomerRepository = customerRepository,
-            iDocumentMapRepository = documentMapRepository,
             iDistributionRepository = distributionRepository,
             iUserSession = userSession,
             iProductRepository = productRepository,
-            iPaymentPlanRepository = iPaymentInformationRepository
+            iPaymentPlanRepository = iPaymentInformationRepository,
+            iDocumentParameters = iDocumentParameters
         )
         return _documentManager!!
     }
