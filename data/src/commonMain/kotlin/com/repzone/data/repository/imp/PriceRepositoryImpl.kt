@@ -1,5 +1,6 @@
 package com.repzone.data.repository.imp
 
+import com.repzone.core.enums.StateType
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.database.SyncCustomerEntity
 import com.repzone.database.interfaces.IDatabaseManager
@@ -14,7 +15,7 @@ class PriceRepositoryImpl(private val iDatabaseManager: IDatabaseManager, iUsrSe
         val customerInfo = iDatabaseManager.getSqlDriver().select<SyncCustomerEntity> {
             where {
                 criteria("Id", equal = customerId)
-                criteria("State", notEqual = 4L)
+                criteria("State", notEqual = StateType.DELETED.ordinal)
             }
         }.firstOrNull() ?: return false
 

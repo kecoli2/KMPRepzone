@@ -1,6 +1,7 @@
 package com.repzone.data.repository.imp
 
 import com.repzone.core.enums.CrmParameterEntityType
+import com.repzone.core.enums.StateType
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.util.extensions.toEnum
 import com.repzone.database.SyncCrmPriceListParameterEntity
@@ -32,7 +33,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                 where {
                     criteria("Id", equal = repId)
                     criteria("GroupId", equal = repGroupId)
-                    criteria("State", equal = 1)
+                    criteria("State", equal = StateType.ACTIVE.ordinal)
                 }
             }.firstOrNull()
             repList?.let { it ->
@@ -41,7 +42,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                         iDatabaseManager.getSqlDriver().select<SyncProductDistributionEntity> {
                             where {
                                 criteria("Id", equal = it.SalesDistributionListId)
-                                criteria("State", equal = 1)
+                                criteria("State", equal = StateType.ACTIVE.ordinal)
                             }
                         }.any()
                     if (productList)
@@ -51,7 +52,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                         iDatabaseManager.getSqlDriver().select<SyncProductDistributionEntity> {
                             where {
                                 criteria("Id", equal = it.GroupSalesDistributionListId)
-                                criteria("State", equal = 1)
+                                criteria("State", equal = StateType.ACTIVE.ordinal)
                             }
                         }.any()
 
@@ -64,7 +65,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                         iDatabaseManager.getSqlDriver().select<SyncProductDistributionEntity> {
                             where {
                                 criteria("Id", equal = it.SalesReturnDistributionListId)
-                                criteria("State", equal = 1)
+                                criteria("State", equal = StateType.ACTIVE.ordinal)
                             }
                         }.any()
 
@@ -79,7 +80,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                         where {
                             criteria("Id", equal = customer.groupId)
                             criteria("OrganizationId", equal = iUserSession.decideWhichOrgIdToBeUsed(customer.organizationId?.toInt() ?: 0))
-                            criteria("State", equal = 1)
+                            criteria("State", equal = StateType.ACTIVE.ordinal)
                         }
                     }.firstOrNull()
 
@@ -89,7 +90,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                             iDatabaseManager.getSqlDriver().select<SyncProductDistributionEntity> {
                                 where {
                                     criteria("Id", equal = it.ProductSalesDistributionListId)
-                                    criteria("State", equal = 1)
+                                    criteria("State", equal = StateType.ACTIVE.ordinal)
                                 }
                             }.any()
                         if (productList)
@@ -101,7 +102,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                             iDatabaseManager.getSqlDriver().select<SyncProductDistributionEntity> {
                                 where {
                                     criteria("Id", equal = it.ProductSalesReturnDistributionListId)
-                                    criteria("State", equal = 1)
+                                    criteria("State", equal = StateType.ACTIVE.ordinal)
                                 }
                             }.any()
                         if (productList)
@@ -113,7 +114,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                             iDatabaseManager.getSqlDriver().select<SyncProductPricesEntity> {
                                 where {
                                     criteria("Id", equal = it.PriceSalesDistributionListId)
-                                    criteria("State", equal = 1)
+                                    criteria("State", equal = StateType.ACTIVE.ordinal)
                                 }
                             }.any()
                         if (productList)
@@ -125,7 +126,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                             iDatabaseManager.getSqlDriver().select<SyncProductPricesEntity> {
                                 where {
                                     criteria("Id", equal = it.PriceSalesReturnDistributionListId)
-                                    criteria("State", equal = 1)
+                                    criteria("State", equal = StateType.ACTIVE.ordinal)
                                 }
                             }.any()
                         if (productList)
@@ -137,7 +138,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                             iDatabaseManager.getSqlDriver().select<SyncProductPricesEntity> {
                                 where {
                                     criteria("Id", equal = it.PriceSalesDamagedListId)
-                                    criteria("State", equal = 1)
+                                    criteria("State", equal = StateType.ACTIVE.ordinal)
                                 }
                             }.any()
                         if (productList)
@@ -149,7 +150,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                             iDatabaseManager.getSqlDriver().select<SyncProductDistributionEntity> {
                                 where {
                                     criteria("Id", equal = it.MustStockListId)
-                                    criteria("State", equal = 1)
+                                    criteria("State", equal = StateType.ACTIVE.ordinal)
                                 }
                             }.any()
                         if (productList)
@@ -162,7 +163,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                     where {
                         criteria("Id", customer.id)
                         criteria("OrganizationId", iUserSession.decideWhichOrgIdToBeUsed(customer.organizationId?.toInt() ?: 0))
-                        criteria("State", 1)
+                        criteria("State", StateType.ACTIVE.ordinal)
                     }
                 }.firstOrNull()
 
@@ -172,7 +173,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                             iDatabaseManager.getSqlDriver().select<SyncProductDistributionEntity> {
                                 where {
                                     criteria("Id", equal = custList.ProductSalesDistributionListId)
-                                    criteria("State", equal = 1)
+                                    criteria("State", equal = StateType.ACTIVE.ordinal)
                                 }
                             }.any()
                         if (productList)
@@ -184,7 +185,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                             iDatabaseManager.getSqlDriver().select<SyncProductDistributionEntity> {
                                 where {
                                     criteria("Id", equal = custList.ProductSalesReturnDistributionListId)
-                                    criteria("State", equal = 1)
+                                    criteria("State", equal = StateType.ACTIVE.ordinal)
                                 }
                             }.any()
                         if (productList)
@@ -196,7 +197,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                             iDatabaseManager.getSqlDriver().select<SyncProductPricesEntity> {
                                 where {
                                     criteria("Id", equal = custList.PriceSalesDistributionListId)
-                                    criteria("State", equal = 1)
+                                    criteria("State", equal = StateType.ACTIVE.ordinal)
                                 }
                             }.any()
                         if (productList)
@@ -208,7 +209,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                             iDatabaseManager.getSqlDriver().select<SyncProductPricesEntity> {
                                 where {
                                     criteria("Id", equal = custList.PriceSalesReturnDistributionListId)
-                                    criteria("State", equal = 1)
+                                    criteria("State", equal = StateType.ACTIVE.ordinal)
                                 }
                             }.any()
                         if (productList)
@@ -220,7 +221,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                             iDatabaseManager.getSqlDriver().select<SyncProductPricesEntity> {
                                 where {
                                     criteria("Id", equal = custList.PriceSalesDamagedListId)
-                                    criteria("State", equal = 1)
+                                    criteria("State", equal = StateType.ACTIVE.ordinal)
                                 }
                             }.any()
                         if (productList)
@@ -236,7 +237,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                             criteria("OrganizationId", iUserSession.decideWhichOrgIdToBeUsed(customer.organizationId?.toInt() ?: 0))
                             criteria("EntityId", customer.groupId)
                             criteria("PaymentPlanId", paymentPlanId)
-                            criteria("State", notEqual = 4)
+                            criteria("State", notEqual = StateType.DELETED.ordinal)
                         }
                     }.firstOrNull()
                     cgParam?.let { param ->
@@ -258,7 +259,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
                             criteria("OrganizationId", iUserSession.decideWhichOrgIdToBeUsed(customer.organizationId?.toInt() ?: 0))
                             criteria("EntityId", customer.id)
                             criteria("PaymentPlanId", paymentPlanId)
-                            criteria("State", notEqual = 4)
+                            criteria("State", notEqual = StateType.DELETED.ordinal)
                         }
                     }.firstOrNull()
                     cParam?.let { param ->
@@ -284,7 +285,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
         val crmParams = iDatabaseManager.getSqlDriver().select<SyncCrmPriceListParameterEntity> {
             where {
                 criteria("OrganizationId", orgId)
-                criteria("State", notEqual = 4)
+                criteria("State", notEqual = StateType.DELETED.ordinal)
             }
         }.toList()
 
@@ -298,7 +299,7 @@ class DistributionRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
         val crmParams = iDatabaseManager.getSqlDriver().select<SyncCrmPriceListParameterEntity> {
             where {
                 criteria("OrganizationId", orgId)
-                criteria("State", notEqual = 4)
+                criteria("State", notEqual = StateType.DELETED.ordinal)
             }
         }.toList()
         var ret = 0

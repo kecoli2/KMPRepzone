@@ -2,6 +2,7 @@ package com.repzone.data.repository.imp
 
 import com.ionspin.kotlin.bignum.decimal.BigDecimal
 import com.repzone.core.enums.SalesOperationType
+import com.repzone.core.enums.StateType
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.util.extensions.now
 import com.repzone.data.mapper.ProductFlatViewEntityDbMapper
@@ -189,7 +190,7 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager,
 
         val allBasePriceLists = iDatabaseManager.getSqlDriver().select<SyncProductPricesEntity> {
             where {
-                criteria("State", equal = 1)
+                criteria("State", equal = StateType.ACTIVE.ordinal)
                 criteria("Begin", lessThanOrEqual = nowUtc)
                 criteria("End", greaterThanOrEqual = nowUtc)
             }
@@ -197,7 +198,7 @@ class ProductRepository(private val iDatabaseManager: IDatabaseManager,
 
         val priceListsByBaseOrgId = iDatabaseManager.getSqlDriver().select<SyncProductPricesEntity> {
             where {
-                criteria("State", equal = 1)
+                criteria("State", equal = StateType.ACTIVE.ordinal)
                 or {
                     criteria("OrganizationId", equal = 0)
                     and {

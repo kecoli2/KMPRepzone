@@ -1,6 +1,7 @@
 package com.repzone.data.repository.imp
 
 import com.repzone.core.enums.RepresentativeEventReasonType
+import com.repzone.core.enums.StateType
 import com.repzone.core.util.extensions.enumToLong
 import com.repzone.database.AppDatabase
 import com.repzone.database.SyncEventReasonEntity
@@ -24,7 +25,7 @@ class EventReasonRepositoryImpl(private var iDatabaseManager: IDatabaseManager):
     override fun getEventReasonList(type: RepresentativeEventReasonType): List<EventReasonCode> {
         return runBlocking {
             iDatabaseManager.getSqlDriver().select<SyncEventReasonEntity> { where {
-                criteria("State", notEqual = 4)
+                criteria("State", notEqual = StateType.DELETED.ordinal)
                 criteria("ReasonType", equal = type.enumToLong())
             }}.toList().map {
                 EventReasonCode(

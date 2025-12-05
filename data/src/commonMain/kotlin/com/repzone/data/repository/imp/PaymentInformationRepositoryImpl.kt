@@ -1,5 +1,6 @@
 package com.repzone.data.repository.imp
 
+import com.repzone.core.enums.StateType
 import com.repzone.core.interfaces.IUserSession
 import com.repzone.core.util.extensions.toBoolean
 import com.repzone.database.SyncPaymentPlanEntity
@@ -21,7 +22,7 @@ class PaymentInformationRepositoryImpl(private val iDatabaseManager: IDatabaseMa
         val customerOrgId = iUserSession.decideWhichOrgIdToBeUsed(customerOrgIdOrganizationId.toInt())
         val list = iDatabaseManager.getSqlDriver().select<SyncPaymentPlanEntity> {
             where {
-                criteria("State", 1)
+                criteria("State", StateType.ACTIVE.ordinal)
             }
             orderBy {
                 order("Ids")

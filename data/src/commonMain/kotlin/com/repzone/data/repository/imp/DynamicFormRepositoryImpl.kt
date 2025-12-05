@@ -1,6 +1,7 @@
 package com.repzone.data.repository.imp
 
 import com.repzone.core.enums.FormVisibleOption
+import com.repzone.core.enums.StateType
 import com.repzone.core.util.extensions.enumToLong
 import com.repzone.data.mapper.FormBaseEntityDbMapper
 import com.repzone.data.mapper.SyncFormBaseEntityDbMapper
@@ -48,7 +49,7 @@ class DynamicFormRepositoryImpl(private val iDatabaseManager: IDatabaseManager, 
     override suspend fun getForms(): List<SyncFormBaseModel> {
         val list =  iDatabaseManager.getSqlDriver().select<SyncFormBaseEntity> {
             where {
-                criteria("State", notEqual = 4)
+                criteria("State", notEqual = StateType.DELETED.ordinal)
             }
         }.toList().map {
             mapper.toDomain(it)

@@ -1,5 +1,6 @@
 package com.repzone.data.repository.imp
 
+import com.repzone.core.enums.StateType
 import com.repzone.data.mapper.SyncDynamicPageReportEntityDbMapper
 import com.repzone.database.SyncDynamicPageReportEntity
 import com.repzone.database.interfaces.IDatabaseManager
@@ -21,7 +22,7 @@ class DynamicPageReportImpl(private val iDatabaseManager: IDatabaseManager, priv
     override suspend fun getAll(): List<SyncDynamicPageReportModel> {
         return iDatabaseManager.getSqlDriver().select<SyncDynamicPageReportEntity> {
             where {
-                criteria("State", notEqual = 4)
+                criteria("State", notEqual = StateType.DELETED.ordinal)
             }
         }.toList().map {
             mapper.toDomain(it)

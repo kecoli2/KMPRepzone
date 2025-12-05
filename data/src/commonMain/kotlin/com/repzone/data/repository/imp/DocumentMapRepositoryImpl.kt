@@ -4,6 +4,7 @@ import com.repzone.core.enums.DocProcessType
 import com.repzone.core.enums.DocumentActionType
 import com.repzone.core.enums.NumberTemplateType
 import com.repzone.core.enums.PrinterDeviceType
+import com.repzone.core.enums.StateType
 import com.repzone.core.model.PrinterListItem
 import com.repzone.data.mapper.DocumentMapDocNumberInformationEntityDbMapper
 import com.repzone.data.mapper.PrinterDocumentRelationInformationEntityDbMapper
@@ -80,7 +81,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
         val docOrgModel = iDatabaseManager.getSqlDriver().select<SyncDocumentOrganizationEntity> {
             where {
                 criteria("DocumentTypeId" , document.Id)
-                criteria("State", notEqual = 4)
+                criteria("State", notEqual = StateType.DELETED.ordinal)
                 criteria("OrganizationId", orgId)
             }
         }.firstOrNull()
@@ -111,7 +112,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
         val docOrgModel = iDatabaseManager.getSqlDriver().select<SyncDocumentOrganizationEntity> {
             where {
                 criteria("DocumentTypeId", document.Id)
-                criteria("State", notEqual = 4)
+                criteria("State", notEqual = StateType.DELETED.ordinal)
                 criteria("OrganizationId", orgId)
             }
         }.firstOrNull()
@@ -149,7 +150,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
         return iDatabaseManager.getSqlDriver().select<SyncDocumentMapProcessStepEntity> {
             where {
                 criteria("ProcessId", equal = processId)
-                criteria("State", notEqual = 4)
+                criteria("State", notEqual = StateType.DELETED.ordinal)
             }
             orderBy {
               order("StepOrder")
@@ -191,7 +192,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
     override suspend fun getAllDocumentTypes(): List<SyncDocumentMapModel> {
         return iDatabaseManager.getSqlDriver().select<SyncDocumentMapEntity> {
             where {
-                criteria("State", notEqual = 4)
+                criteria("State", notEqual = StateType.DELETED.ordinal)
             }
         }.toList().map {
             mapperDocumentMap.toDomain(it)
@@ -202,7 +203,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
         var retList = ArrayList<PrinterListItem>()
         val relationList = iDatabaseManager.getSqlDriver().select<PrinterDocumentRelationInformationEntity> {
             where {
-                criteria("State", equal = 1)
+                criteria("State", equal = StateType.ACTIVE.ordinal)
             }
         }.toList()
 
@@ -223,7 +224,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
             val availableDocumentTypes = iDatabaseManager.getSqlDriver().select<SyncDocumentMapEntity> {
                 where {
                     criteria("Id", In = docIds)
-                    criteria("State", notEqual = 4)
+                    criteria("State", notEqual = StateType.DELETED.ordinal)
 
                 }
             }.toList().map {
@@ -241,7 +242,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
         val entity = iDatabaseManager.getSqlDriver().select<PrinterDocumentRelationInformationEntity> {
             where {
                 criteria("DocumentMapId", id)
-                criteria("State", equal = 1)
+                criteria("State", equal = StateType.ACTIVE.ordinal)
             }
         }.firstOrNull()
         return entity?.let {
@@ -256,7 +257,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
     override suspend fun getAnyPrinterInfo(): PrinterDocumentRelationInformationModel? {
         return iDatabaseManager.getSqlDriver().select<PrinterDocumentRelationInformationEntity> {
             where {
-                criteria("State", equal = 1)
+                criteria("State", equal = StateType.ACTIVE.ordinal)
             }
         }.firstOrNull()?.let {
             mapperPrinterDocumentRelationInformationEntity.toDomain(it)
@@ -267,7 +268,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
         var numberInfoWithId = iDatabaseManager.getSqlDriver().select<DocumentMapDocNumberInformationEntity> {
             where {
                 criteria("DocumentMapId", equal = documentMapId)
-                criteria("State", notEqual = 4)
+                criteria("State", notEqual = StateType.DELETED.ordinal)
             }
         }.firstOrNull()?.let {
             mapperNumberDocument.toDomain(it)
@@ -288,7 +289,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
         return iDatabaseManager.getSqlDriver().select<DocumentMapDocNumberInformationEntity> {
             where {
                 criteria("DocumentGroup", equal = documentGroup.ordinal)
-                criteria("State", notEqual = 4)
+                criteria("State", notEqual = StateType.DELETED.ordinal)
                 criteria("DocumentMapId", 0)
             }
         }.firstOrNull()?.let {
@@ -300,7 +301,7 @@ class DocumentMapRepositoryImpl(private val iDatabaseManager: IDatabaseManager,
         var currentNumber = iDatabaseManager.getSqlDriver().select<DocumentMapDocNumberInformationEntity> {
             where {
                 criteria("DocumentType", equal = documentGroup.ordinal)
-                criteria("State", notEqual = 4)
+                criteria("State", notEqual = StateType.DELETED.ordinal)
                 criteria("DocumentMapId", equal = documentMapId)
             }
         }.firstOrNull()
